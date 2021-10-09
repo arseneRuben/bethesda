@@ -1,6 +1,6 @@
 {% extends 'layout/frontEndLayout.html.twig' %}
 
-{% block name %} Bethesda Blog{% endblock %}
+{% block name %} Bethesda Contact{% endblock %}
 
 {% block body %}
 
@@ -22,30 +22,28 @@
                 <div class="col-xl-6 col-md-12 col-sm-12">
                     <div class="contact_form">
                         <div id="message"></div>
-                        <form id="contactform" class=""  name="contactform" method="post">
-                            <div class="row row-fluid">
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                    <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name">
+                        {{ form_start(form ) }}
+                        
+                            <div class="row row-fluid mx-auto">
+
+                                <div class="col-lg-8 col-md-8 col-sm-8">
+                                     {{ form_row(form.subject) }}
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                    <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                    <input type="email" name="email" id="email" class="form-control" placeholder="Your Email">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Your Phone">
-                                </div>
+                            </div>
+                             <div class="row row-fluid">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <textarea class="form-control" name="comments" id="comments" rows="6" placeholder="Give us more details.."></textarea>
+                                       {{ form_row(form.content) }}
                                 </div>
+                             </div>  
+                               {{ form_rest(form) }}
                                 <div class="text-center pd">
                                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                         <button type="submit" value="SEND" id="submit" disabled="disable" class="btn btn-light btn-radius btn-brd grd1 btn-block">Submit</button>
+                                         <button type="submit" value="SEND" id="submit"  class="btn btn-light btn-radius btn-brd grd1 btn-block">Submit</button>
                                     {% else %}
                                        
-                                       <div class="alert alert-dark" role="alert">
-                                             You must first register. <a  href="{{ path('app_register') }}" class="alert-link">Sign up</a>
+                                       <div class="col-sm-6 alert alert-warning text-center" role="alert">
+                                             You must first login.<a  class="alert-link btn" href="{{ path('app_login') }}"> Sign In</a>
+
                                         </div>
                                     {% endif %}
                                 </div>

@@ -3,16 +3,28 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+//use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\Traits\HasUploadableField;
+use App\Entity\Traits\TimeStampable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @Vich\Uploadable
+ * @ORM\HasLifecycleCallbacks
+ * 
  */
-class User implements UserInterface
+class User implements UserInterface//, PasswordAuthenticatedUserInterface
 {
+    use TimeStampable;
+    use HasUploadableField;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -45,9 +57,47 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
+      /**
+     * @ORM\OneToMany(targetEntity=Email::class, mappedBy="sender")
+     */
+    private $emails;
+
+         /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $lastName;
+   
+    public function getAvatar(int $size = 50): ?string
+    {
+        return "https://www.gravatar.com/avatar/". md5(strtolower(trim($this->getEmail())))."/?s=".$size;
+    }
+
+    public function __construct()
+    {
+        
+        $this->emails = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+
+    public function getFullName (): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName ;
+    }
+
+    public function __toString() {
+        $username = ( is_null($this->getFullName())) ? "" : $this->getFullName();
+        return $username;
     }
 
     public function getEmail(): ?string
