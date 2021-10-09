@@ -36,7 +36,7 @@
 									<li class="{% if app.request.attributes.get('_route') == "admin_school_years" %}active{% endif %}">
 										<a href="{{ path('admin_school_years')}}"><i class="fa fa-calendar" aria-hidden="true"></i>Années scolaires</a>
 									</li>
-									<li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
+								{#	<li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
 										<a href="{{ path('admin_quaters')}}"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>Trimestres</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_sequences" %}active{% endif %}">
@@ -126,9 +126,9 @@
 											<span>Register
 												<li> <a href="{{ path('fos_user_adminile_edit') }}"> <i class="icon-interface-windows"></i><span>Profile  </span></a></li>
 																									<li> <a href="#"> <i class="icon-mail"></i><span>Demo</span>
-																											<div class="badge badge-warning">6 New</div></a></li>#}
-									</li>
-								</ul>
+																											<div class="badge badge-warning">6 New</div></a></li>
+									</li>#}
+								</ul> 
 							</div>
 						{% endblock menu  %}
 						

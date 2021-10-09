@@ -1,0 +1,90 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation de l̀annee scolaire - {{ parent() }}{% endblock %}
+
+{% block content %}
+   
+       
+            <div class="row mt-4">
+
+                <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_school_years') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron">
+                    <article  class="p-3" >
+                            <div class="">
+                                 <div class="mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Annee scolaire {{school_year.wording}}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled m-2 text-center text-justify ">
+                                                <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{school_year.startDate|date('Y-m-d')}}"></time> {{school_year.startDate|date('Y-m-d')}}</h1>
+                                            </li>
+                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{school_year.startDate|date('Y-m-d')}}"></time> {{school_year.startDate|date('Y-m-d')}}</h1>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check">
+                                                        {% if school_year.activated %}
+                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                            <h2 class="card-title pricing-card-title"> Actif </h2>
+                                                        </label>
+                                                        {% else %}
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                           <h2 class="card-title pricing-card-title">  Non actif </h2>
+                                                        </label>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                        
+                                        </ul>
+                                    </div>
+                                    <table class="table table-striped table-hover table-bordered records_list center">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                
+                                                <th scope="col">Titre</th>
+                                                <th scope="col">Debut</th>
+                                                <th scope="col">Fin</th>
+                                                <th scope="col">Etat</th>
+                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for quater in school_year.quaters %}
+                                                <tr>
+                                                    <td scope="row">{{ loop.index }}</th>
+                                                    <td>
+                                                        <a href="{{ path('admin_quaters_show', {id: quater.id}) }}">{{ quater.wording}}</a>
+                                                    </td>
+                                                    <td> <time date= "{{quater.startDate|date('Y-m-d')}}"></time> {{quater.startDate|date('Y-m-d')}} </td>
+                                                    <td> <time date= "{{quater.endDate|date('Y-m-d')}}"></time> {{quater.endDate|date('Y-m-d')}} </td>
+                                                    <td>  {{quater.activated}} </td>
+                                                
+                                                    
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                 </div>
+                                <div class="panel ">			
+                            
+                                <a class="btn btn-warning" href="{{path('admin_schoolyears_edit', {id: school_year.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    Edit </a> |
+                                    <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Cette supressession entrenera celle des trimestres et des sequences inclus. Es-tu sure ?') && document.getElementById('js-school_year-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                    <form id="js-school_year-delete-form" action="{{path('admin_schoolyears_delete', {id: school_year.id})}}" method="post" style="display: none;">
+                                        <input type="hidden" name="{{ csrf_token('school_years_deletion' ~ school_year.id ) }}" id="">
+                                        <input type="hidden" name="_method" value="DELETE">
+
+                                    </form>
+                                </div>
+                     </article>
+                    
+</div>
+{% endblock %}

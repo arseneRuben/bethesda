@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\LevelRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=LevelRepository::class)
+ */
+class Level
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Cycle::class, inversedBy="levels")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $cycle;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SettingsPayments::class, mappedBy="level", orphanRemoval=true)
+     */
+    private $settingsPayments;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="level")
+     */
+    private $rooms;
+
+    public function __construct()
+    {
+        $this->settingsPayments = new ArrayCollection();
+        $this->rooms = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCycle(): ?Cycle
+    {
+        return $this->cycle;
+    }
+
+    public function setCycle(?Cycle $cycle): self
+    {
+        $this->cycle = $cycle;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        $name = (is_null($this->getName())) ? "" : $this->getName();
+        $cycle = (is_null($this->getCycle())) ? "" : $this->getCycle();
+        return (string) ($cycle."/".$name);
+    }
+
+    /**
+     * @return Collection|SettingsPayments[]
+     */
+    public function getSettingsPayments(): Collection
+    {
+        return $this->settingsPayments;
+    }
+
+    public function addSettingsPayment(SettingsPayments $settingsPayment): self
+    {
+        if (!$this->settingsPayments->contains($settingsPayment)) {
+            $this->settingsPayments[] = $settingsPayment;
+            $settingsPayment->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSettingsPayment(SettingsPayments $settingsPayment): self
+    {
+        if ($this->settingsPayments->removeElement($settingsPayment)) {
+            // set the owning side to null (unless already changed)
+            if ($settingsPayment->getLevel() === $this) {
+                $settingsPayment->setLevel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ClassRoom[]
+     */
+    public function getRooms(): Collection
+    {
+        return $this->rooms;
+    }
+
+    public function addRoom(ClassRoom $room): self
+    {
+        if (!$this->rooms->contains($room)) {
+            $this->rooms[] = $room;
+            $room->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoom(ClassRoom $room): self
+    {
+        if ($this->rooms->removeElement($room)) {
+            // set the owning side to null (unless already changed)
+            if ($room->getLevel() === $this) {
+                $room->setLevel(null);
+            }
+        }
+
+        return $this;
+    }
+}
