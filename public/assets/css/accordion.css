@@ -1,0 +1,38 @@
+.myNav { width:600px; background:gray; list-style:none; }
+.myNav-item:not(:first-child) { border-top:1px solid #4d4d4d; }
+.myNav-link { display:block; padding:8px 10px; text-align:center;  font-size: 1em; color:#fff; list-style:none; }
+.myNav-content { padding:0 20px; padding-bottom:8px; text-align:center; font-size: 1em;   color:#fff; list-style:none;}
+.ui-accordion-content { display:none; }
+.active > .ui-accordion-content { display:block; }
+
+
+.centrage {text-align: center;  margin-left: auto;
+  margin-right: auto;}
+
+.jumbotron  {  background:#2fc882;  }
+.couleur  {  color:#ffffff; 
+            font-family: Luminari, fantasy}
+
+.myNav-item {
+   position:relative; /* Référence aux absolutes */
+}
+.myNav-item:before { /* Flèche */
+   content:'';
+   position:absolute; top:17px; right:10px;
+   width:0; height:0;
+   border-style:solid; border-color:transparent;
+   border-width:5px; /* Taille de la flèche */
+   pointer-events:none; /* Clique neutralisé */
+}
+.myNav-item:not(.active):before { /* Flèche down */
+   border-bottom-width:0;
+   border-top-color:#fff;
+}
+.myNav-item.active:before { /* Flèche up */
+   border-top-width:0;
+   border-bottom-color:#fff;
+}
+.myNav-item.active,
+.myNav-item:hover {
+   background:#404090; /* État actif et rollover */
+}

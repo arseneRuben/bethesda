@@ -1,0 +1,272 @@
+{% extends 'layout/base.html.twig' %}
+{% block stylesheets %}
+	{{parent()}}
+	<link href="{{ asset('assets/css/grasp_mobile_progress_circle-1.0.0.min.css')}}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/jquery.mCustomScrollbar.css')}}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/style.red.css')}}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/style.default.css')}}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block title %}Accueil {% endblock %}
+{% block main %}
+
+			{% block sidebar %}
+				<nav class="side-navbar">
+					<div class="side-navbar-wrapper">
+						{% block identification %}
+							<div class="sidenav-header d-flex align-items-center justify-content-center">
+								<div class="sidenav-header-inner text-center"><img src={% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} "{{ app.user.avatar(75) }}" {% else %} {{asset("img/avatar-2.jpg")}} {% endif %} class="img-fluid rounded-circle">
+									<h2 class="h5 text-uppercase"></h2>
+									<span class="text-uppercase">
+										{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+											{{app.user.username}}
+										{% endif %}
+									</span>
+								</div>
+								<div class="sidenav-header-logo">
+									<a href="index.html" class="brand-small text-center">
+										<strong>B</strong>
+										<strong class="text-primary">D</strong>
+									</a>
+								</div>
+							</div>
+						{% endblock identification %}
+						{% block menu %}
+							<div class="main-menu">
+								<ul id="side-main-menu" class="side-menu list-unstyled">
+									<li class="{% if app.request.attributes.get('_route') == "admin_school_years" %}active{% endif %}">
+										<a href="{{ path('admin_school_years')}}"><i class="fa fa-calendar" aria-hidden="true"></i>Années scolaires</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
+										<a href="{{ path('admin_quaters')}}"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>Trimestres</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_sequences" %}active{% endif %}">
+										<a href="{{ path('admin_sequences')}}"><i class="fa fa-calendar-minus-o" aria-hidden="true"></i>Séquences</a>
+									</li>
+									<HR size="0.8" align="center" width="80%" color="white">
+									<li class="{% if app.request.attributes.get('_route') == "admin_programs" %}active{% endif %}">
+										<a href="{{ path('admin_programs')}}"><i class="fa fa-table" aria-hidden="true"></i>Programmes</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_sections" %}active{% endif %}">
+										<a href="{{ path('admin_sections')}}">
+											<i class="fa fa-th-large" aria-hidden="true"></i>Sections</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_cycles" %}active{% endif %}">
+										<a href="{{ path('admin_cycles')}}">
+											<i class="fa fa-th-list" aria-hidden="true"></i>Cycles</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_levels" %}active{% endif %}">
+										<a href="{{ path('admin_levels')}}">
+											<i class="fa fa-list-ul" aria-hidden="true"></i>Niveaux</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_classrooms" %}active{% endif %}">
+										<a href="{{ path('admin_classrooms')}}"><i class="fa fa-indent" aria-hidden="true"></i>Classe</a>
+									</li>
+
+									<HR size="0.8" align="center" width="80%" color="white">
+									<li class="{% if app.request.attributes.get('_route') == "admin_modules" %}active{% endif %}">
+										<a href="{{ path('admin_modules')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Module</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_domains" %}active{% endif %}">
+										<a href="{{ path('admin_domains')}}"><i class="fa fa-user-md" aria-hidden="true"></i>Departement.</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_courses" %}active{% endif %}">
+										<a href="{{ path('admin_courses')}}"><i class="fa fa-book" aria-hidden="true"></i>Matière</a>
+									</li>
+									<HR size="0.8" align="center" width="80%" color="white">
+									<li class="{% if app.request.attributes.get('_route') == "admin_settings" %}active{% endif %}">
+										<a href="{{ path('admin_settings')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Scolarité</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_payes" %}active{% endif %}">
+										<a href="{{ path('admin_payes')}}"><i class="fa fa-money" aria-hidden="true"></i>Versement</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_subscriptions" %}active{% endif %}">
+										<a href="{{ path('admin_subscriptions')}}"><i class="fa fa-exchange" aria-hidden="true"></i>Inscription</a>
+									</li>
+									<HR size="0.8" align="center" width="80%" color="white">
+								
+									<li class="{% if app.request.attributes.get('_route') == "admin_students" %}active{% endif %}">
+										<a href="{{ path('admin_students')}}"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Elèves inscrits</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_evaluations" %}active{% endif %}">
+										<a href="{{ path('admin_evaluations')}}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>Evaluations</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_attributions" %}active{% endif %}">
+										<a href="{{ path('admin_attributions')}}"><i class="fa fa-map-signs" aria-hidden="true"></i>Attributions
+										</a>
+									</li>
+									{# <li class="{% if app.request.attributes.get('_route') == "admin_users" %}active{% endif %}">
+										<a href="{{ path('admin_users')}}"><i class="fa fa-user" aria-hidden="true"></i>Professeurs</a>
+									</li>
+									<HR size="0.8" align="center" width="80%" color="white">
+									<li class="{% if app.request.attributes.get('_route') == "admin_tables" %}active{% endif %}">
+										<a href="{{ path('admin_tables')}}">
+											<i class="fa fa-filter" aria-hidden="true"></i>
+											<span>Filtres
+											</span>
+										</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_graphs" %}active{% endif %}">
+										<a href="{{ path('admin_graphs')}}">
+											<i class="fa fa-bar-chart" aria-hidden="true"></i>
+											<span>Graphes
+											</span>
+										</a>
+									</li>
+
+									<li>
+										<a href="{{ path('fos_user_security_login') }}">
+											<i class={% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} "fa fa-sign-out" {% else %} "fa fa-sign-in" {% endif %} aria-hidden="true"></i>
+											<span>Login
+											</span>
+										</a>
+									</li>
+									<li>
+										<a href="{{ path('fos_user_registration_register') }}">
+											<i class="fa fa-user-plus" aria-hidden="true"></i>
+											<span>Register
+												<li> <a href="{{ path('fos_user_adminile_edit') }}"> <i class="icon-interface-windows"></i><span>Profile  </span></a></li>
+																									<li> <a href="#"> <i class="icon-mail"></i><span>Demo</span>
+																											<div class="badge badge-warning">6 New</div></a></li>#}
+									</li>
+								</ul>
+							</div>
+						{% endblock menu  %}
+						
+					</div>
+				</nav>
+			{% endblock  sidebar %}
+			<div class="page home-page">
+				{% block header %}
+					<header class="header">
+							<nav class="navbar">
+								<div class="container-fluid">
+									<div class="navbar-holder d-flex justify-content-around">
+										<div class="navbar-header">
+											<a id="toggle-btn" href="#" class="menu-btn">
+												<i class="fa fa-bars" aria-hidden="true"></i>
+											</a>
+											<a href="{{ path('app_home') }}" class="navbar-brand text-center">
+													<div class="brand-text d-none d-md-inline-block">
+														<strong class="text-primary">SCHOOL MANAGEMENT SYSTEM</strong>
+													</div>
+											</a>
+											{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+											<a id="logout_btn"  href="{{ path('app_logout') }}" class="btn text-right btn-warning">
+												<i class="fa fa-sign-out" aria-hidden="true"></i>
+											</a>
+											{% endif %}
+										</div>
+											
+									</div>
+								</div>
+							</nav>
+							<section class="container-fluid  ">
+								<div class="row m-20">
+									<div class="col-xl-2 col-md-4 col-6">
+										<div class="wrapper count-title d-flex">
+											<div class="icon">
+												<i class="fa fa-graduation-cap" aria-hidden="true"></i>
+											</div>
+											<div class="name">
+												<strong class="text-uppercase">Effectif des eleves</strong>
+												<span>
+												{#	{{service_stats.registeredStudentsNumber()}}#}
+												</span>
+
+											</div>
+										</div>
+									</div>
+									<div class="col-xl-2 col-md-4 col-6">
+										<div class="wrapper count-title d-flex">
+											<div class="icon">
+												<i class="fa fa-users" aria-hidden="true"></i>
+											</div>
+											<div class="name">
+												<strong class="text-uppercase">Effectif des enseigants</strong>
+												<span>
+														{# {{service_stats.countAllActiveTeachers()}} #}
+												</span>
+
+												<div class="count-number"> {% block statistics_effectif %}{% endblock statistics_effectif %}
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-2 col-md-4 col-6">
+											<div class="wrapper count-title d-flex">
+												<div class="icon">
+													<i class="icon-check"></i>
+												</div>
+												<div class="name">
+													<strong class="text-uppercase">Insolvables primaire</strong>
+													<span>Année scolaire
+														{% block annee1 %}{% endblock annee1 %}
+													</span>
+
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-2 col-md-4 col-6">
+											<div class="wrapper count-title d-flex">
+												<div class="icon">
+													<i class="icon-bill"></i>
+												</div>
+												<div class="name">
+													<strong class="text-uppercase">Insolvables secondaire</strong>
+													<span>Last 2 days</span>
+													<div class="count-number"></div>
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-2 col-md-4 col-6">
+											<div class="wrapper count-title d-flex">
+												<div class="icon">
+													<i class="icon-list"></i>
+												</div>
+												<div class="name">
+													<strong class="text-uppercase">Classes cycle primaire</strong>
+													<span>Last 3 months</span>
+													<div class="count-number"></div>
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-2 col-md-4 col-6">
+											<div class="wrapper count-title d-flex">
+												<div class="icon">
+													<i class="fa fa-home" aria-hidden="true"></i>
+												</div>
+												<div class="name">
+													<strong class="text-uppercase">Nombre de salles de classes</strong>
+												{#	<span>	{{service_stats.classNumber()}}</span> #}
+													
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+					
+					</header>
+				{% endblock header %}	
+						
+						<section class="dashboard-counts section-padding container">
+							{% block content %}{% endblock content %}
+						</section>
+						
+			</div>
+{% endblock  main %}
+{% block footer %}
+     
+{% endblock footer %}
+{% block javascripts %}
+						{{parent()}}
+						<script type="text/javascript" src="{{ asset('https://d3js.org/d3.v4.min.js') }}"></script>
+						 <script type="text/javascript" src="{{ asset('assets/js/jquery-3.1.1.js') }}"></script>
+           				 <script type="text/javascript" src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+						
+						<script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js') }}"></script>
+						<script type="text/javascript" src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
+						<script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
+						<script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
+						<script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+{% endblock javascripts %}

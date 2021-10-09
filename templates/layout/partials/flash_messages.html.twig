@@ -1,0 +1,18 @@
+{% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="m-1  alert alert-{{type}} rounded text-center" role= "alert" >
+                        {{ message }}
+                    </div>
+                {% endfor %}
+{% endfor %}
+
+<!-- LOADER 
+	<div id="preloader">
+		<div class="loader-container">
+			<div class="progress-br float shadow">
+				<div class="progress__item"></div>
+			</div>
+		</div>
+	</div>
+
+	-->

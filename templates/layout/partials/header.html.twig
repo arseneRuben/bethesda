@@ -1,0 +1,45 @@
+<!-- Start header -->
+	<header class="top-navbar ">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="index.html">
+					<img src="images/logo.png" alt="" />
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-host" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+				</button>
+				<div class="collapse navbar-collapse " id="navbars-host">
+					<ul class="navbar-nav ml-auto mx-auto">
+						<li  class=" nav-item  {% if app.request.attributes.get('_route') == "app_home" %}active{% endif %}"  ><a class="nav-link" href="{{ path('app_home') }}">Home</a></li>
+						<li class="nav-item  {% if app.request.attributes.get('_route') == "app_about" %}active{% endif %}"><a class="nav-link" href="{{ path('app_about') }}">About Us</a></li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_course_gridt" %}active{% endif %} ">
+							<a class="nav-link" href="{{ path('app_course_grid') }}">Courses </a>
+	
+						</li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_blogs" %}active{% endif %} ">
+							<a class="nav-link" href="{{ path('app_blogs') }}" id="dropdown-a">Blog </a>
+							
+						</li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_teachers" %}active{% endif %} "><a class="nav-link" href="{{ path('app_teachers') }}">Teachers</a></li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_prices" %}active{% endif %}"><a class="nav-link" href="{{ path('app_prices') }}">Pricing</a></li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_contact" %}active{% endif %} "><a class="nav-link" href="{{ path('app_contact')}}">Contact</a></li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_login" %}active{% endif %} "><a class="nav-link" href="{{ path('app_login')}}">Sign In</a></li>
+						<li class="nav-item {% if app.request.attributes.get('_route') == "app_register" %}active{% endif %} "><a class="nav-link" href="{{ path('app_register')}}">Sign Up</a></li>
+					</ul>
+				<!--	<ul class="nav navbar-nav navbar-right">
+
+                        <li>
+								{% if  app.user %} 
+										<a class="hover-btn-new log"  href="{{ path('app_logout') }}"  ><span>Logout</span></a>
+								{% else  %}
+										<a class="hover-btn-new log orange"   data-toggle="modal" data-target="#login" ><span>Book Now</span></a>
+								{% endif  %}
+						</li>
+                    </ul>-->
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- End header -->

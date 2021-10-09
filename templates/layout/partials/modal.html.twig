@@ -1,0 +1,43 @@
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			{% if error is defined and  error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+             {% endif %}
+			<div class="modal-header tit-up">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Customer Login</h4>
+			</div>
+			<div class="modal-body customer-box">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs">
+				{% if  app.user %}
+					
+				{% else  %}
+					<li><a class="active" href="#Login" data-toggle="tab">Login</a></li>
+					<li><a href="#Registration" data-toggle="tab">Registration</a></li>
+				{% endif  %}
+				</ul>
+				<!-- Tab panes -->
+				<div class="tab-content">
+				{# if  app.user %} 
+					
+				{% else  %}
+					<div class="tab-pane active" id="Login">
+						{{ render(path('app_login')) }}
+					</div>
+					<div class="tab-pane" id="Registration">
+						{{ render(path('app_register')) }}
+					</div>
+				{% endif  #}
+				</div>
+			</div>
+		</div>
+	  </div>
+	</div>

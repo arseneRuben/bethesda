@@ -1,0 +1,24 @@
+{% extends 'layout/base.html.twig' %}
+{% block stylesheets %}
+{{parent()}}
+<link href="{{ asset('assets/css/versions.css')}}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('assets/css/responsive.css')}}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('assets/style.css') }}" rel="stylesheet">   
+<link href="{{ asset('assets/css/login.css') }}" rel="stylesheet"> 
+ <!-- Modernizer for Portfolio -->
+ <script src="{{asset('assets/js/modernizer.js')}}"></script>
+{% endblock %}
+
+{% block title %}Bethesda Website
+{% endblock %}
+
+{% block body %}
+
+{% endblock  body %}
+ {% block footer %}
+             <!-- Header -->
+            {{parent()}}
+{% endblock %}
+{% block javascripts %}
+	{{parent()}}	
+{% endblock javascripts %}

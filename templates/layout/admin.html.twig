@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block styles %}
+    {{parent()}}
+    <link href="{{ asset('assets/css/styles.pink.css') }}" rel="stylesheet"> 
+    <link href="{{ asset('assets/css/accordion.css') }}" rel="stylesheet">  
+     <link href="{{ asset('assets/css/fontastic.css') }}" rel="stylesheet">   
+      <link href="{{ asset('assets/css/front.css') }}" rel="stylesheet">   
+{% endblock %}
+
+
+{% block body %}  
+
+   
+{% endblock %}  
+
+
+{% block javascripts %}
+    {{parent()}}
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-3.1.1.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>cript>
+{% endblock %}
