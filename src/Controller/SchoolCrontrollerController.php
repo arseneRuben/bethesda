@@ -19,7 +19,7 @@ class SchoolCrontrollerController extends AbstractController
      /**
      * @Route("/admin", name="dashboard")
      */
-    public function adminAction(Request $request)
+    /*public function adminAction(Request $request)
     {
       
         $effectif = $this->container->get('app_service.stat');
@@ -30,5 +30,5 @@ class SchoolCrontrollerController extends AbstractController
             'year' => $year,
             
         ));
-    }
+    }*/
 }
