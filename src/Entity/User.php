@@ -24,6 +24,10 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
+     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $phone;
 
     /**
      * @ORM\Column(type="json")
@@ -130,6 +134,19 @@ class User implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }

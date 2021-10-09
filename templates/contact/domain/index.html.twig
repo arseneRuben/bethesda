@@ -1,0 +1,47 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+{% block content %}
+        <div class="row">
+            <div class="col-lg-1" >
+                <a class="btn btn-info" href="{{ path('admin_domains_new') }}">
+                    <i class="fa fa-plus"></i> <h1>New </h1>
+                </a>
+            </div>
+            <div class="col-lg-11 jumbotron" >
+                <table  width="100%" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;" class="text-center" scope="col">#</th>
+                             <th style="width:50%;" class="text-center" scope="col">Nom</th>
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for domain in domains %}
+                            <tr>
+                                <td style="width:15%;" class="text-center" scope="row">{{ loop.index }}</th>
+                                 <td style="width:50%;" class="text-center" ><a href="{{ path('admin_programs_show', {id: domain.id}) }}"><h3>{{ domain.name }}</h3></a></td>
+                                <td style="width:15%;" class="text-center">
+                                    <div class="btn-group">
+                                        
+                                        <a class="btn btn-warning" href="{{path('admin_domains_edit', {id: domain.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+                                          Edit
+                                        </a>
+                                        <a class="btn btn-danger" href="{{path('admin_domains_delete', {id: domain.id})}}"> <i class="fa fa-trash" aria-hidden="true"></i>
+
+                                          Delete
+                                        </a>
+                                          
+                                       
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+   
+{% endblock %}

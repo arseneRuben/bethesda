@@ -35,13 +35,38 @@
                             
                            
                         </div>
-                        {{ form_row(registrationForm.email) }}
+                      
                         {{ form_row(registrationForm.plainPassword, {
                             label: 'Password'
                         }) }}
-                        {{ form_row(registrationForm.agreeTerms) }}
+                        <div class="form-floating mb-3">
+                          
+                            <div class="row ">
+                                <div class="col-lg-6">
+                                        <h6 class="mb-0 text-sm">Phone number</h6>
+                                         {{ form_widget(registrationForm.phone) }}
+                                        
+                                </div>
+                                <div class="col-lg-6">
+                                         <h6 class="mb-0 text-sm">Agreee terms</h6>
+                                         {{ form_widget(registrationForm.agreeTerms) }}
+                                         
+                                </div>
+                            </div>
+                          
+                        </div>
 
-                        <button type="submit" class="btn">Register</button>
+
+                         <div class="d-grid mb-2">
+                           <div class="row ">
+                                <div class="col-lg-6">
+                                        {{ form_row(registrationForm.submit) }}
+                                </div>
+                                <div class="col-lg-6">
+                                         <div class="col-sm-6 alert alert-warning text-center" role="alert"> Already have an account? <a  class="alert-link btn" href="{{ path('app_login') }}"> Sign In</a> </div>
+                                </div>
+                             </div>
+                         </div>
                     {{ form_end(registrationForm) }}
                 </div>
             </div>
