@@ -1,15 +1,18 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
+use App\Entity\Course;
+use App\Form\CourseType;
+use App\Repository\CourseRepository;
+use App\Repository\ClassRoomRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Course;
-use AppBundle\Form\Type\CourseType;
-
 /**
  * Course controller.
  *
@@ -17,64 +20,72 @@ use AppBundle\Form\Type\CourseType;
  */
 class CourseController extends Controller
 {
+    private $em;
+    private $repo;
+    private $clRepo;
+
+    public function __construct(EntityManagerInterface $em, CourseRepository $repo, ClassRoomRepository $clRepo)
+    {
+        $this->em = $em;
+        $this->repo = $repo;
+        $this->clRepo = $clRepo;
+    }
     /**
      * Lists all Course entities.
      *
-     * @Route("/", name="prof_courses")
+     * @Route("/", name="admin_courses")
      * @Method("GET")
      * @Template()
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('AppBundle:Course')->findAll();
        
-        return $this->render('course/index.html.twig', array(
-            'entities'  => $entities,
-        ));
+        $rooms = $this->clRepo->findAll();
+        
+       return $this->render('course/index.html.twig', compact("rooms"));
     }
 
     /**
      * Finds and displays a Course entity.
      *
-     * @Route("/{id}/show", name="prof_courses_show", requirements={"id"="\d+"})
+     * @Route("/{id}/show", name="admin_courses_show", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function showAction(Course $course)
     {
-        $deleteForm = $this->createDeleteForm($course->getId(), 'prof_courses_delete');
-
-       return $this->render('course/show.html.twig', array(
-            'course' => $course,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->render('course/show.html.twig', compact("course"));
     }
 
+   
     /**
-     * Displays a form to create a new Course entity.
-     *
-     * @Route("/new", name="prof_courses_new")
-     * @Method("GET")
-     * @Template()
+     * @Route("/create",name="admin_courses_new", methods={"GET","POST"})
      */
-    public function newAction()
+    public function create(Request $request): Response
     {
         $course = new Course();
-        $form = $this->createForm(new CourseType(), $course);
-
-       return $this->render('course/new.html.twig', array(
-            'course' => $course,
-            'form'   => $form->createView(),
-        ));
+    	$form = $this->createForm(CourseType::class, $course);
+    	$form->handleRequest($request);
+    	if($form->isSubmitted() && $form->isValid())
+    	{
+            $this->em->persist($course);
+            $this->em->flush();
+            $this->addFlash('success', 'Course succesfully created');
+            return $this->redirectToRoute('admin_courses');
+    	}
+    	 return $this->render('course/new.html.twig'
+    	 	, ['form'=>$form->createView()]
+        );
     }
+
+    
 
     /**
      * Creates a new Course entity.
      *
-     * @Route("/create", name="prof_courses_create")
+     * @Route("/create", name="admin_courses_create")
      * @Method("POST")
-     * @Template("AppBundle:Course:new.html.twig")
+    
      */
     public function createAction(Request $request)
     {
@@ -85,7 +96,7 @@ class CourseController extends Controller
             $em->persist($course);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('prof_courses_show', array('id' => $course->getId())));
+            return $this->redirect($this->generateUrl('admin_courses_show', array('id' => $course->getId())));
         }
 
         return array(
@@ -94,87 +105,49 @@ class CourseController extends Controller
         );
     }
 
-    /**
+     /**
      * Displays a form to edit an existing Course entity.
      *
-     * @Route("/{id}/edit", name="prof_courses_edit", requirements={"id"="\d+"})
-     * @Method("GET")
+     * @Route("/{id}/edit", name="admin_courses_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function editAction(Course $course)
+    public function edit(Request $request,Course $course): Response
     {
-        $editForm = $this->createForm(new CourseType(), $course, array(
-            'action' => $this->generateUrl('prof_courses_update', array('id' => $course->getId())),
-            'method' => 'PUT',
-        ));
-        $deleteForm = $this->createDeleteForm($course->getId(), 'prof_courses_delete');
+        $form = $this->createForm(CourseType::class, $course, [
+            'method'=> 'PUT'
+        ]);
 
-       return $this->render('course/edit.html.twig', array(
-            'course' => $course,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
-     * Edits an existing Course entity.
-     *
-     * @Route("/{id}/update", name="prof_courses_update", requirements={"id"="\d+"})
-     * @Method("PUT")
-     * @Template("AppBundle:Course:edit.html.twig")
-     */
-    public function updateAction(Course $course, Request $request)
-    {
-        $editForm = $this->createForm(new CourseType(), $course, array(
-            'action' => $this->generateUrl('prof_courses_update', array('id' => $course->getId())),
-            'method' => 'PUT',
-        ));
-        if ($editForm->handleRequest($request)->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirect($this->generateUrl('prof_courses'));
+        $form->handleRequest($request);
+     
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->em->flush();
+            $this->addFlash('success', 'Course succesfully updated');
+            return $this->redirectToRoute('admin_courses');
         }
-        $deleteForm = $this->createDeleteForm($course->getId(), 'prof_courses_delete');
-
-        return array(
-            'course' => $course,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->render('course/edit.html.twig'	, [
+            'course'=>$course,
+            'form'=>$form->createView()
+        ]);
     }
 
-    /**
-     * Deletes a Course entity.
-     *
-     * @Route("/{id}/delete", name="prof_courses_delete", requirements={"id"="\d+"})
-     * @Method("DELETE")
-     */
-    public function deleteAction(Course $course, Request $request)
-    {
-        $form = $this->createDeleteForm($course->getId(), 'prof_courses_delete');
-        if ($form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($course);
-            $em->flush();
-        }
 
-        return $this->redirect($this->generateUrl('prof_courses'));
-    }
 
-    /**
-     * Create Delete form
+   /**
+     * Deletes a Programme entity.
      *
-     * @param integer                       $id
-     * @param string                        $route
-     * @return \Symfony\Component\Form\Form
+     * @Route("/{id}/delete", name="admin_courses_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    protected function createDeleteForm($id, $route)
+    public function delete(Course $course, Request $request):Response
     {
-        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-            ->setAction($this->generateUrl($route, array('id' => $id)))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+       // if($this->isCsrfTokenValid('courses_deletion'.$program->getId(), $request->request->get('crsf_token') )){
+            $this->em->remove($course);
+           
+            $this->em->flush();
+            $this->addFlash('info', 'Course succesfully deleted');
+      // }
+       
+        return $this->redirectToRoute('admin_courses');
     }
 
 }

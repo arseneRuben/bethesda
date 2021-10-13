@@ -48,7 +48,7 @@ class Course
     /**
      * @ORM\Column(type="boolean")
      */
-    private $attributed;
+    private $attributed=false;
 
     /**
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="course")
@@ -72,6 +72,18 @@ class Course
        return (string) ($domain."/" .$code."_".$wording );
    }
 
+
+   public function getCoefficient(): ?int
+   {
+       return $this->coefficient;
+   }
+
+   public function setCoefficient(int $coefficient): self
+   {
+       $this->coefficient = $coefficient;
+
+       return $this;
+   }
     public function getDomain(): ?Domain
     {
         return $this->domain;
@@ -108,17 +120,7 @@ class Course
         return $this;
     }
 
-    public function getCoefficient(): ?int
-    {
-        return $this->coefficient;
-    }
-
-    public function setCoefficient(int $coefficient): self
-    {
-        $this->coefficient = $coefficient;
-
-        return $this;
-    }
+ 
 
     public function getCode(): ?string
     {

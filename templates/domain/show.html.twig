@@ -81,8 +81,8 @@ Edit </a> |
                                                 <a href="{{ path('admin_domains_show', {id: course.id}) }}">{{ course.domain.name}}</a>
                                             </td>
                                            
-                                            <td>{{ course.wording }}</td>
-                                             <td>{{course.coef }}</td>
+                                            <td> <a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.wording }}</a></td>
+                                             <td>{{course.coefficient }}</td>
                                              <td>{#{course.attribution.user }#}</td>
                                         
                                             
