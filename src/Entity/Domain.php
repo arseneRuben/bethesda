@@ -34,10 +34,12 @@ class Domain
      */
     private $teachers;
 
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->teachers = new ArrayCollection();
+      
     }
 
     public function getId(): ?int
@@ -122,4 +124,5 @@ class Domain
 
         return $this;
     }
+
 }

@@ -1,0 +1,95 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation de ᷆a sequence - {{ parent() }}{% endblock %}
+
+{% block content %}
+   
+       
+            <div class="row mt-4">
+
+                <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_sequences') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron">
+                    <article  class="p-3" >
+                            <div class="">
+                                 <div class="mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  {{sequence.wording}}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled m-2 text-center text-justify">
+                                                <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{sequence.startDate|date('Y-m-d')}}"></time> {{sequence.startDate|date('Y-m-d')}}</h1>
+                                            </li>
+                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{sequence.startDate|date('Y-m-d')}}"></time> {{sequence.startDate|date('Y-m-d')}}</h1>
+                                                </li>
+                                                 <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{sequence.publicationDate|date('Y-m-d')}}"></time> {{sequence.publicationDate|date('Y-m-d')}}</h1>
+                                            </li>
+                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{sequence.validationDate|date('Y-m-d')}}"></time> {{sequence.validationDate|date('Y-m-d')}}</h1>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check">
+                                                        {% if sequence.activated %}
+                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                            <h2 class="card-title pricing-card-title"> Actif </h2>
+                                                        </label>
+                                                        {% else %}
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                           <h2 class="card-title pricing-card-title">  Non actif </h2>
+                                                        </label>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify "> Liste des evaluations enregistrees sous le compte de cette sequence</h4>
+                                    </div>
+                                    <table class="table table-striped table-hover table-bordered records_list center">
+<table class="table table-striped">
+					<thead>
+						<tr>
+							
+							
+							
+							<th style="width:15%;" class="text-center">Matière</th>
+							<th style="width:15%;" class="text-center">Classe</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						{% for evaluation in sequence.evaluations  %}
+							<tr>
+								
+								
+								
+								<td>{{ evaluation.course.code }}</td>
+								<td>{{ evaluation.classRoom.name }}</td>
+								
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+                                  
+                                 </div>
+                                <div class="panel ">			
+                            
+                                <a class="btn btn-warning" href="{{path('admin_sequences_edit', {id: sequence.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    Edit </a> |
+                                    <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Cette supressession entrenera celle  de toutes  evaluations effectuees durant. Es-tu sure ?') && document.getElementById('js-sequence-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                    <form id="js-sequence-delete-form" action="{{path('admin_sequences_delete', {id: sequence.id})}}" method="post" style="display: none;">
+                                        <input type="hidden" name="{{ csrf_token('sequences_deletion' ~ sequence.id ) }}" id="">
+                                        <input type="hidden" name="_method" value="DELETE">
+
+                                    </form>
+                                </div>
+                     </article>
+                    
+</div>
+{% endblock %}

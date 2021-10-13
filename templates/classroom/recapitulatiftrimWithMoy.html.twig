@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Récapitulatif séquentiel</title>
+        <link href="{{asset('assets/css/pdf.css')}}"      rel="stylesheet" type="text/css" /> 
+        <link rel="stylesheet"  type="text/css" href="{{asset('assets/css/bootstrap.min.css')}}">
+    </head>
+    <body>
+
+        <header class="clearfix">
+            <section style=" margin:auto;">
+
+					<table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 1em; ">
+						<tr>
+							<td style=" width: 35%;">
+								<span>REPUBLIQUE DU CAMEROUN</span><br/>
+								<span style="margin-left:1.5em;">
+									<i>Paix - Travail - Patrie</i>
+								</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Minist&eacutere des enseignements secondaires</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>D&eacutel&eacutegation R&eacutegionale du Centre</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>D&eacutel&eacutegation D&eacutepartementale de la																											MEFOU et AKONO</span>
+								<H5>
+									INSTITUT SECONDAIRE
+									<br/>
+									BILINGUE BETHESDA
+								</H5>
+
+							</td>
+							<td style=" width: 30%; ">
+								<img style="border-radius:5%; height: 200px" {#src="{{pathToWeb}}/img/favicon.jpg"#}  src="{{ asset('img/favicon.jpg')}}" height="20%"/>
+								<div style="font-size: 1em;">
+									<b>
+										<h6>
+											DISCIPLINE-PERSEVERANCE-SUCCES
+										</h6>
+									</b><br/><br/>
+									<i>
+										<span>BP : 31367 YDE</span><br/>
+										<span>TEL : 699545124</span><br/>
+									</i>
+								</b>
+							</td>
+							<td style=" width: 35%;">
+								<span>REPUBLIC OF CAMEROON</span><br/>
+								<span style="margin-left:1em;">
+									<i>Peace - Work - Fatherland</i>
+								</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Ministery of Secondary Education</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Regional Delegation of the Center</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>MEFOU and AKONO Divisional Delegation</span>
+								<H5>
+									BETHESDA BILINGUAL
+									<br/>
+									SECONDARY INSTITUTE
+								</H5>
+							</td>
+						</tr>
+					</table>
+            </section>
+            <table style=" width: 100%; text-align:center; font-size: 100%; ">
+							<tr>
+								<td>
+									<div>
+										{% if room.level.cycle.section.name == "Francophone" %}
+											{{year.wording}}
+											&nbsp;&nbsp; /  &nbsp;&nbsp;
+											{{quater.wording}}
+										{% else %}
+											{{year.wording}}
+											&nbsp;&nbsp; /   &nbsp;&nbsp;
+											{{quater.wording}}
+										{% endif %}
+									</div>
+                                </td>
+                                	<td>
+										<span>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												CLASSE
+											{% else %}
+												CLASS NAME
+											{% endif %}
+											:</span>
+                                            </td>
+                                     <td>
+										<b>{{room.name}}
+										</b>
+							
+								</td>
+                                	<td>
+                                     TITULAIRE
+                                    </td>
+                                     <td><B>{{ room.fullTeacher }}	</b></td>
+                                    
+								
+							</tr>
+			</table><br/>
+          
+        </header>
+        <main>
+       
+            <table class="table table-bordered" >
+                  <thead >
+                        <tr >
+                            <th >  <div style="text-align:right;"><h6><span><b>{{"Eleves"|upper}}    </b></span></div></h6></th>
+                           
+
+                            {% set totalCoef = 0 %}
+                            {% set continue = true %}
+                            {% for m in datas|first %}
+                               
+                                    {% set totalCoef = totalCoef + m.rank %}
+                                    <th  class="rotate">  <div><i>{{m.rank ~ "X 2"}} </i><span><b>&nbsp;&nbsp;&nbsp; {{m.appreciation}}&nbsp;&nbsp;&nbsp; </b></span></div></th>
+                            {% endfor %} 
+                               
+                            <th  class="rotate"><div><i>{{totalCoef*2}}</i><span><b> &nbsp;&nbsp;&nbsp; TOT. COEF&nbsp;&nbsp;&nbsp;</b></span></div></th>
+                            <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;MOYENNE/20&nbsp;&nbsp;&nbsp;</b></span></div></th>
+                            
+                        </tr>
+                </thead>  
+                <tbody>
+                    {% for stdMarks in datas %}
+                       <tr>
+                        {% set totalCoef = 0 %}
+                         {% set NCoef = 0 %}
+                       <td class="desc">{{ students[loop.index-1].lastname  }}</td>
+                      
+                                    {% for mark in stdMarks  %}
+                                                    <td class="qty">
+                                                      {% if mark.weight > 0 %}
+                                                            {{mark.value}} 
+                                                             {% set totalCoef = totalCoef + mark.rank * mark.weight %}
+                                                             {% set NCoef = NCoef +  mark.value * mark.rank * mark.weight %}
+
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                    </td>
+                                      {% endfor %}
+                            <td class="total"> <i> {{totalCoef}} </i> </td>
+                            <td class="total"> 
+                                  {% if totalCoef > 0 %}
+                                    {{ (NCoef/totalCoef) |round(2, 'floor')}} 
+                                   {% else %}
+                                        /
+                                {% endif %}
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table> 
+
+            <br/><br/><br/>
+            <div id="notices" class="row">
+                <div class="col-xl-3 col-md-4 col-6">
+               </div>
+                <div class="col-xl-9 col-md-4 col-6">
+                    <b> 
+                           {% if(room.level.cycle.section.name=="Francophone") %}
+                        Nom(s) et visa des responsables  
+                        {% else %}
+                         Name(s) and signature of officials
+                    {% endif %}    
+                     Date : __ / __ /  ____
+                    </b>
+               </div>
+            </div>
+        </main>
+        <footer>
+            Fiche recapitulatif trimestriel
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Bulletins de la classe {{room.name}}</title>
+        <style>
+            @page {
+                margin: 0;
+            }
+            div.A4 {}
+            @media print {
+                body, page {
+                    margin: 0;
+                    box-shadow: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+
+        {% for std in students %}
+
+            <div  style=" height:1630px; display: flex; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  0px 0px 0px 0px ;   border:1px groove black;">
+
+                <section  style=" margin:auto;" class="sheet  frontpage">
+                    <br/><br/><br/><br/>
+                    <table cellspacing="0" align="center" cellpadding="5"   style="line-height:14px; " >
+                        <tr>
+                            <td  style="line-height:11px; text-align:center; ">
+                                <span >REPUBLIQUE DU CAMEROUN</span><br/><br/>
+                                <span style="margin-left:1.5em;" ><i>Paix - Travail - Patrie</i></span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >Minist&eacutere des enseignements secondaires</span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >D&eacutel&eacutegation R&eacutegionale du Centre</span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >D&eacutel&eacutegation D&eacutepartementale de la<br/><br/><span style="margin-left:2.5em;"> MEFOU et AKONO</span></span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                               <span style="margin-left:2em;">BP : 31367 YDE</span><br/><br/>
+                                <span style="margin-left:2em;">Tel : 699545124</span><br/><br/>
+                            </td> 
+
+                            {#<td style="padding-left:8em;padding-right:10em;"><img  src="{{asset("img/favicon.jpg")}}"   height="100em" width="230em" /><div style="margin-bottom:0.2em;margin-left:1em; font-size: 0.75em;"><i> DISCIPLINE-PERSEVERANCE-SUCCES</i></div></td> 
+                            #}     
+
+                            <td   style="padding-left:8em;padding-right:10em;"><img src="{{pathToWeb}}/img/favicon.jpg"  height="100em" width="230em" /> <div style="margin-bottom:0.2em;margin-left:1em; font-size: 0.75em;"><i> DISCIPLINE-PERSEVERANCE-SUCCES</i></td> 
+
+
+
+                            <td style="line-height:11px; text-align:center; ">
+                                <span >REPUBLIC OF CAMEROON</span><br/><br/>
+                                <span style="margin-left:1em;" ><i>Peace - Work - Fatherland</i></span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >Ministery of Secondary Education</span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >Regional Delegation of the Center</span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                <span >MEFOU and AKONO Divisional <br/><br/><span style="margin-left:4em;">Delegation</span></span><br/><br/>
+                                <span style="margin-left:2.5em;">*************</span><br/><br/>
+                                
+                                
+                                <span style="margin-left:3em;">BP : 31367 YDE</span><br/><br/>
+                                <span style="margin-left:3em;">Tel : 699545124</span><br/><br/>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td ></td> 
+                            <td   style="line-height:11px; text-align:center; ">     
+                                <div style="margin-bottom:0.2em;"> <b> ANNEE ACADEMIQUE /  ACADEMIQUE YEAR {{year.wording}} </b></div><br/>
+                                <div style="margin-bottom:0.2em;"> <b><H2>  INSTITUT SECONDAIRE BILINGUE <br/><br/>BETHESDA </H2></b></div><br/>
+                                <div style="margin-bottom:0.2em;"> <b> BULLETIN DE FIN D'ANNEE / END YEAR REPORT CARD  </b></div><br/>
+                                <div style="margin-bottom:0.2em;"> <b> {{year.wording}} </b></div><br/>
+
+                            </td>
+                            <td></td> 
+                        </tr>
+                    </table>
+                    <hr   style="margin-left:0px" width="1135" />
+                    <br/>
+                    <br/>
+                    <table cellspacing="0" cellpadding="5"  style="line-height:11px;" >
+                        <tr>
+                            <td>
+                                <h3><span >Nom/Name : </span><b>{{std.lastname}} <br/> <br/>  
+                                        <br/> <br/>{{std.firstname}}</b></h3>
+                                <br/>
+                                <br/>
+                                <h3><span>N&eacute(e) le/Born on :{% if std.birthday %}{{ std.birthday|date('Y-m-d') }}{% endif %}  &agrave;/ at :<br/><br/> {{std.birthplace}}</span><br/></h3>
+
+                                <h3><span >Sexe: {% if std.gender %}FEMININ{% else %}MASCULIN {% endif %} </span><br/> </h3>
+                            </td> 
+                            <td style="padding-left:9em;padding-right:10em;">
+                                {% if std.profileImagePath %}
+                                    <img src="{{pathToWeb}}/img/student/{{std.profileImagePath}}"   height="120em" width="170em" />
+                                {% else %}
+                                    <img src="{{pathToWeb}}/img/student/ondasblue.jpg"   height="120em" width="170em" />
+
+                                {% endif  %}
+                            </td> 
+                            {# <td style="padding-left:9em;padding-right:10em;">
+                                {% if std.profileImagePath %}
+                                    <img src="img/student/{{std.profileImagePath}}"   height="120em" width="170em" />
+                                {% else %}
+                                    <img src="img/student/ondasblue.jpg"   height="120em" width="170em" />
+
+                                {% endif  %}
+                            </td> #}
+
+                            <td>
+                                <h3><span >Matricule/reg.number:</span>{{std.matricule}}<br/></h3>
+                                <br/>
+                                <h3><span >Classe/class :</span>  <b>{{room.name}} </b></h3>
+                                <br/>
+                                {#<span >Redoublant(e)/repeat: OUI/NON</span><br/>
+                                
+                                <span >Serie:</span><br/>#}
+                            </td> 
+                        </tr>
+                    </table>
+                    <br/>
+                    <table cellspacing="0" align="center" cellpadding="5" border="1" WIDTH="98%" style="line-height:12px;">
+                        <tr height="14" WIDTH="15px" style="background-color:#EBECEC;" border="0.5">
+                            <td border="0.5" style="text-align:center;" ><b>DISCIPLINE</b></td>
+                            <td border="0.5" style="text-align:center;" width="70" ><b>TRIM-1</b></td>
+                            <td border="0.5" style="text-align:center;" width="70"  ><b>TRIM-2</b></td>
+                            <td border="0.5" style="text-align:center;" width="70" ><b>TRIM-3</b></td>
+                            <td border="0.5" style="text-align:center;" width="80"><b>Note Ann.</b></td>
+                            <td border="0.5" style="text-align:center;"  width="30"><b>Coef</b></td>
+                            <td border="0.5" style="text-align:center;" width="70"><b>Note x Coef</b></td>
+                            <td border="0.5" style="text-align:center;" width="180"><b>APPRECIATION</b></td>
+                            <td border="0.5" style="text-align:center;" ><b>RANG</b></td>
+                            <td border="0.5" style="text-align:center;" width="160" ><b>PROFESSEUR</b></td>
+                            <td border="0.5" style="text-align:center;" ><b>SIGNATURE</b></td>
+                        </tr>
+                        {% set totalCoefTrim1 = 0 %} {# Total global des coefficients trim1 #}
+                        {% set totalCoefTrim2 = 0 %} {# Total global des coefficients trim2 #}
+                        {% set totalCoefTrim3 = 0 %} {# Total global des coefficients trim3 #}
+
+
+                        {% set totalNCoefTrim1 = 0 %}     {# Total global des Note * coefficient trim1 #}
+                        {% set totalNCoefTrim2 = 0 %}     {# Total global des Note * coefficient trim2 #}
+                        {% set totalNCoefTrim3 = 0 %}     {# Total global des Note * coefficient trim3 #}
+
+
+                        {% set totalNCoefAnn = 0 %}     {# Total global des Note * coefficient Annuel #}
+                        {% set moyModAnn = 0 %}     {# Moyenne annuelle par module de cours #}
+
+                        {% set moyModTrim1 = 0 %}    {# Moyenne Modulaire trimestre 1  #}
+                        {% set moyModTrim2 = 0 %}    {# Moyenne Modulaire trimestre 2  #}
+                        {% set moyModTrim3 = 0 %}    {# Moyenne Modulaire trimestre 3  #}
+
+                        {% for module in room.modules %}
+                            {% set totalCoefModTrim1 = 0 %}       {# Total partiel des coefficients du trim1 #}
+                            {% set NCoefModTrim1 = 0 %}        {# Total partiel des Note * coefficient trim1 #}
+                            {% set totalCoefModTrim2 = 0 %}       {# Total partiel des coefficients du trim2 #}
+                            {% set NCoefModTrim2 = 0 %}        {# Total partiel des Note * coefficient trim2 #}
+                            {% set totalCoefModTrim3 = 0 %}       {# Total partiel des coefficients du trim3 #}
+                            {% set NCoefModTrim3 = 0 %}        {# Total partiel des Note * coefficient trim3 #}
+                            {% set totalCoefModTrim1 = 0 %}       {# Total partiel des coefficients du trim1 #}
+                            {% for course in module.courses %}
+                                {% set break = false %}
+                                {% for mark in data %}
+                                    {% if std.matricule == mark.matricule %}
+                                        {% if module.name == mark.module %}
+                                            {% if mark.wording == course.wording  and not break  %}
+                                                <tr  height="14" border="0.5" style="text-align:center;">
+                                                    <td border="0.5" style="text-align:center;" >
+                                                        {{course.wording}}
+                                                    </td>
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;"  > 
+                                                        {{mark.valeur1 |round(2,'floor')}} 
+                                                    </td>
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;"> 
+                                                        {{mark.valeur2 |round(2,'floor')}} 
+                                                    </td>
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;" > 
+                                                        {{mark.valeur3|round(2,'floor')}} 
+                                                    </td>
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;" class="noteYear"> 
+                                                        {{mark.valeur|round(2,'floor')}} 
+                                                    </td>
+
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;" >
+                                                        {{course.coefficient}}
+                                                    </td>
+
+                                                    <td cellspacing="1" border="0.5" style="text-align:center;" >
+                                                        {{ (mark.valeur * course.coefficient)|round(2,'floor') }}
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;" ></td>
+                                                    <td border="0.5" style="text-align:center;" cellspacing="1"></td>
+                                                    <td border="0.5" style="text-align:center;" >{{mark.teacher}}</td>
+                                                    <td border="0.5" style="text-align:center;" ></td>
+                                                    {% set break = true %}
+                                                    {% set totalCoefModTrim1 = totalCoefModTrim1 + course.coefficient %}
+                                                    {% set NCoefModTrim1 = NCoefModTrim1 +  mark.valeur1 * course.coefficient %}
+                                                    {% set totalCoefModTrim2 = totalCoefModTrim2 + course.coefficient %}
+                                                    {% set NCoefModTrim2 =  NCoefModTrim2 + mark.valeur2 * course.coefficient %}
+                                                    {% set totalCoefModTrim3 = totalCoefModTrim3 + course.coefficient %}
+                                                    {% set NCoefModTrim3 =  NCoefModTrim3 + mark.valeur3 * course.coefficient %}
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}   
+
+                            {% endfor %}
+
+                            {% set totalNCoefTrim1 = totalNCoefTrim1 + NCoefModTrim1 %}
+                            {% set totalNCoefTrim2 =  totalNCoefTrim2 + NCoefModTrim2 %}
+                            {% set totalNCoefTrim3 = totalNCoefTrim3 + NCoefModTrim3 %}
+
+                            {% set totalCoefTrim1 =  totalCoefTrim1 + totalCoefModTrim1 %}
+                            {% set totalCoefTrim2 =  totalCoefTrim2 + totalCoefModTrim2 %}
+                            {% set totalCoefTrim3 =  totalCoefTrim3 + totalCoefModTrim3 %}
+                            <tr  height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                                <td border="0.5" style="text-align:center;"><b>{{module.name}}</b></td>
+                                <td cellspacing="1" border="0.5" style="text-align:center;"><b>
+                                        {% if totalCoefModTrim1 != 0 %}     
+                                            {{ (NCoefModTrim1/totalCoefModTrim1)|round(2,'floor') }}  /20 
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </b>
+                                </td>
+                                <td cellspacing="1" border="0.5" style="text-align:center;"><b>
+                                        {% if totalCoefModTrim2 != 0 %}     
+                                            {{ (NCoefModTrim2/totalCoefModTrim2)|round(2,'floor') }}  /20 
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </b>
+                                </td>
+
+                                <td cellspacing="1" border="0.5" style="text-align:center;"><b>
+                                        {% if totalCoefModTrim3 != 0 %}     
+                                            {{ (NCoefModTrim3/totalCoefModTrim3)|round(2,'floor') }}  /20 
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </b>
+                                </td>
+
+                                {% if ( totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0) %}  
+                                    {% set moyModAnn = ((NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/3) %} 
+                                {% else %}
+                                    {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0%}
+                                        {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/2) %} 
+                                    {% endif %}
+                                    {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0%}
+                                        {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim3/totalCoefModTrim3)/2) %} 
+                                    {% endif %}
+                                    {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0%}
+                                        {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim1/totalCoefModTrim1)/2) %} 
+                                    {% endif %}
+                                    {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0%}
+                                        {% set moyModAnn = (( NCoefModTrim3/totalCoefModTrim3)) %} 
+                                    {% endif %}
+                                    {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 == 0%}
+                                        {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1)) %} 
+                                    {% endif %}
+                                    {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0%}
+                                        {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2)) %} 
+                                    {% endif %}    
+                                {% endif %}
+                                <td cellspacing="1" border="0.5" class="noteYear" style="text-align:center;">
+                                    <b>
+                                        {% if moyModAnn == 0%}
+                                            /
+                                        {% else %}
+                                            {{ ( moyModAnn)|round(2,'floor')}} / 20  
+                                        {% endif %}
+                                    </b>
+                                </td>
+                                <td cellspacing="1" border="0.5" style="text-align:center;"><b>{{totalCoefModule1}}</b></td>
+                                <td cellspacing="1"  border="0.5" style="text-align:center;">
+                                    <b>
+                                        {% if ( totalCoefTrim1 != 0 and totalCoefTrim2 != 0 and totalCoefTrim3 != 0) %}
+                                            {#On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre #}
+                                            {{ (((NCoefModTrim1/totalCoefTrim1 + NCoefModTrim2/totalCoefTrim2 + NCoefModTrim3/totalCoefTrim3)/3)*totalCoefModule3)|round(2,'floor')}}
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </b>
+                                </td>
+                                <td border="0.5" style="text-align:center;"></td>
+                                <td border="0.5" style="text-align:center;"></td>
+                                <td border="0.5" style="text-align:center;" cellspacing="1"></td>
+                                <td border="0.5" style="text-align:center;" ></td>
+                                {#On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre #}
+                                {% set totalNCoefAnn  = moyModAnn*totalCoefModTrim3 %}
+                            </tr>
+                        {% endfor %}
+
+                        <tr  height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" width="55"><b>MOY.  ELEVE<br/></td>
+                            <td border="0.5" style="text-align:center;" width="18"> 
+                                <b><i>
+                                        {% if totalCoefTrim1 != 0 %}     
+                                            {{ (totalNCoefTrim1 / totalCoefTrim1)|round(2,'floor') }} /20
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </i></b> 
+                            </td>
+                            <td border="0.5" style="text-align:center;" width="18"> 
+                                <b><i>
+                                        {% if totalCoefTrim2 != 0 %}     
+                                            {{ (totalNCoefTrim2 / totalCoefTrim2)|round(2,'floor') }} /20
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </i></b> 
+                            </td>
+                            <td border="0.5" style="text-align:center;" width="18"> 
+                                <b><i>
+                                        {% if totalCoefTrim3 != 0 %}     
+                                            {{ (totalNCoefTrim3 / totalCoefTrim3)|round(2,'floor') }} /20
+                                        {% else %}
+                                            /
+                                        {% endif %}
+                                    </i></b> 
+                            </td>
+                            <td border="0.5" style="text-align:center;"  class="noteYear"></td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                            <td border="0.5" style="text-align:center;" ><b>MOY G. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /20</b></td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                        </tr>
+
+                        <tr border="0.5" style="text-align:center;" > 
+                            <td border="0.5" style="text-align:center;" colspan="7"><b>DECISION ET OBSERVATION  </td> 
+                            <td border="0.5" style="text-align:center;" rowspan="2" colspan="4">OBSERVATION ET VISA DU CHEF D'ETABLISSEMENT</td> 
+                        </tr> 
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;"> 
+                            <td border="0.5" style="text-align:center;"  rowspan="2" colspan="3"><b>DISCIPLINE</b> </td> 
+                            <td border="0.5" style="text-align:center;" colspan="4" ><b>TRAVAIL</b> </td>
+                        </tr> 
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;">TBIEN</td>
+                            <td border="0.5" style="text-align:center;">BIEN</td>
+                            <td border="0.5" style="text-align:center;">ABIEN</td>
+                            <td border="0.5" style="text-align:center;">PASS</td>
+                            <td border="0.5" style="text-align:center;" colspan="4" rowspan="8" style="color:grey;"> <br/><br/><br/><br/><br/><br/><br/>MBADOUMOU, le  ___________________<br/><br/><br/>LE PRINCIPAL</td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="2">ABSENCES</td>
+                            <td border="0.5" style="text-align:center;" width="45">   </td>
+                            <td border="0.5" style="text-align:center;">FAIBLE</td>
+                            <td border="0.5" style="text-align:center;">INSS</td>
+                            <td border="0.5" style="text-align:center;">MED</td>
+                            <td border="0.5" style="text-align:center;">NUL</td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="2">RETENUES</td>
+                            <td border="0.5" style="text-align:center;" width="45" ></td>
+                            <td border="0.5" style="text-align:center;" colspan="4"><b>APPRECIATION</b></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="2">AVERTISSEMENT</td>
+                            <td border="0.5" style="text-align:center;" width="45"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">TABLEAU D'HONNEUR &nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;"></td>
+
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="2">BLAME CONDUITE</td>
+                            <td border="0.5" style="text-align:center;" width="45"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">ENCOURAGEMENT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;"></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="text-align:center;" colspan="2">EXCLUSION</td>
+                            <td border="0.5" style="text-align:center;" width="45"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">FELICITATION &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="text-align:center;" colspan="2">SIGNATURE DU <br/><br/>PARENT</td>
+                            <td border="0.5" style="text-align:center;" colspan="2">SIGNATURE DU <br/><br/> PROF. PRINC. </td>
+                            <td border="0.5" style="text-align:center;" colspan="3">SIGNATURE DU <br/><br/>PREFET D'ETUDES</td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="text-align:center;" colspan="2" ><br/><br/><br/></td>
+                            <td border="0.5" style="text-align:center;" colspan="2" ><br/><br/><br/></td>
+                            <td border="0.5" style="text-align:center;" colspan="3" ><br/><br/><br/></td>
+                        </tr>
+
+                    </table>
+                </section>
+
+            </div>
+            <div> 
+                <h6><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:  fopoar@gmail.com</i></h6>
+            </div>
+        {% endfor %}
+        <script type="text/javascript" src="{{pathToWeb}}/assets/js/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="{{pathToWeb}}/assets/js/repportCard.js"></script>
+
+        {#  <script type="text/javascript" src="assets/js/jquery-3.1.1.js"></script>
+          <script type="text/javascript" src="assets/js/repportCard.js"></script>#}
+
+    </body>
+</html>

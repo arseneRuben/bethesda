@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EvaluationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -69,6 +71,16 @@ class Evaluation
      * @ORM\JoinColumn(nullable=false)
      */
     private $classRoom;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Mark::class, mappedBy="evaluation", orphanRemoval=true)
+     */
+    private $marks;
+
+    public function __construct()
+    {
+        $this->marks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -191,6 +203,36 @@ class Evaluation
     public function setClassRoom(?ClassRoom $classRoom): self
     {
         $this->classRoom = $classRoom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Mark[]
+     */
+    public function getMarks(): Collection
+    {
+        return $this->marks;
+    }
+
+    public function addMark(Mark $mark): self
+    {
+        if (!$this->marks->contains($mark)) {
+            $this->marks[] = $mark;
+            $mark->setEvaluation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMark(Mark $mark): self
+    {
+        if ($this->marks->removeElement($mark)) {
+            // set the owning side to null (unless already changed)
+            if ($mark->getEvaluation() === $this) {
+                $mark->setEvaluation(null);
+            }
+        }
 
         return $this;
     }

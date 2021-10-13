@@ -27,7 +27,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('phone', TextType::class,[
+            ->add('phoneNumber', TextType::class,[
            
                 'required'   => true,
                 'attr' => [ 'placeholder' => 'Phone number','autocomplete' => 'valid-phone-number'],

@@ -1,0 +1,30 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Edition de sequence {{ parent() }}{% endblock %}
+{% block content %}
+  
+<div class="row mt-4">
+         <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_sequences') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron  mx-auto">
+                        <div class="col-md-6 mx-auto">
+                            <article class="text-center">
+                                <br/>
+                                <h1 >  Edit Sequence #  {{sequence.id}}</h1>
+                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update sequence', 'returnRoute':'admin_sequences'})}}
+                            </article>
+                        </div>
+                    </div>
+         </div>
+ </div>
+        
+    
+{% endblock %}
+

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Récapitulatif séquentiel</title>
+
+        <link href="{{asset('assets/css/pdf.css')}}"      rel="stylesheet" type="text/css" /> 
+        <link rel="stylesheet"  type="text/css" href="{{asset('assets/css/bootstrap.min.css')}}">
+    </head>
+    <body>
+        <header class="clearfix">
+        
+            <div id="companyleft">
+
+                <h4>
+                    <b>
+                        <span>
+                         {% if(room.level.cycle.section.name=="Francophone") %}
+                        CLASSE 
+                        {% else %}
+                         CLASS
+                    {% endif %}               
+                        
+                        </span>
+                        {{room.name}}</b>
+                </h4>
+            </div>
+            <div id="companyright">
+                <h4>
+                    <b>
+                        <span> {% if(room.level.cycle.section.name=="Francophone") %}
+                        ANNEE SCOLAIRE &nbsp;   {{year}}
+                        {% else %}
+                         {{year}} &nbsp; SCHOOL YEAR
+                    {% endif %}     </span>
+                       </b>
+                </h4>
+
+            </div>
+
+        </header>
+        <main>
+
+            <table class="table table-bordered" >
+                <thead >
+                    <tr >
+                        <th >  <div style="text-align:right;"><h6><span><b>N°    </b></span></div></h6></th>
+                        <th  class="rotate" >  <div style="text-align:right;"><h6><span><b>COEF    </b></span></div></h6></th>
+
+                {% set totalCoef = 0 %}
+                {% for module in room.modules %}
+                    {% for course in module.courses %} 
+                        {% set totalCoef = totalCoef + course.coefficient %}
+                        <th  class="rotate">  <div><i>{{course.coefficient}}</i><span><b>&nbsp;&nbsp;&nbsp; {{course.wording}}&nbsp;&nbsp;&nbsp; </b></span></div></th>
+
+                    {% endfor %}
+                {% endfor %} 
+
+              <th  class="rotate"><div><i>{{totalCoef}}</i><span><b> &nbsp;&nbsp;&nbsp;TOTAL&nbsp;&nbsp;&nbsp;</b></span></div></th>
+                 {# <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;MOYENNE/20&nbsp;&nbsp;&nbsp;</b></span></div></th>
+                <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;</b></span></div></th>#}
+                </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+                            {% set i =0 %}
+                            {% set totalCoef = 0 %}
+                            {% set NCoef =0 %} 
+                            <td class="qty">{{loop.index  }}</td>
+                            <td class="desc"><b>{{std.lastname}} &nbsp;&nbsp; {{std.firstname}} </b></td>
+
+                            {% for module in room.modules %}
+                                {% for course in module.courses %}
+                                    {% for mark in datas %}
+                                      
+                                            {% if std.id == mark.student.id %}
+                                                {% if mark.evaluation.course.wording == course.wording %}
+                                                    {% set i = i+1 %}
+                                                   
+                                                    <td class="qty">
+                                                      {% if mark.weight == 1 %}
+                                                            {{mark.value}} 
+                                                            {% set totalCoef = totalCoef + mark.evaluation.course.coefficient %}
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                    </td>
+                                                  
+                                                {% endif %}
+                                            {% endif %}
+                                      
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                            <td class="total"> <i>{{ totalCoef }}</i> </td>
+                           {# <td class="total">  {% if totalCoef != 0 %} {{ (NCoef/totalCoef)|round(2,'floor') }}{% else %}/ {% endif %}</td>
+                            <td class="total"></td>#}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="notices">
+                <div>NB:</div>
+                <div class="notice"> Chaque élève est tenu de vérifier la conformité des informations ci dessus mentionnées et en cas de problème, se rapprocher l'enseignant. </div>
+                
+            </div>
+        </main>
+        <footer>
+            Fiche de procès verbal
+        </footer>
+    </body>
+</html>

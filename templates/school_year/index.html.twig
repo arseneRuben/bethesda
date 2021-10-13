@@ -19,8 +19,9 @@
                     <table  width="100%" class="table table-striped">
                         <thead>
                             <tr>
-
+                                
                                 <th>Label</th>
+                                  <th>code</th>
                                 <th>Debut</th>
                                 <th>Fin</th>
                                 <th>Prime de bourse</th>
@@ -32,8 +33,9 @@
                         <tbody>
                             {% for schoolyear in schoolyears %}
                                 <tr>
-                                    <td><a href="{{ path('admin_schoolyears_show', {id: schoolyear.id}) }}">  {{ schoolyear.wording }}<i class="fa fa-eye"></i></a> </td>
                                 
+                                    <td><a href="{{ path('admin_schoolyears_show', {id: schoolyear.id}) }}">  {{ schoolyear.wording }}<i class="fa fa-eye"></i></a> </td>
+                                    <td>{{  schoolyear.code }} </td>
                                     <td>{% if schoolyear.startDate %}{{ schoolyear.startDate|date('Y-m-d') }}{% endif %}</td>
                                     <td>{% if schoolyear.endDate %}{{ schoolyear.endDate|date('Y-m-d') }}{% endif %}</td>
                                 <td>{% if schoolyear.reductionPrime %}{{ schoolyear.reductionPrime }}{% endif %}</td>
@@ -42,10 +44,10 @@
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-info btn-sm" href="{{ path('admin_schoolyears_show', {id: schoolyear.id}) }}">
-                                                <i class="fa fa-eye"></i> {{ 'show'|trans({}, 'admin') }}
+                                                <i class="fa fa-eye"></i> 
                                             </a>
                                             <a class="btn btn-warning btn-sm" href="{{ path('admin_schoolyears_edit', {id: schoolyear.id}) }}">
-                                                <i class="fa fa-edit"></i> {{ 'edit'|trans({}, 'admin') }}
+                                                <i class="fa fa-edit"></i> 
                                             </a>
                                             
 

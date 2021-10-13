@@ -42,13 +42,20 @@ class ClassRoom
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="fullTeacherOf")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $fullTeacher;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="classRoom")
+     */
+    private $subscriptions;
+
 
     public function __construct()
     {
         $this->modules = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function __toString() {
@@ -138,4 +145,36 @@ class ClassRoom
 
         return $this;
     }
+
+    /**
+     * @return Collection|Subscription[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setClassRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getClassRoom() === $this) {
+                $subscription->setClassRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+  
 }

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <link href="{{pathToWeb}}/assets/css/repportcard.css"      rel="stylesheet" type="text/css" media="print"  /> 
+         <link  href="{{pathToWeb}}/assets/css/bootstrap.min.css"      rel="stylesheet" type="text/css" media="print" />
+        {# <link  href="{{ asset('assets/css/repportcard.css')}}"        rel="stylesheet" type="text/css" media="print" /> 
+         <link  href="{{ asset('assets/css/bootstrap.min.css')}}"        rel="stylesheet" type="text/css" media="print" /> #}
+        <title> Bulletins de la classe {{room.name}}</title>
+    </head>
+    <body>
+
+        {% for std in students %}
+
+            <div  style="  height:1488px; display: flex; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  0px 0px 0px 0px ; ">
+
+                <section  style=" border-style: double; margin:auto;" >
+                    <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 90%; ">
+						<tr>
+							<td style=" width: 35%;">
+								<span>REPUBLIQUE DU CAMEROUN</span><br/>
+								<span style="margin-left:1.5em;">
+									<i>Paix - Travail - Patrie</i>
+								</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Minist&eacutere des enseignements secondaires</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>D&eacutel&eacutegation R&eacutegionale du Centre</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>D&eacutel&eacutegation D&eacutepartementale de la
+																																				n>
+								<H5>
+									INSTITUT SECONDAIRE
+									<br/>
+									BILINGUE BETHESDA
+								</H5>
+
+							</td>
+							<td style=" width: 30%; ">
+								<img style="border-radius:5%;" src="{{pathToWeb}}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%"/>
+								<div style="font-size: 1em;">
+									<b>
+										<h6>
+											DISCIPLINE-PERSEVERANCE-SUCCES
+										</h6>
+									</b><br/><br/>
+									<i>
+										<span>BP : 31367 YDE</span><br/>
+										<span>TEL : 699545124</span><br/>
+									</i>
+								</b>
+							</td>
+							<td style=" width: 35%;">
+								<span>REPUBLIC OF CAMEROON</span><br/>
+								<span style="margin-left:1em;">
+									<i>Peace - Work - Fatherland</i>
+								</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Ministery of Secondary Education</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>Regional Delegation of the Center</span><br/>
+								<span style="margin-left:2.5em;">*************</span><br/>
+								<span>MEFOU and AKONO Divisional Delegation</span>
+
+								<H5>
+									BETHESDA BILINGUAL
+									<br/>
+									SECONDARY INSTITUTE
+								</H5>
+							</td>
+						</tr>
+
+
+					</table>
+                   <hr style="margin-left:0px; width: 100%;"><br/><table cellspacing="0" style="line-height:8px; width: 100%; font-size: 1em;">
+						<table style=" width: 100%; text-align:center; font-size: 80%; ">
+							<tr>
+								<td style=" width: 30%;">
+									{% if std.profileImagePath is null %}
+										<img src="{{pathToWeb}}/img/student/ondasblue.jpeg"/>
+
+									{% else %}
+										<img src="{{pathToWeb}}/img/student/{{std.profileImagePath}}" {# src="{{ asset('img/student/'~std.profileImagePath)}}" #} height="140em" width="170em"/>
+
+									{% endif  %}
+								</td>
+								<td style=" width: 30%;">
+									<h3>
+										<span>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												Nom
+											{% else %}
+												Name
+											{% endif %}
+											:
+										</span>
+										<b>{{std.lastname}}
+
+
+											{{std.firstname}}</b>
+									</h3>
+									<h3>
+
+										<span>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												N&eacute(e) le  &nbsp;&nbsp; :  &nbsp;&nbsp;
+												{% if std.birthday %}
+													{{ std.birthday|date('d-m-Y') }}
+												{% endif %}
+											{% else %}
+												Born on   &nbsp;&nbsp;:  &nbsp;&nbsp;
+												{% if std.birthday %}
+													{{ std.birthday|date('Y-m-d') }}
+												{% endif %}
+											{% endif %}
+
+											<br/><br/><br/>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												&agrave;  &nbsp;&nbsp;
+											{% else %}
+												at  &nbsp;&nbsp;
+											{% endif %}
+											:  &nbsp;&nbsp;
+											{{std.birthplace}}
+										</span><br/></h3>
+
+									<h3>
+										<span>Sexe:
+											{% if std.gender %}F{% else %}M
+											{% endif %}
+										</span><br/>
+									</h3>
+								</td>
+
+
+								<td style=" width: 30%;">
+
+
+									<div style="margin-bottom:0.2em;">
+
+										{% if room.level.cycle.section.name == "Francophone" %}
+
+											{{year.wording}}
+											&nbsp;&nbsp; /  &nbsp;&nbsp;
+											{{quater.wording}}
+										{% else %}
+
+											{{year.wording}}
+											&nbsp;&nbsp; /   &nbsp;&nbsp;
+											{{quater.wording}}
+
+										{% endif %}
+									</div><br/>
+
+
+									<h3>
+										<span>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												Matricule
+											{% else %}
+												reg.number
+											{% endif %}
+										</span>
+										{{std.matricule}}<br/></h3>
+									<br/>
+									<h3>
+										<span>
+											{% if room.level.cycle.section.name == "Francophone" %}
+												Classe
+											{% else %}
+												class
+											{% endif %}
+
+											:</span>
+										<b>{{room.name}}
+										</b>
+									</h3>
+									<br/>
+
+								</td>
+							</tr>
+						</table>
+                    <br/>
+                    <table  class="table" cellspacing="0" cellpadding="5" border="1"  style="line-height:11px; width:100%;">
+                        <tr HEIGHT="6px" WIDTH="15px" style="background-color:#EBECEC;" border="0.5">
+                            <td border="0.5" style="text-align:center;"  width="140"><b>DISCIPLINE (Nom de l'enseignant)</b></td>
+                            <td border="0.5" style="text-align:center;" cellspacing="1"><b>COMPETENCE VISEE</b></td>
+                            <td border="0.5" style="text-align:center;"  width="15"><b>{{sequence.code}}</b></td>
+                            <td border="0.5" style="text-align:center;"  width="25"><b>COEF</b></td>
+                            <td border="0.5" style="text-align:center;" cellspacing="1"  width="40"><b> N*C</b></td>
+                            <td border="0.5" style="text-align:center;" ><b>RANG</b></td>
+                            <td border="0.5" style="text-align:center;" cellspacing="1"><b>APPRECCIATION</b></td>
+                            
+                            <td border="0.5" style="text-align:center;" width="155"><b>SIGNATURE</b></td>
+                        </tr>
+                        {% set totalCoef = 0 %} {# Total global des coefficients #}
+                         {% set totalNtMoyCoef = 0 %} {# Total global des NoteMoy * coefficient  #}
+                       {% set totalNCoefModule = 0 %}     {# Total global des Note * coefficient seq #}
+
+
+                        {% for module in room.modules %}
+                            {% set totalCoefModule =0 %}       {# Total partiel des coefficients du module #}
+                         
+                            {% set NCoef =0 %}                 {# Total partiel des Note * coefficient du module #}
+                            {% for course in module.courses %}
+                                {% set break = false %}
+                                {% for mark in datas %}
+                                    {% if std.matricule == mark.matricule %}
+                                        {% if module.name == mark.module %}
+                                            {% if mark.wording == course.wording  and not break  %}
+                                                <tr HEIGHT="6px" border="0.5" style="text-align:center;">
+                                                    <td border="0.5" style="text-align:center;" width="90" >
+
+                                                        {{course.wording}}
+
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;" cellspacing="1"></td>
+
+                                                    <td border="0.5" style="text-align:center;"  width="15"> 
+                                                        {% if mark.weight == 1 %}
+                                                            {{mark.valeur}} 
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;"  width="25">{{course.coefficient}}</td>
+
+                                                    <td border="0.5" style="text-align:center;" width="40">
+                                                        {% if mark.weight == 1 %}
+                                                            {{mark.valeur * course.coefficient}}
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                    </td>
+
+                                                    <td border="0.5" style="text-align:center;">
+                                                         {% if mark.weight == 1 %}
+                                                            {{mark.rank}}
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                    </td>
+
+                                                    <td border="0.5" style="text-align:center;" cellspacing="1">
+                                                         {% if mark.weight == 1 %}
+                                                            {{mark.appreciation}}
+                                                        {% else %}
+                                                            /
+                                                        {% endif %}
+                                                   </td>
+
+                                                
+                                                    <td border="0.5" style="text-align:center;" width="155"></td>
+                                                </tr>
+                                                {% set break = true %}
+                                                {% if mark.weight == 1 %}
+                                                    {% set totalCoefModule = totalCoefModule + course.coefficient %}
+                                                    {% set NCoef = NCoef +  mark.valeur * course.coefficient %}
+                                                {% endif %}
+                                         {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}   
+
+
+                            {% endfor %}
+                            {% set totalNCoefModule = totalNCoefModule + NCoef %}     
+                            {% set totalCoef = totalCoef + totalCoefModule %}
+                            <tr HEIGHT="6px" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                                <td border="0.5" style="text-align:center;" width="140" ><b>{{module.name}}</b></td>
+                                <td border="0.5" style="text-align:center;" cellspacing="1"><b></b></td>
+                                {% if totalCoefModule != 0 %}     
+                                    <td border="0.5" style="text-align:center;"  width="15"><b>{{ (NCoef/totalCoefModule)|round(2,'floor') }}/20</b></td>
+                                {% endif %}
+
+                                <td border="0.5" style="text-align:center;"  width="25"><b>{{ totalCoefModule  }}</b></td>
+
+                                <td border="0.5" style="text-align:center;" width="40"><b>{{NCoef}}</b></td>
+
+                                <td border="0.5" style="text-align:center;" cellspacing="1" ><b></b></td>
+
+                                <td border="0.5" style="text-align:center;" cellspacing="1"><b></b></td>
+
+                                
+
+                                <td border="0.5" style="text-align:center;" width="155"><b></b></td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr HEIGHT="50" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;"  width="90"><b>MOY. ELEVE<br/></td>
+                            <td border="0.5" style="text-align:center;" cellspacing="1"><b></b></td> 
+                                    {% if totalCoef != 0 %}     
+                                <td border="0.5" style="text-align:center;" width="15"> <b><i> {{ (totalNCoefModule / totalCoef)|round(2,'floor') }}/20</i></b> </td>
+                            {% endif %}
+                            <td border="0.5" style="text-align:center;"  width="25"><b>{{ totalCoef }}</b></td>
+
+                            <td border="0.5" style="text-align:center;" ><b>{{ totalNCoefModule  }}</b></td>
+                            <td border="0.5" style="text-align:center;" cellspacing="1"><b></b></td>
+
+                                           
+                            <td border="0.5" style="text-align:center;" ><b>MOY G.  {{ moyenneGen|round(2,'floor')  }}<br/><br/> CLASSE  </b></td>
+                            <td border="0.5" style="text-align:center;" width="115">/20</td>
+                        </tr>
+
+                    </table>
+                    <table  style="width:100%; "  class="table-bordered">
+                        <tr>
+                        <tr border="0.5" style="text-align:center;" > 
+                            <td border="0.5" style="text-align:center;" class="title" colspan="6"><b>DECISION ET OBSERVATION  </td> 
+                            <td border="0.5" style="text-align:center; border-width:1px; border-style:solid;" class="title"  rowspan="2" colspan="2"><b>OBSERVATION ET VISA DU <br/>CHEF D'ETABLISSEMENT</b></td> 
+                        </tr> 
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;"> 
+                            <td border="0.5" style="text-align:center; border-width:1px; border-style:solid; " class="title" rowspan="2" colspan="2"><b>DISCIPLINE</b> </td> 
+                            <td border="0.5" style="text-align:center; border-width:1px; border-style:solid;  " class="title" colspan="4" ><b>TRAVAIL</b> </td>
+                        </tr> 
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+
+
+
+                            <td border="0.5" style="text-align:center;">TBIEN</td>
+                            <td border="0.5" style="text-align:center;">BIEN</td>
+                            <td border="0.5" style="text-align:center;">ABIEN</td>
+                            <td border="0.5" style="text-align:center;">PASS</td>
+                            <td border="0.5" style="text-align:center;" colspan="2" rowspan="8" style="color:grey;"> <br/><br/><br/><br/><br/><br/><br/>MBADOUMOU, le  ___________________<br/><br/><br/>LE PRINCIPAL</td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;">ABSENCES</td>
+                            <td border="0.5" style="text-align:center;" width="95">   </td>
+                            <td border="0.5" style="text-align:center;">FAIBLE</td>
+                            <td border="0.5" style="text-align:center;">INSS</td>
+                            <td border="0.5" style="text-align:center;">MED</td>
+                            <td border="0.5" style="text-align:center;">NUL</td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="1">RETENUES</td>
+                            <td border="0.5" style="text-align:center;" width="95" ></td>
+                            <td border="0.5" style="text-align:center; border-width:1px; border-style:solid;" colspan="4"><b>APPRECIATION</b></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="1">AVERTISSEMENT</td>
+                            <td border="0.5" style="text-align:center;" width="95"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">TABLEAU <br/>D'HONNEUR &nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;"></td>
+
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" colspan="1">BLAME CONDUITE</td>
+                            <td border="0.5" style="text-align:center;" width="95"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">ENCOURAGEMENT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;"></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="text-align:center;" colspan="1">EXCLUSION</td>
+                            <td border="0.5" style="text-align:center;" width="95"></td>
+                            <td border="0.5" style="text-align:center;" colspan="3">FELICITATION &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td border="0.5" style="text-align:center;" ></td>
+                        </tr>
+                        <tr border="0.5"  style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="border-width:1px; border-style:solid; text-align:center;" colspan="2"><b>SIGNATURE DU PARENT</b></td>
+                            <td border="0.5" style="border-width:1px; border-style:solid; text-align:center;" colspan="3"><b>SIGNATURE DU <br/> PROF. PRINC.</b> </td>
+                            <td border="0.5" style="border-width:1px; border-style:solid; text-align:center;" colspan="1"><b>SIGNATURE DU <br/>PREFET D'ETUDES</b></td>
+                        </tr>
+                        <tr border="0.5" style="text-align:center;background-color:#EBECEC;" >
+                            <td border="0.5" style="text-align:center;" colspan="2" ><br/><br/><br/></td>
+                            <td border="0.5" style="text-align:center;" colspan="3" ><br/><br/><br/></td>
+                            <td border="0.5" style="text-align:center;" colspan="1" ><br/><br/><br/></td>
+                        </tr>
+
+                    </table>
+                </section>
+            </div>
+            <div> </div>
+        {% endfor %}
+    </body>
+</html>

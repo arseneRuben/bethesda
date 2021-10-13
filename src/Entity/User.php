@@ -14,6 +14,7 @@ use App\Entity\Traits\HasUploadableField;
 use App\Entity\Traits\TimeStampable;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -36,10 +37,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
-     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $phone;
+
 
     /**
      * @ORM\Column(type="json")
@@ -51,6 +49,11 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+      /**
+     * @Assert\EqualTo( value="password",
+     * message = " Le mot de passe et le mot de passe de verification doivent etre les memes ")
+     */
+    public $confirm_password;
 
     /**
      * @ORM\Column(type="boolean")
@@ -62,16 +65,121 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     private $emails;
 
-         /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-
+       /**
+     * Date/Time of the last activity
+     *
+     * @var \Datetime
+     * @ORM\Column(name = "lastactivityat", type = "datetime",  nullable=true)
      */
-    private $firstName;
+    protected $lastActivityAt;
+
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * 
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="avatarPath")
+     * @Assert\Image(maxSize="8M")
+     * 
+     * @var File|null
      */
-    private $lastName;
+    private $imageFile;
+      /**
+     * @ORM\Column(name="avatarPath", type="string", length=255, nullable=true)
+     */
+    protected $avatarPath;
+   
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     */
+    protected $fullName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phoneNumber", type="string", length=255, nullable=false)
+     */
+    protected $phoneNumber;
+
+    /** @ORM\Column(name="gender", nullable=true, unique=false, length=10) 
+     * @Assert\Choice(
+     * choices = { "M", "F" },
+     * message = "précisez le sexe")
+     */
+    protected $gender;
+
+    /**
+     * @var \Date
+     *
+     * @ORM\Column(name="birthday", type="date", nullable=true)
+     */
+    protected $birthday;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="birthplace", type="string", length=255, nullable=true)
+     */
+    private $birthplace;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nationality", type="string", length=255, nullable=true)
+     */
+    protected $nationality;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=255, nullable=true)
+     */
+    protected $location;
+
+    /** @ORM\Column(name="academicLevel", nullable=true, unique=false, length=10) 
+     * @Assert\Choice(
+     * choices = { "BAC", "LICENCE" ,"DIP1", "DIP2" ,"MASTER", "DOCTORAT"},
+     * message = "précisez le niveau académique")
+     */
+    protected $academicLevel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="numCni", type="string", length=255, nullable=true, unique=false)
+     */
+    protected $numCni;
+
+    /**
+     * @ORM\Column(type="integer", length=6, options={"default":0})
+     */
+    protected $loginCount = 0;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $firstLogin;
+
+    /** @ORM\Column(name="status", nullable=true, unique=false, length=10) 
+     * @Assert\Choice(
+     * choices = {"ELEVE", "PROF", "FINANCE", "PRINCIPAL", "PREFET"},
+     * * message = "précisez votre statu dans ISBB")
+     */
+    protected $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Domain::class, inversedBy="users")
+     */
+    private $domain;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="fullTeacher")
+     */
+    private $fullTeacherOf;
+
+    
    
     public function getAvatar(int $size = 50): ?string
     {
@@ -82,6 +190,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     {
         
         $this->emails = new ArrayCollection();
+        $this->fullTeacherOf = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -89,10 +198,37 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public function getAvatarPath(): ?string
+    {
+        return $this->avatarPath;
+    }
+
+    public function setAvatarPath(?string $imageName): self
+    {
+        $this->avatarPath = $imageName;
+
+        return $this;
+    }
+
+   
+
 
     public function getFullName (): ?string
     {
-        return $this->firstName . ' ' . $this->lastName ;
+        return $this->fullName ;
+    }
+
+     /**
+     * Set fullName
+     *
+     * @param string $fullName
+     *
+     * @return User
+     */
+    public function setFullName($numCni) {
+        $this->fullName = $numCni;
+
+        return $this;
     }
 
     public function __toString() {
@@ -130,6 +266,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_ADMIN';
 
         return array_unique($roles);
     }
@@ -152,7 +289,6 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -189,14 +325,240 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     }
 
 
-    public function getPhone(): ?string
+    public function getPhoneNumber(): ?string
     {
-        return $this->phone;
+        return $this->phoneNumber;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhoneNumber(string $phone): self
     {
-        $this->phone = $phone;
+        $this->phoneNumber = $phone;
+
+        return $this;
+    }
+
+     /**
+     * Get firstName
+     *
+     * @return string
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    public function setStatus($email) {
+        if (!empty($email))
+            $this->status = $email;
+
+        return $this;
+    }
+
+      /**
+     * Set birthplace
+     *
+     * @param string $birthplace
+     *
+     * @return User
+     */
+    public function setBirthplace($birthplace)
+    {
+        $this->birthplace = $birthplace;
+
+        return $this;
+    }
+
+    /**
+     * Get birthplace
+     *
+     * @return string
+     */
+    public function getBirthplace()
+    {
+        return $this->birthplace;
+    }
+
+     /**
+     * Set birthday
+     *
+     * @param \DateTime $birthday
+     *
+     * @return User
+     */
+    public function setBirthday($birthday)
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    /**
+     * Get birthday
+     *
+     * @return \DateTime
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+     /**
+     * Set gender
+     *
+     * @param string $gender
+     *
+     * @return User
+     */
+    public function setGender($gender) {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * Get gender
+     *
+     * @return string
+     */
+    public function getGender() {
+        return $this->gender;
+    }
+
+     /**
+     * Set nationality
+     *
+     * @param string $nationality
+     *
+     * @return User
+     */
+    public function setNationality($nationality) {
+        $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    /**
+     * Get nationality
+     *
+     * @return string
+     */
+    public function getNationality() {
+        return $this->nationality;
+    }
+
+    /**
+     * Set location
+     *
+     * @param string $location
+     *
+     * @return User
+     */
+    public function setLocation($location) {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return string
+     */
+    public function getLocation() {
+        return $this->location;
+    }
+
+    /**
+     * Set academicLevel
+     *
+     * @param string $academicLevel
+     *
+     * @return User
+     */
+    public function setAcademicLevel($academicLevel) {
+        $this->academicLevel = $academicLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get academicLevel
+     *
+     * @return string
+     */
+    public function getAcademicLevel() {
+        return $this->academicLevel;
+    }
+
+    /**
+     * Set numCni
+     *
+     * @param string $numCni
+     *
+     * @return User
+     */
+    public function setNumCni($numCni) {
+        $this->numCni = $numCni;
+
+        return $this;
+    }
+
+    /**
+     * Get numCni
+     *
+     * @return string
+     */
+    public function getNumCni() {
+        return $this->numCni;
+    }
+
+     /**
+     * Set domain
+     *
+     * @param \App\Entity\Domain $domain
+     *
+     * @return User
+     */
+    public function setDomain(\App\Entity\Domain $domain = null) {
+        $this->domain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * Get domain
+     *
+     * @return \App\Entity\Domain
+     */
+    public function getDomain() {
+        return $this->domain;
+    }
+
+    /**
+     * @return Collection|ClassRoom[]
+     */
+    public function getFullTeacherOf(): Collection
+    {
+        return $this->fullTeacherOf;
+    }
+
+    public function addFullTeacherOf(ClassRoom $fullTeacherOf): self
+    {
+        if (!$this->fullTeacherOf->contains($fullTeacherOf)) {
+            $this->fullTeacherOf[] = $fullTeacherOf;
+            $fullTeacherOf->setFullTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFullTeacherOf(ClassRoom $fullTeacherOf): self
+    {
+        if ($this->fullTeacherOf->removeElement($fullTeacherOf)) {
+            // set the owning side to null (unless already changed)
+            if ($fullTeacherOf->getFullTeacher() === $this) {
+                $fullTeacherOf->setFullTeacher(null);
+            }
+        }
 
         return $this;
     }

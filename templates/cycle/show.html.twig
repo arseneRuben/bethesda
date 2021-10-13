@@ -1,0 +1,63 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+{% block content %}
+   
+       
+            <div class="row">
+
+                <div class="col-lg-2" >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_cycles') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 jumbotron">
+                    <article  class="p-3" >
+
+                            <h1  class="h3  pt-1 text-center">    {{cycle.section.program}}/{{cycle.name}}  </h1> 
+						
+
+                            
+                            <table class="table table-striped table-hover table-bordered records_list center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nom</th>
+                                        <th scope="col">Taille</th>
+                                        
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for level in cycle.levels %}
+                                        <tr>
+                                            <td scope="row">{{ loop.index }}</th>
+                                            <td>
+                                                <a href="{{ path('admin_levels_show', {id: level.id}) }}">{{ level.name}}</a>
+                                            </td>
+                                           
+                                            <td>{{ level.name }}</td>
+                                             <td>{{ level.rooms.size }}</td>
+                                        
+                                            
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class=" ">			
+                                
+                                <a class="btn btn-warning" href="{{path('admin_cycles_edit', {id: cycle.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+Edit </a> |
+                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-cycle-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                <form id="js-cycle-delete-form" action="{{path('admin_cycles_delete', {id: cycle.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="{{ csrf_token('cycles_deletion' ~ cycle.id ) }}" id="">
+                                    <input type="hidden" name="_method" value="DELETE">
+
+                                </form>
+                            </div>
+                     </article>
+                    
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+
+{% block content %}
+  
+        <div class="row mt-4">
+            <div class="col-1" >
+                <a class="btn btn-info" href="{{ path('admin_sequences_new') }}">
+                    <i class="fa fa-plus"></i> <h1>New </h1>
+                </a>
+            </div>
+            <div class="col-11 jumbotron" >
+                 <div class="m-1 box-shadow">
+                    <div class="card-header">
+                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des sequences configures </h4>
+                    </div>
+                        <table  width="100%" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Annees</th>
+                                    <th>Trimestres</th>
+                                    <th>Sequences</th>
+                                   
+                                    <th>Debut</th>
+                                    <th>Fin</th>
+                                    
+
+                                
+                                    <th>Etat</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sequence in sequences %}
+                                    <tr>
+                                        <td><a href="{{ path('admin_schoolyears_show', {id: sequence.quater.schoolYear.id}) }}">  {{ sequence.quater.schoolYear.wording }}<i class="fa fa-eye"></i></a> </td>
+                                        <td><a href="{{ path('admin_quaters_show', {id: sequence.quater.id}) }}">  {{ sequence.quater.wording }}<i class="fa fa-eye"></i></a> </td>
+                                        <td><a href="{{ path('admin_sequences_show', {id: sequence.id}) }}">  {{ sequence.wording }}<i class="fa fa-eye"></i></a> </td>
+                                    
+                                        <td>{% if sequence.startDate %}{{ sequence.startDate|date('Y-m-d') }}{% endif %}</td>
+                                        <td>{% if sequence.endDate %}{{ sequence.endDate|date('Y-m-d') }}{% endif %}</td>
+                                    
+                                        <td>{% if sequence.activated %}<i class="fa fa-check-square-o"></i>{% else %}<i class="fa fa-square-o"></i>{% endif %}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a class="btn btn-info btn-sm" href="{{ path('admin_sequences_show', {id: sequence.id}) }}">
+                                                    <i class="fa fa-eye"></i> {{ 'show'|trans({}, 'admin') }}
+                                                </a>
+                                                <a class="btn btn-warning btn-sm" href="{{ path('admin_sequences_edit', {id: sequence.id}) }}">
+                                                    <i class="fa fa-edit"></i> {{ 'edit'|trans({}, 'admin') }}
+                                                </a>
+                                            
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                   
+            </div>
+            
+        </div>
+   
+{% endblock %}

@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Form\UserFormType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AcountController extends AbstractController
 {
@@ -22,6 +24,7 @@ class AcountController extends AbstractController
      */
     public function index(): Response
     {
+        $this->getUser()->getRoles();
         if(!$this->getUser()->isVerified())
         {
             $this->addFlash('warning', 'You need to have a verified account');
@@ -30,11 +33,11 @@ class AcountController extends AbstractController
         else
         {
             $hasAccess = $this->isGranted('ROLE_ADMIN');
-            if($hasAccess){
+            if(!$hasAccess){
                 return $this->redirectToRoute('app_home');
              }else
              {
-                return $this->render('account/index.html.twig', [
+                return $this->render('account/show.html.twig', [
                 ]);
              }
         }
@@ -42,7 +45,7 @@ class AcountController extends AbstractController
 
 
       /**
-     * @Route("/edit", name="app_account_edit", methods={"GET","POST"})
+     * @Route("/edit", name="admin_account_edit", methods={"GET","POST"})
      */
     public function edit(Request $request): Response
     {
@@ -67,8 +70,8 @@ class AcountController extends AbstractController
 
 
      /*
-     * @Route("/changepwd", name="app_account_changepwd", methods={"GET","POST"})
-    
+     * @Route("/changepwd", name="admin_account_changepwd", methods={"GET","POST"})
+    */
     public function changePwd(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
       
@@ -99,5 +102,5 @@ class AcountController extends AbstractController
             'form'=>$form->createView()
         ]);
     }
-   */
+   
 }

@@ -55,6 +55,11 @@ class SchoolYear
      */
     private $settingsPayments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="schoolYear")
+     */
+    private $subscriptions;
+
    
 
     public function __construct()
@@ -62,6 +67,7 @@ class SchoolYear
         $this->quaters = new ArrayCollection();
         $this->settingsPayments = new ArrayCollection();
         $this->activated = true;
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,6 +154,36 @@ class SchoolYear
             // set the owning side to null (unless already changed)
             if ($settingsPayment->getSchoolYear() === $this) {
                 $settingsPayment->setSchoolYear(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Subscription[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setSchoolYear($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getSchoolYear() === $this) {
+                $subscription->setSchoolYear(null);
             }
         }
 

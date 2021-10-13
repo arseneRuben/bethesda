@@ -35,6 +35,11 @@ class Cycle
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Level::class, mappedBy="cycle")
+     */
+    private $levels;
+
    
 
     public function __construct()

@@ -85,7 +85,9 @@ class SchoolYearController extends AbstractController
     public function edit(Request $request,SchoolYear $schoolyear): Response
     {
        
-        $form = $this->createForm(SchoolYearType::class, $schoolyear);
+        $form = $this->createForm(SchoolYearType::class, $schoolyear, [
+            'method' => 'GET',
+         ]);
         $form->handleRequest($request);
      
         if($form->isSubmitted() && $form->isValid())

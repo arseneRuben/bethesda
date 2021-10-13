@@ -1,0 +1,62 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation du Programme - {{ parent() }}{% endblock %}
+
+{% block content %}
+   
+       
+            <div class="row">
+
+                <div class="col-lg-2" >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_programs') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 jumbotron">
+                    <article  class="p-3" >
+
+                            <h1  class="h3  pt-1">   {{program.name}}  </h1> 
+						
+
+                            
+                            <table class="table table-striped table-hover table-bordered records_list center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        
+                                        <th scope="col">nom</th>
+                                        <th scope="col">Nombre de cycles</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for section in program.sections %}
+                                        <tr>
+                                            <td scope="row">{{ loop.index }}</th>
+                                            <td>
+                                                <a href="{{ path('admin_sections_show', {id: section.id}) }}">{{ section.name}}</a>
+                                            </td>
+                                            <td>{{ section.cycles|length }}</td>
+                                            <td>{{ section.name }}</td>
+                                        
+                                            
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class=" ">			
+                        
+                                <a class="btn btn-warning" href="{{path('admin_programs_edit', {id: program.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+Edit </a> |
+                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-program-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                <form id="js-program-delete-form" action="{{path('admin_programs_delete', {id: program.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="{{ csrf_token('programs_deletion' ~ program.id ) }}" id="">
+                                    <input type="hidden" name="_method" value="DELETE">
+
+                                </form>
+                            </div>
+                     </article>
+                    
+</div>
+{% endblock %}

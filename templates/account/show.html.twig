@@ -1,0 +1,45 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+
+
+{% block content %}
+<div class="row">
+ 	<div class="col-md-6 mx-auto text-center">
+ 		<p>
+			<h1 class="my-5">  Profil utilisateur</h1>
+		</p>
+
+	</div>
+</div>
+ <div class="container bootstrap snippets bootdey">
+    <div class="profile card">
+        <div class="profile-body">
+            <div class="profile-bio">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                       <img src="{{ app.user.avatar(75) }}" class="shadow rounded-circle img-thumbnail md-margin-bottom-10"  alt=" {{app.user.fullName}}  " />
+                    </div>
+                    <div class="col-md-10">
+                       
+						<p  class="pd-2 pb-2 text-muted lead" >   {{app.user.email}}</p>
+						  <p  class="pd-2 pb-2 text-muted" > <small><i> &#8986;</i> Account created on  {{app.user.createdAt|date('d/m/y') }}</small></p>
+                        <span><strong> Full Teacher of:</strong> {{app.user.email}}</span>
+                        <span><strong>In charge of Domain:</strong> Web Designer</span>
+						<span><strong>Full teacher off:
+						<div class="btn-group">
+							   {% for room in app.user.fullTeacherOf %}
+							   <a href="{{ path('admin_classrooms_show', {id: room.id }) }}" class="btn btn-warning ">{{ room.name }}</a>
+							   {% endfor %}
+						</div>
+                        <hr>
+                        <p>
+                  <a  href="{{path('admin_account_edit')}}">Edit account </a>{# |<a class="btn btn-warning" href="{{path('admin_account_changepwd')}}"> Change password </a>  #} 
+                </p>
+                        <p>Proin mauris odio, pharetra quis ligula non, vulputate vehicula quam. Nunc in libero vitae nunc ultricies tincidunt ut sed leo. Sed luctus dui ut congue consequat. Cras consequat nisl ante, nec malesuada velit pellentesque ac. Pellentesque nec arcu in ipsum iaculis convallis.</p>
+                    </div>
+                </div>    
+            </div>
+    	</div>
+    </div>
+</div> 
+{% endblock %}

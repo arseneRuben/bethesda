@@ -25,8 +25,13 @@
 						<li class="nav-item {% if app.request.attributes.get('_route') == "app_teachers" %}active{% endif %} "><a class="nav-link" href="{{ path('app_teachers') }}">Teachers</a></li>
 						<li class="nav-item {% if app.request.attributes.get('_route') == "app_prices" %}active{% endif %}"><a class="nav-link" href="{{ path('app_prices') }}">Pricing</a></li>
 						#}<li class="nav-item {% if app.request.attributes.get('_route') == "app_contact" %}active{% endif %} "><a class="nav-link" href="{{ path('app_contact')}}">Contact</a></li>
-				 	 <li class="nav-item {% if app.request.attributes.get('_route') == "app_login" %}active{% endif %} "><a class="nav-link" href="{{ path('app_login')}}">Sign In</a></li>
-					<li class="nav-item {% if app.request.attributes.get('_route') == "app_register" %}active{% endif %} "><a class="nav-link" href="{{ path('app_register')}}">Sign Up</a></li>
+					{% if  app.user %} 
+						 <li class="nav-item {% if app.request.attributes.get('_route') == "app_account" %}active{% endif %} "><a class="nav-link" href="{{ path('app_account')}}">Account</a></li>
+					{% else  %}
+						 <li class="nav-item {% if app.request.attributes.get('_route') == "app_login" %}active{% endif %} "><a class="nav-link" href="{{ path('app_login')}}">Sign In</a></li>
+						 <li class="nav-item {% if app.request.attributes.get('_route') == "app_register" %}active{% endif %} "><a class="nav-link" href="{{ path('app_register')}}">Sign Up</a></li>
+				 	
+					{% endif  %}
 				 	</ul>
 					<ul class="nav navbar-nav navbar-right">
 

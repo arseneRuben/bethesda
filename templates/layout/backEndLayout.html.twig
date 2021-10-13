@@ -6,7 +6,7 @@
 	<link href="{{ asset('assets/css/style.red.css')}}" rel="stylesheet" type="text/css"/>
 	<link href="{{ asset('assets/css/style.default.css')}}" rel="stylesheet" type="text/css"/>
 {% endblock %}
-{% block title %}Accueil {% endblock %}
+{% block title %} {{parent()}}/Administration {% endblock %}
 {% block main %}
 
 			{% block sidebar %}
@@ -36,14 +36,14 @@
 									<li class="{% if app.request.attributes.get('_route') == "admin_school_years" %}active{% endif %}">
 										<a href="{{ path('admin_school_years')}}"><i class="fa fa-calendar" aria-hidden="true"></i>Années scolaires</a>
 									</li>
-								{#	<li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
+									<li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
 										<a href="{{ path('admin_quaters')}}"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>Trimestres</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_sequences" %}active{% endif %}">
 										<a href="{{ path('admin_sequences')}}"><i class="fa fa-calendar-minus-o" aria-hidden="true"></i>Séquences</a>
 									</li>
 									<HR size="0.8" align="center" width="80%" color="white">
-									<li class="{% if app.request.attributes.get('_route') == "admin_programs" %}active{% endif %}">
+								<li class="{% if app.request.attributes.get('_route') == "admin_programs" %}active{% endif %}">
 										<a href="{{ path('admin_programs')}}"><i class="fa fa-table" aria-hidden="true"></i>Programmes</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_sections" %}active{% endif %}">
@@ -59,9 +59,9 @@
 											<i class="fa fa-list-ul" aria-hidden="true"></i>Niveaux</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_classrooms" %}active{% endif %}">
-										<a href="{{ path('admin_classrooms')}}"><i class="fa fa-indent" aria-hidden="true"></i>Classe</a>
+										<a href="{{ path('admin_classrooms')}}"><i class="fa fa-indent" aria-hidden="true"></i>Classes</a>
 									</li>
-
+									
 									<HR size="0.8" align="center" width="80%" color="white">
 									<li class="{% if app.request.attributes.get('_route') == "admin_modules" %}active{% endif %}">
 										<a href="{{ path('admin_modules')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Module</a>
@@ -69,7 +69,7 @@
 									<li class="{% if app.request.attributes.get('_route') == "admin_domains" %}active{% endif %}">
 										<a href="{{ path('admin_domains')}}"><i class="fa fa-user-md" aria-hidden="true"></i>Departement.</a>
 									</li>
-									<li class="{% if app.request.attributes.get('_route') == "admin_courses" %}active{% endif %}">
+									{#<li class="{% if app.request.attributes.get('_route') == "admin_courses" %}active{% endif %}">
 										<a href="{{ path('admin_courses')}}"><i class="fa fa-book" aria-hidden="true"></i>Matière</a>
 									</li>
 									<HR size="0.8" align="center" width="80%" color="white">
@@ -112,22 +112,11 @@
 											</span>
 										</a>
 									</li>
-
-									<li>
-										<a href="{{ path('fos_user_security_login') }}">
-											<i class={% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} "fa fa-sign-out" {% else %} "fa fa-sign-in" {% endif %} aria-hidden="true"></i>
-											<span>Login
-											</span>
-										</a>
+										#}
+									<li class="{% if app.request.attributes.get('_route') == "app_account" %}active{% endif %}">
+										<a href="{{ path('app_account')}}"><i class="fa fa-user-circle"></i>Account</a>
 									</li>
-									<li>
-										<a href="{{ path('fos_user_registration_register') }}">
-											<i class="fa fa-user-plus" aria-hidden="true"></i>
-											<span>Register
-												<li> <a href="{{ path('fos_user_adminile_edit') }}"> <i class="icon-interface-windows"></i><span>Profile  </span></a></li>
-																									<li> <a href="#"> <i class="icon-mail"></i><span>Demo</span>
-																											<div class="badge badge-warning">6 New</div></a></li>
-									</li>#}
+									
 								</ul> 
 							</div>
 						{% endblock menu  %}

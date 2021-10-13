@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Fiche simple</title>
+
+        <link href="{{asset('assets/css/pdf.css')}}"      rel="stylesheet" type="text/css" /> 
+        <link rel="stylesheet"  type="text/css" href="{{asset('assets/css/bootstrap.min.css')}}">
+    </head>
+    <body>
+        <header class="clearfix">
+            
+            <h1>
+                <b>
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                             {% if(taille > 1) %}
+                                 RAPPORT DE PERFORMANCES TRIMESTRIELLES
+                                {% else %}  
+                                 RAPPORT DE PERFORMANCES SEQUENTIELLES
+                            {% endif %}
+                         {% else %}  
+                          {% if(taille > 1) %}
+                                
+                                    QUARTERLY PERFORMANCE REPORT
+                                {% else %}  
+                                 SEQUENTIAL PERFORMANCE REPORT
+                            {% endif %}
+                            
+                    {% endif %}
+                </b>
+            </h1>
+            <div id="companyleft">
+                <br/>
+        <br/>
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                CLASSE
+                            {% else %}
+                                CLASS
+                            {% endif %}
+                        </span>
+                        {{room.name}}</b>
+                </h5>
+            </div>
+            <div id="companyright">
+                <br/>
+        <br/>
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ANNEE SCOLAIRE &nbsp;
+                                {{quater.schoolYear}}&nbsp;/&nbsp;{{quater}}
+                            {% else %}
+                                {{quater.schoolYear}}&nbsp;/&nbsp;{{quater}}
+                                &nbsp; SCHOOL YEAR
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+
+            </div>
+
+        </header>
+        <br/>
+        <br/>
+        <main>
+             <table class="table table-bordered" >
+                <thead >
+                    <tr >
+                       
+                        <th >N°</th>
+                        <th > </th>
+
+                            {% set nombreMatiere = 0 %}
+                            {% for module in room.modules %}
+                                {% for course in module.courses %} 
+                                  
+                                    <th  class="rotate">  <div><i>{{course.coefficient}}</i><span><b>&nbsp;&nbsp;&nbsp; {{course.wording}}&nbsp;&nbsp;&nbsp; </b></span></div></th>
+                                    {% set nombreMatiere = nombreMatiere + 1 %}
+                                {% endfor %}
+                            {% endfor %} 
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="4" class="rotate">
+                            {{sequence1.wording}}
+                        </td>
+                         <td>
+                            SUCCESS
+                        </td>
+                       
+                        {% for eval in evaluations1 %}
+                        <td class="qty">
+                                    {{eval.successH + eval.successF}}   
+                        </td>
+                        {% endfor %} 
+                    </tr>
+                     <tr>
+                         <td class="qty">
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ECHECS
+                            {% else %}
+                                FAILLURES
+                            {% endif %}
+                        </td>
+                       
+                        {% for eval in evaluations1 %}
+                        <td >
+                                    {{eval.failluresH + eval.failluresF}}   
+                        </td>
+                        {% endfor %} 
+                    </tr>
+                    <tr>
+                         <td >
+                           {% if(room.level.cycle.section.name=="Francophone") %}
+                                ABSCENCES
+                            {% else %}
+                                ABSCENTS
+                            {% endif %}
+                        </td>
+                       
+                        {% for eval in evaluations1 %}
+                        <td class="qty">
+                                    {{eval.abscent}}   
+                        </td>
+                        {% endfor %} 
+                    </tr>
+                     <tr>
+                         <td >
+                           {% if(room.level.cycle.section.name=="Francophone") %}
+                                MOYENNE GENERALE
+                            {% else %}
+                               OVERALL AVERAGE
+                            {% endif %}
+                        </td>
+                       
+                        {% for eval in evaluations1 %}
+                        <td>
+                                    {{eval.moyenne|round(2,'floor')}}   
+                        </td>
+                        {% endfor %} 
+                    </tr>
+                     {% if(taille > 1) %}
+                            <tr>
+                            </tr>
+                             <tr>
+                                <td rowspan="{{ nombreMatiere + 1}} " class="rotate">
+                                    {{sequence2.wording}}
+                                </td>
+                                 <td>
+                                    SUCCESS
+                                </td>
+                               
+                                {% for eval in evaluations2 %}
+                                <td class="qty">
+                                            {{eval.successH + eval.successF}}   
+                                </td>
+                                {% endfor %} 
+                            </tr>
+                             <tr>
+                                 <td>
+                                    {% if(room.level.cycle.section.name=="Francophone") %}
+                                        ECHECS
+                                    {% else %}
+                                        FAILLURES
+                                    {% endif %}
+                                </td>
+                               
+                                {% for eval in evaluations2 %}
+                                <td class="qty">
+                                            {{eval.failluresH + eval.failluresF}}   
+                                </td>
+                                {% endfor %} 
+                            </tr>
+                            <tr>
+                                 <td>
+                                   {% if(room.level.cycle.section.name=="Francophone") %}
+                                        ABSCENCES
+                                    {% else %}
+                                        ABSCENTS
+                                    {% endif %}
+                                </td>
+                               
+                                {% for eval in evaluations2 %}
+                                <td class="qty">
+                                            {{eval.abscent}}   
+                                </td>
+                                {% endfor %} 
+                            </tr>
+                             <tr>
+                                 <td >
+                                   {% if(room.level.cycle.section.name=="Francophone") %}
+                                        MOYENNE GENERALE
+                                    {% else %}
+                                       OVERALL AVERAGE
+                                    {% endif %}
+                                </td>
+                               
+                                {% for eval in evaluations2 %}
+                                <td class="qty">
+                                            {{eval.moyenne|round(2,'floor')}}   
+                                </td>
+                                {% endfor %} 
+                            </tr>  
+                     {% endif %}
+                    
+                </tbody>
+            </table>
+
+            <div id="notices">
+                <div>NOTICE:</div>
+                <div class="notice">
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                                        Cette fiche sert d'outil de travail au conseil de classe. 
+                                    {% else %}
+                                        Each teacher is entitled to only one copy of this sheet of report
+                        {% endif %}
+                    </div>
+            </div>
+        </main>
+        <footer>
+            
+        </footer>
+    </body>
+</html>

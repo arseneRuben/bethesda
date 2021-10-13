@@ -1,0 +1,91 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation de trimestre - {{ parent() }}{% endblock %}
+
+{% block content %}
+   
+       
+            <div class="row mt-4">
+
+                <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_quaters') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron">
+                    <article  class="p-3" >
+                            <div class="">
+                                 <div class="mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  {{quater.wording}}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled m-2 text-center text-justify">
+                                                <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{quater.startDate|date('Y-m-d')}}"></time> {{quater.startDate|date('Y-m-d')}}</h1>
+                                            </li>
+                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{quater.startDate|date('Y-m-d')}}"></time> {{quater.startDate|date('Y-m-d')}}</h1>
+                                                </li>
+                                                <li>
+                                                    <div class="form-check">
+                                                        {% if quater.activated %}
+                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                            <h2 class="card-title pricing-card-title"> Actif </h2>
+                                                        </label>
+                                                        {% else %}
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                           <h2 class="card-title pricing-card-title">  Non actif </h2>
+                                                        </label>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                        
+                                        </ul>
+                                    </div>
+                                     <br/>  <br/> <br/>
+                                    <table class="table table-striped table-hover table-bordered records_list center">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                
+                                                <th scope="col">Titre</th>
+                                                <th scope="col">Debut</th>
+                                                <th scope="col">Fin</th>
+                                                <th scope="col">Etat</th>
+                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for sequence in quater.sequences %}
+                                                <tr>
+                                                    <td scope="row">{{ loop.index }}</th>
+                                                    <td>
+                                                        <a href="{{ path('admin_sequences_show', {id: sequence.id}) }}">{{ sequence.wording}}</a>
+                                                    </td>
+                                                    <td> <time date= "{{sequence.startDate|date('Y-m-d')}}"></time> {{sequence.startDate|date('Y-m-d')}} </td>
+                                                    <td> <time date= "{{sequence.endDate|date('Y-m-d')}}"></time> {{sequence.endDate|date('Y-m-d')}} </td>
+                                                    <td>  {{sequence.activated}} </td>
+                                                
+                                                    
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                 </div>
+                                <div class="panel ">			
+                            
+                                <a class="btn btn-warning" href="{{path('admin_quaters_edit', {id: quater.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+     </a> |
+                                    <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Cette supressession entrenera celle  de toutes  sequences incluses. Es-tu sure ?') && document.getElementById('js-quater-delete-form').submit();"> <i class="fa fa-trash"></i> </a>
+                                    <form id="js-quater-delete-form" action="{{path('admin_quaters_delete', {id: quater.id})}}" method="post" style="display: none;">
+                                        <input type="hidden" name="{{ csrf_token('quaters_deletion' ~ quater.id ) }}" id="">
+                                        <input type="hidden" name="_method" value="DELETE">
+
+                                    </form>
+                                </div>
+                     </article>
+                    
+</div>
+{% endblock %}

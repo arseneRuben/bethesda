@@ -1,0 +1,182 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+{% block content %}
+
+    <div class="example-wrapper">
+        <h1 class="center">Pésentation de la Classe</h1>
+        <div class="row">
+            <div class="col-lg-1 mar-bot30" >
+                <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
+                    <i class="fa fa-plus"></i> Nouvelle
+                </a>
+
+            </div>
+            <div class="col-lg-11 mar-bot30" >
+                <table class="table table-hover record_properties center">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Nom</th>
+                            <td>{{ classroom.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Niveau</th>
+                            <td>{{ classroom.level }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Titulaire</th>
+                            <td>{{ classroom.fullTeacher }}</td>
+                        </tr>
+                         <tr>
+                            <th scope="row">Apc</th>
+                            <td>
+                                {% if (classroom.apc == true) %}
+									OUI
+								{% else %}
+									NON
+								{% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+               
+                <div class="btn-group record_actions">
+
+                    <a class="btn btn-info" href="{{ path('admin_classrooms') }}">
+                        <i class="fa fa-list"></i> {{ 'Listing'|trans({}, 'admin') }}
+                    </a>
+
+                    <a class="btn btn-primary" href="{{ path('admin_classrooms_edit', {id: classroom.id}) }}">
+                        <i class="fa fa-edit"></i> {{ 'Edit'|trans({}, 'admin') }}
+                    </a>
+                    <a class="btn btn-file" href="{{ path('admin_classrooms_recapitulatif_seq', {id: classroom.id}) }}">
+                        <i class="fa fa-file-excel-o"></i> Recap. Seq
+                    </a>
+                    <a class="btn btn-warning" href="{{ path('admin_classrooms_reportcards', {id: classroom.id}) }}">
+                        <i class="fa fa-file"></i> Bull Seq
+                    </a>
+                
+                    <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_trim', {id: classroom.id}) }}">
+                        <i class="fa fa-file"></i> Bull Trim
+                    </a>
+                     <a class="btn btn-outline-warning" href="{{ path('admin_classrooms_recapitulatif_trim', {id: classroom.id}) }}">
+                        <i class="fa fa-file-excel-o"></i> Recap Trim
+                    </a>
+                    <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_year', {id: classroom.id}) }}">
+                        <i class="fa fa-file"></i> Bull Ann
+                    </a>
+                    <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_apc_year', {id: classroom.id}) }}">
+                        <i class="fa fa-file"></i> Bull Ann Apc
+                    </a>
+                    <a class="btn btn-light" href="{{ path('admin_current_fulfilled_eval_show', {id: classroom.id}) }}">
+                        <i class="fa fa-list-ul"></i> Dépot des PV
+                    </a>
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash-o"></i> {{ 'Delete'|trans({}, 'admin') }}</button>
+
+                </div>
+
+            </div>
+        </div>
+        <input name="modal" type="hidden" value="0">
+   
+        {% if is_granted('ROLE_ADMIN') %}
+            <div id="delete_confirm" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3>{{ 'Confirm delete'|trans({}, 'admin') }}</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ 'You are about to delete an item'|trans({}, 'admin') }}, {{ 'this procedure is irreversible'|trans({}, 'admin') }}.</p>
+                            <p>{{ 'Do you want to proceed?'|trans({}, 'admin') }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger">{{ 'Yes'|trans({}, 'admin') }}</button>
+                            <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'admin') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <p>
+        <div class="center" > <h2> Liste des élèves incrits dans la classe </h2></div>
+        <table class="table table-striped table-hover table-bordered records_list center">
+            <thead>
+                <tr>
+                    <th scope="col">Matricule</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set effectif =0 %}
+                {% for std in studentEnrolled %}
+                    <tr>
+                        <td><a href="{{ path('students_show', {id: std.id}) }}">{{ std.matricule }}</a></td>
+                        <td>{{ std.lastname}}</td>
+                        <td>{{ std.firstname }}</td>
+                        {% set effectif = effectif+1 %}
+
+                    </tr>
+
+                {% endfor %}
+                <tr> <td class="center" colspan="2">Effectif</td> <td>{{ effectif }}</td></tr>
+            </tbody>
+        </table>
+    </p> 
+    <p>
+    
+    <div>
+        <div class="center" ><h2> Matières programmées dans la classe </h2> </div>
+        <table class="table table-striped table-hover table-bordered records_list center">
+            <thead>
+                <tr>
+
+                    <th scope="col">Module </th>
+                    <th scope="col">Code </th>
+                    <th scope="col">Intitulé </th>
+                    <th scope="col">Coef </th>
+                    <th scope="col">Enseignant </th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {% set totalCoef =0 %}
+                {% for module in modules %}
+                    <tr>
+
+
+                        {% for course in module.courses %}
+                        <tr>
+                            <td>{{ module.name }}</td>
+                            <td><a href="{{ path('prof_courses_show', {id: course.id}) }}">{{ course.code }}</a></td>
+                            <td>
+
+                            {{ course.wording }}
+                            </td>
+                            <td>{{ course.coefficient }}</td>
+                              <td>
+                             {% set key = course.id %}
+                              {% if course.id in attributions|keys %}
+                                   {{attributions[key]}}
+                                    {% else %}
+                                    Pas encore attribuee
+                                    {% endif %}
+                              
+                            </td>
+                            {% set totalCoef = totalCoef+course.coefficient %}
+                        </tr>
+                    {% endfor %}
+
+                    </tr>
+                    <tr> <td class="center" colspan="3">total cumul coef </td> <td>{{ totalCoef }}</td></tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock %}

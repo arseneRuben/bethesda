@@ -1,0 +1,30 @@
+
+{% extends 'layout/base.html.twig' %}
+
+{% block title 'edit user #' ~ app.user.id  %}
+
+{% block body %}
+<div class="col-lg-4 col-xl-4 mx-auto">
+<article>
+      <h1>  Change password #  {{app.user.fullName}}</h1>
+  
+     
+      <div class="row">
+			 {{form_start(form)}}
+            {{form_widget(form)}}
+      
+
+        
+        
+ 	 </div>
+      <br/>
+
+        <button class="btn btn-lg btn-primary  btn-block" type="submit">Update password</button>
+        {{form_end(form)}}
+   
+
+    
+ </article>
+    </div>
+  
+{% endblock %}

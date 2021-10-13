@@ -1,0 +1,31 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Edition de trimestre {{ parent() }}{% endblock %}
+{% block content %}
+  
+<div class="row mt-4">
+         <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_quaters') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron  mx-auto">
+                        <div class="col-md-6 mx-auto">
+                            <article class="text-center">
+                                     <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Edition du trimestre {{ quater.id }}  </h4>
+                                  </div>
+                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update quater', 'returnRoute':'admin_quaters'})}}
+                            </article>
+                        </div>
+                    </div>
+         </div>
+ </div>
+        
+    
+{% endblock %}
+
