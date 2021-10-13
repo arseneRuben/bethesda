@@ -37,7 +37,7 @@ class AcountController extends AbstractController
                 return $this->redirectToRoute('app_home');
              }else
              {
-                return $this->render('account/show.html.twig', [
+                return $this->render('account/profile.html.twig', [
                 ]);
              }
         }

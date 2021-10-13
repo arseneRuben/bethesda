@@ -1,36 +1,42 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 {% block content %}
-        <div class="row">
-            <div class="col-lg-1" >
+
+  
+    
+        <div class="row mt-4">
+            <div class="col-1" >
                 <a class="btn btn-info" href="{{ path('admin_domains_new') }}">
                     <i class="fa fa-plus"></i> <h1>New </h1>
                 </a>
             </div>
-            <div class="col-lg-11 jumbotron" >
-                <table  width="100%" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width:15%;" class="text-center" scope="col">#</th>
-                             <th style="width:50%;" class="text-center" scope="col">Nom</th>
-                          
-                        </tr>
-                    </thead>
+            <div class="col-11 jumbotron" >
+                <div class="m-1 box-shadow">
+                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des departements  </h4>
+                    </div>
+                    <table  width="100%" class="table table-striped">
+                        <thead>
+                         <tr>
+                                <th style="width:10%;" class="text-center" scope="col">#</th>
+                                
+                                <th style="width:20%;" class="text-center" scope="col">Nom</th>
+                                <th style="width:40%;" class="text-center" scope="col">Action</th>
+                            </tr>
+                        </thead>
                     <tbody>
                         {% for domain in domains %}
                             <tr>
                                 <td style="width:15%;" class="text-center" scope="row">{{ loop.index }}</th>
-                                 <td style="width:50%;" class="text-center" ><a href="{{ path('admin_programs_show', {id: domain.id}) }}"><h3>{{ domain.name }}</h3></a></td>
+                                 <td style="width:50%;" class="text-center" ><a href="{{ path('admin_domains_show', {id: domain.id}) }}"><h3>{{ domain.name }}</h3></a></td>
                                 <td style="width:15%;" class="text-center">
                                     <div class="btn-group">
                                         
-                                        <a class="btn btn-warning" href="{{path('admin_domains_edit', {id: domain.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-
-                                          Edit
+                                          <a class="btn btn-info" href="{{ path('admin_domains_show', {id: domain.id}) }}">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i> 
                                         </a>
-                                        <a class="btn btn-danger" href="{{path('admin_domains_delete', {id: domain.id})}}"> <i class="fa fa-trash" aria-hidden="true"></i>
-
-                                          Delete
+                                        <a class="btn btn-warning" href="{{path('admin_domains_edit', {id: domain.id})}}"> 
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </a>
                                           
                                        

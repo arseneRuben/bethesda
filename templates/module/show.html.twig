@@ -1,5 +1,5 @@
 {% extends 'layout/backEndLayout.html.twig' %}
-
+{% block title %}Présentation de la module - {{ parent() }}{% endblock %}
 
 {% block content %}
    
@@ -8,17 +8,15 @@
 
                 <div class="col-lg-2" >
                         <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_cycles') }}">
+                            <a class="btn btn-info" href="{{ path('admin_modules') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-10 jumbotron">
                     <article  class="p-3" >
-                             <div class="card-header">
-                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">   {{cycle.section.program}}/{{cycle.name}}  </h4>
-                    </div>
-                          
+
+                            <h1  class="h3  pt-1">   {{module.name}}  </h1> 
 						
 
                             
@@ -26,22 +24,26 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Nom</th>
-                                        <th scope="col">Taille</th>
+                                        <th scope="col">Domain</th>
+                                        <th scope="col">Wording</th>
+                                         <th scope="col">Coef</th>
+                                          <th scope="col">Attribution</th>
+                                      
                                         
                                     
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for level in cycle.levels %}
+                                    {% for course in module.courses %}
                                         <tr>
                                             <td scope="row">{{ loop.index }}</th>
                                             <td>
-                                                <a href="{{ path('admin_levels_show', {id: level.id}) }}">{{ level.name}}</a>
+                                                <a href="{{ path('admin_domains_show', {id: course.id}) }}">{{ course.domain.name}}</a>
                                             </td>
                                            
-                                            <td>{{ level.name }}</td>
-                                             <td>{{ level.rooms.size }}</td>
+                                            <td>{{ course.wording }}</td>
+                                             <td>{{course.coef }}</td>
+                                             <td>{#{course.attribution.user }#}</td>
                                         
                                             
                                         </tr>
@@ -49,12 +51,12 @@
                                 </tbody>
                             </table>
                             <div class=" ">			
-                                
-                                <a class="btn btn-warning" href="{{path('admin_cycles_edit', {id: cycle.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        
+                                <a class="btn btn-warning" href="{{path('admin_modules_edit', {id: module.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 Edit </a> |
-                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-cycle-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
-                                <form id="js-cycle-delete-form" action="{{path('admin_cycles_delete', {id: cycle.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('cycles_deletion' ~ cycle.id ) }}" id="">
+                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-module-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                <form id="js-module-delete-form" action="{{path('admin_modules_delete', {id: module.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="{{ csrf_token('modules_deletion' ~ module.id ) }}" id="">
                                     <input type="hidden" name="_method" value="DELETE">
 
                                 </form>

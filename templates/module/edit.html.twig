@@ -1,0 +1,29 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Edition module - {{ parent() }}{% endblock %}
+{% block content %}
+  
+  <div class="row mt-4">
+         <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_modules') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                                <div class="col-10 jumbotron  mx-auto">
+                    <div class="col-md-6 mx-auto">
+                        <article class="text-center">
+                            <br/>
+                           <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Edition du module {{ module.id }}  </h4>
+                                  </div>
+                            {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update module', 'returnRoute':'admin_modules'})}}
+                        </article>
+                    </div>
+    </div>
+    
+{% endblock %}
+

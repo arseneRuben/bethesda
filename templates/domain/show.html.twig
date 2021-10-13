@@ -8,55 +8,88 @@
 
                 <div class="col-lg-2" >
                         <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_sections') }}">
+                            <a class="btn btn-info" href="{{ path('admin_domains') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-10 jumbotron">
                     <article  class="p-3" >
+                             <div class="card-header">
+                            <h1  class="my-0 font-weight-normal text-center text-justify text-uppercase">   {{domain.name}}  </h1> 
+                            </div>
+                            </br>
+                            <div class=" ">			
+                        
+                                <a class="btn btn-warning" href="{{path('admin_domains_edit', {id: domain.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+Edit </a> |
+                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-domain-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                <form id="js-domain-delete-form" action="{{path('admin_domains_delete', {id: domain.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="{{ csrf_token('domains_deletion' ~ domain.id ) }}" id="">
+                                    <input type="hidden" name="_method" value="DELETE">
 
-                            <h1  class="h3  pt-1">   {{section.name}}  </h1> 
-						
-
-                            
+                                </form>
+                            </div>
+                            </br>
+                        <div class="card-header text-center">
+                            <p> Liste des enseignants du departent <p>
+                        </div> 
                             <table class="table table-striped table-hover table-bordered records_list center">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Nom</th>
-                                        <th scope="col">Taille</th>
+                                        <th scope="col">Nb de prof</th>
+                                      
                                         
                                     
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for cycle in section.cycles %}
+                                    {% for teach in domain.teachers %}
                                         <tr>
                                             <td scope="row">{{ loop.index }}</th>
                                             <td>
-                                                <a href="{{ path('admin_sections_show', {id: cycle.id}) }}">{{ cycle.name}}</a>
+                                                <a href="{{ path('admin_users_show', {id: teach.id}) }}">{{ teach.fullName}}</a>
+                                            </td>    
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            </br>
+                            <div class="card-header text-center">
+                            <p> Liste des cours du departent <p>
+                              </div> 
+                             <table class="table table-striped table-hover table-bordered records_list center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Domain</th>
+                                        <th scope="col">Wording</th>
+                                         <th scope="col">Coef</th>
+                                          <th scope="col">Attribution</th>
+                                      
+                                        
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in domain.courses %}
+                                        <tr>
+                                            <td scope="row">{{ loop.index }}</th>
+                                            <td>
+                                                <a href="{{ path('admin_domains_show', {id: course.id}) }}">{{ course.domain.name}}</a>
                                             </td>
                                            
-                                            <td>{{ cycle.name }}</td>
-                                             <td>{{ cycle.levels.size }}</td>
+                                            <td>{{ course.wording }}</td>
+                                             <td>{{course.coef }}</td>
+                                             <td>{#{course.attribution.user }#}</td>
                                         
                                             
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <div class=" ">			
-                        
-                                <a class="btn btn-warning" href="{{path('admin_sections_edit', {id: section.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-Edit </a> |
-                                <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-section-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
-                                <form id="js-section-delete-form" action="{{path('admin_sections_delete', {id: section.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('sections_deletion' ~ section.id ) }}" id="">
-                                    <input type="hidden" name="_method" value="DELETE">
-
-                                </form>
-                            </div>
                      </article>
                     
 </div>

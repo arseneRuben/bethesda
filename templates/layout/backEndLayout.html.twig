@@ -69,11 +69,11 @@
 									<li class="{% if app.request.attributes.get('_route') == "admin_domains" %}active{% endif %}">
 										<a href="{{ path('admin_domains')}}"><i class="fa fa-user-md" aria-hidden="true"></i>Departement.</a>
 									</li>
-									{#<li class="{% if app.request.attributes.get('_route') == "admin_courses" %}active{% endif %}">
+									<li class="{% if app.request.attributes.get('_route') == "admin_courses" %}active{% endif %}">
 										<a href="{{ path('admin_courses')}}"><i class="fa fa-book" aria-hidden="true"></i>Matière</a>
 									</li>
 									<HR size="0.8" align="center" width="80%" color="white">
-									<li class="{% if app.request.attributes.get('_route') == "admin_settings" %}active{% endif %}">
+									{#<li class="{% if app.request.attributes.get('_route') == "admin_settings" %}active{% endif %}">
 										<a href="{{ path('admin_settings')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Scolarité</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_payes" %}active{% endif %}">

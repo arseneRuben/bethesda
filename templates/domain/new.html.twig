@@ -2,7 +2,7 @@
 
 
 
-{% block title %}Nouvelle section - {{ parent() }}{% endblock %}
+
 
 {% block content %}
         {% form_theme form 'bootstrap_4_layout.html.twig' %}
@@ -11,8 +11,8 @@
                 <div class="col-md-6 mx-auto">
                     <article class="text-center">
                         <br/>
-                        <h1 >  Create Section </h1>
-                         {{include('layout/partials/_form.html.twig',{'submitButtonText':'Create section', 'returnRoute':'admin_sections'})}}
+                        <h1 >  Create department </h1>
+                         {{include('layout/partials/_form.html.twig',{'submitButtonText':'Create department', 'returnRoute':'admin_domains'})}}
                     </article>
                 </div>
             </div>

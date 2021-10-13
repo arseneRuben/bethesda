@@ -2,7 +2,7 @@
 
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
-{% block title %}Edition section - {{ parent() }}{% endblock %}
+
 {% block content %}
   <div class="row mt-4">
          <div class="col-2 " >
@@ -16,8 +16,8 @@
         <div class="col-md-6 mx-auto">
             <article class="text-center">
                 <br/>
-                <h1 >  Edit Section #  {{section.id}}</h1>
-                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update section', 'returnRoute':'admin_sections'})}}
+                <h1 >  Edit Section #  {{domain.id}}</h1>
+                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update domain', 'returnRoute':'admin_domains'})}}
             </article>
         </div>
     </div>
