@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Repository;
-
+use App\Entity\ClassRoom;
+use App\Entity\Student;
+use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,6 +20,27 @@ class SubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subscription::class);
     }
+
+    public function findNotEnrolledStudents3ThisYear(ClassRoom $room, SchoolYear $year) {
+      
+        return $this->createQueryBuilder('s')
+                         ->leftJoin('s.schoolYear', 'sc')
+                         ->leftJoin('s.classRoom', 'cl')
+                         ->where('sc.id=:year')
+                         ->where('cl.id=:room')
+                         ->setParameter('year', $year->getId())
+                         ->setParameter('room', $room->getId());
+                         
+     }
+     public function findEnrollementThisYear( SchoolYear $year) {
+       
+                 $qb = $this->createQueryBuilder('s')
+                          ->leftJoin('s.schoolYear', 'sc')
+                          ->where('sc.id=:year')
+                          ->addOrderBy('s.classRoom', 'ASC')
+                          ->setParameter('year', $year->getId());
+                 return $qb->getQuery()->getResult();          
+      }
 
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects

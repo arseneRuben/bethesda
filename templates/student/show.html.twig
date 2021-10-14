@@ -1,0 +1,202 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation de l̀annee scolaire - {{ parent() }}{% endblock %}
+
+{% block content %}
+            
+             <img src="{{ (student.imageName ? vich_uploader_asset(student) : asset('buid/images/placeholder.jpg'))| imagine_filter('squared_thumbnail_medium') }}" alt="{{ student.lastname }}" class="w-100 ">
+			</br/>
+            <hr/>
+            <div class="row">
+
+                    <div class="col-lg-2" >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_students') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 card">
+                    
+				    <article  class="p-3" >
+                        <div class="container">
+                        <div class="card-deck mb-3 text-center">
+                            <table class="table table-hover record_properties center">
+                         
+                                <tbody>
+
+                                    <tr>
+                                        <th scope="row">Matricule</th>
+                                        <td>{{ student.matricule }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Nom</th>
+                                        <td>{{ student.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Prénom</th>
+                                        <td>{{ student.firstName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Sexe</th>
+                                        <td>
+                                            {% if student.gender  %}
+                                                F
+                                            {% else %}
+                                                M
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Date de naissace</th>
+                                        <td>
+                                            {% if student.birthday %}
+                                                {{ student.birthday|date('Y-m-d') }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Lieu de naissance</th>
+                                        <td>{{ student.birthplace }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Père</th>
+                                        <td>{{ student.fatherName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Mère</th>
+                                        <td>{{ student.motherName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Contact 1</th>
+                                        <td>{{ student.primaryContact }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Contact 2</th>
+                                        <td>{{ student.secondaryContact }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Maladie particulière</th>
+                                        <td>{{ student.particularDisease }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row">Autres</th>
+                                        <td>{{ student.otherInformations }}</td>
+                                    </tr>
+                                     <tr>
+                                        <th scope="row">Photo d identite</th>
+                                        <td>{{ student.imageName }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                            <div class=" ">			
+                                <a class="btn btn-outline-warning" href="{{path('admin_students_edit', {id: student.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
+                                <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                <form id="js-course-delete-form" action="{{path('admin_students_delete', {id: student.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
+                                    <input type="hidden" name="_method" value="DELETE">
+
+                                </form>
+                            </div>
+                         </div>
+                        </div>
+                     </article>
+                </div>      
+            </div>
+           			
+             <div class="row jumbotron">
+               <div class="col-lg-2" >
+               </div>
+                <div class="col-lg-10">
+                <br/>
+                <br/>
+                    <div class="text-center">
+                        <h2>
+                            Scolarité-Versements éffectués pour l'élève
+                        </h2>
+                    </div>
+                    <table class="table table-striped table-hover table-bordered records_list center">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date
+                                </th>
+                                <th scope="col">Montant
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if(student.payments) %}
+                                {% set total =0 %}
+                                {% for p in student.payments %}
+                                    <tr>
+                                        <td>
+                                            {% if p.instant %}
+                                                {{ p.instant|date('Y-m-d') }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ p.amount }}</td>
+
+                                    </tr>
+                                    {% set total = total + p.amount %}
+                                {% endfor %}
+                                <tr>
+                                    <td class="center">
+                                        <b>Total</b>
+                                    </td>
+                                    <td>{{ total }}</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+            <div class="row jumbotron">
+             <div class="col-lg-2" >
+               </div>
+                <div class="col-lg-10">
+                    <div class="text-center">
+                        <h2>
+                            Ancienneté de lélève
+                        </h2>
+                    </div>
+                    <table class="table table-striped table-hover table-bordered records_list center">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Date d'inscription
+                                </th>
+                                <th scope="col">Année
+                                </th>
+                                <th scope="col">Classe
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if(student.subscriptions) %}
+
+                                {% for s in student.subscriptions %}
+                                    <tr>
+                                        <td>
+                                            {% if s.instant %}
+                                                {{ s.instant|date('Y-m-d H:m:s') }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ s.schoolYear.wording }}</td>
+                                        <td>{{ s.classRoom.name }}</td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+    </div>
+
+
+{% endblock %}

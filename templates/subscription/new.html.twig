@@ -2,15 +2,12 @@
 
 
 
-
-
 {% block content %}
-        {% form_theme form 'bootstrap_4_layout.html.twig' %}
-       
-          <div class="row mt-4">
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+    <<div class="row mt-4">
                     <div class="col-2 " >
                         <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_school_years') }}">
+                            <a class="btn btn-info" href="{{ path('admin_subscriptions') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
                         </div>
@@ -20,13 +17,11 @@
                             <article class="text-center">
                                 <br/>
                                  <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Nouvelle annee scolaire </h4>
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Nouvelle inscrption </h4>
                                   </div>
-                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Create schoolyear', 'returnRoute':'admin_school_years'})}}
+                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Create subscription', 'returnRoute':'admin_subscriptions'})}}
                             </article>
                         </div>
                     </div>
             </div>
-   
-    
 {% endblock %}

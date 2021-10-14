@@ -1,0 +1,60 @@
+
+
+
+
+<ul class="myNav center">
+    {% for programme in programmes %}
+        <li class="myNav-item ui-accordion-item">
+            <a class="myNav-link ui-accordion-trigger" href="{{ path('admin_programmes_show', { 'id': programme.id }) }}">{{programme.name}}</a>
+            <ul class="myNav-content ui-accordion-content">
+                {% if prog_section[programme.id] is defined %}
+                    {% for section in prog_section[programme.id] %}
+
+                        <li class="myNav-item ui-accordion-item">
+                            <a class="myNav-link ui-accordion-trigger" href="{{ path('admin_sections_show', { 'id': section.id }) }}">{{section.name}}</a>
+                            <ul class="myNav-content ui-accordion-content">
+                                {% if section_cycle[section.id] is defined %}
+                                    {% for cycle in section_cycle[section.id] %}
+                                        <li class="myNav-item ui-accordion-item">
+                                            <a class="myNav-link ui-accordion-trigger" href="{{ path('admin_cycles_edit', { 'id': cycle.id }) }}">{{cycle.name}}</a>
+                                            <ul class="myNav-content ui-accordion-content">
+                                                {% if cycle_level[cycle.id] is defined %}
+                                                    {% for level in cycle_level[cycle.id] %}
+                                                        <li class="myNav-item ui-accordion-item">
+                                                            <a class="myNav-link ui-accordion-trigger" href="{{ path('admin_levels_show', { 'id': level.id }) }}">{{level.name}}</a>
+                                                            <ul class="myNav-content ui-accordion-content">
+                                                                {% if level_room[level.id] is defined %}
+                                                                    {% for room in level_room[level.id] %}
+                                                                        <li class="myNav-item ui-accordion-item">
+                                                                            <a class="myNav-link ui-accordion-trigger" href="{{ path('admin_classrooms_show', { 'id': room.id }) }}">{{room.name}}</a>
+                                                                            <ul class="myNav-content ui-accordion-content">
+                                                                                {% if room_student[room.id] is defined %}
+                                                                                    {% for student in room_student[room.id] %}
+                                                                                        <li class=""><a href="{{ path('students_show', { 'id': student.id }) }}">{{student}}</a></li>
+                                                                                        {% endfor %}
+                                                                                    {% endif %}
+                                                                            </ul>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </ul>
+                                                        </li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </ul>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </li>
+
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </li>
+    {% endfor %}
+
+</ul>
+
+</ul>
+

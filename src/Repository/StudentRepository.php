@@ -6,6 +6,7 @@ use App\Entity\Student;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\SchoolYearRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -16,10 +17,15 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class StudentRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $scRepo;
+    public function __construct(ManagerRegistry $registry, SchoolYearRepository $scRepo)
     {
         parent::__construct($registry, Student::class);
+        $this->scRepo = $scRepo;
     }
+
+   
+
 
     // /**
     //  * @return Student[] Returns an array of Student objects
@@ -75,9 +81,9 @@ class StudentRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()
                 ->createQuery(
                     "SELECT std.matricule,std.id, std.lastname, std.firstname, std.gender, std.birthplace, std.birthday , std.primaryContact, std.secondaryContact
-                             FROM  AppBundle:Student  std
-                             JOIN AppBundle:Subscription sub WITH  sub.student  =  std.id
-                             JOIN AppBundle:SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
+                             FROM  Student  std
+                             JOIN  Subscription sub WITH  sub.student  =  std.id
+                             JOIN  SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
                              WHERE sub.schoolYear = :year
                              AND  sub.classRoom = :room 
                              ORDER BY std.lastname
@@ -96,9 +102,9 @@ class StudentRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()
                 ->createQuery(
                     "SELECT std
-                             FROM  AppBundle:Student  std
-                             JOIN AppBundle:Subscription sub ON  sub.student  =  std.id
-                             JOIN AppBundle:SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
+                             FROM  Student  std
+                             JOIN  Subscription sub ON  sub.student  =  std.id
+                             JOIN  SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
                              WHERE sub.schoolYear = :year
                              AND  sub.classRoom = :room 
                             "
@@ -163,16 +169,17 @@ class StudentRepository extends ServiceEntityRepository
 
     public function findEnrolledStudentsThisYear2()
     {
-        $year = $this->getEntityManager()->getRepository('SchoolYear')->findOneBy(array("activated" => true));
+        $year = $this->scRepo->findOneBy(array("activated" => true));
        
         $query = $this->getEntityManager()
                 ->createQuery(
                              " SELECT st 
-                               FROM   Student  st
+                               FROM   App\Entity\Student  st
                                WHERE st.matricule not in 
                                (SELECT std.matricule
-                                FROM Student  std, Subscription sub, SchoolYear yr 
+                                FROM App\Entity\Student  std, App\Entity\Subscription sub, App\Entity\SchoolYear yr 
                               WHERE  sub.student  =  std.id AND sub.schoolYear   =  yr.id AND sub.schoolYear = :year)   
+                              ORDER BY  st.lastname
                             "
                 )->setParameter('year', $year->getId())
                ;

@@ -33,8 +33,8 @@
                         <tbody>
                           {% for room in rooms %}
                              <tr>
-                                <td  class="text-center" colspan="4" scope="row">{{ loop.index }}</th>
-                                <td  class="text-center"  colspan="4" ><a href="{{ path('admin_classrooms_show', {id: room.id}) }}"><h3>{{ room.name }}</h3></a></td>
+                                <td  class="text-center" colspan="1" scope="row">{{ loop.index }}</th>
+                                <td  class="text-center"  colspan="7" ><a href="{{ path('admin_classrooms_show', {id: room.id}) }}"><h3>{{ room.name }}</h3></a></td>
                             </tr> 
                                 {% for module in room.modules %}
                                 <tr>

@@ -1,0 +1,65 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+
+{% block content %}
+  
+    
+        <div class="row mt-4">
+            <div class="col-1" >
+                <a class="btn btn-info" href="{{ path('admin_students_new') }}">
+                    <i class="fa fa-plus"></i> <h1>New </h1>
+                </a>
+            </div>
+            <div class="col-11 jumbotron" >
+                <div class="m-1 box-shadow">
+                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des eleves non inscrits </h4>
+                    </div>
+                    <table  width="100%" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width:10%;" scope="col">Matricule/Id</th>
+                       
+                        <th style="width:15%;" scope="col">Nom </th>
+                        <th style="width:10%;" scope="col">Prénom</th>
+                        <th style="width:5%;" scope="col">Sexe</th>
+                        <th style="width:10%;" scope="col">Date de naissance</th>
+                        <th style="width:10%;" scope="col">Lieu de naissance</th>
+                        <th style="width:10%;" scope="col">Résidence</th>
+                        <th style="width:5%;" scope="col">Inscription</th>
+                        <th style="width:15%;" scope="col">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in students %}
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ path('admin_students_show', {id: user.id}) }}">{% if user.matricule %}{{ user.matricule}}{%else%}{{ user.id}}{%endif%}</a></td>
+                          
+                            <td>{{ user.firstName }}</td>
+                            <td>{{ user.lastName }}</td>
+                            <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
+                            <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
+                            <td>{{ user.birthplace }}</td>
+                            <td>{{ user.residence }}</td>
+                            <td>{% if user.enrolled %}Inscrit{% endif %}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-default btn-sm" href="{{ path('admin_students_edit', {id: user.id}) }}">
+                                        <i class="fa fa-edit"></i> {{ 'edit'|trans({}, 'admin') }}
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+    </div>
+{% endblock %}
+

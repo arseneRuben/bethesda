@@ -1,0 +1,36 @@
+{% extends "layout/layout.html.twig" %}
+
+{% block title %} Elèves{% endblock %}
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('assets/css/accordion.css')}}"         rel="stylesheet" type="text/css" /> 
+    <link href="{{ asset('assets/css/menue.css')}}"             rel="stylesheet" type="text/css" /> 
+{% endblock stylesheets %}
+{% block content %}
+    <div class="example-wrapper">
+        <h1 class="center">Liste des élèves</h1>
+        <div class="row">
+            <div class="col-lg-3 mar-bot30" >
+                <a class="btn btn-info" href="{{ path('students_new') }}">
+                    <i class="fa fa-plus"></i> Nouvel
+                </a>
+            </div>
+            <div class="col-lg-9 mar-bot30" >
+               {{render(controller('AppBundle:Student:view',  { 'yearId': yearId }))}}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{parent()}}
+
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/simpleAccordion.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/menu.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.myNav').simpleAccordion();
+        });
+    </script>
+{% endblock javascripts %}

@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Repository\StudentRepository;
+use App\Entity\Mark;
+use App\Entity\Payment;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Traits\HasUploadableField;
 use App\Entity\Traits\TimeStampable;
+use App\Repository\StudentRepository;
+use App\Entity\Traits\HasUploadableField;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=StudentRepository::class)
  * @UniqueEntity(fields={"matricule"}, message="There is already an account with this matricule")
@@ -28,6 +30,17 @@ class Student
      */
     private $id;
 
+/**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * 
+     * @Vich\UploadableField(mapping="student_image", fileNameProperty="imageName")
+     * @Assert\Image(
+     *     maxSize = "8M",     
+     *     mimeTypesMessage = "Please upload a valid Image"
+     * )
+     * @var File|null
+     */
+    private $imageFile;
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -104,7 +117,7 @@ class Student
 
     /** @ORM\Column(name="gender", nullable=false, unique=false, length=10)
      * @Assert\Choice(
-     * choices = { "M", "F" },
+     * choices = { "0", "1" },
      * message = "précisez le sexe")
      */
     private $gender;
@@ -120,12 +133,18 @@ class Student
      *
      * @ORM\Column(name="enrolled", type="boolean")
      */
-    private $enrolled;
+    private $enrolled=false;
 
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="student")
      */
     private $subscriptions;
+     /**
+     * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="student",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     *
+     * */
+    private $payments;
     
      /**
      * Get updated
@@ -513,31 +532,20 @@ class Student
      */
     public function __construct()
     {
-        $this->setEnrolled(false);
+       
         $this->marks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-     * Add mark
-     *
-     * @param \AppBundle\Entity\Mark $mark
-     *
-     * @return Student
-     */
-    public function addMark(\AppBundle\Entity\Mark $mark)
+    
+    public function addMark(Mark $mark)
     {
         $this->marks[] = $mark;
 
         return $this;
     }
 
-    /**
-     * Remove mark
-     *
-     * @param \AppBundle\Entity\Mark $mark
-     */
-    public function removeMark(\AppBundle\Entity\Mark $mark)
+    public function removeMark(Mark $mark)
     {
         $this->marks->removeElement($mark);
     }
@@ -634,4 +642,52 @@ class Student
         return $this;
     }
 
+    /**
+     * Set enrolled
+     *
+     * @param boolean $enrolled
+     *
+     * @return Student
+     */
+    public function setEnrolled($enrolled)
+    {
+        $this->enrolled = $enrolled;
+
+        return $this;
+    }
+
+    /**
+     * Get enrolled
+     *
+     * @return boolean
+     */
+    public function getEnrolled()
+    {
+        return $this->enrolled;
+    }
+
+
+
+    public function addPayment(Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+ 
+    public function removePayment(Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
 }

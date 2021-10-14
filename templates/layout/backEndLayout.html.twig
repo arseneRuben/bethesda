@@ -73,27 +73,30 @@
 										<a href="{{ path('admin_courses')}}"><i class="fa fa-book" aria-hidden="true"></i>Matière</a>
 									</li>
 									<HR size="0.8" align="center" width="80%" color="white">
+									<li class="{% if app.request.attributes.get('_route') == "admin_subscriptions" %}active{% endif %}">
+										<a href="{{ path('admin_subscriptions')}}"><i class="fa fa-exchange" aria-hidden="true"></i>Inscription</a>
+									</li>
+									<li class="{% if app.request.attributes.get('_route') == "admin_students" %}active{% endif %}">
+										<a href="{{ path('admin_students')}}"><i class="fa fa-user" aria-hidden="true"></i>Eleves</a>
+									</li>
+										<li class="{% if app.request.attributes.get('_route') == "admin_attributions" %}active{% endif %}">
+										<a href="{{ path('admin_attributions')}}"><i class="fa fa-map-signs" aria-hidden="true"></i>Attributions
+										</a>
+									</li>
 									{#<li class="{% if app.request.attributes.get('_route') == "admin_settings" %}active{% endif %}">
 										<a href="{{ path('admin_settings')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Scolarité</a>
 									</li>
 									<li class="{% if app.request.attributes.get('_route') == "admin_payes" %}active{% endif %}">
 										<a href="{{ path('admin_payes')}}"><i class="fa fa-money" aria-hidden="true"></i>Versement</a>
 									</li>
-									<li class="{% if app.request.attributes.get('_route') == "admin_subscriptions" %}active{% endif %}">
-										<a href="{{ path('admin_subscriptions')}}"><i class="fa fa-exchange" aria-hidden="true"></i>Inscription</a>
-									</li>
+									
 									<HR size="0.8" align="center" width="80%" color="white">
 								
-									<li class="{% if app.request.attributes.get('_route') == "admin_students" %}active{% endif %}">
-										<a href="{{ path('admin_students')}}"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Elèves inscrits</a>
-									</li>
+									
 									<li class="{% if app.request.attributes.get('_route') == "admin_evaluations" %}active{% endif %}">
 										<a href="{{ path('admin_evaluations')}}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>Evaluations</a>
 									</li>
-									<li class="{% if app.request.attributes.get('_route') == "admin_attributions" %}active{% endif %}">
-										<a href="{{ path('admin_attributions')}}"><i class="fa fa-map-signs" aria-hidden="true"></i>Attributions
-										</a>
-									</li>
+								
 									{# <li class="{% if app.request.attributes.get('_route') == "admin_users" %}active{% endif %}">
 										<a href="{{ path('admin_users')}}"><i class="fa fa-user" aria-hidden="true"></i>Professeurs</a>
 									</li>

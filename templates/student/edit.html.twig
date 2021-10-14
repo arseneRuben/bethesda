@@ -8,7 +8,7 @@
 <div class="row mt-4">
          <div class="col-2 " >
                         <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_quaters') }}">
+                            <a class="btn btn-info" href="{{ path('admin_students') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
                         </div>
@@ -17,9 +17,9 @@
                         <div class="col-md-6 mx-auto">
                             <article class="text-center">
                                      <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Edition du trimestre {{ quater.id }}  </h4>
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Modification des donnees d eleve  </h4>
                                   </div>
-                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update quater', 'returnRoute':'admin_quaters'})}}
+                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update student', 'returnRoute':'admin_students'})}}
                             </article>
                         </div>
                     </div>

@@ -1,0 +1,55 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+
+{% block content %}
+  
+    
+        <div class="row mt-4">
+            <div class="col-lg-1" >
+                <a class="btn btn-info" href="{{ path('admin_subscriptions_new') }}">
+                    <i class="fa fa-plus"></i> <h1>New </h1>
+                </a>
+            </div>
+             <div class="col-11 jumbotron" >
+                 <div class="m-1 box-shadow">
+                    <div class="card-header">
+                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des inscriptions </h4>
+                    </div>
+                <table  width="100%" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Elève</th>
+                            <th>Classe</th>
+                            <th>Année scolaire</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subscriptions|reverse %}
+                            <tr>
+                                 <td class="qty">{{loop.index  }}</td>
+                                 <td><a href="{{ path('admin_students_show', {id: sub.student.id}) }}">{{ sub.student }}</a></td>
+                                 <td><a href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">{{ sub.classroom }}</a></td>
+                                <td><a href="{{ path('admin_schoolyears_edit', {id: sub.schoolyear.id}) }}">{{ sub.schoolyear }}</a></td>
+                                
+                                <td>
+                                    <div class="btn-group">
+                                        
+                                        <a class="btn btn-info btn-sm"  href="{{ path('admin_subscriptions_edit', {id: sub.id}) }}">
+                                            <i class="fa fa-edit"></i> Modifier
+                                        </a>
+                                      
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
