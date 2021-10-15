@@ -34,7 +34,7 @@
                         <a class="btn btn-outline-warning" href="{{path('admin_courses_edit', {id: course.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
                                 <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-course-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
                                 <form id="js-course-delete-form" action="{{path('admin_courses_delete', {id: course.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('courses_deletion' ~ course.id ) }}" id="">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('courses_deletion' ~ course.id ) }}" id="">
                                     <input type="hidden" name="_method" value="DELETE">
 
                                 </form>

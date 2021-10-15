@@ -190,12 +190,12 @@ class SubscriptionController extends AbstractController
      */
     public function delete(Subscription $subscription , Request $request):Response
     {
-       // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($subscription);
            
             $this->em->flush();
             $this->addFlash('info', 'Subscription succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_subscriptions');
     }

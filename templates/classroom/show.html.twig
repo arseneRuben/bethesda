@@ -79,24 +79,7 @@
         <input name="modal" type="hidden" value="0">
    
         {% if is_granted('ROLE_ADMIN') %}
-            <div id="delete_confirm" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h3>{{ 'Confirm delete'|trans({}, 'admin') }}</h3>
-                        </div>
-                        <div class="modal-body">
-                            <p>{{ 'You are about to delete an item'|trans({}, 'admin') }}, {{ 'this procedure is irreversible'|trans({}, 'admin') }}.</p>
-                            <p>{{ 'Do you want to proceed?'|trans({}, 'admin') }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-danger">{{ 'Yes'|trans({}, 'admin') }}</button>
-                            <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'admin') }}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         {% endif %}
         <p>
         <div class="center" > <h2> Liste des élèves incrits dans la classe </h2></div>
@@ -112,7 +95,7 @@
                 {% set effectif =0 %}
                 {% for std in studentEnrolled %}
                     <tr>
-                        <td><a href="{{ path('students_show', {id: std.id}) }}">{{ std.matricule }}</a></td>
+                        <td><a href="{{ path('admin_students_show', {id: std.id}) }}">{{ std.matricule }}</a></td>
                         <td>{{ std.lastname}}</td>
                         <td>{{ std.firstname }}</td>
                         {% set effectif = effectif+1 %}
@@ -150,7 +133,7 @@
                         {% for course in module.courses %}
                         <tr>
                             <td>{{ module.name }}</td>
-                            <td><a href="{{ path('prof_courses_show', {id: course.id}) }}">{{ course.code }}</a></td>
+                            <td><a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.code }}</a></td>
                             <td>
 
                             {{ course.wording }}

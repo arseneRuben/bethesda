@@ -137,12 +137,12 @@ class LevelController extends AbstractController
      */
     public function delete(Level $level, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('levels_deletion'.$level->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('levels_deletion'.$level->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($level);
            
             $this->em->flush();
             $this->addFlash('info', 'Level succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_levels');
     }

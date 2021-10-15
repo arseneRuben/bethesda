@@ -114,13 +114,13 @@ class QuaterController extends AbstractController
     public function delete(Request $request, Quater $q):Response
     {
       
-      //  if($this->isCsrfTokenValid('quaters_deletion'.$q->getId(), $request->request->get('crsf_token') )){
-      //      dd($q);
+        if($this->isCsrfTokenValid('quaters_deletion'.$q->getId(), $request->request->get('csrf_token') )){
+
             $this->em->remove($q);
            
             $this->em->flush();
             $this->addFlash('info', 'Quater succesfully deleted');
-      //   }
+        }
        
         return $this->redirectToRoute('admin_quaters');
     }

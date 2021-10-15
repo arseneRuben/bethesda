@@ -94,8 +94,8 @@
                             <div class=" ">			
                                 <a class="btn btn-outline-warning" href="{{path('admin_students_edit', {id: student.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
                                 <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
-                                <form id="js-course-delete-form" action="{{path('admin_students_delete', {id: student.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
+                                <form id="js-student-delete-form" action="{{path('admin_students_delete', {id: student.id})}}" method="post" style="display: none;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
                                     <input type="hidden" name="_method" value="DELETE">
 
                                 </form>

@@ -114,12 +114,12 @@ class SequenceController extends AbstractController
     public function delete(Sequence $q, Request $request):Response
     {
        
-       // if($this->isCsrfTokenValid('sequences_deletion'.$schoolyear->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('sequences_deletion'.$schoolyear->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($q);
            
             $this->em->flush();
             $this->addFlash('info', 'Sequence succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_sequences');
     }

@@ -54,7 +54,7 @@
 Edit </a> |
                                 <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-cycle-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
                                 <form id="js-cycle-delete-form" action="{{path('admin_cycles_delete', {id: cycle.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('cycles_deletion' ~ cycle.id ) }}" id="">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('cycles_deletion' ~ cycle.id ) }}" id="">
                                     <input type="hidden" name="_method" value="DELETE">
 
                                 </form>

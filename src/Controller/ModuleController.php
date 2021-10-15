@@ -137,12 +137,12 @@ class ModuleController extends AbstractController
      */
     public function delete(Module $module, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('modules_deletion'.$module->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('modules_deletion'.$module->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($module);
            
             $this->em->flush();
             $this->addFlash('info', 'Module succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_modules');
     }

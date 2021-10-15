@@ -111,12 +111,12 @@ class ProgramController extends AbstractController
      */
     public function delete(Program $program, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('programs_deletion'.$program->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('programs_deletion'.$program->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($program);
            
             $this->em->flush();
             $this->addFlash('info', 'Program succesfully deleted');
-      // }
+       }
        
         return $this->redirectToRoute('admin_programs');
     }

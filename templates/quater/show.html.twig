@@ -80,7 +80,7 @@
      </a> |
                                     <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Cette supressession entrenera celle  de toutes  sequences incluses. Es-tu sure ?') && document.getElementById('js-quater-delete-form').submit();"> <i class="fa fa-trash"></i> </a>
                                     <form id="js-quater-delete-form" action="{{path('admin_quaters_delete', {id: quater.id})}}" method="post" style="display: none;">
-                                        <input type="hidden" name="{{ csrf_token('quaters_deletion' ~ quater.id ) }}" id="">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('quaters_deletion' ~ quater.id ) }}" id="">
                                         <input type="hidden" name="_method" value="DELETE">
 
                                     </form>

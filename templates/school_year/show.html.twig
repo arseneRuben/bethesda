@@ -79,7 +79,7 @@
     Edit </a> |
                                     <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Cette supressession entrenera celle des trimestres et des sequences inclus. Es-tu sure ?') && document.getElementById('js-school_year-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
                                     <form id="js-school_year-delete-form" action="{{path('admin_schoolyears_delete', {id: school_year.id})}}" method="post" style="display: none;">
-                                        <input type="hidden" name="{{ csrf_token('school_years_deletion' ~ school_year.id ) }}" id="">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('school_years_deletion' ~ school_year.id ) }}" id="">
                                         <input type="hidden" name="_method" value="DELETE">
 
                                     </form>

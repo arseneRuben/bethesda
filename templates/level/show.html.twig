@@ -25,21 +25,22 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Nom</th>
-                                        <th scope="col">Taille</th>
+                                        <th scope="col">Titulaire</th>
+                                        <th scope="col">Effectif</th>
                                         
                                     
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for cycle in level.cycles %}
+                                    {% for room in level.rooms %}
                                         <tr>
                                             <td scope="row">{{ loop.index }}</th>
                                             <td>
-                                                <a href="{{ path('admin_levels_show', {id: cycle.id}) }}">{{ cycle.name}}</a>
+                                                <a href="{{ path('admin_classrooms_show', {id: room.id}) }}">{{ room.name}}</a>
                                             </td>
                                            
-                                            <td>{{ cycle.name }}</td>
-                                             <td>{{ cycle.levels.size }}</td>
+                                            <td>{{ room.fulTeacher }}</td>
+                                             <td>{{ room.currentYearSubscriptions.size }}</td>
                                         
                                             
                                         </tr>
@@ -52,7 +53,7 @@
 Edit </a> |
                                 <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-level-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
                                 <form id="js-level-delete-form" action="{{path('admin_levels_delete', {id: level.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="{{ csrf_token('levels_deletion' ~ level.id ) }}" id="">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('levels_deletion' ~ level.id ) }}" >
                                     <input type="hidden" name="_method" value="DELETE">
 
                                 </form>

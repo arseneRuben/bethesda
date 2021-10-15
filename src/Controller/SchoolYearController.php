@@ -112,12 +112,12 @@ class SchoolYearController extends AbstractController
     public function delete(SchoolYear $schoolyear, Request $request):Response
     {
       
-       // if($this->isCsrfTokenValid('schoolyears_deletion'.$schoolyear->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('schoolyears_deletion'.$schoolyear->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($schoolyear);
            
             $this->em->flush();
             $this->addFlash('info', 'SchoolYear succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_school_years');
     }

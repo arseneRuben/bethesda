@@ -137,12 +137,12 @@ class SectionController extends AbstractController
      */
     public function delete(Section $section, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($section);
            
             $this->em->flush();
             $this->addFlash('info', 'Section succesfully deleted');
-    //    }
+        }
        
         return $this->redirectToRoute('admin_sections');
     }
