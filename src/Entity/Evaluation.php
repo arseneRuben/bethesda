@@ -13,6 +13,8 @@ use App\Entity\Traits\TimeStampable;
 class Evaluation
 {
     use TimeStampable;
+
+    public const NUM_ITEMS_PER_PAGE = 10;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

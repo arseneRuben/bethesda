@@ -1,0 +1,41 @@
+{% extends 'layout/frontEndLayout.html.twig' %}
+
+{% block title %}Password Reset Email Sent{% endblock %}
+
+  {% block stylesheets %}
+        	 {{parent()}} 
+            <link href="{{ asset('assets/css/login.css') }}" rel="stylesheet">    
+            
+{% endblock %}
+
+{% block body %}
+  
+
+ <div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
+    <div class=" border-0">
+        <div class="row d-flex">
+            <div class="col-lg-6">
+                <div class="card1 pb-5">
+                    <div class="row"> <img src="{{ asset('assets/images/favicon.ico') }}" class="logo"> </div>
+                    <div class="row px-3 justify-content-center mt-4 mb-5 border-line"> <img src="{{ asset('assets/images/BethesdaLogo.gif') }}" class="image"> </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card2 card border-0 px-4 py-5">
+
+
+             
+                    <p>
+                        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+                        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                    </p>
+                    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+               
+                </div>
+            </div>
+        </div>
+       
+    </div>
+ </div>
+ {% endblock %}

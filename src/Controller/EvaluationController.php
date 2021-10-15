@@ -57,7 +57,7 @@ class EvaluationController extends AbstractController
         
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAnnualEvaluations($year->getId());
-        $evaluations = $paginator->paginate($entities,$request->query->get('page', 1),10);
+        $evaluations = $paginator->paginate($entities,$request->query->get('page', 1),Evaluation::NUM_ITEMS_PER_PAGE);
         $evaluations->setCustomParameters([
             'position' => 'centered',
             'size' => 'large',
