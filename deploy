@@ -1,0 +1,2 @@
+#/bin/sh
+rsync -av ./ 5l31u_arsene@5l31u.ftp.infomaniak.com:~/bethesda --include=public/build  --include=vendor  --include=.htaccess  --exclude-from=.gitignore --exclude=".*"

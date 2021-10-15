@@ -20,6 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"firstName", "lastName"}, message="There is already an account with this firstname and lastname")
  * @Vich\Uploadable
  * @ORM\HasLifecycleCallbacks
  * 
@@ -37,6 +38,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="Please enter your email address")
+     * @Assert\NotBlank(message="Please enter a valid  email address")
      */
     private $email;
 

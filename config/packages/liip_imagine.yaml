@@ -4,20 +4,35 @@ liip_imagine:
     driver: "imagick"
 
     filter_sets:
-
-        # name our first filter set "my_min_up_scale_filter"
-        squared_thumbnail_medium:
+        # name our filter set "my_thumb_filter"
+        user_filter_square_medium:
             filters:
+                # use and setup the "thumbnail" filter
                 thumbnail:
-                    # input 1980x1280px -> output 3960x2560px
+                    # set the thumbnail size to "32x32" pixels
                     size: [300, 300]
+                    # crop the input image, if required
                     mode: outbound
-                    allow_upscale: true
-
-        squared_thumbnail_small:
+                    upscale: true
+                    position: center
+        student_filter_square_medium:
             filters:
+                # use and setup the "thumbnail" filter
                 thumbnail:
-                    # input 1980x1280px -> output 3960x2560px
+                    # set the thumbnail size to "32x32" pixels
                     size: [200, 200]
+                    # crop the input image, if required
                     mode: outbound
-                    allow_upscale: true
+                    upscale: true
+                    position: center
+        room_filter_square_small:
+            filters:
+                # use and setup the "thumbnail" filter
+                thumbnail:
+                    # set the thumbnail size to "32x32" pixels
+                    size: [200, 200]
+                    # crop the input image, if required
+                    mode: outbound
+                    upscale: true
+                    position: center
+

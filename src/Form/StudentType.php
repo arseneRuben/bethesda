@@ -24,7 +24,7 @@ class StudentType extends AbstractType {
                         'required' => false,
                         'allow_delete' => true,
                         
-                        'imagine_pattern' => 'program_filter_square_small',
+                        'imagine_pattern' => 'student_filter_square_medium',
                         'download_uri' => false,
                         
                     ])

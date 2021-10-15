@@ -1,0 +1,79 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+
+{% block content %}
+  
+    
+        <div class="row mt-4">
+           
+            <div class="col-12 jumbotron" >
+                <div class="m-1 box-shadow">
+                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des {{ pagination.getTotalItemCount }} évaluations   </h4>
+                    </div>
+                    <table class="table table-striped">
+					<thead>
+						<tr>
+							<th style="width:4%;" class="text-center">
+								<a class="btn btn-info" href="{{ path('admin_evaluations_new') }}">
+									<i class="fa fa-plus"></i>
+
+								</a>
+							</th>
+							<th style="width:8%;" class="text-center">SEQ</th>
+							<th style="width:12%;" {% if pagination.isSorted('e.classroom.name') %} class="sorted" {% endif %}>Classe
+							</th>
+							<th style="width:15%;" class="text-center">Matière</th>
+							<th style="width:20%;" class="text-center">Compétence</th>
+							<th style="width:15%;" class="text-center">Succ</th>
+							<th style="width:5%;" class="text-center">Echec</th>
+							<th style="width:5%;" class="text-center">Abs</th>
+							<th style="width:5%;" class="text-center">Moy Gen.</th>
+							<th style="width:15%;" class="text-center">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for evaluation in pagination  %}
+							<tr>
+								<td>{{ evaluation.id }}</td>
+								<td>{{ evaluation.sequence.code }}</td>
+								<td>
+									<a href="{{ path('admin_classrooms_edit', {id: evaluation.classroom.id}) }}">{{ evaluation.classroom.name }}</a>
+								</td>
+								<td>{{ evaluation.course }}</td>
+								<td>{{ evaluation.competence }}</td>
+								{% set success = evaluation.successH + evaluation.successF %}
+								<td>{{ success }}</td>
+								{% set faillure = evaluation.failluresH +  evaluation.failluresF  %}
+								<td>{{faillure}}</td>
+								<td>{{ evaluation.abscent }}</td>
+								<td>{{ evaluation.moyenne |round(2,'floor') }}</td>
+								<td>
+									<div class="btn-group">
+										<a class="btn btn-info btn-sm" href="{{ path('prof_evaluations_pdf', {id: evaluation.id}) }}">
+											<i class="fa fa-cloud-download">
+												PDF</i>
+										</a>
+										<a class="btn btn-warning btn-sm" href="{{ path('prof_evaluations_edit', {id: evaluation.id|default('1')}) }}">
+											<i class="fa fa-edit">
+												Modif</i>
+										</a>
+										{# <a class="btn btn-danger btn-sm"  href="{{ path('prof_evaluations_delete', {id: evaluation.id}) }}">
+																				                                                                                    <i class="fa fa-edit"> Supp</i>
+																				                                                                                </a> #}
+									</div>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{# display navigation #}
+				<div class="navigation  text-center">
+					{{ knp_pagination_render(pagination) }}
+				</div>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}

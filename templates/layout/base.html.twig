@@ -45,9 +45,10 @@
     </head>
 
     <body class="host_version">
-          {% block partials %}
-           <!-- Flash Messages -->
+         <!-- Flash Messages -->
             {% include 'layout/partials/flash_messages.html.twig' %}
+          {% block partials %}
+          
           <!-- Modal -->
            {% include 'layout/partials/modal.html.twig' %}
           
@@ -68,7 +69,7 @@
             
          {% block footer %}
              <!-- Header -->
-                      {% include 'layout/partials/partners.html.twig' %}
+                  {% include 'layout/partials/partners.html.twig' %}
 				  {% include 'layout/partials/footer.html.twig' %}
          {% endblock footer %}
         </div>

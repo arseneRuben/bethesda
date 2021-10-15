@@ -3,9 +3,7 @@
 
 {% block content %}
             
-             <img src="{{ (student.imageName ? vich_uploader_asset(student) : asset('buid/images/placeholder.jpg'))| imagine_filter('squared_thumbnail_medium') }}" alt="{{ student.lastname }}" class="w-100 ">
-			</br/>
-            <hr/>
+            
             <div class="row">
 
                     <div class="col-lg-2" >
@@ -13,7 +11,10 @@
                             <a class="btn btn-info" href="{{ path('admin_students') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
+                           
                         </div>
+                          <img src="{{ (student.imageName ? vich_uploader_asset(student) : asset('buid/images/placeholder.jpg'))| imagine_filter('student_filter_square_medium') }}" alt="{{ student.lastname }}" class="w-100 ">
+		
                     </div>
                     <div class="col-lg-10 card">
                     

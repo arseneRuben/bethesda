@@ -1,0 +1,144 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+{% block content %}
+        {% form_theme form 'bootstrap_4_layout.html.twig' %}
+	 	<div class="row mt-4">
+                 <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_evaluations') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+	{{ form_start(form, {action: path('prof_evaluations_create'),'attr': {'id': 'formEvaluation', 'class':'evaluation'} }) }}
+
+                    <div class="col-10 jumbotron  mx-auto">
+
+						<div class="col-md-6 mx-auto">
+							<article class="text-center">
+								<br/>
+								<div class="card-header">
+												<h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Nouvelle fiche pour evaluation </h4>
+								</div>
+									<br/>
+
+
+								<p>
+									{{ form_widget(form.sequence ,{'attr':{'class':'ChoiceSequence'} } ) }}
+								</p>
+
+
+								<p>
+									{{ form_widget(form.classRoom,{'attr':{'class':'ChoiceClassRoom', 'name' :'ChoiceClassRoom', 'id':'ChoiceClassRoom'} }) }}
+								</p>
+								<p>
+									{{ form_widget(form.competence,{'attr':{'class':'form form-control'} }) }}
+								</p>
+							</article>
+						</div>
+					
+					
+						<div class="col-md-3  table-responsive"></div>
+					
+						<div id="ficheBodyStudents" class="row">
+							{% include "evaluation/liststudents.html.twig" %}
+						</div>
+						<div class="col-10 jumbotron  mx-auto">
+						</div>
+				
+					</div>
+					<div class="row" >
+						<div class="col-md-4"></div>
+						<div class="btn-group text-center col-md-4">
+							<button class="btn btn-danger" type="submit">
+								<b>
+									<i class="fa fa-balance-scale"></i>submit</b>
+							</button>
+							<a class="btn btn-info" href="{{ path('admin_evaluations') }}">
+								<i class="fa fa-list"></i>
+								{{ 'Back to the list'|trans({}, 'admin') }}
+							</a>
+							
+						</div>
+						<div class="col-md-4"></div>
+					</div>
+		{{ form_end(form) }}
+{% endblock %}
+{% block footer %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+
+	<script type="text/javascript">
+		var classRoom = document.getElementById("evaluation_classRoom"),
+			competence = document.getElementById("evaluation_competence"),
+			idclassroom,
+			instant,
+			idcourse,
+			idsequence,
+			formEval = document.getElementById("formEvaluation");
+			classRoom.setAttribute('name', 'ChoiceClassRoom');
+
+			$(".ChoiceInstant").change(function () {
+				instant = $("select.ChoiceInstant option:selected").val();
+			});
+
+			$(".ChoiceSequence").change(function () {
+				idsequence = $("select.ChoiceSequence option:selected").val();
+			});
+			$(".ChoiceClassRoom").change(function () {
+				idclassroom = $("select.ChoiceClassRoom option:selected").val();
+				$.ajax({
+					type: "POST",
+					url: "{{ path('prof_classroom_students') }}",
+					data: {
+					idclassroom: idclassroom
+					},
+					datatype: "json",
+					success: function (data) {
+						$("#ficheBodyStudents").html(data).show();
+					}
+				});
+			});
+
+
+	var marksJson = [],
+	postData;
+
+		$(function () {
+			$(document).on('submit', 'form', function (e) { // il est impératif de commencer avec cette méthode qui va empêcher le navigateur d'envoyer le formulaire lui-même
+			e.preventDefault();
+
+
+			$("input[max=20]").each(function (index) {
+				marksJson.push({"matricule": $(this).attr('id'), "note": $(this).val(), "appreciation": $(this).parent().next().children().val(), "weight": $(this).parent().next().next().children().val()});
+			});
+			idcourse = $("select.ChoiceCourse option:selected").val();
+			postData = {
+				"marks": JSON.stringify(marksJson),
+				"idroom": idclassroom,
+				"idcourse": idcourse,
+				"idsequence": idsequence,
+				"instant": instant,
+				"competence": competence.value
+			};
+
+		$.ajax({
+			type: "POST",
+			url: "{{ path('admin_evaluations_new') }}",
+			data: postData,
+			datatype: "json",
+			success: function (data) {
+			console.log(postData);
+			},
+			error: function (e) {
+				console.log(e.message);
+			}
+			});
+		});
+		});
+	</script>
+
+{% endblock javascripts %}

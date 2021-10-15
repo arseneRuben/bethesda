@@ -1,0 +1,8 @@
+{% if courses is defined%}
+
+        {%for course in courses%}
+            <option value="{{course.code}}">{{course.wording}}</option>
+        {% endfor %}
+  
+
+{% endif %}

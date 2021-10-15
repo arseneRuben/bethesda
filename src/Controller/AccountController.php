@@ -62,6 +62,7 @@ class AccountController extends AbstractController
     	{
             $this->em->flush();
             $this->addFlash('success', 'Account successfully modified');
+            return $this->redirectToRoute('app_account');
         }
 
 

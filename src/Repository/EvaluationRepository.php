@@ -47,4 +47,42 @@ class EvaluationRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAll() {
+        $qb = $this->createQueryBuilder('e')
+                  ->orderBy('e.sequence', 'DESC')
+                 ->orderBy('e.classRoom', 'DESC')
+                 ->orderBy('e.id', 'DESC');
+          return $qb->getQuery()->getResult();
+    }
+
+    // Liste des évaluation d'une salle de classe à une séquence
+    public function findSequantialExamsOfRoom(int $room, int $seq)
+    {
+        $qb = $this->createQueryBuilder('e')
+                ->leftJoin('e.classRoom', 'r')
+                ->leftJoin('e.sequence', 's')
+                ->leftJoin('e.course', 'c')
+                ->where('r.id=:room')
+                ->andWhere('s.id=:seq')
+                ->orderBy('c.domain')
+                ->orderBy('c.wording')
+                ->setParameter('seq', $seq)
+                ->setParameter('room', $room);
+        return $qb->getQuery() ->getResult();
+    }
+
+    // Liste des évaluation de l'année scolaire spécifiée
+    public function findAnnualEvaluations( int $sc)
+    {
+        $qb = $this->createQueryBuilder('e')
+                ->leftJoin('e.sequence', 's')
+                ->leftJoin('s.quater', 'q')
+                ->leftJoin('q.schoolYear', 'sc')
+                ->andWhere('sc.id=:sc')
+                ->setParameter('sc', $sc)
+                ->orderBy('e.sequence', 'DESC')
+                ->orderBy('e.id', 'DESC');
+        return $qb->getQuery() ->getResult();
+    }
 }

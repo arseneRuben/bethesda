@@ -65,7 +65,7 @@
                         
                     </div><!-- end container -->
                 {% else %}
-		        <p class="mt-5 h1 text-center"> No classroom yet.    <a href="{{path('admin_classrooms_create')}}"> Be the first! </a> </p>
+		        <p class="mt-5 h1 text-center"> No classroom yet.   	{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} <a href="{{path('admin_classrooms_new')}}"> Be the first! </a> {% endif %}</p>
 	             {% endif  %}
               
                 </div><!-- end row -->	
