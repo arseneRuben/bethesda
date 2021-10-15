@@ -147,10 +147,15 @@
 														<strong class="text-primary">SCHOOL MANAGEMENT SYSTEM</strong>
 													</div>
 											</a>
-											{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-											<a id="logout_btn"  href="{{ path('app_logout') }}" class="btn text-right btn-warning">
+											{% if app.user %}
+											<a id="logout_btn"   href="#"  onclick= "event.preventDefault(); document.getElementById('js-logout-form').submit();" class="btn text-right btn-warning">
 												<i class="fa fa-sign-out" aria-hidden="true"></i>
 											</a>
+
+											<form id="js-logout-form" action="{{ path('app_logout') }}" style="dislay:none;" method="POST" >
+												<input type="hidden" name="_csrf_token" value="{{ csrf_token('logout')}}"/>
+											
+											</form>
 											{% endif %}
 										</div>
 											

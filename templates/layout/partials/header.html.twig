@@ -41,7 +41,12 @@
 
                         <li>
 								{% if  app.user %} 
-										<a class="hover-btn-new log"  href="{{ path('app_logout') }}"  ><span>Logout</span></a>
+										<a class="hover-btn-new log"  href="#"  onclick= "event.preventDefault(); document.getElementById('js-logout-form').submit();"  ><span>Logout</span></a>
+										<form id="js-logout-form" action="{{ path('app_logout') }}" style="dislay:none;" method="POST" >
+											<input type="hidden" name="_csrf_token" value="{{ csrf_token('logout')}}"/>
+											
+										</form>
+									
 							{#	{% else  %}
 										<a class="hover-btn-new log orange"   data-toggle="modal" data-target="#login" ><span>Book Now</span></a>
 								#}{% endif  %} 

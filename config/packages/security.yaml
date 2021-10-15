@@ -22,6 +22,7 @@ security:
                     - App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
+                csrf_token_generator: Symfony\Component\Security\Csrf\CsrfTokenManagerInterface
                 # where to redirect after logout
                 # target: app_any_route
     role_hierarchy:
