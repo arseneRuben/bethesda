@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CourseRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Attribution;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CourseRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=CourseRepository::class)
@@ -54,6 +55,13 @@ class Course
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="course")
      */
     private $evaluations;
+
+      /**
+     * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="course",cascade={"persist"})    
+     * @ORM\JoinColumn(nullable=true)
+     *    
+     * */
+    private $attributions;
 
     public function __construct()
     {
@@ -174,5 +182,30 @@ class Course
         }
 
         return $this;
+    }
+
+
+   
+    public function addAttribution(Attribution $attribution)
+    {
+        $this->attributions[] = $attribution;
+
+        return $this;
+    }
+
+
+    public function removeAttribution(Attribution $attribution)
+    {
+        $this->attributions->removeElement($attribution);
+    }
+
+    /**
+     * Get attributions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAttributions()
+    {
+        return $this->attributions;
     }
 }

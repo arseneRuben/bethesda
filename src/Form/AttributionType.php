@@ -1,10 +1,14 @@
 <?php
 
-namespace AppBundle\Form\Type;
-use AppBundle\Repository\CourseRepository;
-use AppBundle\Repository\UserRepository;
+namespace App\Form;
+use App\Entity\User;
+use App\Entity\Course;
+use App\Entity\Attribution;
+use App\Repository\UserRepository;
+use App\Repository\CourseRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AttributionType extends AbstractType
@@ -15,16 +19,16 @@ class AttributionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
        
-        $builder  ->add('course','entity', array('class' => 'AppBundle\Entity\Course', 'placeholder' => 'Choisir la matière', 'required' => true,'label' => 'Matière',
+        /* $builder  ->add('course',EntityType::class, array('class' => Course::class, 'placeholder' => 'Choisir la matière', 'required' => true,'label' => 'Matière',
         'query_builder' => function (CourseRepository $repository){return $repository->findNotAttributedCoursesAtActivatedYear();}
        /* OLD
                  'query_builder' => function (CourseRepository $repository)
             {return $repository->createQueryBuilder('c')->where('c.attributed=:er')->setParameter('er', false)->add('orderBy', 'c.domain');} 
-        */
-        ))
-          
-             ->add('teacher','entity', array('class' => 'AppBundle\Entity\User',  'placeholder' => 'Choisir l\'enseignant ','label' => 'Enseignant', 'required' =>  true,  'query_builder' => function (UserRepository $repository)
-            {return $repository->createQueryBuilder('u')->add('orderBy', 'u.username');} ))
+        
+        ))*/
+        $builder  ->add('course')
+             ->add('teacher',EntityType::class, array('class' => User::class,  'placeholder' => 'Choisir l\'enseignant ','label' => 'Enseignant', 'required' =>  true,  'query_builder' => function (UserRepository $repository)
+            {return $repository->createQueryBuilder('u')->add('orderBy', 'u.fullName');} ))
    
         ;
     }
@@ -35,7 +39,7 @@ class AttributionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Attribution',
+            'data_class' => Attribution::class,
         ));
     }
 

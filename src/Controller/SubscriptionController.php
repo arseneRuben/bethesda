@@ -53,6 +53,17 @@ class SubscriptionController extends AbstractController
     }
 
 
+    /**
+     * Finds and displays a subscription entity.
+     *
+     * @Route("/{id}/show", name="admin_subscriptions_show", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function showAction(Subscription $subscription)
+    {
+        return $this->render('subscription/show.html.twig', compact("subscription"));
+    }
 
     /**
      * @Route("/create",name="admin_subscriptions_new", methods={"GET","POST"})

@@ -1,0 +1,75 @@
+{% extends 'layout/frontEndLayout.html.twig' %}
+
+{% block name %}Classrooms of Bethesda {% endblock %}
+
+{% block body %}
+
+
+    <div id="overviews" class="section wb">
+        <div class="container">
+            <div class="section-title row text-center">
+                <div class="col-md-8 offset-md-2">
+                    <p class="lead">Lorem Ipsum dolroin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem!</p>
+                </div>
+            </div><!-- end title -->
+
+            <hr class="invis"> 
+                {% if  rooms|length > 0  %} 
+                    <div id="teachers" class="section wb">
+                    
+                        {% for row in rooms|batch(4) %}
+                                <div class="row">
+                                {% for room in row %}
+                                    <div class="col-lg-3 col-md-6 col-12">
+                                        <div class="course-item">
+                                            <div class="image-blog">
+                                                <img src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
+                                            </div>
+                                            <div class="course-br">
+                                                <div class="course-title">
+                                                    <h2><a href="#" title="">{{ room.name }}</a></h2>
+                                                </div>
+                                                <div class="course-desc">
+                                                    <p>
+                                                          <ul class="list-unstyled h3 mt-3 mb-4">
+                                                           {% for moduule in room.modules %}
+                                                                  <li><h4>{{moduule.name}}&nbsp;&nbsp;</h4></li>
+                                                                 {% for course in moduule.courses %}
+                                                                     <li>&nbsp;&nbsp;&nbsp;&nbsp;<h4>{{course.wording}}&nbsp;&nbsp; |&nbsp;&nbsp; {{course.coefficient}}</h4></li>
+                                                                 {% endfor  %}
+                                                           {% endfor  %}
+                                                        </ul>
+                                                    </p>
+                                                </div>
+                                                <div class="course-rating">
+                                                    4.5
+                                                    <i class="fa fa-star"></i>	
+                                                    <i class="fa fa-star"></i>	
+                                                    <i class="fa fa-star"></i>	
+                                                    <i class="fa fa-star"></i>	
+                                                    <i class="fa fa-star-half"></i>								
+                                                </div>
+                                            </div>
+                                            <div class="course-meta-bot">
+                                                <ul>
+                                                   
+                                                    <li><i class="fa fa-users" aria-hidden="true"></i> {{ pluralize(room.currentYearSubscriptions|length, 'Student' , 'Students')  }}</li>
+                                                    <li><i class="fa fa-book" aria-hidden="true"></i>  {{ pluralize(room.modules|length, 'Module' , 'Modules')  }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div><!-- end col -->
+                                {% endfor  %}
+                                </div><!-- end row -->
+                        {% endfor  %}	
+                        
+                    </div><!-- end container -->
+                {% else %}
+		        <p class="mt-5 h1 text-center"> No classroom yet.    <a href="{{path('admin_classrooms_create')}}"> Be the first! </a> </p>
+	             {% endif  %}
+              
+                </div><!-- end row -->	
+
+	    </div>
+	</div>
+{% endblock %}

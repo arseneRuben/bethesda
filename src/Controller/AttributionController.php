@@ -1,14 +1,18 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
+use App\Entity\Attribution;
+use App\Form\AttributionType;
+use App\Repository\SchoolYearRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\AttributionRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Attribution;
-use AppBundle\Form\Type\AttributionType;
 
 /**
  * Attribution controller.
@@ -17,6 +21,16 @@ use AppBundle\Form\Type\AttributionType;
  */
 class AttributionController extends Controller {
 
+    private $em;
+    private $repo;
+    private $scRepo;
+
+    public function __construct(EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo)
+    {
+        $this->em = $em;
+        $this->repo= $repo;
+        $this->scRepo = $scRepo;
+    }
     /**
      * Lists all Attribution entities.
      *
@@ -26,8 +40,8 @@ class AttributionController extends Controller {
      */
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-        $entities = $em->getRepository('AppBundle:Attribution')->findAllThisYear($year);
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $entities = $this->repo->findAllThisYear($year);
 
         return $this->render('attribution/index.html.twig', array(
                     'entities' => $entities,
@@ -58,143 +72,89 @@ class AttributionController extends Controller {
      * @Template()
      */
     public function undoAction() {
-          $em = $this->getDoctrine()->getManager();
-         $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-        $entities = $em->getRepository('AppBundle:Attribution')->findAllThisYear($year);   
+          
+         $year = $this->scRepo->findOneBy(array("activated" => true));
+        $entities = $repo->findAllThisYear($year);   
         foreach ($entities as $attribution){
              $attribution->getCourse()->setAttributed(FALSE);
-                $em->remove($attribution);
+                $this->em->remove($attribution);
         }
          $em->flush();
          return $this->redirect($this->generateUrl('admin_attributions'));
     }
 
-    /**
-     * Displays a form to create a new Attribution entity.
+  /**
+     * Creates a new Section entity.
      *
-     * @Route("/new", name="admin_attributions_new")
-     * @Method("GET")
-     * @Template()
-     */
-    public function newAction() {
-        $attribution = new Attribution();
-        $form = $this->createForm(new AttributionType(), $attribution);
-
-        return $this->render('attribution/new.html.twig', array(
-                    'attribution' => $attribution,
-                    'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * Creates a new Attribution entity.
-     *
-     * @Route("/create", name="admin_attributions_create")
+     * @Route("/create", name="admin_attributions_new")
      * @Method("POST")
-     * @Template("AppBundle:Attribution:new.html.twig")
      */
-    public function createAction(Request $request) {
-        $em = $this->getDoctrine()->getManager();
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
+    public function createAction(Request $request)
+    {
         $attribution = new Attribution();
-        $form = $this->createForm(new AttributionType(), $attribution);
-        $attribution->setSchoolYear($year);
-        if ($form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
-            $course = $attribution->getCourse();
-            $course->addAttribution($attribution);
-            $course->setAttributed(TRUE);
-            $em->persist($attribution);
-            $em->flush();
+        $form = $this->createForm(AttributionType::class, $attribution);
+        $form->handleRequest($request);
+    	if($form->isSubmitted() && $form->isValid()) {
+            $year = $this->scRepo->findOneBy(array("activated" => true));
+            $attribution->setSchoolYear($year);
+            $this->em->persist($attribution);
+            $this->em->flush();
 
             return $this->redirect($this->generateUrl('admin_attributions'));
         }
 
-        return array(
-            'attribution' => $attribution,
-            'form' => $form->createView(),
+        return $this->render('attribution/new.html.twig'
+        , ['form'=>$form->createView()]
         );
     }
 
+
+   
+
     /**
-     * Displays a form to edit an existing Attribution entity.
+     * Displays a form to edit an existing Programme entity.
      *
-     * @Route("/{id}/edit", name="admin_attributions_edit", requirements={"id"="\d+"})
-     * @Method("GET")
+     * @Route("/{id}/edit", name="admin_attributions_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function editAction(Attribution $attribution) {
-        $editForm = $this->createForm(new AttributionType(), $attribution, array(
-            'action' => $this->generateUrl('admin_attributions_update', array('id' => $attribution->getId())),
-            'method' => 'PUT',
-        ));
-        $deleteForm = $this->createDeleteForm($attribution->getId(), 'admin_attributions_delete');
-
-        return $this->render('attribution/edit.html.twig', array(
-                    'attribution' => $attribution,
-                    'edit_form' => $editForm->createView(),
-                    'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
-     * Edits an existing Attribution entity.
-     *
-     * @Route("/{id}/update", name="admin_attributions_update", requirements={"id"="\d+"})
-     * @Method("PUT")
-     * @Template("AppBundle:Attribution:edit.html.twig")
-     */
-    public function updateAction(Attribution $attribution, Request $request) {
-        $editForm = $this->createForm(new AttributionType(), $attribution, array(
-            'action' => $this->generateUrl('admin_attributions_update', array('id' => $attribution->getId())),
-            'method' => 'PUT',
-        ));
-        if ($editForm->handleRequest($request)->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirect($this->generateUrl('admin_attributions'));
+    public function edit(Request $request,Attribution $attribution): Response
+    {
+        $form = $this->createForm(AttributionType::class, $attribution, [
+            'method'=> 'PUT'
+        ]);
+        $form->handleRequest($request);
+     
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->em->flush();
+            $this->addFlash('success', 'Attribution succesfully updated');
+            return $this->redirectToRoute('admin_attributions');
         }
-        $deleteForm = $this->createDeleteForm($attribution->getId(), 'admin_attributions_delete');
-
-        return array(
-            'attribution' => $attribution,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->render('attribution/edit.html.twig'	, [
+            'attribution'=>$attribution,
+            'form'=>$form->createView()
+        ]);
     }
 
-    /**
-     * Deletes a Attribution entity.
+   
+
+    
+       /**
+     * Deletes a Programme entity.
      *
-     * @Route("/{id}/delete", name="admin_attributions_delete", requirements={"id"="\d+"})
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="admin_attributions_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function deleteAction(Attribution $attribution, Request $request) {
-        $form = $this->createDeleteForm($attribution->getId(), 'admin_attributions_delete');
-        if ($form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $attribution->getCourse()->setAttributed(FALSE);
-            $em->remove($attribution);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('admin_attributions'));
+    public function delete(Attribution $attribution , Request $request):Response
+    {
+       // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
+            $this->em->remove($attribution);
+           
+            $this->em->flush();
+            $this->addFlash('info', 'Attribution succesfully deleted');
+    //    }
+       
+        return $this->redirectToRoute('admin_attributions');
     }
-
-    /**
-     * Create Delete form
-     *
-     * @param integer                       $id
-     * @param string                        $route
-     * @return \Symfony\Component\Form\Form
-     */
-    protected function createDeleteForm($id, $route) {
-        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-                        ->setAction($this->generateUrl($route, array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->getForm()
-        ;
-    }
+  
 
 }

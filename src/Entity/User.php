@@ -180,7 +180,11 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="fullTeacher")
      */
     private $fullTeacherOf;
-
+    
+    /**
+     * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="teacher")
+     */
+    private $attributions;
     
    
     public function getAvatar(int $size = 50): ?string

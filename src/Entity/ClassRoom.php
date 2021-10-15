@@ -2,15 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\ClassRoomRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\ClassRoom;
+use App\Entity\SchoolYear;
+use App\Entity\Subscription;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ClassRoomRepository;
+use Doctrine\Persistence\ObjectManager;
+use App\Repository\SubscriptionRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Persistence\ObjectManagerAware;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ClassRoomRepository::class)
  */
-class ClassRoom
+class ClassRoom  implements ObjectManagerAware
 {
     /**
      * @ORM\Id
@@ -52,10 +59,13 @@ class ClassRoom
     private $subscriptions;
 
 
+
+
     public function __construct()
     {
         $this->modules = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+       
     }
 
     public function __toString() {
@@ -146,11 +156,30 @@ class ClassRoom
         return $this;
     }
 
+   
+
     /**
      * @return Collection|Subscription[]
      */
     public function getSubscriptions(): Collection
     {
+        return $this->subscriptions;
+    }
+
+    public function injectObjectManager(
+        ObjectManager $objectManager,
+        ClassMetadata $classMetadata
+    ) {
+        $this->em = $objectManager;
+    }
+    
+     /**
+     * @return Collection|Subscription[]
+     */
+    public function getCurrentYearSubscriptions(): Collection
+    {
+        $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
+        $subscriptions  = $this->em->getRepository(Subscription::class)->findAll(array("schoolYear" => $year, "classRoom" => $this));
         return $this->subscriptions;
     }
 

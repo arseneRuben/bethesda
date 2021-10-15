@@ -1,0 +1,54 @@
+{% extends 'layout/frontEndLayout.html.twig' %}
+
+{% block name %}Teaachers of Bethesda {% endblock %}
+
+{% block body %}
+	<div class="all-title-box">
+		<div class="container text-center">
+			<h1><span class="m_1"> {{ pluralize(users|length, 'Teacher' , 'Teachers')  }} </span></h1>
+		</div>
+	</div>
+	{% if  users|length > 0  %} 
+		<div id="teachers" class="section wb">
+        	<div class="container">
+		{% for row in users|batch(3) %}
+				<div class="row">
+				{% for user in row %}
+					<div class="col-lg-4 col-md-6 col-12">
+						<div class="our-team">
+							<div class="team-img">
+							
+								<img src="{{ user.avatar(75) }}" class="w-100 ">
+							
+								<div class="social">
+									<ul>
+										<li><a href="#" class="fa fa-facebook"></a></li>
+										<li><a href="#" class="fa fa-twitter"></a></li>
+										<li><a href="#" class="fa fa-linkedin"></a></li>
+										<li><a href="#" class="fa fa-skype"></a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="team-content">
+								<h3 class="title">{{user.fullName}}</h3>
+								<span class="post">{{user.domain}}</span>
+							</div>
+						</div>
+					</div>
+				{% endfor  %}
+				</div><!-- end row -->
+		{% endfor  %}	
+			
+		  </div><!-- end container -->
+		  	{% else %}
+		<p class="mt-5 h1 text-center"> No teacher yet.    <a href="{{path('admin_users_create')}}"> Be the first! </a> </p>
+	{% endif  %}
+    </div><!-- end section -->
+
+      	
+
+
+
+
+	
+{% endblock %}

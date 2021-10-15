@@ -15,6 +15,7 @@ class ClassRoomType extends AbstractType
             ->add('name')
             ->add('apc')
             ->add('level')
+            ->add('fullTeacher')
         ;
     }
 

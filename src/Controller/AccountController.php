@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AcountController extends AbstractController
+class AccountController extends AbstractController
 {
     private $em;
 
@@ -25,6 +25,7 @@ class AcountController extends AbstractController
     public function index(): Response
     {
         $this->getUser()->getRoles();
+        
         if(!$this->getUser()->isVerified())
         {
             $this->addFlash('warning', 'You need to have a verified account');
@@ -32,13 +33,14 @@ class AcountController extends AbstractController
         }
         else
         {
+           
             $hasAccess = $this->isGranted('ROLE_ADMIN');
             if(!$hasAccess){
                 return $this->redirectToRoute('app_home');
              }else
              {
-                return $this->render('account/profile.html.twig', [
-                ]);
+              
+                return $this->render('account/profile.html.twig');
              }
         }
     }

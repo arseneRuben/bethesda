@@ -3,7 +3,7 @@ namespace App\Entity;
 use App\Entity\Course;
 use App\Entity\User;
 use App\Entity\SchoolYear;
-use App\Repository\AttibutionRepository;
+use App\Repository\AttributionRepository;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Attribution
  *
  * @ORM\Table(name="attribution")
- * @ORM\Entity(repositoryClass=AttibutionRepository::class)
+ * @ORM\Entity(repositoryClass=AttributionRepository::class)
 
  */
 class Attribution {
@@ -43,8 +43,10 @@ class Attribution {
      */
     private $schoolYear;
 
+    
+
    
-    public function setTeacher(\AppBundle\Entity\User $teacher)
+    public function setTeacher(User $teacher)
     {
         $this->teacher = $teacher;
 
