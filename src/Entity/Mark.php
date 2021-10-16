@@ -40,7 +40,7 @@ class Mark
     private $weight;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="rank2",nullable=true)
      */
     private $rank2;
 
@@ -53,6 +53,8 @@ class Mark
     {
         return $this->id;
     }
+
+    
 
     public function getStudent(): ?Student
     {

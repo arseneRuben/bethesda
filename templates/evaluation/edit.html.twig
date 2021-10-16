@@ -1,0 +1,161 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+
+{% block content %}
+  
+  <div class="row mt-4">
+        		   <div class="col-1 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_attributions') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                                <div class="col-11 jumbotron  mx-auto">
+                    <div class="col-md-6 mx-auto">
+                        <article class="text-center">
+                            <br/>
+								<div class="card-header">
+												<h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Modifier evaluation {{ evaluation.id }}  </h4>
+									</div>
+
+								<div class="example-wrapper">
+									<h1 class="center">Edition évaluation N°
+										{{evaluation.id}}
+										Sequence
+										{{evaluation.sequence.code}}
+										Cours
+										{{evaluation.classRoom.name}}
+										Cours
+										{{evaluation.course.wording}}</h1>
+									<div class="row">
+										<div class="col-lg-4 mar-bot30"></div>
+										<div class="col-lg-4 mar-bot30">
+											{{ form_start(edit_form) }}
+											{{ form_widget(edit_form) }}
+											<p>
+												<input type="text" placeholder="Compétence acquise" class="form-control" value="{{evaluation.competence}}" name="competence"/>
+											</p>
+										</div>
+										<div class="col-lg-4 mar-bot30"></div>
+									</div>
+									<div class="row">
+										<div class="col-lg-1 mar-bot30"></div>
+										<div class="col-lg-10 mar-bot30">
+
+											{% if students is defined %}
+
+
+												<table class="table table-bordered table-hover table-sortable" id="tab_logic">
+
+													<thead>
+														<tr>
+															<th class="text-center" style="width:10%;">Matricule</th>
+															<th class="text-center" style="width:35%;">Nom et prénom</th>
+															<th class="text-center" style="width:15%;">Note</th>
+															<th class="text-center" style="width:25%;">Appréciation</th>
+															<th class="text-center" style="width:10%;">Poids</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for student in students  %}
+															<tr class="hidden" data-id="0" id='addr0'>
+																<td data-name="name">
+																	{{student.matricule}}
+																</td>
+																<td data-name="name">
+																	{{student.lastname}}
+																	{{student.firstname}}
+																</td>
+																{% if mark[student.matricule] is defined %}
+																	<td data-name="desc">
+																		<input type="float" id="{{ student.matricule }}" placeholder="0...20" value="{{ mark[student.matricule].value }}" min="0" max="20" class="form-control value" name="{{student.matricule}}note"/>
+																	</td>
+
+																	<td data-name="desc">
+																		<input type="text" value="{{mark[student.matricule].appreciation}}" placeholder="Appréciation" class="form-control appreciation" name="{{student.matricule}}appr"/>
+																	</td>
+																	<td data-name="desc">
+																		<input type="text" value="{{mark[student.matricule].weight}}" placeholder="Poids" class="form-control appreciation" name="{{student.matricule}}weight"/>
+																	</td>
+																{% else %}
+																	<td data-name="desc">
+																		<input type="float" id="{{ student.matricule }}" placeholder="0...20" value="0" min="0" max="20" class="form-control value" name="{{student.matricule}}note"/>
+																	</td>
+
+																	<td data-name="desc">
+																		<input type="text" value="ABSCENT" placeholder="Appréciation" class="form-control appreciation" name="{{student.matricule}}appr"/>
+																	</td>
+																	<td data-name="desc">
+																		<input type="text" value="0" placeholder="Poids" class="form-control appreciation" name="{{student.matricule}}weight"/>
+																	</td>
+																{% endif %}
+															</tr>
+														{% endfor %}
+													</tbody>
+
+												</table>
+
+											{% endif %}
+
+
+										</div>
+										<div class="col-lg-1 mar-bot30"></div>
+									</div>
+
+									<div class="btn-group center record_actions">
+
+										<a class="btn btn-info" href="{{ path('prof_evaluations') }}">
+											<i class="fa fa-list"></i>
+											{{ 'Back to the list'|trans({}, 'admin') }}
+										</a>
+
+
+										<button class="btn btn-warning" type="submit">
+											<i class="fa fa-edit"></i>
+											{{ 'Update'|trans({}, 'admin') }}</button>
+										<a class="btn btn-danger" href="{{ path('prof_evaluations_delete', {id: evaluation.id}) }}">
+											<i class="fa fa-trash-o"></i>
+											{{ 'Delete'|trans({}, 'admin') }}
+										</a>
+
+									</div>
+
+								</div>
+							
+						</article>
+                    </div>
+			</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	        	 {{parent()}} 
+	<script type="text/javascript" src="{{ asset('assets/js/jquery.js') }}"></script>
+	<script type="text/javascript">
+
+
+		$(function () {
+$("td input.value").change(function () {
+var note = $(this).val();
+note = parseInt(note);
+
+ 				if (note >= 0 && note < 11) {
+                    $(this).parent().next().children().val("NA");
+                }
+                if (note >= 11 && note < 14) {
+                    $(this).parent().next().children().val("EA/IA");
+                }
+                if (note >= 14 && note < 17) {
+                    $(this).parent().next().children().val("A");
+                }
+                if (note >= 17 && note <= 20) {
+                    $(this).parent().next().children().val("E");
+                }
+
+});
+});
+	</script>
+{% endblock javascripts %}

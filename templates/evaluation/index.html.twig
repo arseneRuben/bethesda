@@ -51,11 +51,11 @@
 								<td>{{ evaluation.moyenne |round(2,'floor') }}</td>
 								<td>
 									<div class="btn-group">
-										<a class="btn btn-info btn-sm" href="{{ path('prof_evaluations_pdf', {id: evaluation.id}) }}">
+										<a class="btn btn-info btn-sm" href="{{ path('admin_evaluations_pdf', {id: evaluation.id}) }}">
 											<i class="fa fa-cloud-download">
 												PDF</i>
 										</a>
-										<a class="btn btn-warning btn-sm" href="{{ path('prof_evaluations_edit', {id: evaluation.id|default('1')}) }}">
+										<a class="btn btn-warning btn-sm" href="{{ path('admin_evaluations_edit', {id: evaluation.id|default('1')}) }}">
 											<i class="fa fa-edit">
 												Modif</i>
 										</a>

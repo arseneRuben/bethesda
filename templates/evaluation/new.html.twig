@@ -1,68 +1,63 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 {% block content %}
-        {% form_theme form 'bootstrap_4_layout.html.twig' %}
-	 	<div class="row mt-4">
-                 <div class="col-2 " >
-                        <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_evaluations') }}">
-                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
-                            </a>
+        	{% form_theme form 'bootstrap_4_layout.html.twig' %}
+			  <div class="col-12 jumbotron" >
+               
+	 				<div class="row mt-4  mx-auto box-shadow">
+						<div class="card-header">
+                                        <h3 class="my-0 text-center text-justify text-uppercase">  Nouvelle fiche d evaluation</h3>
                         </div>
-                    </div>
-	{{ form_start(form, {action: path('prof_evaluations_create'),'attr': {'id': 'formEvaluation', 'class':'evaluation'} }) }}
+						<div class="mt-4 col-md-12 col-sm-12 table-responsive">
 
-                    <div class="col-10 jumbotron  mx-auto">
+							<div class="row">
+								<div class="col-3   table-responsive"></div>
+								<div class="col-6  table-responsive">
 
-						<div class="col-md-6 mx-auto">
-							<article class="text-center">
-								<br/>
-								<div class="card-header">
-												<h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Nouvelle fiche pour evaluation </h4>
+									{{ form_start(form, {action: path('admin_evaluations_create'),'attr': {'id': 'formEvaluation', 'class':'evaluation'} }) }}
+
+
+									<p>
+										{{ form_widget(form.sequence ,{'attr':{'class':'ChoiceSequence'} } ) }}
+									</p>
+
+
+									<p>
+										{{ form_widget(form.classRoom,{'attr':{'class':'ChoiceClassRoom', 'name' :'ChoiceClassRoom', 'id':'ChoiceClassRoom'} }) }}
+									</p>
+									<p>
+										{{ form_widget(form.competence,{'attr':{'class':'form form-control'} }) }}
+									</p>
+
 								</div>
-									<br/>
-
-
-								<p>
-									{{ form_widget(form.sequence ,{'attr':{'class':'ChoiceSequence'} } ) }}
-								</p>
-
-
-								<p>
-									{{ form_widget(form.classRoom,{'attr':{'class':'ChoiceClassRoom', 'name' :'ChoiceClassRoom', 'id':'ChoiceClassRoom'} }) }}
-								</p>
-								<p>
-									{{ form_widget(form.competence,{'attr':{'class':'form form-control'} }) }}
-								</p>
-							</article>
+								<div class="col-3  table-responsive"></div>
+							</div>
 						</div>
-					
-					
-						<div class="col-md-3  table-responsive"></div>
-					
-						<div id="ficheBodyStudents" class="row">
+						<div id="ficheBodyStudents" class=" col-md-12  row">
 							{% include "evaluation/liststudents.html.twig" %}
 						</div>
-						<div class="col-10 jumbotron  mx-auto">
-						</div>
+					</div>
+					<div class="row mt-2 mx-auto">
+							<div class=" col-4">
+							</div>
+							<div class=" col-4 mx-auto btn-group d-inline-flex p-2 bd-highlight">
+								<button class="btn btn-danger" type="submit">
+									<b>
+										<i class="fa fa-balance-scale"></i>submit</b>
+								</button>
+								<a class="btn btn-info" href="{{ path('admin_evaluations') }}">
+									<i class="fa fa-list"></i>
+									{{ 'Back to the list'|trans({}, 'admin') }}
+								</a>
+								
+							</div>
+							<div class=" col-4">
+							</div>
+					</div>
 				
-					</div>
-					<div class="row" >
-						<div class="col-md-4"></div>
-						<div class="btn-group text-center col-md-4">
-							<button class="btn btn-danger" type="submit">
-								<b>
-									<i class="fa fa-balance-scale"></i>submit</b>
-							</button>
-							<a class="btn btn-info" href="{{ path('admin_evaluations') }}">
-								<i class="fa fa-list"></i>
-								{{ 'Back to the list'|trans({}, 'admin') }}
-							</a>
-							
-						</div>
-						<div class="col-md-4"></div>
-					</div>
-		{{ form_end(form) }}
+			{{ form_end(form) }}
+		</div>
+				
 {% endblock %}
 {% block footer %}
 	{{ parent() }}
@@ -90,9 +85,10 @@
 			});
 			$(".ChoiceClassRoom").change(function () {
 				idclassroom = $("select.ChoiceClassRoom option:selected").val();
+				
 				$.ajax({
 					type: "POST",
-					url: "{{ path('prof_classroom_students') }}",
+					url: "{{ path('admin_classroom_students') }}",
 					data: {
 					idclassroom: idclassroom
 					},
@@ -110,7 +106,7 @@
 		$(function () {
 			$(document).on('submit', 'form', function (e) { // il est impératif de commencer avec cette méthode qui va empêcher le navigateur d'envoyer le formulaire lui-même
 			e.preventDefault();
-
+			
 
 			$("input[max=20]").each(function (index) {
 				marksJson.push({"matricule": $(this).attr('id'), "note": $(this).val(), "appreciation": $(this).parent().next().children().val(), "weight": $(this).parent().next().next().children().val()});
@@ -127,14 +123,15 @@
 
 		$.ajax({
 			type: "POST",
-			url: "{{ path('admin_evaluations_new') }}",
+			url: "{{ path('admin_evaluations_create') }}",
 			data: postData,
 			datatype: "json",
 			success: function (data) {
-			console.log(postData);
+				alert("Enregistre avec succes.");
 			},
 			error: function (e) {
 				console.log(e.message);
+				alert("Echec.");
 			}
 			});
 		});

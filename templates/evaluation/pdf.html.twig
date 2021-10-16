@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Procès verbal</title>
+        
+        <link href="{{pathToWeb}}/assets/css/pdf.css"      rel="stylesheet" type="text/css" /> 
+        <link rel="stylesheet"  type="text/css" href="{{pathToWeb}}/assets/css/bootstrap.min.css">
+    </head>
+    <body>
+        <header class="clearfix">
+
+            <h1><b> Procès verbal de la {{evaluation.sequence.wording}} de  {{evaluation.course.wording}} </b> </h1>
+            <div id="company" class="clearfix">
+                <div><h5><b><span>Classe</span> {{evaluation.classroom.name}}</b></h5></div>
+                  
+            </div>
+            <div id="project">
+            <div><h5><b><span>Année scolaire</span> {{evaluation.sequence.quater.schoolYear.wording}}</b></h5></div>
+            	 
+           
+        </header>
+        <main>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="service"  style="width:10%;">Matricule</th>
+                        <th class="desc"  style="width:30%;"><h8>Nom et prénom</h8></th>
+                        <th  style="width:5%;"><b>Note/20</b></th>
+                         <th  style="width:5%;"><b>Rang</b></th>
+                        <th  style="width:25%;"><b>Appreciation</b></th>
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in evaluation.marks %}
+                        <tr>
+                            <td class="service"><b>{{mark.student.matricule}}</b></td>
+                            <td class="desc"><b>{{mark.student.lastname }} {{   mark.student.firstname}}</b></td>
+                            <td class="qty">{{mark.value}}</td>
+                           <td class="qty">{{mark.rank}}</td>
+                            <td class="total">{{mark.appreciation}}</td>
+                        </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+             <div id="notices">
+              {% set success = evaluation.successH + evaluation.successF %}
+               {% set faillure = evaluation.failluresH +  evaluation.failluresF  %}
+               {% set total = success + faillure + evaluation.abscent %}
+                  {% set psuccess = (success / total)*100 %}
+               
+                <div>BILAN:</div>
+                <div class="notice"> SUCCESS: {{ psuccess }}%, ABSENCE : {{evaluation.abscent }}</div>
+            </div>
+            <div id="notices">
+                <div>NOTICE:</div>
+                <div class="notice">Cette fiche est à conserver en vue de la traçabilité de la gestion des notes de cette année scolaire.</div>
+            </div>
+        </main>
+        <footer>
+           Fiche de procès verbal
+        </footer>
+    </body>
+</html>

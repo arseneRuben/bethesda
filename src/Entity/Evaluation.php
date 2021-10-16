@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\EvaluationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
+use App\Repository\EvaluationRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity(repositoryClass=EvaluationRepository::class)
  */
@@ -41,27 +41,27 @@ class Evaluation
     private $competence;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $abscent;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer" , options={"default":0})
      */
     private $successH;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $successF;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $failluresH;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
     private $failluresF;
 
@@ -85,6 +85,13 @@ class Evaluation
     public function __construct()
     {
         $this->marks = new ArrayCollection();
+        $this->setFailluresF(0);
+        $this->setFailluresH(0);
+        $this->setSuccessF(0);
+        $this->setSuccessH(0);
+        $this->setAbscent(0);
+        $this->createdAt= new \DateTime();
+        $this->updatedAt= new \DateTime();
     }
 
     public function getId(): ?int
@@ -188,6 +195,47 @@ class Evaluation
         return $this;
     }
 
+        /**
+    * Set successF
+    *
+    *
+    * @return Evaluation
+    */
+    public function addSuccessF()
+    {
+        $this->successF++;
+
+        return $this;
+    }
+
+    /**
+    * Add failluresF
+    *
+    *
+    * @return Evaluation
+    */
+    public function addFailluresH()
+    {
+        $this->failluresH++;
+
+        return $this;
+    }
+
+      /**
+     * Set failluresF
+     *
+     * @param integer $failluresF
+     *
+     * @return Evaluation
+     */
+    public function addFailluresF()
+    {
+        $this->failluresF++;
+
+        return $this;
+    }
+    
+
     public function getCourse(): ?Course
     {
         return $this->course;
@@ -211,6 +259,8 @@ class Evaluation
 
         return $this;
     }
+
+
 
     /**
      * @return Collection|Mark[]

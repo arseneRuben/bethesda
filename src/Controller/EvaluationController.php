@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Mark;
 use App\Entity\Evaluation;
 use App\Form\EvaluationType;
 use App\Repository\CourseRepository;
@@ -33,16 +34,19 @@ class EvaluationController extends AbstractController
     private $stdRepo;
     private $clRepo;
     private $crsRepo;
+    private $seqRepo;
 
     public function __construct(EntityManagerInterface $em,EvaluationRepository $repo,StudentRepository $stdRepo,
     CourseRepository $crsRepo, SchoolYearRepository $scRepo, ClassRoomRepository $clRepo, SequenceRepository $seqRepo)
     {
         $this->em = $em;
+        $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->stdRepo = $stdRepo;
-        $this->repo = $repo;
+        
         $this->clRepo = $clRepo;
         $this->crsRepo = $crsRepo;
+        $this->seqRepo = $seqRepo;
     }
 
      /**
@@ -80,42 +84,41 @@ class EvaluationController extends AbstractController
     }
 
   /**
-     * @Route("/create",name= "admin_evaluations_new", methods={"GET","POST"})
+     * @Route("/new",name= "admin_evaluations_new", methods={"GET"})
      */
-    public function create(Request $request): Response
+    public function new(Request $request): Response
     {
         $evaluation = new Evaluation();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findNotEnrolledStudentsThisYear($year);
     	$form = $this->createForm(EvaluationType::class, $evaluation);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
+    	//$form->handleRequest($request);
+    	/*if($form->isSubmitted() && $form->isValid())
     	{
             $this->em->persist($evaluation);
             $this->em->flush();
             $this->addFlash('success', 'Evaluation succesfully created');
             return $this->redirectToRoute('admin_evaluations');
-    	}
-    	 return $this->render('evaluation/new.html.twig'
-    	 	, ['form'=>$form->createView()]
-        );
+    	}*/
+        return $this->render('evaluation/new.html.twig', array(
+            // 'students' => $studentsEnrolledInClass,
+            'evaluation' => $evaluation,
+            'response' => null,
+            'form' => $form->createView(),
+        ));
     }
 
       /**
      * Creates a new Evaluation entity.
      *
-     * @Route("/create", name="prof_evaluations_create")
+     * @Route("/create", name="admin_evaluations_create")
      * @Method({"POST"})
-   
+     * @Template()
      */
-    public function createAction(Request $request)
+    public function create(Request $request)
     {
-
-      
         $evaluation = new Evaluation();
-
-        $form = $this->createForm(new EvaluationType(), $evaluation);
-
+       
         if ($content = $request->getContent()) {
             $marks = json_decode($_POST['marks'], true);
             $notes = array();
@@ -128,7 +131,7 @@ class EvaluationController extends AbstractController
             $idsequence = $request->request->get('idsequence');
             $competence = $request->request->get('competence');
 
-            $classRoom = $this->scRepo->findOneBy(array("id" => $room));
+            $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
 
@@ -171,7 +174,7 @@ class EvaluationController extends AbstractController
                 $mark->setEvaluation($evaluation);
                 $mark->setStudent($student);
                 $notes[$pos++] = $mark; // Construction d'un arrayList pour trie
-                $em->persist($mark);
+                $this->em->persist($mark);
                 $evaluation->addMark($mark);
             }
             // disposition des rang dans les notes
@@ -183,7 +186,7 @@ class EvaluationController extends AbstractController
             });
 
             foreach ($notes as $mark) {
-                $mark->setRank($pos);
+                $mark->setRank2($pos);
                 $pos--;
             }
             if ($effectif != 0) {
@@ -191,16 +194,13 @@ class EvaluationController extends AbstractController
             } else {
                 $evaluation->setMoyenne(0);
             }
-            $em->persist($evaluation);
+            $this->em->persist($evaluation);
 
-            $em->flush();
+            $this->em->flush();
 
-            // return $this->redirect($this->generateUrl('prof_evaluations_pdf', array('id' => $evaluation->getId())));
+           //  return $this->redirect($this->generateUrl('admin_evaluations_pdf', array('id' => $evaluation->getId())));
         }
-        return $this->render('evaluation/new.html.twig', array(
-            'evaluation' => $evaluation,
-            'form' => $form->createView(),
-        ));
+        return $this->redirect($this->generateUrl('admin_evaluations_new'));
     }
 
 
@@ -253,7 +253,7 @@ class EvaluationController extends AbstractController
      /**
      * Displays a form to create a new Evaluation entity.
      *
-     * @Route("/fiche", name="prof_classroom_students",  options = { "expose" = true })
+     * @Route("/fiche", name="admin_classroom_students",  options = { "expose" = true })
      * @Method("POST")
      * @Template()
      */
@@ -276,6 +276,30 @@ class EvaluationController extends AbstractController
             }
         }
         return new Response("No Students");
+    }
+
+
+    /**
+     * Finds and displays a Evaluation entity.
+     *
+     * @Route("/{id}/pdf", name="admin_evaluations_pdf", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function pdfAction(Evaluation $evaluation)
+    {
+        $html = $this->renderView('evaluation/pdf.html.twig', array(
+            'evaluation' => $evaluation,
+        ));
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
+                'default-header' => true)),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $evaluation->getCourse()->getWording() . '.pdf"',
+            )
+        );
     }
 
 }
