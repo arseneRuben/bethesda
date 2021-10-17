@@ -88,6 +88,16 @@ class SectionController extends AbstractController
      */
     public function createAction(Request $request)
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $section = new Section();
         $form = $this->createForm(new SectionType(), $section);
         if ($form->handleRequest($request)->isValid()) {

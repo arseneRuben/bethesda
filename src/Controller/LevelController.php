@@ -88,6 +88,16 @@ class LevelController extends AbstractController
      */
     public function createAction(Request $request)
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $level = new Level();
         $form = $this->createForm(new LevelType(), $level);
         if ($form->handleRequest($request)->isValid()) {

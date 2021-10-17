@@ -32,6 +32,7 @@
         "symfony/property-access": "4.4.*",
         "symfony/property-info": "4.4.*",
         "symfony/proxy-manager-bridge": "4.4.*",
+        "symfony/security": "4.4.*",
         "symfony/security-bundle": "4.4.*",
         "symfony/security-core": "4.4.*",
         "symfony/security-csrf": "4.4.*",

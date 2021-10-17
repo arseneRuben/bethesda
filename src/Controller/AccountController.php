@@ -24,24 +24,31 @@ class AccountController extends AbstractController
      */
     public function index(): Response
     {
-        $this->getUser()->getRoles();
-        
-        if(!$this->getUser()->isVerified())
+       
+        if(!$this->getUser())
         {
-            $this->addFlash('warning', 'You need to have a verified account');
-            return $this->redirectToRoute('app_home');
-        }
-        else
-        {
-           
-            $hasAccess = $this->isGranted('ROLE_ADMIN');
-            if(!$hasAccess){
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        } else {
+            $this->getUser()->getRoles();
+       
+            if(!$this->getUser()->isVerified())
+            {
+                $this->addFlash('warning', 'You need to have a verified account');
                 return $this->redirectToRoute('app_home');
-             }else
-             {
-              
-                return $this->render('account/profile.html.twig');
-             }
+            }
+            else
+            {
+            
+                $hasAccess = $this->isGranted('ROLE_ADMIN');
+                if(!$hasAccess){
+                    return $this->redirectToRoute('app_home');
+                }else
+                {
+                
+                    return $this->render('account/profile.html.twig');
+                }
+            }
         }
     }
 
@@ -52,7 +59,11 @@ class AccountController extends AbstractController
     public function edit(Request $request): Response
     {
       
-       
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $user = $this->getUser();
 
         $form = $this->createForm(UserFormType::class, $user);
@@ -77,7 +88,11 @@ class AccountController extends AbstractController
     */
     public function changePwd(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-      
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $form = $this->createForm(ChangePasswordFormType::class, null, [
             'current_password_required' => true,
         ]);

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Evaluation;
 use App\Entity\Attribution;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CourseRepository;

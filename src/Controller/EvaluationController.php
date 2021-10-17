@@ -117,6 +117,16 @@ class EvaluationController extends AbstractController
      */
     public function create(Request $request)
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $evaluation = new Evaluation();
        
         if ($content = $request->getContent()) {
@@ -213,6 +223,22 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request,Evaluation $evaluation): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+        if($evaluation->getTeacher()!=$this->getUser())
+        {
+            $this->addFlash('warning', 'Access forbidden!');
+            return $this->redirectToRoute('app_home');
+        }
+
         $form = $this->createForm(EvaluationType::class, $evaluation, [
             'method'=> 'PUT'
         ]);
@@ -225,9 +251,13 @@ class EvaluationController extends AbstractController
             $this->addFlash('success', 'Evaluation succesfully updated');
             return $this->redirectToRoute('admin_evaluations');
         }
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentsEnrolledInClass = $this->stdRepo->findNotEnrolledStudentsThisYear($year);
         return $this->render('evaluation/edit.html.twig'	, [
+            
+            'students' => $studentsEnrolledInClass,
             'evaluation'=>$evaluation,
-            'form'=>$form->createView()
+            'edit_form'=>$form->createView()
         ]);
     }
 
@@ -240,12 +270,31 @@ class EvaluationController extends AbstractController
      */
     public function delete(Evaluation $evaluation, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('crsf_token') )){
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+        if($evaluation->getTeacher()!=$this->getUser())
+        {
+            $this->addFlash('warning', 'Access forbidden!');
+            return $this->redirectToRoute('app_home');
+        }
+
+        if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('crsf_token') )){
+            foreach ($evaluation->getMarks() as $mark) {
+                $em->remove($mark);
+            }
             $this->em->remove($evaluation);
            
             $this->em->flush();
             $this->addFlash('info', 'Evaluation succesfully deleted');
-      // }
+       }
        
         return $this->redirectToRoute('admin_evaluations');
     }

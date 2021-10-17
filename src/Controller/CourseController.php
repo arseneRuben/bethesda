@@ -63,6 +63,11 @@ class CourseController extends Controller
      */
     public function create(Request $request): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $course = new Course();
     	$form = $this->createForm(CourseType::class, $course);
     	$form->handleRequest($request);

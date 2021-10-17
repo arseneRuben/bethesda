@@ -63,6 +63,16 @@ class QuaterController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $schoolyear = new Quater();
     	$form = $this->createForm(QuaterType::class, $schoolyear);
     	$form->handleRequest($request);

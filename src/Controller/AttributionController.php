@@ -91,6 +91,11 @@ class AttributionController extends Controller {
      */
     public function createAction(Request $request)
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
         $form->handleRequest($request);

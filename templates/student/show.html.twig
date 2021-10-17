@@ -181,8 +181,8 @@
                                 {% for s in student.subscriptions %}
                                     <tr>
                                         <td>
-                                            {% if s.instant %}
-                                                {{ s.instant|date('Y-m-d H:m:s') }}
+                                            {% if s.createdAt %}
+                                                {{ s.createdAt|date('Y-m-d H:m:s') }}
                                             {% endif %}
                                         </td>
                                         <td>{{ s.schoolYear.wording }}</td>

@@ -50,6 +50,11 @@ class CycleController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $cycle = new Cycle();
     	$form = $this->createForm(CycleType::class, $cycle);
     	$form->handleRequest($request);

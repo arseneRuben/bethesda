@@ -61,6 +61,16 @@ class ProgramController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if(!$this->getUser()->isVerified())
+        {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $program = new Program();
     	$form = $this->createForm(ProgramType::class, $program);
     	$form->handleRequest($request);

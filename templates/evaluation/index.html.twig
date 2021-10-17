@@ -59,9 +59,15 @@
 											<i class="fa fa-edit">
 												Modif</i>
 										</a>
-										{# <a class="btn btn-danger btn-sm"  href="{{ path('prof_evaluations_delete', {id: evaluation.id}) }}">
-																				                                                                                    <i class="fa fa-edit"> Supp</i>
-																				                                                                                </a> #}
+										 	
+										 |
+												<a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> Delete</a>
+												<form id="js-evaluation-delete-form-{{evaluation.id}}" action="{{path('admin_evaluations_delete', {id: evaluation.id})}}" method="post" style="display: none;">
+													<in put type="hidden" name="csrf_token" value="{{ csrf_token('evaluations_deletion' ~ evaluation.id ) }}" id="">
+													<input type="hidden" name="_method" value="DELETE">
+
+												</form>
+										
 									</div>
 								</td>
 							</tr>

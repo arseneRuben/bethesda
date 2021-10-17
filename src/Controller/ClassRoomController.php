@@ -89,6 +89,7 @@ class ClassRoomController extends AbstractController
         // Elèves inscrits
         $attributions = null;
         $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+      
         foreach ($classroom->getModules() as $module ) {
             foreach ($module->getCourses() as $course) {
                 if($course->getAttributions()[$year->getId()-1]){
@@ -419,6 +420,11 @@ class ClassRoomController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        if(!$this->getUser())
+        {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $schoolyear = new ClassRoom();
     	$form = $this->createForm(ClassRoomType::class, $schoolyear);
     	$form->handleRequest($request);

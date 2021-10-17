@@ -2,15 +2,22 @@
 
 namespace App\Entity;
 
+use App\Entity\Course;
+use App\Entity\SchoolYear;
+use App\Entity\Attribution;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
+use Doctrine\Persistence\ObjectManager;
 use App\Repository\EvaluationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Persistence\ObjectManagerAware;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity(repositoryClass=EvaluationRepository::class)
  */
-class Evaluation
+class Evaluation  implements ObjectManagerAware
 {
     use TimeStampable;
 
@@ -92,8 +99,24 @@ class Evaluation
         $this->setAbscent(0);
         $this->createdAt= new \DateTime();
         $this->updatedAt= new \DateTime();
+       
     }
 
+    public function injectObjectManager(
+        ObjectManager $objectManager,
+        ClassMetadata $classMetadata
+    ) {
+        $this->em = $objectManager;
+    }
+    
+
+    public function getTeacher() {
+       
+        $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
+        $attribution  = $this->em->getRepository(Attribution::class)->findOneBy(array("schoolYear" => $year, "course" => $this->getCourse()));
+        return $attribution->getTeacher();
+    }
+ 
     public function getId(): ?int
     {
         return $this->id;

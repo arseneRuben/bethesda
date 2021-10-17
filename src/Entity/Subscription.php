@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Traits\TimeStampable;
 /**
  * @ORM\Entity(repositoryClass=SubscriptionRepository::class)
  */
 class Subscription
 {
+    use TimeStampable;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

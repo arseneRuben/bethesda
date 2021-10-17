@@ -17,37 +17,32 @@
                             <div class="container">
                             <div class="card-deck mb-3 text-center">
                                 <div class="card mb-4 box-shadow">
-                                <div class="card-header">
-                                    <h4 class="my-0 font-weight-normal">{{course.wording}}</h4>
-                                </div>
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">{{course.wording}}</h4>
+                                    </div>
                                 <div class="card-body">
                                   
-                                <ul class="list-unstyled h3 mt-3 mb-4">
-                                    <li>{{course.coefficient}}</li>
-                                    <li>{{course.code}}</li>
-                                    <li>{{course.module.name}}</li>
-                                    <li>{{course.domain.name}}</li>
+                                    <ul class="list-unstyled h3 mt-3 mb-4">
+                                        <li>{{course.coefficient}}</li>
+                                        <li>{{course.code}}</li>
+                                        <li>{{course.module.name}}</li>
+                                        <li>{{course.domain.name}}</li>
 
-                                     <li>{% if course.attributed  %}  PRIS{% else %} NON {% endif %}</li>
-                                 </ul>
-                            <div class=" ">			
-                        <a class="btn btn-outline-warning" href="{{path('admin_courses_edit', {id: course.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
-                                <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-course-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
-                                <form id="js-course-delete-form" action="{{path('admin_courses_delete', {id: course.id})}}" method="post" style="display: none;">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('courses_deletion' ~ course.id ) }}" id="">
-                                    <input type="hidden" name="_method" value="DELETE">
+                                        <li>{% if course.attributed  %}  PRIS{% else %} NON {% endif %}</li>
+                                    </ul>
+                                    <div class=" ">			
+                                        <a class="btn btn-outline-warning" href="{{path('admin_courses_edit', {id: course.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
+                                        <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-course-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                        <form id="js-course-delete-form" action="{{path('admin_courses_delete', {id: course.id})}}" method="post" style="display: none;">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token('courses_deletion' ~ course.id ) }}" id="">
+                                            <input type="hidden" name="_method" value="DELETE">
 
-                                </form>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                                </div>
-                                </div>
-                               
                              </div>
-						
-
-                           
-                            
                      </article>
-              </div>      
+                    </div>      
             </div>
 {% endblock %}
