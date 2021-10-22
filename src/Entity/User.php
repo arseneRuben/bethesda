@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Entity\Traits\TimeStampable;
 //use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+//use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Rollerworks\Component\PasswordStrength\Validator\Constraints as RollerworksPassword;
 use App\Entity\Traits\HasUploadableField;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,7 +22,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
- * @UniqueEntity(fields={"firstName", "lastName"}, message="There is already an account with this firstname and lastname")
+ * @UniqueEntity(fields={"fullName"}, message="There is already an account with this name")
+ * @UniqueEntity(fields={"phoneNumber"}, message="There is already an account with this phone number")
+ * @UniqueEntity(fields={"numCni"}, message="There is already an account with this cni number")
  * @Vich\Uploadable
  * @ORM\HasLifecycleCallbacks
  * 
@@ -70,14 +74,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     private $emails;
 
-       /**
-     * Date/Time of the last activity
-     *
-     * @var \Datetime
-     * @ORM\Column(name = "lastactivityat", type = "datetime",  nullable=true)
-     */
-    protected $lastActivityAt;
-
+   
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
@@ -97,7 +94,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     * @ORM\Column(name="fullName", type="string", length=255, nullable=true)
      */
     protected $fullName;
 
@@ -155,17 +152,9 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     protected $numCni;
 
-    /**
-     * @ORM\Column(type="integer", length=6, options={"default":0})
-     */
-    protected $loginCount = 0;
+  
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    protected $firstLogin;
+
 
     /** @ORM\Column(name="status", nullable=true, unique=false, length=10) 
      * @Assert\Choice(
@@ -188,7 +177,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="teacher")
      */
     private $attributions;
-    
+
+  
    
     public function getAvatar(int $size = 50): ?string
     {
@@ -568,6 +558,85 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
                 $fullTeacherOf->setFullTeacher(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsernameCanonical(): ?string
+    {
+        return $this->username_canonical;
+    }
+
+    public function setUsernameCanonical(string $username_canonical): self
+    {
+        $this->username_canonical = $username_canonical;
+
+        return $this;
+    }
+
+    public function getEmailCanonical(): ?string
+    {
+        return $this->email_canonical;
+    }
+
+    public function setEmailCanonical(string $email_canonical): self
+    {
+        $this->email_canonical = $email_canonical;
+
+        return $this;
+    }
+
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function setSalt(?string $salt): self
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->last_login;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $last_login): self
+    {
+        $this->last_login = $last_login;
+
+        return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmation_token;
+    }
+
+    public function setConfirmationToken(?string $confirmation_token): self
+    {
+        $this->confirmation_token = $confirmation_token;
+
+        return $this;
+    }
+
+    public function getPasswordRequestedAt(): ?\DateTimeImmutable
+    {
+        return $this->password_requested_at;
+    }
+
+    public function setPasswordRequestedAt(?\DateTimeImmutable $password_requested_at): self
+    {
+        $this->password_requested_at = $password_requested_at;
 
         return $this;
     }

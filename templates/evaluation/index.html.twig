@@ -10,18 +10,18 @@
             <div class="col-12 jumbotron" >
                 <div class="m-1 box-shadow">
                     <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des {{ pagination.getTotalItemCount }} évaluations   </h4>
-                    </div>
+						<div class="card-header d-inline-flex">
+                                  <a class="btn btn-info" href="{{ path('admin_evaluations_new') }}">
+									<i class="fa fa-plus"></i>
+
+								</a>      <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Liste des {{ pagination.getTotalItemCount }} évaluations   </h4>
+						</div>
+				    </div>
                     <table class="table table-striped">
 					<thead>
 						<tr>
-							<th style="width:4%;" class="text-center">
-								<a class="btn btn-info" href="{{ path('admin_evaluations_new') }}">
-									<i class="fa fa-plus"></i>
-
-								</a>
-							</th>
-							<th style="width:8%;" class="text-center">SEQ</th>
+						
+							<th style="width:15%;" class="text-center">SEQ</th>
 							<th style="width:12%;" {% if pagination.isSorted('e.classroom.name') %} class="sorted" {% endif %}>Classe
 							</th>
 							<th style="width:15%;" class="text-center">Matière</th>
@@ -36,7 +36,7 @@
 					<tbody>
 						{% for evaluation in pagination  %}
 							<tr>
-								<td>{{ evaluation.id }}</td>
+								
 								<td>{{ evaluation.sequence.code }}</td>
 								<td>
 									<a href="{{ path('admin_classrooms_edit', {id: evaluation.classroom.id}) }}">{{ evaluation.classroom.name }}</a>
@@ -53,15 +53,15 @@
 									<div class="btn-group">
 										<a class="btn btn-info btn-sm" href="{{ path('admin_evaluations_pdf', {id: evaluation.id}) }}">
 											<i class="fa fa-cloud-download">
-												PDF</i>
+												</i>
 										</a>
 										<a class="btn btn-warning btn-sm" href="{{ path('admin_evaluations_edit', {id: evaluation.id|default('1')}) }}">
 											<i class="fa fa-edit">
-												Modif</i>
+											</i>
 										</a>
 										 	
 										 |
-												<a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> Delete</a>
+												<a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> </a>
 												<form id="js-evaluation-delete-form-{{evaluation.id}}" action="{{path('admin_evaluations_delete', {id: evaluation.id})}}" method="post" style="display: none;">
 													<in put type="hidden" name="csrf_token" value="{{ csrf_token('evaluations_deletion' ~ evaluation.id ) }}" id="">
 													<input type="hidden" name="_method" value="DELETE">

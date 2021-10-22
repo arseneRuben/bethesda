@@ -22,7 +22,7 @@ class Section
 
     /**
      * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="sections")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="programme_id", referencedColumnName="id", nullable=false)
      */
     private $program;
 

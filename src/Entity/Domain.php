@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\DomainRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Course;
 use App\Entity\User;
+use App\Entity\Course;
+use App\Entity\Domain;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\DomainRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity(repositoryClass=DomainRepository::class)
  */
@@ -29,17 +30,17 @@ class Domain
      * @ORM\OneToMany(targetEntity=Course::class, mappedBy="domain")
      */
     private $courses;
-
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="domain")
+     * @ORM\ManyToOne(targetEntity=User::class,inversedBy="headOfDepartementOf")
+     * @ORM\JoinColumn(name="headOfDepartmentId", referencedColumnName="id", nullable=true)
      */
-    private $teachers;
-
+    private $headOfDepartment;
+    
 
     public function __construct()
     {
         $this->courses = new ArrayCollection();
-        $this->teachers = new ArrayCollection();
+      
       
     }
 

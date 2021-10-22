@@ -30,11 +30,6 @@ class Sequence
     /**
      * @ORM\Column(type="datetime")
      */
-    private $publicationDate;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
     private $validationDate;
 
     /**
@@ -68,17 +63,6 @@ class Sequence
         return $this;
     }
 
-    public function getPublicationDate(): ?\DateTimeInterface
-    {
-        return $this->publicationDate;
-    }
-
-    public function setPublicationDate(\DateTimeInterface $publicationDate): self
-    {
-        $this->publicationDate = $publicationDate;
-
-        return $this;
-    }
 
     public function getValidationDate(): ?\DateTimeInterface
     {

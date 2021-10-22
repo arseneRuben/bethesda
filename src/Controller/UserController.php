@@ -40,7 +40,7 @@ class UserController extends AbstractController
        
         $users = $repo->findAll();
         
-       return $this->render('user/index.html.twig', compact("users"));
+       return $this->render('user/list.html.twig', compact("users"));
     }
 
 

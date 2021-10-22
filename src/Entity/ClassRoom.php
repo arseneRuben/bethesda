@@ -173,14 +173,12 @@ class ClassRoom  implements ObjectManagerAware
         $this->em = $objectManager;
     }
     
-     /**
-     * @return Collection|Subscription[]
-     */
-    public function getCurrentYearSubscriptions(): Collection
+     
+    public function getCurrentYearSubscriptions()
     {
         $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
-        $subscriptions  = $this->em->getRepository(Subscription::class)->findAll(array("schoolYear" => $year, "classRoom" => $this));
-        return $this->subscriptions;
+        $subscriptions  = $this->em->getRepository(Subscription::class)->findBy(array("schoolYear" => $year, "classRoom" => $this));
+        return $subscriptions;
     }
 
     public function addSubscription(Subscription $subscription): self

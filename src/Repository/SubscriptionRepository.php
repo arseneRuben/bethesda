@@ -42,6 +42,19 @@ class SubscriptionRepository extends ServiceEntityRepository
                  return $qb->getQuery()->getResult();          
       }
 
+      public function findByYear_Room( SchoolYear $year, ClassRoom $room) {
+       
+        $qb = $this->createQueryBuilder('s')
+                 ->leftJoin('s.schoolYear', 'sc')
+                 ->where('sc.id=:year')
+                 ->leftJoin('s.classRoom', 'cl')
+                 ->where('cl.id=:room')
+                
+                 ->setParameter('year', $year->getId())
+                 ->setParameter('room', $room->getId());
+        return $qb->getQuery()->getResult();          
+}
+
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */

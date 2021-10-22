@@ -91,6 +91,9 @@
     "imagine/imagine": {
         "version": "1.2.4"
     },
+    "jbafford/password-strength-bundle": {
+        "version": "dev-master"
+    },
     "jms/metadata": {
         "version": "2.5.1"
     },
@@ -186,6 +189,9 @@
     },
     "psy/psysh": {
         "version": "v0.10.8"
+    },
+    "rollerworks/password-strength-validator": {
+        "version": "v1.7.0"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"

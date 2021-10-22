@@ -30,8 +30,9 @@ class AccountController extends AbstractController
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         } else {
-            $this->getUser()->getRoles();
-       
+           // $this->getUser()->getRoles();
+           // $this->em->persist($this->getUser());
+           // $this->em->flush();
             if(!$this->getUser()->isVerified())
             {
                 $this->addFlash('warning', 'You need to have a verified account');
@@ -45,7 +46,6 @@ class AccountController extends AbstractController
                     return $this->redirectToRoute('app_home');
                 }else
                 {
-                
                     return $this->render('account/profile.html.twig');
                 }
             }

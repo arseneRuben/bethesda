@@ -40,6 +40,11 @@ class Level
      */
     private $rooms;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $amount;
+
     public function __construct()
     {
         $this->settingsPayments = new ArrayCollection();
@@ -138,6 +143,18 @@ class Level
                 $room->setLevel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(?int $amount): self
+    {
+        $this->amount = $amount;
 
         return $this;
     }

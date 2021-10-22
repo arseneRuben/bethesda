@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "15aa6916238ced84bfc55bd0c2f11fec",
+    "content-hash": "db993cb9a77f06cb1685ef36f20e2aed",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1658,6 +1658,55 @@
             "time": "2020-11-03T22:35:03+00:00"
         },
         {
+            "name": "jbafford/password-strength-bundle",
+            "version": "dev-master",
+            "target-dir": "Bafford/PasswordStrengthBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jbafford/PasswordStrengthBundle.git",
+                "reference": "a3b50f2d07e2539b733a36e452e346143bf15786"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jbafford/PasswordStrengthBundle/zipball/a3b50f2d07e2539b733a36e452e346143bf15786",
+                "reference": "a3b50f2d07e2539b733a36e452e346143bf15786",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/http-kernel": ">=2.1",
+                "symfony/validator": ">=2.1"
+            },
+            "default-branch": true,
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Bafford\\PasswordStrengthBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "John Bafford"
+                }
+            ],
+            "description": "Provides a password strength validator",
+            "homepage": "https://github.com/jbafford/PasswordStrengthBundle",
+            "keywords": [
+                "bafford",
+                "password",
+                "strength"
+            ],
+            "support": {
+                "issues": "https://github.com/jbafford/PasswordStrengthBundle/issues",
+                "source": "https://github.com/jbafford/PasswordStrengthBundle/tree/v1.0"
+            },
+            "time": "2020-02-21T00:14:19+00:00"
+        },
+        {
             "name": "jms/metadata",
             "version": "2.5.1",
             "source": {
@@ -2615,6 +2664,79 @@
                 "source": "https://github.com/bobthecow/psysh/tree/v0.10.8"
             },
             "time": "2021-04-10T16:23:39+00:00"
+        },
+        {
+            "name": "rollerworks/password-strength-validator",
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rollerworks/PasswordStrengthValidator.git",
+                "reference": "4a5fc6ac6c149b99f6427919bd3b4d56aa6db8bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rollerworks/PasswordStrengthValidator/zipball/4a5fc6ac6c149b99f6427919bd3b4d56aa6db8bc",
+                "reference": "4a5fc6ac6c149b99f6427919bd3b4d56aa6db8bc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3",
+                "psr/container": "^1.0 || ^2.0",
+                "symfony/deprecation-contracts": "^2.4",
+                "symfony/polyfill-mbstring": "^1.5.0",
+                "symfony/translation": "^4.4 || ^5.0 || ^6.0",
+                "symfony/validator": "^4.4 || ^5.0 || ^6.0"
+            },
+            "require-dev": {
+                "guzzlehttp/psr7": "^1.4",
+                "php-http/httplug": "^1.1",
+                "phpspec/prophecy": "^1.10.3",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "psr/log": "^1.0 || ^2.0",
+                "symfony/config": "^4.4 || ^5.0 || ^6.0",
+                "symfony/console": "^4.4 || ^5.0 || ^6.0",
+                "symfony/phpunit-bridge": "^5.3 || ^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rollerworks\\Component\\PasswordStrength\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "test/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastiaan Stok",
+                    "email": "s.stok@rollercapes.net"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/rollerworks/PasswordStrengthValidator/contributors"
+                }
+            ],
+            "description": "Password-strength validator for Symfony",
+            "keywords": [
+                "password",
+                "symfony",
+                "validator"
+            ],
+            "support": {
+                "issues": "https://github.com/rollerworks/PasswordStrengthValidator/issues",
+                "source": "https://github.com/rollerworks/PasswordStrengthValidator/tree/v1.7.0"
+            },
+            "time": "2021-10-09T13:51:59+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -10502,7 +10624,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "jbafford/password-strength-bundle": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

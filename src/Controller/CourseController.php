@@ -145,12 +145,12 @@ class CourseController extends Controller
      */
     public function delete(Course $course, Request $request):Response
     {
-       // if($this->isCsrfTokenValid('courses_deletion'.$program->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('courses_deletion'.$program->getId(), $request->request->get('crsf_token') )){
             $this->em->remove($course);
            
             $this->em->flush();
             $this->addFlash('info', 'Course succesfully deleted');
-      // }
+       }
        
         return $this->redirectToRoute('admin_courses');
     }

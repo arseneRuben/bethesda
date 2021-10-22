@@ -7,10 +7,10 @@
 <link href="{{ asset('assets/css/login.css') }}" rel="stylesheet"> 
  <!-- Modernizer for Portfolio -->
  <script src="{{asset('assets/js/modernizer.js')}}"></script>
-{% endblock %}
+{% endblock  stylesheets %}
 
 {% block title %}Bethesda Website
-{% endblock %}
+{% endblock  title %}
 
 {% block body %}
 
@@ -18,7 +18,7 @@
  {% block footer %}
              <!-- Header -->
             {{parent()}}
-{% endblock %}
+{% endblock footer %}
 {% block javascripts %}
 	{{parent()}}	
 {% endblock javascripts %}

@@ -40,17 +40,7 @@ class SequenceType extends AbstractType
        'constraints' => new Assert\NotBlank(),
        'trim' => true])
    ->add('activated')
-   ->add('publicationDate', DateType::class, [
-       'label' => 'Date de publication des résultats sequentiels',
-       'widget' => 'single_text',
-       'required' => true,
-        'input' => 'datetime',
-       'html5' => true,
-       'attr' => ['class' => 'js-datepicker'],
-       'format' => 'yyyy-MM-dd',
-       'constraints' => new Assert\Date(),
-       'constraints' => new Assert\NotBlank(),
-       'trim' => true])
+   
    ->add('validationDate', DateType::class, [
        'label' => 'Date de validation des résultalts sequentiels',
        'widget' => 'single_text',

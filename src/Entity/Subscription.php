@@ -36,6 +36,17 @@ class Subscription
      */
     private $schoolYear;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $financeHolder;
+    public function __construct()
+    {
+       
+        $this->updateTimestamp();
+        $this->financeHolder=false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +84,18 @@ class Subscription
     public function setSchoolYear(?SchoolYear $schoolYear): self
     {
         $this->schoolYear = $schoolYear;
+
+        return $this;
+    }
+
+    public function getFinanceHolder(): ?bool
+    {
+        return $this->financeHolder;
+    }
+
+    public function setFinanceHolder(bool $financeHolder): self
+    {
+        $this->financeHolder = $financeHolder;
 
         return $this;
     }
