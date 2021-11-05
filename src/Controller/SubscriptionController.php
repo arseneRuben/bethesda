@@ -6,9 +6,10 @@ use App\Entity\Student;
 use App\Entity\ClassRoom;
 use App\Entity\Subscription;
 use App\Form\SubscriptionType;
+//use App\Form\Subscription2Type;
 use App\Form\Subscription2Type;
-use App\Repository\SchoolYearRepository;
 
+use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SubscriptionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +76,18 @@ class SubscriptionController extends AbstractController
     	$form->handleRequest($request);
     	if($form->isSubmitted() && $form->isValid())
     	{
+            $student = $subscription->getStudent();
+        
+               
+            $student->addSubscription($subscription);
+              
+            $student->setEnrolled(true);
+        
+           // $subscription->setInstant(new \DateTime());
+            $this->em->persist($subscription);
+           
+            
+        
             $this->em->persist($subscription);
             $this->em->flush();
             $this->addFlash('success', 'Subscription succesfully created');
@@ -95,36 +108,20 @@ class SubscriptionController extends AbstractController
     public function createAction(Request $request)
     {
         $subscription = new Subscription();
-        $form = $this->createForm(new Subscription2Type(), $subscription, ['entityManager' => $this->getDoctrine()->getManager(),]);
-        if ($form->handleRequest($request)->isValid()) {
+        $form = $this->createForm(new SubscriptionType(), $subscription, ['entityManager' => $this->getDoctrine()->getManager(),]);
+        if ($form->isSubmitted() && $form->isValid()) {
             $student = $subscription->getStudent();
         
-            if (! $student->getEnrolled()) {
-                $em = $this->getDoctrine()->getManager();
-                $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
                
-                $student->addSubscription($subscription);
-                 
-                foreach ($student->getSubscriptions() as $s) { // On vérifie d'abord que parmis les inscriptions de l'élève, figure celle de l'année scolaire en cours
-                    if ($s->getSchoolYear()->getId() == $year->getId()) {
-                        // On vérifie ensuite que l'élève a versé au moins les inscription pour le compte de l'année scolaire en cours
-                        if ($subscription->getFinanceHolder()) {
-                            if ($this->situation($student, $subscription->getClassRoom())) {
-                                $student->setEnrolled(true);
-                                break;
-                            }
-                        }else{
-                            $student->setEnrolled(true);
-                            break;
-                        }
-                        return $this->redirect($this->generateUrl('admin_subscriptions'));
-                    }
-                }
-                $subscription->setInstant(new \DateTime());
-                $em->persist($subscription);
-            }
-           
-            $em->flush();
+            $student->addSubscription($subscription);
+              
+            $student->setEnrolled(true);
+        
+            $subscription->setInstant(new \DateTime());
+            $this->em->persist($subscription);
+            $this->em->persist($student);
+            
+            $this->em->flush();
             return $this->redirect($this->generateUrl('admin_subscriptions'));
         }
         return $this->render('subscription/edit.html.twig', array(
@@ -165,7 +162,7 @@ class SubscriptionController extends AbstractController
      */
     public function edit(Request $request,Subscription $subscription): Response
     {
-        $form = $this->createForm(SubscriptionType::class, $subscription, [
+        $form = $this->createForm(Subscription2Type::class, $subscription, [
             'method'=> 'PUT'
         ]);
         $form->handleRequest($request);
@@ -190,7 +187,7 @@ class SubscriptionController extends AbstractController
      */
     public function delete(Subscription $subscription , Request $request):Response
     {
-        if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('csrf_token') )){
+        if($this->isCsrfTokenValid('subscriptions_deletion'.$subscription->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($subscription);
            
             $this->em->flush();

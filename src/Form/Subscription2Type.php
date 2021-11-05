@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Form;
-use App\Entity\SchoolYear;
 use App\Entity\Student;
+use App\Entity\ClassRoom;
+use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use App\Repository\ClassRoomRepository;
-use Symfony\Component\Form\AbstractType;
 
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,7 +24,7 @@ class Subscription2Type extends AbstractType
     {
         
         $builder->add('student', EntityType::class, array('class' => Student::class, 'label' => 'Elève', 'required' => true))
-                ->add('classRoom', EntityType::class,  array('class' => Student::class, 'label' => 'Classe', 'required' => true,'query_builder' => function (ClassRoomRepository $repository) {
+                ->add('classRoom', EntityType::class,  array('class' => ClassRoom::class, 'label' => 'Classe', 'required' => true,'query_builder' => function (ClassRoomRepository $repository) {
                     return $repository->createQueryBuilder('c')->leftJoin('c.level', 'l')->add('orderBy', 'l.id');
                 } ))
                 ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required'=> true))

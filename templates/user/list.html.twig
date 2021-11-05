@@ -15,8 +15,7 @@
                     <table  width="100%" class="table table-striped">
                 <thead>
                     <tr>
-                        <th style="width:5%;" scope="col">Matricule/Id</th>
-                       
+                        
                         <th style="width:25%;" scope="col">Nom complet </th>
                         <th style="width:10%;" scope="col">Domaine</th>
                         <th style="width:5%;" scope="col">Sexe</th>
@@ -31,7 +30,6 @@
                 <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ path('admin_students_show', {id: user.id}) }}">{{ user.id}}</a></td>
                           
                             <td>{{ user.fullName }}</td>
                             <td>{{ user.domain }}</td>
@@ -42,7 +40,7 @@
                             <td> {{ user.phoneNumber}} </td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-default btn-sm" href="{{ path('admin_students_edit', {id: user.id}) }}">
+                                    <a class="btn btn-default btn-sm" href="{{ path('admin_account_edit', {id: user.id}) }}">
                                         <i class="fa fa-edit"></i> {{ 'edit'|trans({}, 'admin') }}
                                     </a>
                                 </div>

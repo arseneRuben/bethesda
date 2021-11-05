@@ -1,0 +1,51 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Présentation de l̀inscription - {{ parent() }}{% endblock %}
+
+{% block content %}
+   
+       
+            <div class="row mt-4">
+
+                <div class="col-2 " >
+                        <div class="btn-group record_actions  m-2">
+                            <a class="btn btn-info" href="{{ path('admin_subscriptions') }}">
+                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-10 jumbotron">
+                    <article  class="p-3" >
+                            <div class="">
+                                 <div class="mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Inscription </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled m-2 text-center text-justify ">
+                                                <li><h1 class="card-title pricing-card-title">  Eleve:   {{subscription.student.lastName}}</h1>
+                                            </li>
+                                                <li><h1 class="card-title pricing-card-title"> Annee: {{subscription.schoolYear.wording}} </h1>
+                                                </li>
+                                                <li>
+                                                   <h1 class="card-title pricing-card-title"> Classe: {{subscription.classRoom.name}} </h1>
+                                                </li>
+                                        
+                                        </ul>
+                                    </div>
+                                  
+                                 </div>
+                                <div class="panel ">			
+                            
+                                <a class="btn btn-warning" href="{{path('admin_subscriptions_edit', {id: subscription.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+    Edit </a> |
+                                    <a class="btn btn-danger" href="#"  onclick= "event.preventDefault() ; confirm('Es-tu sure ?') && document.getElementById('js-subscription-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
+                                    <form id="js-subscription-delete-form" action="{{path('admin_subscriptions_delete', {id: subscription.id})}}" method="post" style="display: none;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('subscriptions_deletion' ~ subscription.id ) }}" id="">
+                                        <input type="hidden" name="_method" value="DELETE">
+
+                                    </form>
+                                </div>
+                     </article>
+                    
+</div>
+{% endblock %}

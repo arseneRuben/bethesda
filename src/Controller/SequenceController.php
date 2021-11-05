@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\SequenceRepository;
 use App\Entity\Sequence;
 use App\Form\SequenceType;
+use App\Repository\SequenceRepository;
+use App\Repository\SchoolYearRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 /**
@@ -24,10 +25,14 @@ use App\Form\SequenceType;
 class SequenceController extends AbstractController
 {
     private $em;
+    private $scRepo;
+    private $repo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo,SequenceRepository $repo)
     {
         $this->em = $em;
+        $this->repo = $repo;
+        $this->scRepo = $scRepo;
     }
 
      /**
@@ -37,10 +42,11 @@ class SequenceController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(SequenceRepository $repo)
+    public function indexAction()
     {
        
-        $sequences = $repo->findAll();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $sequences = $this->repo->findSequenceThisYear( $year);
         
        return $this->render('sequence/index.html.twig', compact("sequences"));
     }

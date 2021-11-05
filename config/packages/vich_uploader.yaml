@@ -2,7 +2,7 @@ vich_uploader:
     db_driver: orm
     mappings:
         user_image:
-            uri_prefix: /uploads/teachers/
+            uri_prefix: /uploads/teachers
             upload_destination: '%kernel.project_dir%/public/uploads/teachers'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
 
@@ -10,8 +10,8 @@ vich_uploader:
             delete_on_update: true
             delete_on_remove: true
         student_image:
-            uri_prefix: /uploads/students/
-            upload_destination: '%kernel.project_dir%/public/uploads/students'
+            uri_prefix: /assets/images/student
+            upload_destination: '%kernel.project_dir%/public/assets/images/student'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
 
             inject_on_load: false

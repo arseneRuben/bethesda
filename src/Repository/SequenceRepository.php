@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Sequence;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\SchoolYear;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Sequence|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,15 @@ class SequenceRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findSequenceThisYear( SchoolYear $year) {
+       
+        $qb = $this->createQueryBuilder('s')
+                 ->leftJoin('s.quater', 'q')
+                 ->leftJoin('q.schoolYear', 'y')
+                 ->where('y.id=:year')
+               
+                 ->setParameter('year', $year->getId());
+        return $qb->getQuery()->getResult();          
+}
 }

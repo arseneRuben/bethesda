@@ -131,7 +131,7 @@ class Student
      /**
      * @var boolean
      *
-     * @ORM\Column(name="enrolled", type="boolean")
+     * @ORM\Column(name="enrolled", type="boolean", options={"default":false})
      */
     private $enrolled=false;
 
@@ -532,7 +532,7 @@ class Student
      */
     public function __construct()
     {
-       
+        $this->setEnrolled(false);
         $this->marks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
     }

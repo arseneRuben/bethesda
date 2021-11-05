@@ -23,7 +23,6 @@ class StudentType extends AbstractType {
                             'label' => 'Photo d identite(JPG or PNG)', 
                         'required' => false,
                         'allow_delete' => true,
-                        
                         'imagine_pattern' => 'student_filter_square_medium',
                         'download_uri' => false,
                         

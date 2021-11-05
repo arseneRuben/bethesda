@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\QuaterRepository;
 use App\Entity\Quater;
 use App\Form\QuaterType;
+use App\Repository\QuaterRepository;
+use App\Repository\SchoolYearRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 /**
@@ -24,11 +25,17 @@ use App\Form\QuaterType;
 class QuaterController extends AbstractController
 {
     private $em;
+    private $scRepo;
+    private $repo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo,QuaterRepository $repo)
     {
         $this->em = $em;
+        $this->repo = $repo;
+        $this->scRepo = $scRepo;
     }
+
+   
 
      /**
      * Lists all Quaterme entities.
@@ -37,10 +44,11 @@ class QuaterController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(QuaterRepository $repo)
+    public function indexAction()
     {
        
-        $quaters = $repo->findAll();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $quaters = $this->repo->findQuaterThisYear( $year);
         
        return $this->render('quater/index.html.twig', compact("quaters"));
     }

@@ -58,8 +58,12 @@ class StudentController extends AbstractController
      */
     public function showAction(Student $student)
     {
-        
-        return $this->render('student/show.html.twig', compact("student"));
+        $filename = "assets/images/student/".$student->getImageName();
+        $file_exists = file_exists($filename);
+        return $this->render('student/show.html.twig', [
+            'student'=>$student,
+            'file_exists'=>$file_exists
+        ]);
     }
 
   /**
@@ -120,7 +124,7 @@ class StudentController extends AbstractController
      */
     public function delete(Student $student, Request $request):Response
     {
-        if($this->isCsrfTokenValid('students_deletion'.$student->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('students_deletion'.$student->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($student);
            
             $this->em->flush();

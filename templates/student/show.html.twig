@@ -13,7 +13,10 @@
                             </a>
                            
                         </div>
-                          <img src="{{ (student.imageName ? vich_uploader_asset(student) : asset('buid/images/placeholder.jpg'))| imagine_filter('student_filter_square_medium') }}" alt="{{ student.lastname }}" class="w-100 ">
+                          <img src="{{ (file_exists ? vich_uploader_asset(student, 'imageFile') : (   (student.gender ? asset('assets/images/student/female-default-avatar.jpg') :  
+                                                                                                         asset('assets/images/student/male-default-avatar.jpg') 
+                                                                                  )   )
+                                                                                  )| imagine_filter('student_filter_square_medium') }}" alt="{{ student.lastname }}" class="w-100 ">
 		
                     </div>
                     <div class="col-lg-10 card">

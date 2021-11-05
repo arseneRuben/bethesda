@@ -22,7 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
- * @UniqueEntity(fields={"fullName"}, message="There is already an account with this name")
+ * @UniqueEntity(fields={"username"}, message="There is already an account with this name")
  * @UniqueEntity(fields={"phoneNumber"}, message="There is already an account with this phone number")
  * @UniqueEntity(fields={"numCni"}, message="There is already an account with this cni number")
  * @Vich\Uploadable
@@ -73,6 +73,9 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=Email::class, mappedBy="sender")
      */
     private $emails;
+  
+    
+
 
    
 
@@ -91,12 +94,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     protected $avatarPath;
    
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="fullName", type="string", length=255, nullable=true)
-     */
-    protected $fullName;
+
 
     /**
      * @var string
@@ -107,7 +105,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     /** @ORM\Column(name="gender", nullable=true, unique=false, length=10) 
      * @Assert\Choice(
-     * choices = { "M", "F" },
+     * choices = { 0, 1 },
      * message = "précisez le sexe")
      */
     protected $gender;
@@ -158,7 +156,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     /** @ORM\Column(name="status", nullable=true, unique=false, length=10) 
      * @Assert\Choice(
-     * choices = {"ELEVE", "PROF", "FINANCE", "PRINCIPAL", "PREFET"},
+     * choices = {"ELEVE","ADMIN", "PROF", "FINANCE", "PRINCIPAL", "PREFET"},
      * * message = "précisez votre statu dans ISBB")
      */
     protected $status;
@@ -177,6 +175,11 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="teacher")
      */
     private $attributions;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $fullName;
 
   
    
@@ -212,26 +215,9 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
    
 
 
-    public function getFullName (): ?string
-    {
-        return $this->fullName ;
-    }
-
-     /**
-     * Set fullName
-     *
-     * @param string $fullName
-     *
-     * @return User
-     */
-    public function setFullName($numCni) {
-        $this->fullName = $numCni;
-
-        return $this;
-    }
 
     public function __toString() {
-        $username = ( is_null($this->getFullName())) ? "" : $this->getFullName();
+        $username = ( is_null($this->getUserName())) ? "" : $this->getUserName();
         return $username;
     }
 
@@ -637,6 +623,18 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function setPasswordRequestedAt(?\DateTimeImmutable $password_requested_at): self
     {
         $this->password_requested_at = $password_requested_at;
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
+
+    public function setFullName(?string $fullName): self
+    {
+        $this->fullName = $fullName;
 
         return $this;
     }

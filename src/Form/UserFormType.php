@@ -75,11 +75,12 @@ class UserFormType extends AbstractType
             ->add('status', ChoiceType::class, array(
                 'constraints' => new Assert\NotBlank(),
                 'choices' => array(
+                    'ADMINISTRATEUR' => 'ADMIN',
                     'ELEVE' => 'ELEVE',
-                    'PROF' => 'PROFESSEUR',
-                    'FINANCE' => 'ADMINISTRATEUR FINANCIER',
-                    'PREFET' => 'PREFET d\'ETUDES',
-                    'PRINCIPAL' => 'PINCIPAL',
+                    'ENSEIGNANT' => 'PROF',
+                    'FINANCE' => 'FINANCE',
+                    'PREFET d\'ETUDES' => 'PREFET',
+                    'PRINCIPAL' => 'PRINCIPAL',
                 ), 'label' => 'Fonction'))
             ->add('domain')
     

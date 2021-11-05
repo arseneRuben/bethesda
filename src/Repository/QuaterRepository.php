@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Quater;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\SchoolYear;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Quater|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,14 @@ class QuaterRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findQuaterThisYear( SchoolYear $year) {
+       
+        $qb = $this->createQueryBuilder('q')
+                 ->leftJoin('q.schoolYear', 'y')
+                 ->where('y.id=:year')
+               
+                 ->setParameter('year', $year->getId());
+        return $qb->getQuery()->getResult();          
+}
 }
