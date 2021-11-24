@@ -371,10 +371,9 @@ class ClassRoomController extends AbstractController
      */
     public function recapitulatifAction(ClassRoom $room, Sequence $seq)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-        $studentEnrolled = $em->getRepository('AppBundle:Student')->findEnrolledStudentsThisYear($room, $year->getId());
+         // Année scolaire en cours
+        $year = $this->scRepo->findOneBy(array("activated" => true));          
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/recapitulatifseqvierge.html.twig', array(
             'room' => $room,
             'seq' => $seq,
@@ -384,6 +383,7 @@ class ClassRoomController extends AbstractController
 
 
         return new Response($html);
+        
     }
 
 
@@ -534,14 +534,13 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function fichesiplmeAction(ClassRoom $classroom)
+    public function fichesiplmeAction(ClassRoom $classroom,\Knp\Snappy\Pdf $snappy)
     {
         $em = $this->getDoctrine()->getManager();
 
         // Année scolaire en cours
-          $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-          
-        $studentEnrolled = $em->getRepository('AppBundle:Student')->findEnrolledStudentsThisYear($classroom, $year->getId());
+        $year = $this->scRepo->findOneBy(array("activated" => true));          
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
        
         
 
@@ -559,7 +558,7 @@ class ClassRoomController extends AbstractController
           )
           ); */
         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
+            $snappy->getOutputFromHtml($html, array(
                     'default-header' => false)),
             200,
             array(

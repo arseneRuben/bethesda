@@ -39,6 +39,7 @@ class SchoolController extends AbstractController
      */
     public function index(): Response
     {
+       
         return $this->render('school/index.html.twig');
     }
 

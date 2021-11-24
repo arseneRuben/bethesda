@@ -7,6 +7,7 @@ use App\Entity\Evaluation;
 use App\Form\EvaluationType;
 use App\Repository\CourseRepository;
 use App\Repository\StudentRepository;
+use App\Repository\AttributionRepository;
 use App\Repository\SequenceRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\EvaluationRepository;
@@ -35,9 +36,11 @@ class EvaluationController extends AbstractController
     private $clRepo;
     private $crsRepo;
     private $seqRepo;
+    private $attrRepo;
 
     public function __construct(EntityManagerInterface $em,EvaluationRepository $repo,StudentRepository $stdRepo,
-    CourseRepository $crsRepo, SchoolYearRepository $scRepo, ClassRoomRepository $clRepo, SequenceRepository $seqRepo)
+    CourseRepository $crsRepo, SchoolYearRepository $scRepo, ClassRoomRepository $clRepo, SequenceRepository $seqRepo,
+    AttributionRepository $attrRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -47,6 +50,7 @@ class EvaluationController extends AbstractController
         $this->clRepo = $clRepo;
         $this->crsRepo = $crsRepo;
         $this->seqRepo = $seqRepo;
+        $this->attrRepo = $attrRepo;
     }
 
      /**
@@ -140,11 +144,20 @@ class EvaluationController extends AbstractController
             $idcourse = $request->request->get('idcourse');
             $idsequence = $request->request->get('idsequence');
             $competence = $request->request->get('competence');
-
+            $year = $this->scRepo->findOneBy(array("activated" => true));
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
+            $attributions = $this->attrRepo->findAll(array("course" => $course,"schoolYear" => $year ));
+            if(sizeoff($attributions) != 1) {
+               if(sizeoff($attributions)==0 ) {
+                    $this->addFlash('warning', 'Cours non attribue!');
+                }
 
+                if(sizeoff($attributions)>1 ) {
+                    $this->addFlash('warning', 'Cours  attribue plusieurs fois la meme annee!');
+                }
+            }
             //$evaluation->setInstant($instant);
             $evaluation->setCourse($course);
             $evaluation->setClassRoom($classRoom);

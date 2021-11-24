@@ -3,9 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>Récapitulatif séquentiel</title>
-
-        <link href="{{asset('assets/css/pdf.css')}}"      rel="stylesheet" type="text/css" /> 
-        <link rel="stylesheet"  type="text/css" href="{{asset('assets/css/bootstrap.min.css')}}">
+          <link href="{{ asset('assets/css/pdf.css') }}" rel="stylesheet">    
+        <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">   
+        
     </head>
     <body>
         <header class="clearfix">
@@ -74,7 +74,13 @@
                     {% for std in students%}
                         <tr>
                                 <td class="qty">{{loop.index  }}</td>
-                            <td class="desc"><b>{{std.lastname }} </b></td>
+                            <td class="desc"><b>{{std.lastname }} </b>
+                                ( {% if std.gender ==0 %}
+                                    M
+                                  {% else %}
+                                    F
+                                 {% endif %})
+                            </td>
                             
                             {% for module in room.modules %}
                               {% for course in module.courses %}
