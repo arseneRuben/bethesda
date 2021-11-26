@@ -35,11 +35,17 @@ class Domain
      * @ORM\JoinColumn(name="headOfDepartmentId", referencedColumnName="id", nullable=true)
      */
     private $headOfDepartment;
+
+     /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="domain")
+     */
+    private $teachers;
     
 
     public function __construct()
     {
         $this->courses = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
       
       
     }
@@ -123,6 +129,18 @@ class Domain
                 $teacher->setDomain(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getHeadOfDepartment(): ?User
+    {
+        return $this->headOfDepartment;
+    }
+
+    public function setHeadOfDepartment(?User $headOfDepartment): self
+    {
+        $this->headOfDepartment = $headOfDepartment;
 
         return $this;
     }

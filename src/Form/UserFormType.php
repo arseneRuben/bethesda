@@ -40,8 +40,8 @@ class UserFormType extends AbstractType
             ->add('gender', ChoiceType::class, array(
                 'constraints' => new Assert\NotBlank(),
                 'choices' => array(
-                    'FEMME' => 'F',
-                    'HOMME' => 'M',
+                    'FEMME' => '1',
+                    'HOMME' => '0',
                 ), 'label' => 'Sexe'))
             ->add('birthplace')
             ->add('phoneNumber', TextType::class, [

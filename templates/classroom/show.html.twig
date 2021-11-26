@@ -133,12 +133,12 @@
                                         </td>
                                         <td>{{ course.coefficient }}</td>
                                         <td>
-                                        {% set key = course.id %}
-                                        {% if course.id in attributions|keys %}
-                                            {{attributions[key]}}
-                                                {% else %}
-                                                Pas encore attribuee
-                                                {% endif %}
+                                           
+                                            {% if course.attributed %}
+                                                {{(course.attributions|last).teacher.fullName}}
+                                            {% else %}
+                                                    Pas encore attribuee
+                                            {% endif %}
                                         
                                         </td>
                                         {% set totalCoef = totalCoef+course.coefficient %}

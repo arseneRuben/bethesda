@@ -535,6 +535,7 @@ class Student
         $this->setEnrolled(false);
         $this->marks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     

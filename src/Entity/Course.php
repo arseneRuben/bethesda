@@ -66,6 +66,7 @@ class Course
     public function __construct()
     {
         $this->evaluations = new ArrayCollection();
+        $this->attributions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,7 +151,6 @@ class Course
     public function setAttributed(bool $attributed): self
     {
         $this->attributed = $attributed;
-
         return $this;
     }
 

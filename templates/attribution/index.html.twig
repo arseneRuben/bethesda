@@ -30,7 +30,7 @@
                     <tbody>
                         {% for attribution in entities %}
                             <tr>
-                                <td>{{ attribution.teacher.username }}</td>
+                                <td>{{ attribution.teacher.fullName }}</td>
                                 <td><a href="{{ path('admin_courses_show', {id: attribution.course.id}) }}">{{ attribution.course }}({{ attribution.course.coefficient}})</a></td>
                                 <td><a href="{{ path('admin_schoolyears_show', {id: attribution.schoolyear.id}) }}">{{ attribution.schoolyear.wording }}</a></td>
                                 <td>

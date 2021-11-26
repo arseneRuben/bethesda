@@ -149,12 +149,12 @@ class EvaluationController extends AbstractController
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
             $attributions = $this->attrRepo->findAll(array("course" => $course,"schoolYear" => $year ));
-            if(sizeoff($attributions) != 1) {
-               if(sizeoff($attributions)==0 ) {
+            if(count($attributions) != 1) {
+               if(count($attributions)==0 ) {
                     $this->addFlash('warning', 'Cours non attribue!');
                 }
 
-                if(sizeoff($attributions)>1 ) {
+                if(count($attributions)>1 ) {
                     $this->addFlash('warning', 'Cours  attribue plusieurs fois la meme annee!');
                 }
             }
@@ -293,15 +293,15 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        if($evaluation->getTeacher()!=$this->getUser())
+       /* if($evaluation->getTeacher()!=$this->getUser())
         {
             $this->addFlash('warning', 'Access forbidden!');
             return $this->redirectToRoute('app_home');
-        }
+        }*/
 
-        if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('crsf_token') )){
+        if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('csrf_token') )){
             foreach ($evaluation->getMarks() as $mark) {
-                $em->remove($mark);
+                $this->em->remove($mark);
             }
             $this->em->remove($evaluation);
            

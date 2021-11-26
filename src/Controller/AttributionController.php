@@ -42,12 +42,26 @@ class AttributionController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
-
+        
         return $this->render('attribution/index.html.twig', array(
                     'entities' => $entities,
         ));
     }
 
+
+    public function setAttributionAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $entities = $this->repo->findAllThisYear($year);
+        foreach ($entities as $attribution){
+            if( $attribution->getCourse()->getAttributions()->contains($attribution)){
+                $attribution->getCourse()->setAttributed(True);
+                $em->persist($attribution->getCourse());
+            }
+        }
+        $em->flush();
+    }
     /**
      * Finds and displays a Attribution entity.
      *
@@ -74,7 +88,7 @@ class AttributionController extends Controller {
     public function undoAction() {
           
          $year = $this->scRepo->findOneBy(array("activated" => true));
-        $entities = $repo->findAllThisYear($year);   
+        $entities = $this->repo->findAllThisYear($year);   
         foreach ($entities as $attribution){
              $attribution->getCourse()->setAttributed(FALSE);
                 $this->em->remove($attribution);

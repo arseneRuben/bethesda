@@ -92,8 +92,9 @@ class ClassRoomController extends AbstractController
       
         foreach ($classroom->getModules() as $module ) {
             foreach ($module->getCourses() as $course) {
+               // dd($course->getAttributions());
                 if($course->getAttributions()[$year->getId()-1]){
-                    $attributions[$course->getId()]=$course->getAttributions()[$year->getId()-1]->getTeacher()->getUsername();
+                    $attributions[$course->getId()]=$course->getAttributions()[$year->getId()-1]->getTeacher()->getFullName();
                 }
             }
         }
@@ -396,13 +397,13 @@ class ClassRoomController extends AbstractController
      */
     public function recapSeqAction(ClassRoom $room)
     {
-      set_time_limit(600);
+     // set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $seq = $em->getRepository('AppBundle:Sequence')->findOneBy(array("activated" => true));
-        $studentEnrolled = $em->getRepository('AppBundle:Student')->findEnrolledStudentsThisYear($room, $year->getId());
+        $seq = $this->seqRepo->findOneBy(array("activated" => true));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         
-        $datas = $em->getRepository('AppBundle:Mark')->findMarksBySequenceAndClassOrderByStd($seq, $room);
+        $datas = $this->markRepo->findMarksBySequenceAndClassOrderByStd($seq, $room);
        
         $html = $this->renderView('classroom/recapitulatifseq.html.twig', array(
             'room' => $room,
