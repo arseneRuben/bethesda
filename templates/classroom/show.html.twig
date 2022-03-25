@@ -83,6 +83,7 @@
                             <th scope="col">Matricule</th>
                             <th scope="col">Nom</th>
                             <th scope="col">Prénom</th>
+                              <th scope="col">Photo</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,6 +93,7 @@
                                 <td><a href="{{ path('admin_students_show', {id: std.id}) }}">{{ std.matricule }}</a></td>
                                 <td>{{ std.lastname}}</td>
                                 <td>{{ std.firstname }}</td>
+                                <td>{{ fileExists[effectif] }}</td>
                                 {% set effectif = effectif+1 %}
 
                             </tr>
@@ -152,9 +154,53 @@
                         </tbody>
                     </table>
             </article >
+           
+            <article  class="p-3" >
+                <canvas id="myChart" width="600" height="200"></canvas>
+            </article >
             </div>
          </div>
 
 
 
+
+{% endblock %}
+{% block javascripts %}
+						{{parent()}}
+            <script type="text/javascript">
+                        let myChart = document.querySelector("#myChart");
+                        let graph = new Chart(myChart, {
+                            type:"bar",
+                            data : {
+                                labels: {{cours|raw}},
+                                datasets: [{
+                                    label:"Session 1",
+                                    data: {{session1|raw}},
+                                    fill:false,
+                                    backgroundColor: "#e8c3b9"
+                                },
+                                {
+                                    label:"Session 2",
+                                    data: {{session2|raw}},
+                                    fill:false,
+                                     backgroundColor: "#8e5ea2"
+                                },
+                                
+                                 {
+                                    label:"Session 3",
+                                    data: {{session3|raw}},
+                                    fill:false,
+                                     backgroundColor: "#fcba03"
+                                },
+                                {
+                                    label:"Session 4",
+                                    data: {{session4|raw}},
+                                    fill:false,
+                                     backgroundColor: "#4263f5"
+                                },
+                                
+                                ]
+                            }
+                        })
+            </script>
 {% endblock %}

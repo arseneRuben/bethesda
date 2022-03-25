@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Evaluation;
 use App\Entity\Sequence;
 use App\Form\SequenceType;
 use App\Repository\SequenceRepository;
@@ -9,6 +10,7 @@ use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Component\Pager\PaginatorInterface;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -58,10 +60,15 @@ class SequenceController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Sequence $sequence)
+    public function showAction(Sequence $sequence,Request $request,PaginatorInterface $paginator)
     {
-        
-        return $this->render('sequence/show.html.twig', compact("sequence"));
+        $evaluations = $paginator->paginate($sequence->getEvaluations(),$request->query->get('page', 1),Evaluation::NUM_ITEMS_PER_PAGE);
+        $evaluations->setCustomParameters([
+            'position' => 'centered',
+            'size' => 'large',
+            'rounded' => true,
+        ]);
+       return $this->render('sequence/show.html.twig', ['pagination' => $evaluations,'sequence' => $sequence]);
     }
 
   /**
@@ -117,11 +124,11 @@ class SequenceController extends AbstractController
      * @Route("/{id}/delete", name="admin_sequences_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      
      */
-    public function delete(Sequence $q, Request $request):Response
+    public function delete(Sequence $seq, Request $request):Response
     {
        
-        if($this->isCsrfTokenValid('sequences_deletion'.$schoolyear->getId(), $request->request->get('csrf_token') )){
-            $this->em->remove($q);
+        if($this->isCsrfTokenValid('sequences_deletion'.$seq->getId(), $request->request->get('csrf_token') )){
+            $this->em->remove($seq);
            
             $this->em->flush();
             $this->addFlash('info', 'Sequence succesfully deleted');

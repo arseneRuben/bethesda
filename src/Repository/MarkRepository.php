@@ -38,6 +38,10 @@ class MarkRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findGeneralMeanAtQuaterOfRoom(ClassRoom $room)
+    {
+        
+    }
     public function findMarksBySequenceAndClassOrderByStd(Sequence $sequence, ClassRoom $room)
     {
         $qb = $this->createQueryBuilder('m')
@@ -57,12 +61,12 @@ class MarkRepository extends ServiceEntityRepository
             ->createQuery(
                 "SELECT std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,
                              std.birthplace as birthplace  , mod.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                             FROM  AppBundle:Mark  m
-                             JOIN  AppBundle:Student    std    WITH  m.student        =  std.id
-                            JOIN  AppBundle:Evaluation eval   WITH  m.evaluation     =  eval.id
-                            JOIN  AppBundle:Course     crs    WITH  eval.course      =  crs.id
-                             JOIN  AppBundle:Module     mod    WITH  mod.id           =  crs.module
-                             JOIN  AppBundle:Sequence   seq    WITH  seq.id           =  eval.sequence
+                             FROM  App:Mark  m
+                             JOIN  App:Student    std    WITH  m.student        =  std.id
+                            JOIN  App:Evaluation eval   WITH  m.evaluation     =  eval.id
+                            JOIN  App:Course     crs    WITH  eval.course      =  crs.id
+                             JOIN  App:Module     mod    WITH  mod.id           =  crs.module
+                             JOIN  App:Sequence   seq    WITH  seq.id           =  eval.sequence
                              WHERE  eval.sequence = :sequence
                              AND  eval.classRoom = :room
                              ORDER BY std.lastname, crs.module, crs.wording"
@@ -76,17 +80,17 @@ class MarkRepository extends ServiceEntityRepository
         $year = $sequence->getQuater()->getSchoolYear();
         $query = $this->getEntityManager()
             ->createQuery(
-                "SELECT DISTINCT std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender, eval.competence as competence,
-                             std.birthplace as birthplace   , teach.username as teacher    , mod.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                             FROM  AppBundle:Mark  m
-                             JOIN  AppBundle:Student    std    WITH  m.student        =   std.id
-                             JOIN  AppBundle:Evaluation eval   WITH  m.evaluation     =   eval.id
-                             JOIN  AppBundle:Course      crs   WITH  eval.course      =   crs.id
-                             JOIN  AppBundle:Attribution att   WITH  att.course       =   crs.id
+                "SELECT DISTINCT std.matricule as matricule,   std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender, eval.competence as competence,
+                             std.birthplace as birthplace   , teach.fullName as teacher    , mod.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.rank2 as rank, m.appreciation as appreciation
+                             FROM  App:Mark  m
+                             JOIN  App:Student    std    WITH  m.student        =   std.id
+                             JOIN  App:Evaluation eval   WITH  m.evaluation     =   eval.id
+                             JOIN  App:Course      crs   WITH  eval.course      =   crs.id
+                             JOIN  App:Attribution att   WITH  att.course       =   crs.id
 
-                             JOIN  AppBundle:User      teach   WITH  att.teacher      =   teach.id
-                             JOIN  AppBundle:Module     mod    WITH  mod.id           =   crs.module
-                             JOIN  AppBundle:Sequence   seq    WITH  seq.id           =   eval.sequence
+                             JOIN  App:User      teach   WITH  att.teacher      =   teach.id
+                             JOIN  App:Module     mod    WITH  mod.id           =   crs.module
+                             JOIN  App:Sequence   seq    WITH  seq.id           =   eval.sequence
                              WHERE  eval.sequence = :sequence
                              AND att.schoolYear = :year
                              AND  eval.classRoom = :room
@@ -103,7 +107,7 @@ class MarkRepository extends ServiceEntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery(
-                "SELECT DISTINCT year, room,  matricule,  profileImagePath,  lastname,  firstname,  birthday,  gender,
+                "SELECT DISTINCT year, room,  matricule,    lastname,  firstname,  birthday,  gender,
                              birthplace   ,  teacher    ,  module ,  wording,  coefficient,valeur1, valeur2, valeur3,valeur
                              FROM   data
                              WHERE  year =:year

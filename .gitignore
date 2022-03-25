@@ -22,3 +22,6 @@
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
+
+### Image of students ###
+/public/assets/images

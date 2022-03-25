@@ -3,8 +3,9 @@
 	{{parent()}}
 	<link href="{{ asset('assets/css/grasp_mobile_progress_circle-1.0.0.min.css')}}" rel="stylesheet" type="text/css"/>
 	<link href="{{ asset('assets/css/jquery.mCustomScrollbar.css')}}" rel="stylesheet" type="text/css"/>
-	<link href="{{ asset('assets/css/style.red.css')}}" rel="stylesheet" type="text/css"/>
-	<link href="{{ asset('assets/css/style.default.css')}}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css')}}">
+
+	<link href="{{ asset('assets/css/style.blue.css')}}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block title %} {{parent()}}/Administration {% endblock %}
 {% block main %}
@@ -92,10 +93,10 @@
 									<li class="{% if app.request.attributes.get('_route') == "admin_evaluations" %}active{% endif %}">
 										<a href="{{ path('admin_evaluations')}}"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>Evaluations</a>
 									</li>
-									{#<li class="{% if app.request.attributes.get('_route') == "admin_settings" %}active{% endif %}">
-										<a href="{{ path('admin_settings')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Scolarité</a>
+										{#<li class="{% if app.request.attributes.get('_route') == "admin_emails" %}active{% endif %}">
+										<a href="{{ path('admin_emails')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Messages</a>
 									</li>
-									<li class="{% if app.request.attributes.get('_route') == "admin_payes" %}active{% endif %}">
+								<li class="{% if app.request.attributes.get('_route') == "admin_payes" %}active{% endif %}">
 										<a href="{{ path('admin_payes')}}"><i class="fa fa-money" aria-hidden="true"></i>Versement</a>
 									</li>
 									
@@ -133,7 +134,7 @@
 				</nav>
 			{% endblock  sidebar %}
 			<div class="page home-page">
-				{% block header %}
+			{% block header %}
 					<header class="header">
 							<nav class="navbar">
 								<div class="container-fluid">
@@ -162,8 +163,9 @@
 									</div>
 								</div>
 							</nav>
+							 
 							<section class="container-fluid  ">
-								<div class="row m-20">
+								<div class="row m-2">
 									<div class="col-xl-2 col-md-4 col-6">
 										<div class="wrapper count-title d-flex">
 											<div class="icon">
@@ -247,15 +249,25 @@
 									</div>
 								</div>
 							</section>
-					
+							
 					</header>
-				{% endblock header %}	
-						
-						<section class="dashboard-counts section-padding container">
-							{% block content %}{% endblock content %}
-						</section>
+			{% endblock header %}	
+					
+			
 						
 			</div>
+			
+			
+			<section class=" section-padding row">
+						<div class="col-2">
+														
+						</div>
+						<div class="col-10">
+										{% block content %}{% endblock content %}					
+						</div>
+								
+			</section>
+			
 {% endblock  main %}
 {% block footer %}
      
@@ -265,7 +277,7 @@
 						<script type="text/javascript" src="{{ asset('https://d3js.org/d3.v4.min.js') }}"></script>
 						 <script type="text/javascript" src="{{ asset('assets/js/jquery-3.1.1.js') }}"></script>
            				 <script type="text/javascript" src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
-						
+						<script src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js') }}" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 						<script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js') }}"></script>
 						<script type="text/javascript" src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
 						<script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>

@@ -9,7 +9,7 @@ use App\Repository\ClassRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  *
  * @Route("/prof/courses")
  */
-class CourseController extends Controller
+class CourseController extends AbstractController
 {
     private $em;
     private $repo;
@@ -145,12 +145,12 @@ class CourseController extends Controller
      */
     public function delete(Course $course, Request $request):Response
     {
-        if($this->isCsrfTokenValid('courses_deletion'.$program->getId(), $request->request->get('crsf_token') )){
+	   if($this->isCsrfTokenValid('courses_deletion'.$course->getId(), $request->request->get('csrf_token') )){
             $this->em->remove($course);
            
             $this->em->flush();
             $this->addFlash('info', 'Course succesfully deleted');
-       }
+	   }
        
         return $this->redirectToRoute('admin_courses');
     }

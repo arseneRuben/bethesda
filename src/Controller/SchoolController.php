@@ -71,7 +71,7 @@ class SchoolController extends AbstractController
     public function roomListAction()
     {
         
-       
+        //phpinfo();
         $rooms = $this->rmRepo->findAll();
         
         return $this->render('school/roomList.html.twig', compact("rooms"));
@@ -79,18 +79,15 @@ class SchoolController extends AbstractController
 
 
      /**
-     * @Route("/admin", name="dashboard")
+     * @Route("/staff", name="app_staff")
      */
-    /*public function adminAction(Request $request)
-    {
-      
-        $effectif = $this->container->get('app_service.stat');
-        $em = $this->getDoctrine()->getManager();
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
+    public function staffAction(Request $request)
+    { 
        
-        return $this->render('default/index.html.twig', array(
-            'year' => $year,
-            
-        ));
-    }*/
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('u') ->from('App:User', 'u') ->where('u.roles LIKE :roles') ->setParameter('roles', '%"'."ROLE_ADMIN".'"%');
+             $users = $qb->getQuery()->getResult();
+        //$users = $this->userRepo->findByRoles("ROLE_ADMIN");
+        return $this->render('school/staff.html.twig', compact("users"));
+    }
 }

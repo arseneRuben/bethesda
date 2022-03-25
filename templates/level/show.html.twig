@@ -39,8 +39,8 @@
                                                 <a href="{{ path('admin_classrooms_show', {id: room.id}) }}">{{ room.name}}</a>
                                             </td>
                                            
-                                            <td>{{ room.fulTeacher }}</td>
-                                             <td>{{ room.currentYearSubscriptions.size }}</td>
+                                            <td>{{ room.fullTeacher }}</td>
+                                             <td>{{ room.currentYearSubscriptions|length }}</td>
                                         
                                             
                                         </tr>

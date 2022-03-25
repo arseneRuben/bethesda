@@ -64,7 +64,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
-         
             throw new InvalidCsrfTokenException();
         }
 
@@ -96,7 +95,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
-     
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
         return new RedirectResponse($this->urlGenerator->generate('app_account'));
     }

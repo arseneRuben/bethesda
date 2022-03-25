@@ -15,9 +15,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=StudentRepository::class)
  * @UniqueEntity(fields={"matricule"}, message="There is already an account with this matricule")
- * @Vich\Uploadable
  * @ORM\HasLifecycleCallbacks
- * 
+ * @Vich\Uploadable
  */
 class Student
 {
@@ -30,17 +29,21 @@ class Student
      */
     private $id;
 
-/**
+      /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
      * @Vich\UploadableField(mapping="student_image", fileNameProperty="imageName")
-     * @Assert\Image(
-     *     maxSize = "8M",     
-     *     mimeTypesMessage = "Please upload a valid Image"
+     * @Assert\File(
+     *     maxSize = "6024k",
+     *     mimeTypes = {"image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml"},
+     *     mimeTypesMessage = "Please upload a valid image(bmp,gif,jpg,jpeg,png,svg)"
      * )
+     * 
      * @var File|null
      */
     private $imageFile;
+
+
     /**
      * @ORM\Column(type="string", length=255)
      */

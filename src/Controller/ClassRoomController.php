@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Knp\Snappy\Pdf;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ClassRoomRepository;
@@ -21,6 +23,7 @@ use App\Repository\MarkRepository;
 use App\Entity\ClassRoom;
 use App\Form\ClassRoomType;
 use App\Entity\Sequence;
+use App\Entity\Quater;
 
 
 /**
@@ -84,12 +87,50 @@ class ClassRoomController extends AbstractController
      */
     public function showAction(ClassRoom $classroom, StudentRepository $stdRepo)
     {
-        // Année scolaire en cours
+        // Année scolaire et seuquence en cours
         $year = $this->scRepo->findOneBy(array("activated" => true));
+        $seq = $this->seqRepo->findOneBy(array("activated" => true));
         // Elèves inscrits
         $attributions = null;
         $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+        $fileExists = [];
+        foreach($studentEnrolled as $std) {
+        $filename = "assets/images/student/".$std->getMatricule().".jpg";
+         $fileExists[] = file_exists($filename);
+        }
+    
       
+        // Extraction de donnees pour les graphes
+        $seqs = $this->seqRepo->findSequenceThisYear($year);
+        $evals=[];
+        $evalSeqs=[];
+
+        foreach($seqs as $seq) {
+            $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $classroom,"sequence" => $seq ));
+        }
+
+        $courses = [];
+        $averageSeqs= [];
+        $seqs = $this->seqRepo->findSequenceThisYear($year);
+        
+        // Traitements de donnees pour les graphes
+       
+        foreach($evalSeqs[$seq->getId()] as $eval) {
+            $courses[] = $eval->getCourse()->getWording();
+        }
+       
+        foreach($seqs as $seq) {
+            $average=[];
+            foreach($evalSeqs[$seq->getId()]  as $eval) {
+                 $average[] = $eval->getMoyenne();
+            }
+           
+            $averageSeqs[$seq->getId()]= $average;
+        }
+       
+        
+       
+        
         foreach ($classroom->getModules() as $module ) {
             foreach ($module->getCourses() as $course) {
                // dd($course->getAttributions());
@@ -98,13 +139,37 @@ class ClassRoomController extends AbstractController
                 }
             }
         }
+        $results['classroom' ]=$classroom;
+        $results['attributions' ]=$attributions;
+        $results['modules' ]= $classroom->getModules();
+        $results['studentEnrolled' ]=$studentEnrolled;
+        $results['cours' ]= json_encode($courses);
+        $results['fileExists'] = $fileExists;
+
+        foreach($seqs as $seq) {
+                    $results[strtolower($seq->getWording())]= json_encode($averageSeqs[$seq->getId()]);
+        }
+        
+        //dd(json_encode($results));
+        return $this->render('classroom/show.html.twig',$results);
+    }
+
+     /** 
+     * Finds and displays a ClassRoomme entity.
+     *
+     * @Route("/{id}/stat", name="admin_classrooms_stat", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function statAction(ClassRoom $classroom)
+    {
+        
+       
         return $this->render('classroom/show.html.twig', array(
-                    'classroom' => $classroom,
-                    'attributions' => $attributions,
-                    'modules' => $classroom->getModules(),
-                    'studentEnrolled' => $studentEnrolled,
+                   
         ));
     }
+
 
     /**
      * Finds and displays a ClassRoom entity.
@@ -369,8 +434,9 @@ class ClassRoomController extends AbstractController
      * @Route("/{room}/{seq}/pdf", name="admin_classrooms_recapitulatif", requirements={"room"="\d+","seq"="\d+"})
      * @Method("GET")
      * @Template()
+     * @return Response
      */
-    public function recapitulatifAction(ClassRoom $room, Sequence $seq)
+    public function recapitulatifAction(ClassRoom $room, Sequence $seq,\Knp\Snappy\Pdf $snappy)
     {
          // Année scolaire en cours
         $year = $this->scRepo->findOneBy(array("activated" => true));          
@@ -383,7 +449,15 @@ class ClassRoomController extends AbstractController
         ));
 
 
-        return new Response($html);
+        return new Response(
+            $snappy->getOutputFromHtml($html, array(
+                    'default-header' => false)),
+            200,
+            array(
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+                )
+        );
         
     }
 
@@ -580,11 +654,9 @@ class ClassRoomController extends AbstractController
      */
     public function presentationAction(ClassRoom $classroom)
     {
-        $em = $this->getDoctrine()->getManager();
-
         // Année scolaire en cours
-          $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-        $studentEnrolled = $em->getRepository('AppBundle:Student')->findEnrolledStudentsThisYear($classroom, $year->getId());
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         $html = $this->renderView('classroom/list.html.twig', array(
             'year' => $year,
@@ -592,7 +664,7 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
        
-        return new Response(
+       /* return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
                     'default-header' => false)),
             200,
@@ -600,33 +672,84 @@ class ClassRoomController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
                 )
-        );
+        );*/
 
-        //return new Response($html);
+        return new Response($html);
     }
 
-  
+    /**
+     * MOYENNE GENERALE DE LA CLASSE A UNE SEQUENCE
+     * @Route("/{id_room}/{id_seq}/sqavg", name="admin_classrooms_avg_seq", requirements={"id_room"="\d+", "id_seq"="\d+"})
+    * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
+    * @ParamConverter("seq", options={"mapping": {"id_seq"   : "id"}})
+     * @Method("GET")
+     * @Template()
+     */
+    public function generalSeqAverage(ClassRoom $room, Sequence $seq)
+    {
+            $dql = 	"SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
+            WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
+            $avg_seq1 = $this->em->createQuery($dql)
+                        ->setParameter(1, $room->getId())
+                        ->setParameter(2, $seq->getId())
+                        ->getSingleScalarResult();
+           return round($avg_seq1 ,2);
+    }
 
+     /**
+     * MOYENNE GENERALE DE LA CLASSE A UN TRIMESTRE
+     * @Route("/{id_room}/{id_quat}/qtavg", name="admin_classrooms_avg_quat", requirements={"id_room"="\d+", "id_quat"="\d+"})
+    * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
+    * @ParamConverter("quater", options={"mapping": {"id_quat"   : "id"}})
+     * @Method("GET")
+     * @Template()
+     */
+    public function generalQuatAverage(ClassRoom $room, Quater $quater)
+    {
+        $dql = 	"SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
+            WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
+       
+        $avg_seq =0;
+        foreach($quater->getSequences() as $seq) {
+            $avg_seq += $this->em->createQuery($dql)
+                            ->setParameter(1, $room->getId())
+                            ->setParameter(2, $seq->getId())
+                            ->getSingleScalarResult();
+        }
+        return round($avg_seq/2 ,2);
+    }
+
+    
         /**
      * Finds and displays a Evaluation entity.
      *
      * @Route("/{room}/pdf", name="admin_classrooms_blanc_ann", requirements={"room"="\d+"})
      * @Method("GET")
      * @Template()
+     * @return Response
      */
-    public function annualSummaryAction(ClassRoom $room)
+    public function annualSummaryAction(ClassRoom $room, \Knp\Snappy\Pdf $snappy)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
-        $studentEnrolled = $em->getRepository('AppBundle:Student')->findEnrolledStudentsThisYear($room, $year->getId());
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/blankAnnualForm.html.twig', array(
             'room' => $room,
             'students' => $studentEnrolled,
             'year' => $year,
         ));
 
-       /*   return new Response(
+       
+        return new Response(
+            $snappy->getOutputFromHtml($html, array(
+                    'default-header' => false)),
+            200,
+            array(
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+                )
+        );
+
+       /* return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,
             array(
@@ -636,7 +759,7 @@ class ClassRoomController extends AbstractController
             'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $room->getName() . '.pdf"',
                 )
         );*/
-         return new Response($html);
+        // return new Response($html);
         
     }
 
@@ -654,7 +777,7 @@ class ClassRoomController extends AbstractController
         $totalCoef=0;
         $em = $this->getDoctrine()->getManager();
        
-        $year = $this->repo->findOneBy(array("activated" => true));
+        $year = $this->scRepo->findOneBy(array("activated" => true));
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
         $evaluations = $this->evalRepo->findSequantialExamsOfRoom(  $classroom->getId(), $sequence->getId());  
              
@@ -662,7 +785,7 @@ class ClassRoomController extends AbstractController
             $totalNtCoef += $ev->getMoyenne() * $ev->getCourse()->getCoefficient();
             $totalCoef += $ev->getCourse()->getCoefficient();
         }
-        $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         
         $datas = $this->getData($classroom, $sequence);
         $html = $this->renderView('classroom/reportcard.html.twig', array(
@@ -695,8 +818,9 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsTrimAction(ClassRoom $classroom)
+    public function reportCardsTrimAction(ClassRoom $classroom, Pdf $pdf)
     {
+       // dd();
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
@@ -706,7 +830,7 @@ class ClassRoomController extends AbstractController
         $dataSeq1 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[0], $classroom);
         $dataSeq2 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[1], $classroom);
        
-        $this->get('knp_snappy.pdf')->setTimeout(600);
+       $pdf->setTimeout(600);
    //     if($classroom->getApc()){
         $html = $this->renderView('classroom/reportcardTrimApc.html.twig', array(
             'year' => $year,
@@ -716,7 +840,9 @@ class ClassRoomController extends AbstractController
             'sequence2' => $sequences[1],
             'room' => $classroom,
             'quater' => $quater,
+            'avg' => $this->generalQuatAverage($classroom,$quater),
             'students' => $studentEnrolled,
+            
         ));
        
   /*  } else {
@@ -730,15 +856,21 @@ class ClassRoomController extends AbstractController
             'quater' => $quater,
             'students' => $studentEnrolled,
         ));
-    }*/
-         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+   
+         return new PdfResponse(
+            $pdf->getOutputFromHtml($html),
+            200,
+             $classroom->getName() . '.pdf'
+        );  }*/
+
+        return new Response(
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
-                )
-        ); 
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="'.$classroom->getName().'.pdf"'
+            )
+        );
         // return new Response($html);
     }
 

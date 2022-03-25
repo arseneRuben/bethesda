@@ -1,0 +1,49 @@
+{% extends "layout/backEndLayout.html.twig" %}
+
+
+{% block title %}Edition evaluation - {{ parent() }}{% endblock %}
+
+
+
+{% block content %}
+    <h1 class="center">Rapport d'évaluation</h1>
+    <div class="row">
+        <div class="col-lg-4 mar-bot30" >
+
+            <table  width="100%" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>matricule </th>
+                        <th>Nom et prénom </th>
+                        <th>Note</th>
+                        <th>Appréciation</th>
+
+                    </tr>
+                </thead>
+                
+                    <tbody>
+                        {% for std in studentEnrolled %}
+                            <tr>
+                               
+                                <td>std['matricule']</td>
+                                <td>std['lastname']</td>
+                                <td > <input  class="note"   type="number"  /> </td>
+                                <td ><input type="texte" class="appreciation"></td>
+                               
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash-o"></i> {{ 'Delete'|trans({}, 'admin') }}</button>
+                
+            </table>  
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
+{% endblock %}

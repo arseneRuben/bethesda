@@ -1,7 +1,7 @@
 security:
     encoders:
         App\Entity\User:
-            algorithm: auto
+            algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -25,6 +25,9 @@ security:
                 csrf_token_generator: Symfony\Component\Security\Csrf\CsrfTokenManagerInterface
                 # where to redirect after logout
                 # target: app_any_route
+            remember_me:
+                secret: '%kernel.secret%'
+                
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
@@ -37,5 +40,4 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        

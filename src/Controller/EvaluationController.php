@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Mark;
 use App\Entity\Evaluation;
+use App\Filter\PropertySearch;
 use App\Form\EvaluationType;
+use App\Form\PropertySearchType;
 use App\Repository\CourseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\AttributionRepository;
@@ -12,6 +14,7 @@ use App\Repository\SequenceRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\SchoolYearRepository;
+use App\Repository\MarkRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,9 +41,11 @@ class EvaluationController extends AbstractController
     private $seqRepo;
     private $attrRepo;
 
+     private $markRepo;
+
     public function __construct(EntityManagerInterface $em,EvaluationRepository $repo,StudentRepository $stdRepo,
     CourseRepository $crsRepo, SchoolYearRepository $scRepo, ClassRoomRepository $clRepo, SequenceRepository $seqRepo,
-    AttributionRepository $attrRepo)
+    AttributionRepository $attrRepo, MarkRepository $markRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -50,9 +55,12 @@ class EvaluationController extends AbstractController
         $this->clRepo = $clRepo;
         $this->crsRepo = $crsRepo;
         $this->seqRepo = $seqRepo;
-        $this->attrRepo = $attrRepo;
-    }
+        $this->markRepo = $markRepo;
 
+    }
+  
+  
+  
      /**
      * Lists all Evaluationme entities.
      *
@@ -62,16 +70,27 @@ class EvaluationController extends AbstractController
      */
     public function indexAction(PaginatorInterface $paginator,Request $request,EvaluationRepository $repo)
     {
-        
+        $search = new PropertySearch();
+        $searchForm =  $this->createForm(PropertySearchType::class, $search);
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $entities = $this->repo->findAnnualEvaluations($year->getId());
+        
+        $searchForm->handleRequest($request);
+        if($searchForm->isSubmitted() && $searchForm->isValid())
+    	{
+            $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
+            $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
+            $course = $this->crsRepo->findOneBy(array("id" => $_GET['course']));
+            $entities = $this->repo->findEvaluations($year->getId(), $room, $sequence ,$course);
+        }else{
+            $entities = $this->repo->findAnnualEvaluations($year->getId());
+        }
         $evaluations = $paginator->paginate($entities,$request->query->get('page', 1),Evaluation::NUM_ITEMS_PER_PAGE);
         $evaluations->setCustomParameters([
             'position' => 'centered',
             'size' => 'large',
             'rounded' => true,
         ]);
-       return $this->render('evaluation/index.html.twig', ['pagination' => $evaluations]);
+       return $this->render('evaluation/index.html.twig', ['pagination' => $evaluations, 'searchForm'=>$searchForm->createView()]);
     }
 
     /**
@@ -83,9 +102,12 @@ class EvaluationController extends AbstractController
      */
     public function showAction(Evaluation $evaluation)
     {
-        
-        return $this->render('evaluation/show.html.twig', compact("evaluation"));
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(),$year);
+        return $this->render('evaluation/show.html.twig', ['studentEnrolled' => $studentsEnrolledInClass, 'evaluation'=>$evaluation]);
     }
+
+  
 
   /**
      * @Route("/new",name= "admin_evaluations_new", methods={"GET"})
@@ -148,8 +170,8 @@ class EvaluationController extends AbstractController
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
-            $attributions = $this->attrRepo->findAll(array("course" => $course,"schoolYear" => $year ));
-            if(count($attributions) != 1) {
+           /* $attributions = $this->attrRepo->findAll(array("course" => $course,"schoolYear" => $year ));
+		  if(count($attributions) != 1) {
                if(count($attributions)==0 ) {
                     $this->addFlash('warning', 'Cours non attribue!');
                 }
@@ -158,7 +180,8 @@ class EvaluationController extends AbstractController
                     $this->addFlash('warning', 'Cours  attribue plusieurs fois la meme annee!');
                 }
             }
-            //$evaluation->setInstant($instant);
+            //$evaluation->setInstant($instant);*/
+		  //if($course->getAttributed()) {
             $evaluation->setCourse($course);
             $evaluation->setClassRoom($classRoom);
             $evaluation->setSequence($sequence);
@@ -246,28 +269,49 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        if($evaluation->getTeacher()!=$this->getUser())
+	  /* if(($evaluation->getTeacher()!=$this->getUser()) && !($this->get('security.context')->isGranted('ROLE_ADMIN')))
         {
             $this->addFlash('warning', 'Access forbidden!');
             return $this->redirectToRoute('app_home');
-        }
-
-        $form = $this->createForm(EvaluationType::class, $evaluation, [
-            'method'=> 'PUT'
-        ]);
+		}*/
+		
+	    $form  = $this->createForm(EvaluationType::class, $evaluation, array(
+            'action' => $this->generateUrl('prof_evaluations_update', array('id' => $evaluation->getId())),
+            'method' => 'PUT',
+        ));
 
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
+             $idcourse = $request->request->get('idcourse');
+            $idsequence = $request->request->get('idsequence');
+            $competence = $request->request->get('competence');
+			$course = $this->crsRepo->findOneBy(array("id" => $idcourse));
+			$sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
+	  		$marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
+	  $notes  = array();
+	  $year = $this->scRepo->findOneBy(array("activated" => true));
+
+	  $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(),$year);
+
+	  foreach ($studentsEnrolledInClass as $std) {
+            foreach ($marks as $mark) {
+                if ($mark->getStudent()->getId() == $std->getId()) {
+                    $notes[$std->getMatricule()]=$mark;
+                    break;
+                }
+            }
+        }
+       
+	  // dd($marks);
+	  /*  if($form->isSubmitted() && $form->isValid())
         {
+		    $year = $this->scRepo->findOneBy(array("activated" => true));
+			
             $this->em->flush();
             $this->addFlash('success', 'Evaluation succesfully updated');
             return $this->redirectToRoute('admin_evaluations');
-        }
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-        $studentsEnrolledInClass = $this->stdRepo->findNotEnrolledStudentsThisYear($year);
+        }*/
         return $this->render('evaluation/edit.html.twig'	, [
-            
+            'marks' => $notes,
             'students' => $studentsEnrolledInClass,
             'evaluation'=>$evaluation,
             'edit_form'=>$form->createView()
@@ -275,7 +319,92 @@ class EvaluationController extends AbstractController
     }
 
     
+	/**
+     * Edits an existing Evaluation entity.
+     *
+     * @Route("/{id}/update", name="prof_evaluations_update", requirements={"id"="\d+"})
+     * @Method("PUT")
+     
+     */
+    public function updateAction(Evaluation $evaluation, Request $request)
+    {
+        
+       $year = $this->scRepo->findOneBy(array("activated" => true));
+	    $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(),$year);
+        $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
+       if ($content = $request->getContent()) {
+            $evaluation->setFailluresF(0);
+            $evaluation->setFailluresH(0);
+            $evaluation->setSuccessF(0);
+            $evaluation->setSuccessH(0);
+            $evaluation->setAbscent(0);
+            $notes  = array();
+            $effectif = 0;
+            $total =0;
+            $pos = 0;
+            foreach ($studentsEnrolledInClass as $std) {
+                $note = $_POST[ $std->getMatricule()."note" ];
+                $appr = $_POST[ $std->getMatricule()."appr" ];
+                $weight = $_POST[ $std->getMatricule()."weight" ];
+              
+                foreach ($marks as $mark) {
+                    if ($mark->getStudent()->getId() == $std->getId()) {
+                        $this->em->remove($mark);
+                        break;
+                    }
+                }
+               
 
+                $mark = new Mark();
+                $mark->setValue($note);
+                $mark->setWeight($weight);
+                $mark->setAppreciation($appr);
+                $mark->setEvaluation($evaluation);
+                $mark->setStudent($std);
+                if (strcmp($std->getGender(), "M")==0) {
+                    if ($note<10) {
+                        $evaluation->addFailluresH();
+                    } else {
+                        $evaluation->addSuccessH();
+                    }
+                } else {
+                    if ($note<10) {
+                        $evaluation->addFailluresH();
+                    } else {
+                        $evaluation->addSuccessF();
+                    }
+                }
+                if ($weight==0) {
+                    $evaluation->addAbscent();
+                } else {
+                    $effectif++;
+                    $total += $note;
+                }
+                $evaluation->addMark($mark);
+                $notes[$pos++] = $mark; // Construction d'un arrayList pour trie
+                $this->em->persist($mark);
+            }
+        }
+        // disposition des rang dans les notes
+        usort($notes, function ($a, $b) {
+            if ($a->getValue() == $b->getValue()) {
+                return 0;
+            }
+            return ($a->getValue() < $b->getValue()) ? -1 : 1;
+        });
+        foreach ($notes as $mark) {
+            $mark->setRank2($pos);
+            $pos--;
+        }
+        if ($effectif!=0) {
+            $evaluation->setMoyenne($total/$effectif);
+        }
+        $this->em->flush();
+	      $this->addFlash('success', 'Evaluation succesfully updated');
+        return $this->redirect($this->generateUrl('admin_evaluations'));
+    }
+
+  
     /**
      * Deletes a Evaluationme entity.
      *
@@ -298,8 +427,9 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'Access forbidden!');
             return $this->redirectToRoute('app_home');
         }*/
-
-        if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('csrf_token') )){
+       //   dd($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('csrf_token') ));
+       // if($this->isCsrfTokenValid('evaluations_deletion'.$evaluation->getId(), $request->request->get('csrf_token') )){
+          
             foreach ($evaluation->getMarks() as $mark) {
                 $this->em->remove($mark);
             }
@@ -307,7 +437,7 @@ class EvaluationController extends AbstractController
            
             $this->em->flush();
             $this->addFlash('info', 'Evaluation succesfully deleted');
-       }
+      // }
        
         return $this->redirectToRoute('admin_evaluations');
     }
@@ -348,20 +478,23 @@ class EvaluationController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function pdfAction(Evaluation $evaluation)
+    public function pdfAction(Evaluation $evaluation ,Pdf $snappy)
     {
         $html = $this->renderView('evaluation/pdf.html.twig', array(
             'evaluation' => $evaluation,
         ));
+
         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
-                'default-header' => true)),
+            $snappy->getOutputFromHtml($html, array(
+                    'default-header' => false)),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $evaluation->getCourse()->getWording() . '.pdf"',
-            )
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $evaluation->getSequence()->getWording() .'_'.$evaluation->getClassRoom()->getName(). '.pdf"',
+                )
         );
+
+      
     }
 
 }

@@ -24,12 +24,9 @@
                                         <ul class="list-unstyled m-2 text-center text-justify">
                                                 <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{sequence.startDate|date('Y-m-d')}}"></time> {{sequence.startDate|date('Y-m-d')}}</h1>
                                             </li>
-                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{sequence.startDate|date('Y-m-d')}}"></time> {{sequence.startDate|date('Y-m-d')}}</h1>
+                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{sequence.endDate|date('Y-m-d')}}"></time> {{sequence.endDate|date('Y-m-d')}}</h1>
                                                 </li>
-                                                 <li><h1 class="card-title pricing-card-title">  Debut:   <time date= "{{sequence.publicationDate|date('Y-m-d')}}"></time> {{sequence.publicationDate|date('Y-m-d')}}</h1>
-                                            </li>
-                                                <li><h1 class="card-title pricing-card-title"> Fin:  <time date= "{{sequence.validationDate|date('Y-m-d')}}"></time> {{sequence.validationDate|date('Y-m-d')}}</h1>
-                                                </li>
+                                                
                                                 <li>
                                                     <div class="form-check">
                                                         {% if sequence.activated %}
@@ -60,22 +57,42 @@
 							
 							<th style="width:15%;" class="text-center">Matière</th>
 							<th style="width:15%;" class="text-center">Classe</th>
+                            <th style="width:15%;" class="text-center">Actions</th>
 							
 						</tr>
 					</thead>
 					<tbody>
-						{% for evaluation in sequence.evaluations  %}
+						{% for evaluation in pagination  %}
 							<tr>
 								
 								
 								
 								<td>{{ evaluation.course.code }}</td>
 								<td>{{ evaluation.classRoom.name }}</td>
+                                <td>
+									<div class="btn-group">
+										<a class="btn btn-info btn-sm" href="{{ path('admin_evaluations_pdf', {id: evaluation.id}) }}">
+											<i class="fa fa-cloud-download">
+												</i>
+										</a>
+										<a class="btn btn-warning btn-sm" href="{{ path('admin_evaluations_edit', {id: evaluation.id|default('1')}) }}">
+											<i class="fa fa-edit">
+											</i>
+										</a>
+										 	
+										 |
+												<a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> </a>
+												
+									</div>
+								</td>
 								
 							</tr>
 						{% endfor %}
 					</tbody>
 				</table>
+                <div class="navigation  text-center">
+					{{ knp_pagination_render(pagination) }}
+				</div>
                                   
                                  </div>
                                 <div class="panel ">			

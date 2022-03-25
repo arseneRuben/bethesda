@@ -28,6 +28,7 @@
 						#}
 						<li class="nav-item {% if app.request.attributes.get('_route') == "app_teachers" %}active{% endif %} "><a class="nav-link" href="{{ path('app_teachers') }}">Teachers</a></li>
 						<li class="nav-item  {% if app.request.attributes.get('_route') == "app_rooms" %}active{% endif %}"><a class="nav-link" href="{{ path('app_rooms') }}">Classrooms</a></li>
+						<li class="nav-item  {% if app.request.attributes.get('_route') == "app_rooms" %}active{% endif %}"><a class="nav-link" href="{{ path('app_staff') }}">Staff</a></li>
 						<li class="nav-item {% if app.request.attributes.get('_route') == "app_contact" %}active{% endif %} "><a class="nav-link" href="{{ path('app_contact')}}">Contact</a></li>
 					{% if  app.user %} 
 						 <li class="nav-item {% if app.request.attributes.get('_route') == "app_account" %}active{% endif %} "><a class="nav-link" href="{{ path('app_account')}}">Account</a></li>

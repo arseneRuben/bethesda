@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-
 use App\Entity\Payment;
 use App\Entity\Subscription;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,18 +11,14 @@ use App\Entity\Traits\TimeStampable;
 use App\Entity\Traits\HasUploadableField;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
-
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  * @UniqueEntity(fields={"phoneNumber"}, message="There is already an account with this phone number")
  * @UniqueEntity(fields={"numCni"}, message="There is already an account with this cni number")
- * @Vich\Uploadable
  * @ORM\HasLifecycleCallbacks
  * 
  */
@@ -111,15 +106,6 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
    
 
-    /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     * 
-     * @Vich\UploadableField(mapping="user_image", fileNameProperty="avatarPath")
-     * @Assert\Image(maxSize="8M")
-     * 
-     * @var File|null
-     */
-    private $imageFile;
       /**
      * @ORM\Column(name="avatarPath", type="string", length=255, nullable=true)
      */

@@ -35,4 +35,5 @@ liip_imagine:
                     mode: outbound
                     upscale: true
                     position: center
+        twig.mode: [] 
 

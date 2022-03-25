@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Repository;
-
+use App\Form\PropertySearchType;
+use App\Entity\ClassRoom;
+use App\Entity\Sequence;
+use App\Entity\Course;
 use App\Entity\Evaluation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -73,7 +76,7 @@ class EvaluationRepository extends ServiceEntityRepository
     }
 
     // Liste des évaluation de l'année scolaire spécifiée
-    public function findAnnualEvaluations( int $sc)
+    public function findAnnualEvaluations( int $sc, \Symfony\Component\Form\Form $searchForm=null)
     {
         $qb = $this->createQueryBuilder('e')
                 ->leftJoin('e.sequence', 's')
@@ -83,6 +86,46 @@ class EvaluationRepository extends ServiceEntityRepository
                 ->setParameter('sc', $sc)
                 ->orderBy('e.sequence', 'DESC')
                 ->orderBy('e.id', 'DESC');
+        if(!is_null($searchForm) ){
+            if( $searchForm['room']){
+                $qb->andWhere('e.classRoom=:room')
+                ->setParameter('sc', $searchForm['room']);
+            }
+            if($searchForm['sequence']){
+                $qb->andWhere('e.sequence=:seq')
+                ->setParameter('seq', $searchForm['sequence']);
+            }
+            if($searchForm['course']){
+                $qb->andWhere('e.course=:crs')
+                ->setParameter('crs', $searchForm['course']);
+            }
+        }
         return $qb->getQuery() ->getResult();
     }
+
+     // Liste des évaluation de l'année scolaire spécifiée
+     public function findEvaluations( int $sc, ClassRoom $room=null,Sequence $seq=null, Course $course=null)
+     {
+        $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.sequence', 's')
+        ->leftJoin('s.quater', 'q')
+        ->leftJoin('q.schoolYear', 'sc')
+        ->andWhere('sc.id=:sc')
+        ->setParameter('sc', $sc);
+        if($room){
+                 $qb->andWhere('e.classRoom=:room')
+                 ->setParameter('room', $room);
+        }
+        if($seq){
+                 $qb->andWhere('e.sequence=:seq')
+                 ->setParameter('seq', $seq);
+        }
+        if($course){
+                 $qb->andWhere('e.course=:crs')
+                 ->setParameter('crs', $course);
+        }
+        return $qb ->orderBy('e.id', 'DESC')->getQuery()  ->getResult();
+     }
+
+    
 }

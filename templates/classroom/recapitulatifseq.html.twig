@@ -57,8 +57,8 @@
                 {% endfor %} 
 
               <th  class="rotate"><div><i>{{totalCoef}}</i><span><b> &nbsp;&nbsp;&nbsp;TOTAL&nbsp;&nbsp;&nbsp;</b></span></div></th>
-                 {# <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;MOYENNE/20&nbsp;&nbsp;&nbsp;</b></span></div></th>
-                <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;</b></span></div></th>#}
+                  <th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;MOYENNE/20&nbsp;&nbsp;&nbsp;</b></span></div></th>
+                {#<th  class="rotate"><div><span><b>&nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;</b></span></div></th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -82,6 +82,7 @@
                                                       {% if mark.weight == 1 %}
                                                             {{mark.value}} 
                                                             {% set totalCoef = totalCoef + mark.evaluation.course.coefficient %}
+                                                             {% set NCoef = NCoef + mark.value * mark.evaluation.course.coefficient %}
                                                         {% else %}
                                                             /
                                                         {% endif %}
@@ -93,9 +94,9 @@
                                     {% endfor %}
                                 {% endfor %}
                             {% endfor %}
-                            <td class="total"> <i>{{ totalCoef }}</i> </td>
-                           {# <td class="total">  {% if totalCoef != 0 %} {{ (NCoef/totalCoef)|round(2,'floor') }}{% else %}/ {% endif %}</td>
-                            <td class="total"></td>#}
+                           <td class="total"> <i>{{ totalCoef }}</i> </td> 
+                            <td class="total">  {% if totalCoef != 0 %} {{ (NCoef/totalCoef)|round(2,'floor') }}{% else %} / {% endif %} </td>
+                            
                         </tr>
                     {% endfor %}
                 </tbody>

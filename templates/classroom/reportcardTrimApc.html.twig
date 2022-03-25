@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<link rel="icon" type="image/ico" href="{{pathToWeb}}/img/favicon.jpg" {# href="{{ asset('img/favicon.jpg')}}" #}/>
-			
+	<head >
+		<link rel="icon" type="image/ico" href="{{pathToWeb}}/favicon.jpg" {# href="{{ asset('img/favicon.jpg')}}" #}/>
+		 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    
 
 		<title>
@@ -46,7 +46,7 @@
 
 							</td>
 							<td style=" width: 30%; ">
-								<img style="border-radius:5%;" src="{{pathToWeb}}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%"/>
+								<img style="border-radius:5%;" src="{{pathToWeb}}/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%"/>
 								<div style="font-size: 1em;">
 									<b>
 										<h6>
@@ -84,13 +84,25 @@
 						<table style=" width: 100%; text-align:center; font-size: 80%; ">
 							<tr>
 								<td style=" width: 30%;">
-									{% if std.profileImagePath is null %}
-										<img src="{{pathToWeb}}/img/student/ondasblue.jpeg"/>
+								{% if std.imagename %}
+									<img style="height:150px;width:150px;" src="{{pathToWeb}}/assets/images/student/{{std.imagename}}"/>
+								{% else %}
+											{% if std.gender %}
+												<img style="height:150px;width:150px;" src="{{pathToWeb}}/assets/images/student/female-default-avatar.jpg"/>
+
+											{% else %}
+												<img style="height:150px;width:150px;" src="{{pathToWeb}}/assets/images/student/male-default-avatar.jpg"/>
+											{% endif  %}
+								{% endif  %}
+
+								{# 
+									{% if std.gender %}
+										<img src="{{pathToWeb}}/assets/images/student/female-default-avatar.jpg"/>
 
 									{% else %}
-										<img src="{{pathToWeb}}/img/student/{{std.profileImagePath}}" {# src="{{ asset('img/student/'~std.profileImagePath)}}" #} height="140em" width="170em"/>
-
+											<img src="{{pathToWeb}}/assets/images/student/male-default-avatar.jpg"/>
 									{% endif  %}
+								#}
 								</td>
 								<td style=" width: 30%;">
 									<h3>
@@ -102,10 +114,10 @@
 											{% endif %}
 											:
 										</span>
-										<b>{{std.lastname}}
+										<b>{{std.lastname|raw}}
 
 
-											{{std.firstname}}</b>
+											{{std.firstname|raw}}</b>
 									</h3>
 									<h3>
 
@@ -129,7 +141,7 @@
 												at  &nbsp;&nbsp;
 											{% endif %}
 											:  &nbsp;&nbsp;
-											{{std.birthplace}}
+											{{std.birthplace|raw}}
 										</span><br/></h3>
 
 									<h3>
@@ -144,13 +156,13 @@
 								<td style=" width: 30%;">
 									<div style="margin-bottom:0.2em;">
 										{% if room.level.cycle.section.name == "Francophone" %}
-											{{year.wording}}
+											{{year.wording |raw}}
 											&nbsp;&nbsp; /  &nbsp;&nbsp;
-											{{quater.wording}}
+											{{quater.wording |raw}}
 										{% else %}
 											{{year.wording}}
 											&nbsp;&nbsp; /   &nbsp;&nbsp;
-											{{quater.wording}}
+											{{quater.wording |raw}}
 										{% endif %}
 									</div><br/>
 									<h3>
@@ -214,7 +226,7 @@
 										{% if room.level.cycle.section.name == "Francophone" %}
 											TRIM*COEF
 										{% else %}
-											QUATER*COEF
+											QUAT*COEF
 										{% endif %}
 									</b>
 								</th>
@@ -281,7 +293,7 @@
 												{% if mark1.wording == course.wording  and not break  %}
 													<tr border="0.5" style="text-align:center;">
 														<td border="0.5">
-															{{course.wording}}
+															{{course.wording |raw}}
 														</td>
 														<td border="0.5">
 															{% if mark1.weight == 1 %}
@@ -328,13 +340,13 @@
 																		</td>
 																		<td border="0.5"></td>
 																	<td border="0.5">
-																		{% if (mark1.competence == "ras") %}
+																		{% if (mark.competence|lower  == "ras") %}
 																		{% else %}
-																			{{mark1.competence|slice(0,35)}}
+																			{{mark.competence|striptags|raw |slice(0,35)}}
 																			{% endif %}
 																		
 																	</td>
-																		<td border="0.5"></td>
+																		<td border="0.5">{{mark.rank}}</td>
 																		<td border="0.5">{{mark.teacher}}</td>
 																		<td border="0.5"></td>
 
@@ -481,7 +493,7 @@
 									<b></b>
 								</td>
 								<td border="0.5">
-									<b>MOY G. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /20</b>
+									<b>MOY G. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{avg}}/20</b>
 								</td>
 								<td border="0.5"></td>
 								<td border="0.5"></td>
@@ -688,11 +700,11 @@
 											Conception et implementation de FOKAM POKA Arsene, Ing, Tel :  +1(450) 626-7192
 , email:
 																	fopoar@gmail.com
-																	3523 Van horne, Quebec
+																	
 											{% else %}
 												Designed by FOKAM POKA Arsene, Ing, Tel : +1(450) 626-7192 , email:
 														fopoar@gmail.com
-														3523 Van horne, Quebec
+														
 														{% endif %}
 										</i>
 								</td>

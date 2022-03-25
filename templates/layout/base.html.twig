@@ -45,33 +45,34 @@
     </head>
 
     <body class="host_version">
-         <!-- Flash Messages -->
-            {% include 'layout/partials/flash_messages.html.twig' %}
-          {% block partials %}
-          
-          <!-- Modal -->
-           {% include 'layout/partials/modal.html.twig' %}
-          
-          <!-- LOADER -->
          
-           {% include 'layout/partials/loader.html.twig' %}
-           <!-- HEADER -->
-             {% include 'layout/partials/header.html.twig' %}
-         {% endblock %}
+         {% block main %} <!-- JUST FOR BACKEND -->
+        {% endblock %}
+        {% block partials %}
+            
+           <!-- Flash Messages -->
+           {% include 'layout/partials/flash_messages.html.twig' %}
+            
+           {% if not app.user %}
+                <!-- Modal -->
+                {% include 'layout/partials/modal.html.twig' %}
+                <!-- LOADER -->
+                {% include 'layout/partials/loader.html.twig' %}
+                <!-- HEADER -->
+                {% include 'layout/partials/header.html.twig' %}
+           {% endif %}
+
+        {% endblock %}
+       
         <div >
-            
-             
-             {% block body %} <!-- JUST FOR FRONTEND -->
-            {% endblock %}
-            {% block main %} <!-- JUST FOR BACKEND -->
-            {% endblock %}
-            
-            
-         {% block footer %}
+        
+        {% block body %} <!-- JUST FOR FRONTEND -->
+        {% endblock %}
+        {% block footer %}
              <!-- Header -->
                   {% include 'layout/partials/partners.html.twig' %}
 				  {% include 'layout/partials/footer.html.twig' %}
-         {% endblock footer %}
+        {% endblock footer %}
         </div>
              <!-- in order to record the current route -->
           {#   {{ app.session.set('referer',  path(app.request.attributes.get('_route')) ) }} #}

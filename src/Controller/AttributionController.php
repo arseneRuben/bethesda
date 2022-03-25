@@ -13,13 +13,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Attribution controller.
  *
- * @Route("/admin_attributions")
+ * @Route("/admin/attributions")
  */
-class AttributionController extends Controller {
+class AttributionController extends AbstractController {
 
     private $em;
     private $repo;
@@ -42,7 +43,7 @@ class AttributionController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
-        
+       //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
                     'entities' => $entities,
         ));

@@ -4,4 +4,8 @@ twig:
     strict_variables: '%kernel.debug%'
     exception_controller: null
     globals:
-        pathToWeb: "%kernel.root_dir%/../public"
+        #software_name : '%software_name%'
+        #commercial_name : '%commercial_name%'
+        pathToWeb: "%kernel.project_dir%/public"
+    form_themes:
+

@@ -19,14 +19,14 @@ class AttributionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
        
-        /* $builder  ->add('course',EntityType::class, array('class' => Course::class, 'placeholder' => 'Choisir la matière', 'required' => true,'label' => 'Matière',
-        'query_builder' => function (CourseRepository $repository){return $repository->findNotAttributedCoursesAtActivatedYear();}
+         $builder  ->add('course',EntityType::class, array('class' => Course::class, 'placeholder' => 'Choisir la matière', 'required' => true,'label' => 'Matière',
+        'query_builder' => function (CourseRepository $repository){return $repository->findNotAttributedCoursesAtActivatedYear();}))
        /* OLD
                  'query_builder' => function (CourseRepository $repository)
             {return $repository->createQueryBuilder('c')->where('c.attributed=:er')->setParameter('er', false)->add('orderBy', 'c.domain');} 
         
         ))*/
-        $builder  ->add('course')
+          ->add('course')
              ->add('teacher',EntityType::class, array('class' => User::class,  'placeholder' => 'Choisir l\'enseignant ','label' => 'Enseignant', 'required' =>  true,  'query_builder' => function (UserRepository $repository)
             {return $repository->createQueryBuilder('u')->add('orderBy', 'u.fullName');} ))
    

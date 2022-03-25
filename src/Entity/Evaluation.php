@@ -21,7 +21,7 @@ class Evaluation  implements ObjectManagerAware
 {
     use TimeStampable;
 
-    public const NUM_ITEMS_PER_PAGE = 10;
+    public const NUM_ITEMS_PER_PAGE = 15;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -139,6 +139,8 @@ class Evaluation  implements ObjectManagerAware
         return $this->moyenne;
     }
 
+    
+
     public function setMoyenne(float $moyenne): self
     {
         $this->moyenne = $moyenne;
@@ -230,6 +232,19 @@ class Evaluation  implements ObjectManagerAware
 
         return $this;
     }
+  
+       /**
+    * Set successF
+    *
+    *
+    * @return Evaluation
+    */
+    public function addSuccessH()
+    {
+        $this->successH++;
+
+        return $this;
+    }
 
     /**
     * Add failluresF
@@ -240,6 +255,19 @@ class Evaluation  implements ObjectManagerAware
     public function addFailluresH()
     {
         $this->failluresH++;
+
+        return $this;
+    }
+  
+     /**
+    * Add Abscent
+    *
+    *
+    * @return Evaluation
+    */
+    public function addAbscent()
+    {
+        $this->abscent++;
 
         return $this;
     }

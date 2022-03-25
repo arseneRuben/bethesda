@@ -61,16 +61,16 @@
 																	{{student.lastname}}
 																	{{student.firstname}}
 																</td>
-																{% if mark[student.matricule] is defined %}
+																{% if marks[student.matricule] is defined %}
 																	<td data-name="desc">
-																		<input type="float" id="{{ student.matricule }}" placeholder="0...20" value="{{ mark[student.matricule].value }}" min="0" max="20" class="form-control value" name="{{student.matricule}}note"/>
+																		<input type="float" id="{{ student.matricule }}" placeholder="0...20" value="{{ marks[student.matricule].value }}" min="0" max="20" class="form-control value" name="{{student.matricule}}note"/>
 																	</td>
 
 																	<td data-name="desc">
-																		<input type="text" value="{{mark[student.matricule].appreciation}}" placeholder="Appréciation" class="form-control appreciation" name="{{student.matricule}}appr"/>
+																		<input type="text" value="{{marks[student.matricule].appreciation}}" placeholder="Appréciation" class="form-control appreciation" name="{{student.matricule}}appr"/>
 																	</td>
 																	<td data-name="desc">
-																		<input type="text" value="{{mark[student.matricule].weight}}" placeholder="Poids" class="form-control appreciation" name="{{student.matricule}}weight"/>
+																		<input type="text" value="{{marks[student.matricule].weight}}" placeholder="Poids" class="form-control appreciation" name="{{student.matricule}}weight"/>
 																	</td>
 																{% else %}
 																	<td data-name="desc">
