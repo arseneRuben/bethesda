@@ -162,7 +162,7 @@ class AttributionController extends AbstractController {
        /**
      * Deletes a Programme entity.
      *
-     * @Route("/{id}/delete", name="admin_attributions_delete", requirements={"id"="\d+"}, methods={"DELETE"})
+     * @Route("/{id}/delete", name="admin_attributions_delete", requirements={"id"="\d+"}, methods={"GET","DELETE"})
      */
     public function delete(Attribution $attribution , Request $request):Response
     {
