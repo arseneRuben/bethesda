@@ -27,7 +27,7 @@ class CycleController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_cycles")
@@ -36,41 +36,40 @@ class CycleController extends AbstractController
      */
     public function indexAction(CycleRepository $repo)
     {
-       
+
         $cycles = $repo->findAll();
-        
-       return $this->render('cycle/index.html.twig', compact("cycles"));
+
+        return $this->render('cycle/index.html.twig', compact("cycles"));
     }
 
 
-   
+
 
     /**
      * @Route("/create",name="admin_cycles_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
         $cycle = new Cycle();
-    	$form = $this->createForm(CycleType::class, $cycle);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(CycleType::class, $cycle);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($cycle);
             $this->em->flush();
             $this->addFlash('success', 'Cycle succesfully created');
             return $this->redirectToRoute('admin_cycles');
-    	}
-    	 return $this->render('cycle/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'cycle/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
-   
+
     /**
      * Finds and displays a Cycle entity.
      *
@@ -80,7 +79,7 @@ class CycleController extends AbstractController
      */
     public function showAction(Cycle $cycle)
     {
-        
+
         return $this->render('cycle/show.html.twig', compact("cycle"));
     }
 
@@ -109,46 +108,45 @@ class CycleController extends AbstractController
         );
     }
 
-   
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_cycles_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Cycle $cycle): Response
+    public function edit(Request $request, Cycle $cycle): Response
     {
         $form = $this->createForm(CycleType::class, $cycle, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Cycle succesfully updated');
             return $this->redirectToRoute('admin_cycles');
         }
-        return $this->render('cycle/edit.html.twig'	, [
-            'cycle'=>$cycle,
-            'form'=>$form->createView()
+        return $this->render('cycle/edit.html.twig', [
+            'cycle' => $cycle,
+            'form' => $form->createView()
         ]);
     }
 
-     /**
+    /**
      * Deletes a Cycle entity.
      *
      * @Route("/{id}/delete", name="admin_cycles_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Cycle $cycle, Request $request):Response
+    public function delete(Cycle $cycle, Request $request): Response
     {
-       // if($this->isCsrfTokenValid('cycles_deletion'.$cycle->getId(), $request->request->get('crsf_token') )){
-            $this->em->remove($cycle);
-           
-            $this->em->flush();
-            $this->addFlash('info', 'Cycle succesfully deleted');
-    //    }
-       
+        // if($this->isCsrfTokenValid('cycles_deletion'.$cycle->getId(), $request->request->get('crsf_token') )){
+        $this->em->remove($cycle);
+
+        $this->em->flush();
+        $this->addFlash('info', 'Cycle succesfully deleted');
+        //    }
+
         return $this->redirectToRoute('admin_cycles');
     }
 }

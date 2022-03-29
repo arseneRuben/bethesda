@@ -42,7 +42,7 @@ class ClassRoomController extends AbstractController
     private $qtRepo;
     private $markRepo;
 
-    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo,StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,EntityManagerInterface $em)
+    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo, EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -54,28 +54,28 @@ class ClassRoomController extends AbstractController
         $this->markRepo = $markRepo;
     }
 
-     /**
+    /**
      * Lists all ClassRoomme entities.
      *
      * @Route("/", name="admin_classrooms")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(  SequenceRepository $seqRepo)
+    public function indexAction(SequenceRepository $seqRepo)
     {
-       
+
         $classrooms = $this->repo->findAll();
 
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
-        
+
         return $this->render('classroom/index.html.twig', array(
-                    'classrooms' => $classrooms,
-                    'year' => $year,
-                    'seq' => $seq->getId(),
+            'classrooms' => $classrooms,
+            'year' => $year,
+            'seq' => $seq->getId(),
         ));
-        
-       return $this->render('classroom/index.html.twig', compact("classrooms"));
+
+        return $this->render('classroom/index.html.twig', compact("classrooms"));
     }
 
     /** 
@@ -94,67 +94,67 @@ class ClassRoomController extends AbstractController
         $attributions = null;
         $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $fileExists = [];
-        foreach($studentEnrolled as $std) {
-        $filename = "assets/images/student/".$std->getMatricule().".jpg";
-         $fileExists[] = file_exists($filename);
+        foreach ($studentEnrolled as $std) {
+            $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+            $fileExists[] = file_exists($filename);
         }
-    
-      
+
+
         // Extraction de donnees pour les graphes
         $seqs = $this->seqRepo->findSequenceThisYear($year);
-        $evals=[];
-        $evalSeqs=[];
+        $evals = [];
+        $evalSeqs = [];
 
-        foreach($seqs as $seq) {
-            $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $classroom,"sequence" => $seq ));
+        foreach ($seqs as $seq) {
+            $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $classroom, "sequence" => $seq));
         }
 
         $courses = [];
-        $averageSeqs= [];
+        $averageSeqs = [];
         $seqs = $this->seqRepo->findSequenceThisYear($year);
-        
+
         // Traitements de donnees pour les graphes
-       
-        foreach($evalSeqs[$seq->getId()] as $eval) {
+
+        foreach ($evalSeqs[$seq->getId()] as $eval) {
             $courses[] = $eval->getCourse()->getWording();
         }
-       
-        foreach($seqs as $seq) {
-            $average=[];
-            foreach($evalSeqs[$seq->getId()]  as $eval) {
-                 $average[] = $eval->getMoyenne();
+
+        foreach ($seqs as $seq) {
+            $average = [];
+            foreach ($evalSeqs[$seq->getId()]  as $eval) {
+                $average[] = $eval->getMoyenne();
             }
-           
-            $averageSeqs[$seq->getId()]= $average;
+
+            $averageSeqs[$seq->getId()] = $average;
         }
-       
-        
-       
-        
-        foreach ($classroom->getModules() as $module ) {
+
+
+
+
+        foreach ($classroom->getModules() as $module) {
             foreach ($module->getCourses() as $course) {
-               // dd($course->getAttributions());
-                if($course->getAttributions()[$year->getId()-1]){
-                    $attributions[$course->getId()]=$course->getAttributions()[$year->getId()-1]->getTeacher()->getFullName();
+                // dd($course->getAttributions());
+                if ($course->getAttributions()[$year->getId() - 1]) {
+                    $attributions[$course->getId()] = $course->getAttributions()[$year->getId() - 1]->getTeacher()->getFullName();
                 }
             }
         }
-        $results['classroom' ]=$classroom;
-        $results['attributions' ]=$attributions;
-        $results['modules' ]= $classroom->getModules();
-        $results['studentEnrolled' ]=$studentEnrolled;
-        $results['cours' ]= json_encode($courses);
+        $results['classroom'] = $classroom;
+        $results['attributions'] = $attributions;
+        $results['modules'] = $classroom->getModules();
+        $results['studentEnrolled'] = $studentEnrolled;
+        $results['cours'] = json_encode($courses);
         $results['fileExists'] = $fileExists;
 
-        foreach($seqs as $seq) {
-                    $results[strtolower($seq->getWording())]= json_encode($averageSeqs[$seq->getId()]);
+        foreach ($seqs as $seq) {
+            $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
         }
-        
+
         //dd(json_encode($results));
-        return $this->render('classroom/show.html.twig',$results);
+        return $this->render('classroom/show.html.twig', $results);
     }
 
-     /** 
+    /** 
      * Finds and displays a ClassRoomme entity.
      *
      * @Route("/{id}/stat", name="admin_classrooms_stat", requirements={"id"="\d+"})
@@ -163,11 +163,9 @@ class ClassRoomController extends AbstractController
      */
     public function statAction(ClassRoom $classroom)
     {
-        
-       
-        return $this->render('classroom/show.html.twig', array(
-                   
-        ));
+
+
+        return $this->render('classroom/show.html.twig', array());
     }
 
 
@@ -178,7 +176,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsYearAction(ClassRoom $classroom, SchoolYear  $year=null)
+    public function reportCardsYearAction(ClassRoom $classroom, SchoolYear  $year = null)
     {
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
@@ -269,7 +267,7 @@ class ClassRoomController extends AbstractController
         );
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
-         $dataYear = $em->getConnection()->executeQuery("select *  from data")->fetchAll();
+        $dataYear = $em->getConnection()->executeQuery("select *  from data")->fetchAll();
 
         $this->get('knp_snappy.pdf')->setTimeout(600);
 
@@ -284,31 +282,31 @@ class ClassRoomController extends AbstractController
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $classroom->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $classroom->getName() . '.pdf"',
+            )
         );
     }
 
-     /**
+    /**
      * Finds and displays a ClassRoom entity.
      *
      * @Route("/{id}/reportCardsApcYear", name="admin_classrooms_reportcards_apc_year", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
-    public function reportCards2YearAction(ClassRoom $classroom, SchoolYear  $year=null)
+    public function reportCards2YearAction(ClassRoom $classroom, SchoolYear  $year = null)
     {
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
         $connection = $em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $sequences = $this->seqRepo->findSequencesBySchoolYear($year );
-        
+        $sequences = $this->seqRepo->findSequencesBySchoolYear($year);
+
 
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
-       
+
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_DATA AS
                      SELECT DISTINCT   room.id as room,year.id as year, std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,std.birthplace as birthplace 
@@ -323,12 +321,12 @@ class ClassRoomController extends AbstractController
         $statement->bindValue(1, $classroom->getId());
         $statement->bindValue(2, $year->getId());
         $statement->execute();
-        $i=1;
+        $i = 1;
         foreach ($sequences as $seq) {
-           
+
 
             $statement = $connection->prepare(
-                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ".$i." AS
+                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ" . $i . " AS
                      SELECT DISTINCT  crs.id as crs, room.id as room, std.matricule as matricule,  teach.username as teacher    , modu.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as value, m.weight as weight, m.appreciation as appreciation
                         FROM  Mark  m   JOIN  Student    std     ON  m.student_id        =   std.id
                                         JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
@@ -343,14 +341,14 @@ class ClassRoomController extends AbstractController
                           WHERE    room.id = ?  AND eval.sequence_id = ? AND att.year_id = ?
                           ORDER BY  std.matricule; "
             );
-           
+
             $statement->bindValue(1, $classroom->getId());
             $statement->bindValue(2, $seq->getId());
             $statement->bindValue(3, $year->getId());
             $statement->execute();
             $i++;
         }
-        
+
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_QUATER1 AS
                     SELECT DISTINCT  seq1.matricule as matricule , seq1.wording as course, seq1.module as module,seq1.teacher as teacher, (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight
@@ -360,7 +358,7 @@ class ClassRoomController extends AbstractController
                     WHERE seq1.crs = seq2.crs
                     ORDER BY seq1.matricule"
         );
-       
+
         $statement->execute();
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_QUATER2 AS
@@ -371,7 +369,7 @@ class ClassRoomController extends AbstractController
                     WHERE seq3.crs = seq4.crs 
                     ORDER BY seq3.matricule"
         );
-      
+
         $statement->execute();
 
         $statement = $connection->prepare(
@@ -383,7 +381,7 @@ class ClassRoomController extends AbstractController
                     WHERE seq5.crs = seq6.crs 
                     ORDER BY seq5.matricule"
         );
-      
+
         $statement->execute();
 
         $statement = $connection->prepare(
@@ -401,13 +399,12 @@ class ClassRoomController extends AbstractController
                     ORDER BY vdata.matricule
                   "
         );
-      
+
         $statement->execute();
 
-        $dataYear = $connection->executeQuery("select *  from ANNUAL_DATA")->fetchAll()
-           ;
+        $dataYear = $connection->executeQuery("select *  from ANNUAL_DATA")->fetchAll();
 
-       
+
         $this->get('knp_snappy.pdf')->setTimeout(600);
 
         $html = $this->renderView('classroom/reportcardYearApc.html.twig', array(
@@ -421,12 +418,10 @@ class ClassRoomController extends AbstractController
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $classroom->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $classroom->getName() . '.pdf"',
+            )
         );
-       
-       
     }
     /**
      * Finds and displays a Evaluation entity.
@@ -436,10 +431,10 @@ class ClassRoomController extends AbstractController
      * @Template()
      * @return Response
      */
-    public function recapitulatifAction(ClassRoom $room, Sequence $seq,\Knp\Snappy\Pdf $snappy)
+    public function recapitulatifAction(ClassRoom $room, Sequence $seq, \Knp\Snappy\Pdf $snappy)
     {
-         // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));          
+        // Année scolaire en cours
+        $year = $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/recapitulatifseqvierge.html.twig', array(
             'room' => $room,
@@ -451,14 +446,14 @@ class ClassRoomController extends AbstractController
 
         return new Response(
             $snappy->getOutputFromHtml($html, array(
-                    'default-header' => false)),
+                'default-header' => false
+            )),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+            )
         );
-        
     }
 
 
@@ -471,47 +466,46 @@ class ClassRoomController extends AbstractController
      */
     public function recapSeqAction(ClassRoom $room)
     {
-     // set_time_limit(600);
+        // set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-        
+
         $datas = $this->markRepo->findMarksBySequenceAndClassOrderByStd($seq, $room);
-       
+
         $html = $this->renderView('classroom/recapitulatifseq.html.twig', array(
             'room' => $room,
             'datas' => $datas,
-            'year'=> $year,
+            'year' => $year,
             'seq' => $seq,
             'students' => $studentEnrolled,
         ));
-       
+
         return new Response($html);
     }
 
-  /**
+    /**
      * @Route("/create",name= "admin_classrooms_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
         $schoolyear = new ClassRoom();
-    	$form = $this->createForm(ClassRoomType::class, $schoolyear);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(ClassRoomType::class, $schoolyear);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($schoolyear);
             $this->em->flush();
             $this->addFlash('success', 'ClassRoom succesfully created');
             return $this->redirectToRoute('admin_classrooms');
-    	}
-    	 return $this->render('classroom/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'classroom/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
@@ -531,14 +525,16 @@ class ClassRoomController extends AbstractController
         $sequences = $em->getRepository('AppBundle:Sequence')->findSequencesBySchoolYear($year);
         // Liste des matières
         $courses = $em->getRepository('AppBundle:Course')->findProgrammedCoursesInClass($classroom);
-        
+
         // Elèves inscrits
         foreach ($sequences as $seq) {
             // Lecture de chaque tableau de chaque ligne
             foreach ($courses as $course) {
                 // Liste des évaluations
-                $evaluation = $em->getRepository('AppBundle:Evaluation')->findOneBy(array("classRoom" => $classroom,
-                    "sequence" => $seq, "course" => $course));
+                $evaluation = $em->getRepository('AppBundle:Evaluation')->findOneBy(array(
+                    "classRoom" => $classroom,
+                    "sequence" => $seq, "course" => $course
+                ));
                 if ($evaluation != null) {
                     $evaluations[$seq->getId()][$course->getId()] = 1;
                 } else {
@@ -548,10 +544,10 @@ class ClassRoomController extends AbstractController
         }
 
         return $this->render('classroom/eval_repport.html.twig', array(
-                    'evaluations' => $evaluations,
-                    'courses' => $courses,
-                    'room' => $classroom,
-                    'sequences' => $sequences,
+            'evaluations' => $evaluations,
+            'courses' => $courses,
+            'room' => $classroom,
+            'sequences' => $sequences,
         ));
     }
 
@@ -562,26 +558,25 @@ class ClassRoomController extends AbstractController
      * @Route("/{id}/edt", name="admin_classrooms_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,ClassRoom $room): Response
+    public function edit(Request $request, ClassRoom $room): Response
     {
         $form = $this->createForm(ClassRoomType::class, $room, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'ClassRoom succesfully updated');
             return $this->redirectToRoute('admin_classrooms');
         }
-        return $this->render('classroom/edit.html.twig'	, [
-            'room'=>$room,
-            'form'=>$form->createView()
+        return $this->render('classroom/edit.html.twig', [
+            'room' => $room,
+            'form' => $form->createView()
         ]);
     }
 
-    
+
 
     /**
      * Deletes a ClassRoom entity.
@@ -589,35 +584,35 @@ class ClassRoomController extends AbstractController
      * @Route("/{id}/delete", name="admin_classrooms_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      
      */
-    public function delete(ClassRoom $q, Request $request):Response
+    public function delete(ClassRoom $q, Request $request): Response
     {
-      //  dd($q);
-       // if($this->isCsrfTokenValid('classrooms_deletion'.$schoolyear->getId(), $request->request->get('crsf_token') )){
-            $this->em->remove($q);
-           
-            $this->em->flush();
-            $this->addFlash('info', 'ClassRoom succesfully deleted');
-    //    }
-       
+        //  dd($q);
+        // if($this->isCsrfTokenValid('classrooms_deletion'.$schoolyear->getId(), $request->request->get('crsf_token') )){
+        $this->em->remove($q);
+
+        $this->em->flush();
+        $this->addFlash('info', 'ClassRoom succesfully deleted');
+        //    }
+
         return $this->redirectToRoute('admin_classrooms');
     }
 
-     /**
+    /**
      * Finds and displays a ClassRoom entity.
      *
      * @Route("/{id}/fichesimple", name="admin_classrooms_fichesimple", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
-    public function fichesiplmeAction(ClassRoom $classroom,\Knp\Snappy\Pdf $snappy)
+    public function fichesiplmeAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
     {
         $em = $this->getDoctrine()->getManager();
 
         // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));          
+        $year = $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-       
-        
+
+
 
         $html = $this->renderView('classroom/fichesimple.html.twig', array(
             'year' => $year,
@@ -634,18 +629,19 @@ class ClassRoomController extends AbstractController
           ); */
         return new Response(
             $snappy->getOutputFromHtml($html, array(
-                    'default-header' => false)),
+                'default-header' => false
+            )),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+            )
         );
 
         //return new Response($html);
     }
 
-     /**
+    /**
      * LISTE DES ELEVES DE LA CLASSE DANS UNE FICHE DE PRESENTATION.
      *
      * @Route("/{id}/presentation", name="admin_classrooms_presentation", requirements={"id"="\d+"})
@@ -663,8 +659,8 @@ class ClassRoomController extends AbstractController
             'room' => $classroom,
             'students' => $studentEnrolled,
         ));
-       
-       /* return new Response(
+
+        /* return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
                     'default-header' => false)),
             200,
@@ -680,47 +676,47 @@ class ClassRoomController extends AbstractController
     /**
      * MOYENNE GENERALE DE LA CLASSE A UNE SEQUENCE
      * @Route("/{id_room}/{id_seq}/sqavg", name="admin_classrooms_avg_seq", requirements={"id_room"="\d+", "id_seq"="\d+"})
-    * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
-    * @ParamConverter("seq", options={"mapping": {"id_seq"   : "id"}})
+     * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
+     * @ParamConverter("seq", options={"mapping": {"id_seq"   : "id"}})
      * @Method("GET")
      * @Template()
      */
     public function generalSeqAverage(ClassRoom $room, Sequence $seq)
     {
-            $dql = 	"SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
+        $dql =     "SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
             WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
-            $avg_seq1 = $this->em->createQuery($dql)
-                        ->setParameter(1, $room->getId())
-                        ->setParameter(2, $seq->getId())
-                        ->getSingleScalarResult();
-           return round($avg_seq1 ,2);
+        $avg_seq1 = $this->em->createQuery($dql)
+            ->setParameter(1, $room->getId())
+            ->setParameter(2, $seq->getId())
+            ->getSingleScalarResult();
+        return round($avg_seq1, 2);
     }
 
-     /**
+    /**
      * MOYENNE GENERALE DE LA CLASSE A UN TRIMESTRE
      * @Route("/{id_room}/{id_quat}/qtavg", name="admin_classrooms_avg_quat", requirements={"id_room"="\d+", "id_quat"="\d+"})
-    * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
-    * @ParamConverter("quater", options={"mapping": {"id_quat"   : "id"}})
+     * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
+     * @ParamConverter("quater", options={"mapping": {"id_quat"   : "id"}})
      * @Method("GET")
      * @Template()
      */
     public function generalQuatAverage(ClassRoom $room, Quater $quater)
     {
-        $dql = 	"SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
+        $dql =     "SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
             WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
-       
-        $avg_seq =0;
-        foreach($quater->getSequences() as $seq) {
+
+        $avg_seq = 0;
+        foreach ($quater->getSequences() as $seq) {
             $avg_seq += $this->em->createQuery($dql)
-                            ->setParameter(1, $room->getId())
-                            ->setParameter(2, $seq->getId())
-                            ->getSingleScalarResult();
+                ->setParameter(1, $room->getId())
+                ->setParameter(2, $seq->getId())
+                ->getSingleScalarResult();
         }
-        return round($avg_seq/2 ,2);
+        return round($avg_seq / 2, 2);
     }
 
-    
-        /**
+
+    /**
      * Finds and displays a Evaluation entity.
      *
      * @Route("/{room}/pdf", name="admin_classrooms_blanc_ann", requirements={"room"="\d+"})
@@ -738,18 +734,19 @@ class ClassRoomController extends AbstractController
             'year' => $year,
         ));
 
-       
+
         return new Response(
             $snappy->getOutputFromHtml($html, array(
-                    'default-header' => false)),
+                'default-header' => false
+            )),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+            )
         );
 
-       /* return new Response(
+        /* return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,
             array(
@@ -760,7 +757,7 @@ class ClassRoomController extends AbstractController
                 )
         );*/
         // return new Response($html);
-        
+
     }
 
     /**
@@ -773,27 +770,27 @@ class ClassRoomController extends AbstractController
     public function reportCardsAction(ClassRoom $classroom)
     {
         set_time_limit(600);
-        $totalNtCoef=0;
-        $totalCoef=0;
+        $totalNtCoef = 0;
+        $totalCoef = 0;
         $em = $this->getDoctrine()->getManager();
-       
+
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
-        $evaluations = $this->evalRepo->findSequantialExamsOfRoom(  $classroom->getId(), $sequence->getId());  
-             
+        $evaluations = $this->evalRepo->findSequantialExamsOfRoom($classroom->getId(), $sequence->getId());
+
         foreach ($evaluations as $ev) {
             $totalNtCoef += $ev->getMoyenne() * $ev->getCourse()->getCoefficient();
             $totalCoef += $ev->getCourse()->getCoefficient();
         }
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-        
+
         $datas = $this->getData($classroom, $sequence);
         $html = $this->renderView('classroom/reportcard.html.twig', array(
             'year' => $year,
             'datas' => $datas,
             'sequence' => $sequence,
             'quater' => $sequence->getQuater(),
-            'moyenneGen' => ($totalNtCoef/$totalCoef),
+            'moyenneGen' => ($totalNtCoef / $totalCoef),
             'room' => $classroom,
             'students' => $studentEnrolled,
         ));
@@ -802,16 +799,16 @@ class ClassRoomController extends AbstractController
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,
             array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
-                )
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+            )
         );
 
         //return new Response($html);
     }
 
 
-     /**
+    /**
      * Finds and displays a ClassRoom entity.
      *
      * @Route("/{id}/reportCardsTrim", name="admin_classrooms_reportcards_trim", requirements={"id"="\d+"})
@@ -820,7 +817,7 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrimAction(ClassRoom $classroom, Pdf $pdf)
     {
-       // dd();
+        // dd();
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
@@ -829,9 +826,9 @@ class ClassRoomController extends AbstractController
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $dataSeq1 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[0], $classroom);
         $dataSeq2 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[1], $classroom);
-       
-       $pdf->setTimeout(600);
-   //     if($classroom->getApc()){
+
+        $pdf->setTimeout(600);
+        //     if($classroom->getApc()){
         $html = $this->renderView('classroom/reportcardTrimApc.html.twig', array(
             'year' => $year,
             'dataseq1' => $dataSeq1,
@@ -840,12 +837,12 @@ class ClassRoomController extends AbstractController
             'sequence2' => $sequences[1],
             'room' => $classroom,
             'quater' => $quater,
-            'avg' => $this->generalQuatAverage($classroom,$quater),
+            'avg' => $this->generalQuatAverage($classroom, $quater),
             'students' => $studentEnrolled,
-            
+
         ));
-       
-  /*  } else {
+
+        /*  } else {
         $html = $this->renderView('classroom/reportcardTrim.html.twig', array(
             'year' => $year,
             'dataseq1' => $dataSeq1,
@@ -868,13 +865,13 @@ class ClassRoomController extends AbstractController
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="'.$classroom->getName().'.pdf"'
+                'Content-Disposition'   => 'inline; filename="' . $classroom->getName() . '.pdf"'
             )
         );
         // return new Response($html);
     }
 
-      /**
+    /**
      * Finds and displays a ClassRoom entity.
      *
      * @Route("/{id}/recapitulatiftrim", name="admin_classrooms_recapitulatif_trim", requirements={"id"="\d+"})
@@ -883,49 +880,46 @@ class ClassRoomController extends AbstractController
      */
     public function recapTrimAction(ClassRoom $room)
     {
-       set_time_limit(600);
-       $em = $this->getDoctrine()->getManager();
-       $year = $this->scRepo->findOneBy(array("activated" => true));
-       $quater = $this->qtRepo->findOneBy(array("activated" => true));
-       $sequences = $this->seqRepo->findBy(array("quater" => $quater));
-       $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYear($room, $year->getId());
-       $data1 = $this->markRepo->findMarksBySequenceAndClassOrderByStd($sequences[0], $room);
-       $data1 = $this->doubleEntry($data1, $room);
-       $data2 = $this->markRepo->findMarksBySequenceAndClassOrderByStd($sequences[1], $room);
-       $data2 = $this->doubleEntry($data2, $room);
-       $datas=null;
-       foreach ($data1 as $students) {
-           
-           foreach ($students as $m) {
-               
-               $n = new Mark();
-               $n->setStudent($m->getStudent());
-               $n->setRank($m->getEvaluation()->getCourse()->getCoefficient());
-               $n->setAppreciation($m->getEvaluation()->getCourse()->getWording());
-               $n->setValue($this->average($data1[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()],$data2[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]));
-              
-               $w = $data1[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]->getWeight() + $data2[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]->getWeight();
-               if($w!=0)
-                   $n->setWeight($w);
-               else 
-                   $n->setWeight(0);
-               $datas[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getWording()]=$n;
-           }
-         
-       }
-       
-       $this->get('knp_snappy.pdf')->setTimeout(600);
-  //     if($classroom->getApc()){
-       $html = $this->renderView('classroom/recapitulatiftrimWithMoy.html.twig', array(
-           'year' => $year,
-           'datas' => $datas,
-           'room' => $room,
-           'quater' => $quater,
-           'students' => $studentEnrolled
-       ));
+        set_time_limit(600);
+        $em = $this->getDoctrine()->getManager();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $quater = $this->qtRepo->findOneBy(array("activated" => true));
+        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYear($room, $year->getId());
+        $data1 = $this->markRepo->findMarksBySequenceAndClassOrderByStd($sequences[0], $room);
+        $data1 = $this->doubleEntry($data1, $room);
+        $data2 = $this->markRepo->findMarksBySequenceAndClassOrderByStd($sequences[1], $room);
+        $data2 = $this->doubleEntry($data2, $room);
+        $datas = null;
+        foreach ($data1 as $students) {
 
-       return new Response($html);
+            foreach ($students as $m) {
+
+                $n = new Mark();
+                $n->setStudent($m->getStudent());
+                $n->setRank($m->getEvaluation()->getCourse()->getCoefficient());
+                $n->setAppreciation($m->getEvaluation()->getCourse()->getWording());
+                $n->setValue($this->average($data1[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()], $data2[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]));
+
+                $w = $data1[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]->getWeight() + $data2[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getId()]->getWeight();
+                if ($w != 0)
+                    $n->setWeight($w);
+                else
+                    $n->setWeight(0);
+                $datas[$m->getStudent()->getMatricule()][$m->getEvaluation()->getCourse()->getWording()] = $n;
+            }
+        }
+
+        $this->get('knp_snappy.pdf')->setTimeout(600);
+        //     if($classroom->getApc()){
+        $html = $this->renderView('classroom/recapitulatiftrimWithMoy.html.twig', array(
+            'year' => $year,
+            'datas' => $datas,
+            'room' => $room,
+            'quater' => $quater,
+            'students' => $studentEnrolled
+        ));
+
+        return new Response($html);
     }
-
-
 }

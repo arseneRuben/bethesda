@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\Mark;
 use App\Entity\Payment;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * @ORM\Entity(repositoryClass=StudentRepository::class)
  * @UniqueEntity(fields={"matricule"}, message="There is already an account with this matricule")
@@ -29,7 +31,7 @@ class Student
      */
     private $id;
 
-      /**
+    /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
      * @Vich\UploadableField(mapping="student_image", fileNameProperty="imageName")
@@ -49,7 +51,7 @@ class Student
      */
     private $matricule;
 
-      /**
+    /**
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
@@ -131,25 +133,25 @@ class Student
      * @ORM\Column(name="birthplace", type="string", length=255)
      */
     private $birthplace;
-     /**
+    /**
      * @var boolean
      *
      * @ORM\Column(name="enrolled", type="boolean", options={"default":false})
      */
-    private $enrolled=false;
+    private $enrolled = false;
 
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="student")
      */
     private $subscriptions;
-     /**
+    /**
      * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="student",cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      *
      * */
     private $payments;
-    
-     /**
+
+    /**
      * Get updated
      *
      * @return \DateTime
@@ -165,16 +167,16 @@ class Student
         return $this->id;
     }
 
-  
 
-  
+
+
 
     public function getFull()
     {
         return $this->surname . " " . $this->name;
     }
 
- 
+
     /**
      *
      * @return string
@@ -201,8 +203,8 @@ class Student
 
         return $this;
     }
-    
-    
+
+
 
     /**
      * Get matricule
@@ -214,7 +216,7 @@ class Student
         return $this->matricule;
     }
 
-    
+
     /**
      * Set particularDisease
      *
@@ -359,7 +361,7 @@ class Student
         return $this->otherInformations;
     }
 
-  
+
 
     /**
      * Set gender
@@ -447,15 +449,15 @@ class Student
 
         return $this;
     }
-    
+
     /**
-    * Get classRoom
-    *
-    * @return ClassRoom
-    */
+     * Get classRoom
+     *
+     * @return ClassRoom
+     */
     public function getClassRoom(SchoolYear $year)
     {
-        $subscribtion = $em->getRepository('AppBundle:Subscription')->findBy(array('schoolYear'=>$year, 'student'=>$std));
+        $subscribtion = $em->getRepository('AppBundle:Subscription')->findBy(array('schoolYear' => $year, 'student' => $std));
         return $subscribtion->getClassRoom();
     }
 
@@ -541,7 +543,7 @@ class Student
         $this->payments = new ArrayCollection();
     }
 
-    
+
     public function addMark(Mark $mark)
     {
         $this->marks[] = $mark;
@@ -588,10 +590,10 @@ class Student
         return $this->profileImagePath;
     }
 
-   
-   
 
-   
+
+
+
     /**
      * Set residence
      *
@@ -679,7 +681,7 @@ class Student
         return $this;
     }
 
- 
+
     public function removePayment(Payment $payment)
     {
         $this->payments->removeElement($payment);

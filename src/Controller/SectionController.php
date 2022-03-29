@@ -27,7 +27,7 @@ class SectionController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_sections")
@@ -36,14 +36,14 @@ class SectionController extends AbstractController
      */
     public function indexAction(SectionRepository $repo)
     {
-       
+
         $sections = $repo->findAll();
-        
-       return $this->render('section/index.html.twig', compact("sections"));
+
+        return $this->render('section/index.html.twig', compact("sections"));
     }
 
 
-   
+
 
     /**
      * @Route("/create",name="admin_sections_new", methods={"GET","POST"})
@@ -51,21 +51,21 @@ class SectionController extends AbstractController
     public function create(Request $request): Response
     {
         $section = new Section();
-    	$form = $this->createForm(SectionType::class, $section);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(SectionType::class, $section);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($section);
             $this->em->flush();
             $this->addFlash('success', 'Section succesfully created');
             return $this->redirectToRoute('admin_sections');
-    	}
-    	 return $this->render('section/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'section/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
-   
+
     /**
      * Finds and displays a Section entity.
      *
@@ -75,7 +75,7 @@ class SectionController extends AbstractController
      */
     public function showAction(Section $section)
     {
-        
+
         return $this->render('section/show.html.twig', compact("section"));
     }
 
@@ -88,13 +88,11 @@ class SectionController extends AbstractController
      */
     public function createAction(Request $request)
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
-        if(!$this->getUser()->isVerified())
-        {
+        if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
@@ -114,46 +112,45 @@ class SectionController extends AbstractController
         );
     }
 
-   
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_sections_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Section $section): Response
+    public function edit(Request $request, Section $section): Response
     {
         $form = $this->createForm(SectionType::class, $section, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Section succesfully updated');
             return $this->redirectToRoute('admin_sections');
         }
-        return $this->render('section/edit.html.twig'	, [
-            'section'=>$section,
-            'form'=>$form->createView()
+        return $this->render('section/edit.html.twig', [
+            'section' => $section,
+            'form' => $form->createView()
         ]);
     }
 
-       /**
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_sections_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Section $section, Request $request):Response
+    public function delete(Section $section, Request $request): Response
     {
-        if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('csrf_token') )){
+        if ($this->isCsrfTokenValid('sections_deletion' . $section->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($section);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'Section succesfully deleted');
         }
-       
+
         return $this->redirectToRoute('admin_sections');
     }
 }

@@ -46,11 +46,10 @@ class SubscriptionController extends AbstractController
      */
     public function indexAction()
     {
-       
+
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $subscriptions = $this->repo->findEnrollementThisYear($year);
         return $this->render('subscription/index.html.twig', compact("subscriptions"));
-      
     }
 
 
@@ -72,29 +71,29 @@ class SubscriptionController extends AbstractController
     public function create(Request $request): Response
     {
         $subscription = new Subscription();
-    	$form = $this->createForm(SubscriptionType::class, $subscription);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(SubscriptionType::class, $subscription);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $student = $subscription->getStudent();
-        
-               
+
+
             $student->addSubscription($subscription);
-              
+
             $student->setEnrolled(true);
-        
-           // $subscription->setInstant(new \DateTime());
+
+            // $subscription->setInstant(new \DateTime());
             $this->em->persist($subscription);
-           
-            
-        
+
+
+
             $this->em->persist($subscription);
             $this->em->flush();
             $this->addFlash('success', 'Subscription succesfully created');
             return $this->redirectToRoute('admin_subscriptions');
-    	}
-    	 return $this->render('subscription/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'subscription/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
@@ -111,22 +110,22 @@ class SubscriptionController extends AbstractController
         $form = $this->createForm(new SubscriptionType(), $subscription, ['entityManager' => $this->getDoctrine()->getManager(),]);
         if ($form->isSubmitted() && $form->isValid()) {
             $student = $subscription->getStudent();
-        
-               
+
+
             $student->addSubscription($subscription);
-              
+
             $student->setEnrolled(true);
-        
+
             $subscription->setInstant(new \DateTime());
             $this->em->persist($subscription);
             $this->em->persist($student);
-            
+
             $this->em->flush();
             return $this->redirect($this->generateUrl('admin_subscriptions'));
         }
         return $this->render('subscription/edit.html.twig', array(
-                    'subscription' => $subscription,
-                    'form' => $form->createView(),
+            'subscription' => $subscription,
+            'form' => $form->createView(),
         ));
     }
 
@@ -138,64 +137,61 @@ class SubscriptionController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
         $payments = $em->getRepository('AppBundle:Payment')->findAnnualPaymentsOfStudent($std, $year);
-          
-        $total =0;
+
+        $total = 0;
         foreach ($payments as $p) {
             if ($p->getSchoolYear()->getId() == $year->getId()) {
                 $total += $p->getAmount();
             }
         }
         $inscription =   $room->getLevel()->getInscription();
-        if ($inscription==null) {
+        if ($inscription == null) {
             return;
         }
-  
+
         return ($total >= $inscription) ?  true : false;
     }
 
-   
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_subscriptions_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Subscription $subscription): Response
+    public function edit(Request $request, Subscription $subscription): Response
     {
         $form = $this->createForm(Subscription2Type::class, $subscription, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Subscription succesfully updated');
             return $this->redirectToRoute('admin_subscriptions');
         }
-        return $this->render('subscription/edit.html.twig'	, [
-            'subscription'=>$subscription,
-            'form'=>$form->createView()
+        return $this->render('subscription/edit.html.twig', [
+            'subscription' => $subscription,
+            'form' => $form->createView()
         ]);
     }
 
-    
-       /**
+
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_subscriptions_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Subscription $subscription , Request $request):Response
+    public function delete(Subscription $subscription, Request $request): Response
     {
-        if($this->isCsrfTokenValid('subscriptions_deletion'.$subscription->getId(), $request->request->get('csrf_token') )){
+        if ($this->isCsrfTokenValid('subscriptions_deletion' . $subscription->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($subscription);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'Subscription succesfully deleted');
         }
-       
+
         return $this->redirectToRoute('admin_subscriptions');
     }
-
-   
 }

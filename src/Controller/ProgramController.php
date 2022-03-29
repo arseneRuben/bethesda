@@ -28,7 +28,7 @@ class ProgramController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_programs")
@@ -37,10 +37,10 @@ class ProgramController extends AbstractController
      */
     public function indexAction(ProgramRepository $repo)
     {
-       
+
         $programs = $repo->findAll();
-        
-       return $this->render('program/index.html.twig', compact("programs"));
+
+        return $this->render('program/index.html.twig', compact("programs"));
     }
 
     /**
@@ -52,37 +52,35 @@ class ProgramController extends AbstractController
      */
     public function showAction(Program $program)
     {
-        
+
         return $this->render('program/show.html.twig', compact("program"));
     }
 
-  /**
+    /**
      * @Route("/create",name= "admin_programs_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
-        if(!$this->getUser()->isVerified())
-        {
+        if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
         $program = new Program();
-    	$form = $this->createForm(ProgramType::class, $program);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($program);
             $this->em->flush();
             $this->addFlash('success', 'Program succesfully created');
             return $this->redirectToRoute('admin_programs');
-    	}
-    	 return $this->render('program/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'program/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
@@ -92,43 +90,41 @@ class ProgramController extends AbstractController
      * @Route("/{id}/edit", name="admin_programs_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Program $program): Response
+    public function edit(Request $request, Program $program): Response
     {
         $form = $this->createForm(ProgramType::class, $program, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
 
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Program succesfully updated');
             return $this->redirectToRoute('admin_programs');
         }
-        return $this->render('program/edit.html.twig'	, [
-            'program'=>$program,
-            'form'=>$form->createView()
+        return $this->render('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form->createView()
         ]);
     }
 
-    
+
 
     /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_programs_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Program $program, Request $request):Response
+    public function delete(Program $program, Request $request): Response
     {
-        if($this->isCsrfTokenValid('programs_deletion'.$program->getId(), $request->request->get('csrf_token') )){
+        if ($this->isCsrfTokenValid('programs_deletion' . $program->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($program);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'Program succesfully deleted');
-       }
-       
+        }
+
         return $this->redirectToRoute('admin_programs');
     }
-
 }

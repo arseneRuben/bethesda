@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Repository\UserRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
@@ -30,7 +31,7 @@ class SchoolController extends AbstractController
     public function __construct(EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo)
     {
         $this->em = $em;
-        $this->userRepo= $userRepo;
+        $this->userRepo = $userRepo;
         $this->scRepo = $scRepo;
         $this->rmRepo = $rmRepo;
     }
@@ -39,12 +40,12 @@ class SchoolController extends AbstractController
      */
     public function index(): Response
     {
-       
+
         return $this->render('school/index.html.twig');
     }
 
 
-     /**
+    /**
      * Lists all User entities.
      *
      * @Route("/teachers", name="app_teachers")
@@ -53,15 +54,15 @@ class SchoolController extends AbstractController
      */
     public function teacherListAction()
     {
-        
+
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $users = $this->userRepo->findAllOfCurrentYear($year);
-        
+
         return $this->render('school/teacher.html.twig', compact("users"));
     }
 
 
-     /**
+    /**
      * Lists all User entities.
      *
      * @Route("/rooms", name="app_rooms")
@@ -70,23 +71,23 @@ class SchoolController extends AbstractController
      */
     public function roomListAction()
     {
-        
+
         //phpinfo();
         $rooms = $this->rmRepo->findAll();
-        
+
         return $this->render('school/roomList.html.twig', compact("rooms"));
     }
 
 
-     /**
+    /**
      * @Route("/staff", name="app_staff")
      */
     public function staffAction(Request $request)
-    { 
-       
+    {
+
         $qb = $this->em->createQueryBuilder();
-        $qb->select('u') ->from('App:User', 'u') ->where('u.roles LIKE :roles') ->setParameter('roles', '%"'."ROLE_ADMIN".'"%');
-             $users = $qb->getQuery()->getResult();
+        $qb->select('u')->from('App:User', 'u')->where('u.roles LIKE :roles')->setParameter('roles', '%"' . "ROLE_ADMIN" . '"%');
+        $users = $qb->getQuery()->getResult();
         //$users = $this->userRepo->findByRoles("ROLE_ADMIN");
         return $this->render('school/staff.html.twig', compact("users"));
     }

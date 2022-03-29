@@ -1,56 +1,85 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 {% block content %}
-     <div class=" mt-4">
-       
-            <div class="col-12 jumbotron" >
-                <div class="m-1 box-shadow">
-                    <div class="card-header d-inline-flex">
-                        <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
-                            <i class="fa fa-plus"></i> &emsp; 
-                         </a>
-                            <h4 class="my-0 font-weight-normal text-center   text-uppercase"> &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  Liste des salles de classe </h4>
-                    </div>
-                <table  width="120%" class="table table-striped table-sm">
+    <div class=" mt-4">
+
+        <div class="col-12 jumbotron">
+            <div class="m-1 box-shadow">
+                <div class="card-header d-inline-flex">
+                    <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
+                        <i class="fa fa-plus"></i>
+                        &emsp; 
+                                                 
+                    </a>
+                    <h4 class="my-0 font-weight-normal text-center   text-uppercase">
+                        &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  Liste des salles de classe 
+                    </h4>
+                </div>
+                <table width="120%" class="table table-striped table-sm">
                     <thead>
                         <tr>
-                            <th style="width:2%;" class="text-center" scope="col">#</th>
-                            <th  style="width:18%;" class="text-center" scope="col">Nom</th>
-                          
-                            <th  style="width:15%;" class="text-center" scope="col">Professeur titulaire</th>
-                            
-                            <th  style="width:75%;" class="text-center" scope="col">Action</th>
+                            <th style="width:2%;" class="text-center" scope="col">
+                                #
+                            </th>
+                            <th style="width:18%;" class="text-center" scope="col">
+                                Nom
+                            </th>
+
+                            <th style="width:15%;" class="text-center" scope="col">
+                                Professeur titulaire
+                            </th>
+
+                            <th style="width:75%;" class="text-center" scope="col">
+                                Action
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for room in classrooms %}
                             <tr>
-                                <td style="width:15%;" class="text-center" scope="row">{{ loop.index }}</th>
-                                <td><a href="{{ path('admin_classrooms_show', {id: room.id }) }}">{{ room.name }}</a></td>
-                                <td>{#<a href="{{ path('admin_users_edit', {id: room.fullTeacher.id}) }}">#}{{ room.fullTeacher }}</td>
+                                <td style="width:15%;" class="text-center" scope="row">
+                                    {{ loop.index }}
+                                </th>
+                                <td>
+                                    <a href="{{ path('admin_classrooms_show', {id: room.id }) }}">
+                                        {{ room.name }}
+                                    </a>
+                                </td>
+                                <td>{#<a href="{{ path('admin_users_edit', {id: room.fullTeacher.id}) }}">#}{{ room.fullTeacher }}
+                                </td>
                                 <td>
                                     <div class="btn-group">
-                                        
+
                                         <a class="btn btn-warning " href="{{ path('admin_classrooms_edit', {id: room.id}) }}">
-                                            <i class="fa fa-edit">&nbsp;Edit</i>
+                                            <i class="fa fa-edit">
+                                                &nbsp;Edit
+                                            </i>
                                         </a>
-                                       
+
                                         <a class="btn btn-file" href="{{ path('admin_classrooms_fichesimple', {id: room.id}) }}">
-                                            <i class="fa fa-file-pdf-o" aria-hidden="true">&nbsp;Fiche pv</i>
+                                            <i class="fa fa-file-pdf-o" aria-hidden="true">
+                                                &nbsp;Fiche pv
+                                            </i>
                                         </a>
-                                         <a class="btn btn-info btn-sm" href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
-                                            
-                                            <i class="fa fa-users" aria-hidden="true"> &nbsp;Eleves </i>
+                                        <a class="btn btn-info btn-sm" href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
 
-                                             </a>
-                                         <a class="btn btn-file" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">
-                                            <i  class="fa fa-file" aria-hidden="true">&nbsp;Fiche recap. vierge</i>
+                                            <i class="fa fa-users" aria-hidden="true">
+                                                &nbsp;Eleves 
+                                            </i>
+
+                                        </a>
+                                        <a class="btn btn-file" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">
+                                            <i class="fa fa-file" aria-hidden="true">
+                                                &nbsp;Fiche recap. vierge
+                                            </i>
                                         </a>
 
-                                         <a class="btn btn-file" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
-                                            <i  class="fa fa-th-list" aria-hidden="true">&nbsp;Fiche annu.</i>
+                                        <a class="btn btn-file" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
+                                            <i class="fa fa-th-list" aria-hidden="true">
+                                                &nbsp;Fiche annu.
+                                            </i>
                                         </a>
-                                       
+
                                     </div>
                                 </td>
                             </tr>
@@ -63,5 +92,5 @@
     </div>
 {% endblock %}
 {% block footer %}
-     {{ parent() }}
+    {{ parent() }}
 {% endblock %}

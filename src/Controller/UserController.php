@@ -28,7 +28,7 @@ class UserController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_users")
@@ -37,14 +37,14 @@ class UserController extends AbstractController
      */
     public function indexAction(UserRepository $repo)
     {
-       
+
         $users = $repo->findAll();
-        
-       return $this->render('user/list.html.twig', compact("users"));
+
+        return $this->render('user/list.html.twig', compact("users"));
     }
 
 
-   
+
 
     /**
      * @Route("/create",name="admin_users_new", methods={"GET","POST"})
@@ -52,22 +52,22 @@ class UserController extends AbstractController
     public function create(Request $request): Response
     {
         $user = new User();
-    	$form = $this->createForm(UserType::class, $user);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success', 'User succesfully created');
             return $this->redirectToRoute('admin_users');
-    	}
-    	 return $this->render('user/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'user/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
-   
-     /**
+
+    /**
      * Finds and displays a User entity.
      *
      * @Route("/{id}/show", name="app_users_show", requirements={"id"="\d+"})
@@ -92,9 +92,9 @@ class UserController extends AbstractController
         return $this->render('account/show.html.twig', compact("user"));
     }
 
-    
 
-  
+
+
     /**
      * Creates a new User entity.
      *
@@ -105,7 +105,7 @@ class UserController extends AbstractController
     public function createAction(Request $request)
     {
         $user = new User();
-        
+
         $form = $this->createForm(new UserType(), $user);
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -122,7 +122,7 @@ class UserController extends AbstractController
         );
     }
 
-     /**
+    /**
      * Displays a form to  an existing User entity.
      *
      * @Route("/{id}/pdf", name="admin_users_pdf", requirements={"id"="\d+"})
@@ -132,7 +132,7 @@ class UserController extends AbstractController
     public function presentAction(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
 
         return $this->render('user/present.html.twig', array(
@@ -141,50 +141,46 @@ class UserController extends AbstractController
         ));
     }
 
-   
-      
+
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_users_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,User $user): Response
+    public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserType::class, $user, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'User succesfully updated');
             return $this->redirectToRoute('admin_users');
         }
-        return $this->render('user/edit.html.twig'	, [
-            'user'=>$user,
-            'form'=>$form->createView()
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView()
         ]);
     }
 
-       /**
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_users_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(User $user, Request $request):Response
+    public function delete(User $user, Request $request): Response
     {
-        if($this->isCsrfTokenValid('users_deletion'.$user->getId(), $request->request->get('crsf_token') )){
+        if ($this->isCsrfTokenValid('users_deletion' . $user->getId(), $request->request->get('crsf_token'))) {
             $this->em->remove($user);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'User succesfully deleted');
         }
-       
+
         return $this->redirectToRoute('admin_users');
     }
-  
-
-   
 }

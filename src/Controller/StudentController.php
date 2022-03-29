@@ -35,7 +35,7 @@ class StudentController extends AbstractController
     private $evalRepo;
 
 
-    public function __construct(EntityManagerInterface $em,SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo)
+    public function __construct(EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -46,7 +46,7 @@ class StudentController extends AbstractController
         $this->subRepo = $subRepo;
     }
 
-     /**
+    /**
      * Lists all Studentme entities.
      *
      * @Route("/", name="admin_students")
@@ -55,10 +55,10 @@ class StudentController extends AbstractController
      */
     public function indexAction()
     {
-       // $year = $this->scRepo->findOneBy(array("activated" => true));
+        // $year = $this->scRepo->findOneBy(array("activated" => true));
         $students = $this->repo->findEnrolledStudentsThisYear2();
-        
-       return $this->render('student/list.html.twig', compact("students"));
+
+        return $this->render('student/list.html.twig', compact("students"));
     }
 
     /**
@@ -73,70 +73,70 @@ class StudentController extends AbstractController
         // Année scolaire, seuquence, inscrption de l'eleve pour l'annee en cours
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
-        $sub = $this->subRepo->findOneBy(array("student" => $student,"schoolYear" => $year ));
+        $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
 
-        $evals=[];
-        $evalSeqs=[];
+        $evals = [];
+        $evalSeqs = [];
         $seqs = $this->seqRepo->findSequenceThisYear($year);
-        foreach($seqs as $seq) {
-           
-                 $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $sub->getClassRoom(),"sequence" => $seq ));
+        foreach ($seqs as $seq) {
+
+            $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $sub->getClassRoom(), "sequence" => $seq));
         }
 
         $courses = [];
-        $averageSeqs= [];
+        $averageSeqs = [];
         // Traitements de donnees pour les graphes
-        foreach($evalSeqs[$seq->getId()] as $eval) {
+        foreach ($evalSeqs[$seq->getId()] as $eval) {
             $courses[] = $eval->getCourse()->getWording();
         }
 
-        foreach($seqs as $seq) {
-            $average=[];
-            foreach($evalSeqs[$seq->getId()]  as $eval) {
-                if($this->markRepo->findOneBy(array("student" => $student,"evaluation" => $eval )))
-                    $average[] = $this->markRepo->findOneBy(array("student" => $student,"evaluation" => $eval ))->getValue();
+        foreach ($seqs as $seq) {
+            $average = [];
+            foreach ($evalSeqs[$seq->getId()]  as $eval) {
+                if ($this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval)))
+                    $average[] = $this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval))->getValue();
             }
-           
-            $averageSeqs[$seq->getId()]= $average;
+
+            $averageSeqs[$seq->getId()] = $average;
         }
-        
-        $filename = "assets/images/student/".$student->getMatricule().".jpg";
-       // dd($filename);
+
+        $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
+        // dd($filename);
         $file_exists = file_exists($filename);
-       // dd($file_exists);
-        $results['student' ]= $student;
-        $results['file_exists' ]=$file_exists;
-        $results['cours' ]= json_encode($courses);
+        // dd($file_exists);
+        $results['student'] = $student;
+        $results['file_exists'] = $file_exists;
+        $results['cours'] = json_encode($courses);
 
-        foreach($seqs as $seq) {
-                    $results[strtolower($seq->getWording())]= json_encode($averageSeqs[$seq->getId()]);
+        foreach ($seqs as $seq) {
+            $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
         }
 
-       
+
         return $this->render('student/show.html.twig', $results);
     }
 
-  /**
+    /**
      * @Route("/create",name= "admin_students_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
         $student = new Student();
-    	$form = $this->createForm(StudentType::class, $student);
+        $form = $this->createForm(StudentType::class, $student);
 
         $numero = $this->repo->getNumeroDispo();
         $student->setMatricule($numero);
 
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($student);
             $this->em->flush();
             $this->addFlash('success', 'Student succesfully created');
             return $this->redirectToRoute('admin_students');
-    	}
-    	 return $this->render('student/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'student/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
@@ -146,42 +146,40 @@ class StudentController extends AbstractController
      * @Route("/{id}/edit", name="admin_students_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Student $student): Response
+    public function edit(Request $request, Student $student): Response
     {
         $form = $this->createForm(StudentType::class, $student, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Student succesfully updated');
-            return $this->redirectToRoute('admin_students_show', ['id'=>$student->getId() ]);
+            return $this->redirectToRoute('admin_students_show', ['id' => $student->getId()]);
         }
-        return $this->render('student/edit.html.twig'	, [
-            'student'=>$student,
-            'form'=>$form->createView()
+        return $this->render('student/edit.html.twig', [
+            'student' => $student,
+            'form' => $form->createView()
         ]);
     }
 
-    
+
 
     /**
      * Deletes a Studentme entity.
      *
      * @Route("/{id}/delete", name="admin_students_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Student $student, Request $request):Response
+    public function delete(Student $student, Request $request): Response
     {
-        if($this->isCsrfTokenValid('students_deletion'.$student->getId(), $request->request->get('csrf_token') )){
+        if ($this->isCsrfTokenValid('students_deletion' . $student->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($student);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'Student succesfully deleted');
-       }
-       
+        }
+
         return $this->redirectToRoute('admin_students');
     }
-
 }

@@ -27,7 +27,7 @@ class ModuleController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_modules")
@@ -36,14 +36,14 @@ class ModuleController extends AbstractController
      */
     public function indexAction(ModuleRepository $repo)
     {
-       
+
         $modules = $repo->findAll();
-        
-       return $this->render('module/index.html.twig', compact("modules"));
+
+        return $this->render('module/index.html.twig', compact("modules"));
     }
 
 
-   
+
 
     /**
      * @Route("/create",name="admin_modules_new", methods={"GET","POST"})
@@ -51,21 +51,21 @@ class ModuleController extends AbstractController
     public function create(Request $request): Response
     {
         $module = new Module();
-    	$form = $this->createForm(ModuleType::class, $module);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(ModuleType::class, $module);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($module);
             $this->em->flush();
             $this->addFlash('success', 'Module succesfully created');
             return $this->redirectToRoute('admin_modules');
-    	}
-    	 return $this->render('module/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'module/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
-   
+
     /**
      * Finds and displays a Module entity.
      *
@@ -75,7 +75,7 @@ class ModuleController extends AbstractController
      */
     public function showAction(Module $module)
     {
-        
+
         return $this->render('module/show.html.twig', compact("module"));
     }
 
@@ -88,13 +88,11 @@ class ModuleController extends AbstractController
      */
     public function createAction(Request $request)
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
-        if(!$this->getUser()->isVerified())
-        {
+        if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
@@ -114,46 +112,45 @@ class ModuleController extends AbstractController
         );
     }
 
-   
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_modules_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Module $module): Response
+    public function edit(Request $request, Module $module): Response
     {
         $form = $this->createForm(ModuleType::class, $module, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Module succesfully updated');
             return $this->redirectToRoute('admin_modules');
         }
-        return $this->render('module/edit.html.twig'	, [
-            'module'=>$module,
-            'form'=>$form->createView()
+        return $this->render('module/edit.html.twig', [
+            'module' => $module,
+            'form' => $form->createView()
         ]);
     }
 
-       /**
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_modules_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Module $module, Request $request):Response
+    public function delete(Module $module, Request $request): Response
     {
-        if($this->isCsrfTokenValid('modules_deletion'.$module->getId(), $request->request->get('csrf_token') )){
+        if ($this->isCsrfTokenValid('modules_deletion' . $module->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($module);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'Module succesfully deleted');
         }
-       
+
         return $this->redirectToRoute('admin_modules');
     }
 }

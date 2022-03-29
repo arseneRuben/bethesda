@@ -1,200 +1,289 @@
 {% extends "layout/backEndLayout.html.twig" %}
 
 {% block content %}
-      
-        <div class="row mt-4">
-            <div class="col-lg-1 mar-bot30" >
-                <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
-                    <i class="fa fa-plus"></i> Nouvelle
-                </a>
 
-            </div>
-            <div class="col-lg-11 jumbotron" >
-            <article  class="p-3" >
+    <div class="row mt-4">
+        <div class="col-lg-1 mar-bot30">
+            <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
+                <i class="fa fa-plus"></i>
+                Nouvelle
+                                
+            </a>
+
+        </div>
+        <div class="col-lg-11 jumbotron">
+            <article class="p-3">
                 <table class="table table-hover record_properties center">
                     <tbody>
                         <tr>
-                            <th scope="row">Nom</th>
-                            <td>{{ classroom.name }}</td>
+                            <th scope="row">
+                                Nom
+                            </th>
+                            <td>
+                                {{ classroom.name }}
+                            </td>
                         </tr>
                         <tr>
-                            <th scope="row">Niveau</th>
-                            <td>{{ classroom.level }}</td>
+                            <th scope="row">
+                                Niveau
+                            </th>
+                            <td>
+                                {{ classroom.level }}
+                            </td>
                         </tr>
                         <tr>
-                            <th scope="row">Titulaire</th>
-                            <td>{{ classroom.fullTeacher }}</td>
+                            <th scope="row">
+                                Titulaire
+                            </th>
+                            <td>
+                                {{ classroom.fullTeacher }}
+                            </td>
                         </tr>
-                         <tr>
-                            <th scope="row">Apc</th>
+                        <tr>
+                            <th scope="row">
+                                Apc
+                            </th>
                             <td>
                                 {% if (classroom.apc == true) %}
-									OUI
-								{% else %}
-									NON
-								{% endif %}
+                                    OUI
+                                    								
+                                {% else %}
+                                    NON
+                                    								
+                                {% endif %}
                             </td>
                         </tr>
                     </tbody>
                 </table>
-               
+
                 <div class="btn-group record_actions">
 
                     <a class="btn btn-info" href="{{ path('admin_classrooms') }}">
-                        <i class="fa fa-list"></i> {{ 'Listing'|trans({}, 'admin') }}
+                        <i class="fa fa-list"></i>
+                        {{ 'Listing'|trans({}, 'admin') }}
                     </a>
                     {% if is_granted('ROLE_ADMIN') %}
-                    <a class="btn btn-primary" href="{{ path('admin_classrooms_edit', {id: classroom.id}) }}">
-                        <i class="fa fa-edit"></i> {{ 'Edit'|trans({}, 'admin') }}
-                    </a>
-                     {% endif %}
+                        <a class="btn btn-primary" href="{{ path('admin_classrooms_edit', {id: classroom.id}) }}">
+                            <i class="fa fa-edit"></i>
+                            {{ 'Edit'|trans({}, 'admin') }}
+                        </a>
+                    {% endif %}
                     <a class="btn btn-file" href="{{ path('admin_classrooms_recapitulatif_seq', {id: classroom.id}) }}">
-                        <i class="fa fa-file-excel-o"></i> Recap. Seq
+                        <i class="fa fa-file-excel-o"></i>
+                        Recap. Seq
+                                            
                     </a>
                     <a class="btn btn-warning" href="{{ path('admin_classrooms_reportcards', {id: classroom.id}) }}">
-                        <i class="fa fa-file"></i> Bull Seq
+                        <i class="fa fa-file"></i>
+                        Bull Seq
+                                            
                     </a>
-                
+
                     <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_trim', {id: classroom.id}) }}">
-                        <i class="fa fa-file"></i> Bull Trim
+                        <i class="fa fa-file"></i>
+                        Bull Trim
+                                            
                     </a>
-                     <a class="btn btn-outline-warning" href="{{ path('admin_classrooms_recapitulatif_trim', {id: classroom.id}) }}">
-                        <i class="fa fa-file-excel-o"></i> Recap Trim
+                    <a class="btn btn-outline-warning" href="{{ path('admin_classrooms_recapitulatif_trim', {id: classroom.id}) }}">
+                        <i class="fa fa-file-excel-o"></i>
+                        Recap Trim
+                                            
                     </a>
                     <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_year', {id: classroom.id}) }}">
-                        <i class="fa fa-file"></i> Bull Ann
+                        <i class="fa fa-file"></i>
+                        Bull Ann
+                                            
                     </a>
                     <a class="btn btn-file" href="{{ path('admin_classrooms_reportcards_apc_year', {id: classroom.id}) }}">
-                        <i class="fa fa-file"></i> Bull Ann Apc
+                        <i class="fa fa-file"></i>
+                        Bull Ann Apc
+                                            
                     </a>
                     <a class="btn btn-light" href="{{ path('admin_current_fulfilled_eval_show', {id: classroom.id}) }}">
-                        <i class="fa fa-list-ul"></i> Dépot des PV
+                        <i class="fa fa-list-ul"></i>
+                        Dépot des PV
+                                            
                     </a>
-                     {% if is_granted('ROLE_ADMIN') %}
-                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash-o"></i> {{ 'Delete'|trans({}, 'admin') }}</button>
-                     {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <button class="btn btn-danger" type="submit">
+                            <i class="fa fa-trash-o"></i>
+                            {{ 'Delete'|trans({}, 'admin') }}
+                        </button>
+                    {% endif %}
                 </div>
 
-            
-                <div class="card-header text-center"> <h2> Liste des élèves incrits dans la classe </h2></div>
+                <div class="card-header text-center">
+                    <h2>
+                        Liste des élèves incrits dans la classe 
+                    </h2>
+                </div>
                 <table class="table table-striped table-hover table-bordered records_list center">
                     <thead>
                         <tr>
-                            <th scope="col">Matricule</th>
-                            <th scope="col">Nom</th>
-                            <th scope="col">Prénom</th>
-                              <th scope="col">Photo</th>
+                            <th scope="col">
+                                Matricule
+                            </th>
+                            <th scope="col">
+                                Nom
+                            </th>
+                            <th scope="col">
+                                Prénom
+                            </th>
+                            <th scope="col">
+                                Photo
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% set effectif =0 %}
                         {% for std in studentEnrolled %}
                             <tr>
-                                <td><a href="{{ path('admin_students_show', {id: std.id}) }}">{{ std.matricule }}</a></td>
-                                <td>{{ std.lastname}}</td>
-                                <td>{{ std.firstname }}</td>
-                                <td>{{ fileExists[effectif] }}</td>
+                                <td>
+                                    <a href="{{ path('admin_students_show', {id: std.id}) }}">
+                                        {{ std.matricule }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ std.lastname }}
+                                </td>
+                                <td>
+                                    {{ std.firstname }}
+                                </td>
+                                <td>
+                                    {{ fileExists[effectif] }}
+                                </td>
                                 {% set effectif = effectif+1 %}
 
                             </tr>
 
                         {% endfor %}
-                        <tr> <td class="center" colspan="2">Effectif</td> <td>{{ effectif }}</td></tr>
+                        <tr>
+                            <td class="center" colspan="2">
+                                Effectif
+                            </td>
+                            <td>
+                                {{ effectif }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
- 
-    
-  
-                <div class="card-header text-center"><h2> Matières programmées dans la classe </h2> </div>
-                    <table class="table table-striped table-hover table-bordered records_list center">
-                        <thead>
+
+                <div class="card-header text-center">
+                    <h2>
+                        Matières programmées dans la classe 
+                    </h2>
+                </div>
+                <table class="table table-striped table-hover table-bordered records_list center">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">
+                                Module 
+                            </th>
+                            <th scope="col">
+                                Code 
+                            </th>
+                            <th scope="col">
+                                Intitulé 
+                            </th>
+                            <th scope="col">
+                                Coef 
+                            </th>
+                            <th scope="col">
+                                Enseignant 
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% set totalCoef =0 %}
+                        {% for module in modules %}
                             <tr>
 
-                                <th scope="col">Module </th>
-                                <th scope="col">Code </th>
-                                <th scope="col">Intitulé </th>
-                                <th scope="col">Coef </th>
-                                <th scope="col">Enseignant </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            {% set totalCoef =0 %}
-                            {% for module in modules %}
-                                <tr>
-
-
-                                    {% for course in module.courses %}
+                                {% for course in module.courses %}
                                     <tr>
-                                        <td>{{ module.name }}</td>
-                                        <td><a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.code }}</a></td>
+                                        <td>
+                                            {{ module.name }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('admin_courses_show', {id: course.id}) }}">
+                                                {{ course.code }}
+                                            </a>
+                                        </td>
                                         <td>
 
-                                        {{ course.wording }}
+                                            {{ course.wording }}
                                         </td>
-                                        <td>{{ course.coefficient }}</td>
                                         <td>
-                                           
+                                            {{ course.coefficient }}
+                                        </td>
+                                        <td>
+
                                             {% if course.attributed %}
-                                                {{(course.attributions|last).teacher.fullName}}
+                                                {{ (course.attributions|last).teacher.fullName }}
                                             {% else %}
-                                                    Pas encore attribuee
+                                                Pas encore attribuee
+                                                                                            
                                             {% endif %}
-                                        
+
                                         </td>
                                         {% set totalCoef = totalCoef+course.coefficient %}
                                     </tr>
                                 {% endfor %}
 
-                                </tr>
-                                <tr> <td class="center" colspan="3">total cumul coef </td> <td>{{ totalCoef }}</td></tr>
-                            {% endfor %}
+                            </tr>
+                            <tr>
+                                <td class="center" colspan="3">
+                                    total cumul coef 
+                                </td>
+                                <td>
+                                    {{ totalCoef }}
+                                </td>
+                            </tr>
+                        {% endfor %}
 
-                        </tbody>
-                    </table>
-            </article >
-           
-            <article  class="p-3" >
+                    </tbody>
+                </table>
+            </article>
+
+            <article class="p-3">
                 <canvas id="myChart" width="600" height="200"></canvas>
-            </article >
-            </div>
-         </div>
-
-
-
+            </article>
+        </div>
+    </div>
 
 {% endblock %}
 {% block javascripts %}
-						{{parent()}}
-            <script type="text/javascript">
+    {{ parent() }}
+    <script type="text/javascript">
                         let myChart = document.querySelector("#myChart");
                         let graph = new Chart(myChart, {
                             type:"bar",
                             data : {
-                                labels: {{cours|raw}},
+                                labels: {{ cours|raw }},
                                 datasets: [{
                                     label:"Session 1",
-                                    data: {{session1|raw}},
+                                    data: {{ session1|raw }},
                                     fill:false,
                                     backgroundColor: "#e8c3b9"
                                 },
                                 {
                                     label:"Session 2",
-                                    data: {{session2|raw}},
+                                    data: {{ session2|raw }},
                                     fill:false,
                                      backgroundColor: "#8e5ea2"
                                 },
                                 
                                  {
                                     label:"Session 3",
-                                    data: {{session3|raw}},
+                                    data: {{ session3|raw }},
                                     fill:false,
                                      backgroundColor: "#fcba03"
                                 },
                                 {
                                     label:"Session 4",
-                                    data: {{session4|raw}},
+                                    data: {{ session4|raw }},
                                     fill:false,
                                      backgroundColor: "#4263f5"
                                 },

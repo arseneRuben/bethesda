@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\DomainRepository;
 use App\Entity\Domain;
 use App\Form\DomainType;
+
 /**
  * SchoolYear controller.
  *
@@ -27,7 +28,7 @@ class DomainController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all Programme entities.
      *
      * @Route("/", name="admin_domains")
@@ -36,46 +37,44 @@ class DomainController extends AbstractController
      */
     public function indexAction(DomainRepository $repo)
     {
-       
+
         $domains = $repo->findAll();
-        
-       return $this->render('domain/index.html.twig', compact("domains"));
+
+        return $this->render('domain/index.html.twig', compact("domains"));
     }
 
 
-   
+
 
     /**
      * @Route("/create",name="admin_domains_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
-        if(!$this->getUser()->isVerified())
-        {
+        if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
         $domain = new Domain();
-    	$form = $this->createForm(DomainType::class, $domain);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(DomainType::class, $domain);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($domain);
             $this->em->flush();
             $this->addFlash('success', 'Domain succesfully created');
             return $this->redirectToRoute('admin_domains');
-    	}
-    	 return $this->render('domain/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'domain/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
-   
+
     /**
      * Finds and displays a Domain entity.
      *
@@ -85,7 +84,7 @@ class DomainController extends AbstractController
      */
     public function showAction(Domain $domain)
     {
-        
+
         return $this->render('domain/show.html.twig', compact("domain"));
     }
 
@@ -114,46 +113,45 @@ class DomainController extends AbstractController
         );
     }
 
-   
+
     /**
      * Displays a form to edit an existing Programme entity.
      *
      * @Route("/{id}/edit", name="admin_domains_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Domain $domain): Response
+    public function edit(Request $request, Domain $domain): Response
     {
         $form = $this->createForm(DomainType::class, $domain, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Domain succesfully updated');
             return $this->redirectToRoute('admin_domains');
         }
-        return $this->render('domain/edit.html.twig'	, [
-            'domain'=>$domain,
-            'form'=>$form->createView()
+        return $this->render('domain/edit.html.twig', [
+            'domain' => $domain,
+            'form' => $form->createView()
         ]);
     }
 
-       /**
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_domains_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(Domain $domain, Request $request):Response
+    public function delete(Domain $domain, Request $request): Response
     {
-       // if($this->isCsrfTokenValid('domains_deletion'.$domain->getId(), $request->request->get('crsf_token') )){
-            $this->em->remove($domain);
-           
-            $this->em->flush();
-            $this->addFlash('info', 'Domain succesfully deleted');
-    //    }
-       
+        // if($this->isCsrfTokenValid('domains_deletion'.$domain->getId(), $request->request->get('crsf_token') )){
+        $this->em->remove($domain);
+
+        $this->em->flush();
+        $this->addFlash('info', 'Domain succesfully deleted');
+        //    }
+
         return $this->redirectToRoute('admin_domains');
     }
 }

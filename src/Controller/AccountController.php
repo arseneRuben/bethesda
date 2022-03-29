@@ -19,33 +19,28 @@ class AccountController extends AbstractController
         $this->em = $em;
     }
 
-      /**
+    /**
      * @Route("/account", name="app_account")
      */
     public function index(): Response
     {
-       
-        if(!$this->getUser())
-        {
+
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         } else {
-           // $this->getUser()->getRoles();
-           // $this->em->persist($this->getUser());
-           // $this->em->flush();
-            if(!$this->getUser()->isVerified())
-            {
+            // $this->getUser()->getRoles();
+            // $this->em->persist($this->getUser());
+            // $this->em->flush();
+            if (!$this->getUser()->isVerified()) {
                 $this->addFlash('warning', 'You need to have a verified account');
                 return $this->redirectToRoute('app_home');
-            }
-            else
-            {
-            
+            } else {
+
                 $hasAccess = $this->isGranted('ROLE_ADMIN');
-                if(!$hasAccess){
+                if (!$hasAccess) {
                     return $this->redirectToRoute('app_home');
-                }else
-                {
+                } else {
                     return $this->render('account/profile.html.twig');
                 }
             }
@@ -53,14 +48,13 @@ class AccountController extends AbstractController
     }
 
 
-      /**
+    /**
      * @Route("/edit", name="admin_account_edit", methods={"GET","POST"})
      */
     public function edit(Request $request): Response
     {
-      
-        if(!$this->getUser())
-        {
+
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
@@ -69,27 +63,25 @@ class AccountController extends AbstractController
         $form = $this->createForm(UserFormType::class, $user);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-    	{
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Account successfully modified');
             return $this->redirectToRoute('app_account');
         }
 
 
-        return $this->render('account/edit.html.twig'	, [
-            'form'=>$form->createView()
+        return $this->render('account/edit.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
 
-     /*
+    /*
      * @Route("/changepwd", name="admin_account_changepwd", methods={"GET","POST"})
     */
     public function changePwd(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
@@ -100,10 +92,9 @@ class AccountController extends AbstractController
         $user = $this->getUser();
 
         //$form = $this->createForm(UserFormType::class, $user);
-      
 
-        if($form->isSubmitted() && $form->isValid())
-    	{
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -116,9 +107,8 @@ class AccountController extends AbstractController
         }
 
 
-        return $this->render('account/changepwd.html.twig'	, [
-            'form'=>$form->createView()
+        return $this->render('account/changepwd.html.twig', [
+            'form' => $form->createView()
         ]);
     }
-   
 }

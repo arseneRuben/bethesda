@@ -2,31 +2,35 @@
 
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
-
 {% block content %}
-    <h1 class="center">Edition Salle de classe</h1>
-  <div class="row mt-4">
+    <h1 class="center">
+        Edition Salle de classe
+    </h1>
+    <div class="row mt-4">
 
-                <div class="col-2 " >
-                        <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_classrooms') }}">
-                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-10 jumbotron  mx-auto">
-    
-                    <div class="col-md-7 mx-auto">
-                        <article class="text-center">
-                            <br/>
-                            <div class="card-header">
-                                                    <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Edit room #  {{room.id}}</h4>
-                            </div>
+        <div class="col-2 ">
+            <div class="btn-group record_actions  m-2">
+                <a class="btn btn-info" href="{{ path('admin_classrooms') }}">
+                    <i class="fa fa-list"></i>
+                    {{ 'Back to the list'|trans({}, 'admin') }}
+                </a>
+            </div>
+        </div>
+        <div class="col-10 jumbotron  mx-auto">
 
-                        
-                            {{include('layout/partials/_form.html.twig',{'submitButtonText':'Update rpom', 'returnRoute':'admin_classrooms'})}}
-                        </article>
+            <div class="col-md-7 mx-auto">
+                <article class="text-center">
+                    <br/>
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                            Edit room #  
+                            {{ room.id }}
+                        </h4>
                     </div>
-                </div>
+
+                    {{ include('layout/partials/_form.html.twig',{'submitButtonText':'Update rpom', 'returnRoute':'admin_classrooms'}) }}
+                </article>
+            </div>
+        </div>
     </div>
 {% endblock %}

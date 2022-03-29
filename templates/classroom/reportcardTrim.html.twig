@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>
-			Bulletins de la classe
-			{{room.name}}</title>
-		<style>
+    <head>
+        <title>
+            Bulletins de la classe
+                        			
+                        
+            {{ room.name }}
+        </title>
+        <style>
 			@page {
 				margin: 0;
 			}
@@ -17,696 +20,1049 @@
 				}
 			}
 		</style>
-	</head>
-	<body style="font-family:  times, serif;" >
+    </head>
+    <body style="font-family:  times, serif;">
 
-		{% for std in students %}
+        {% for std in students %}
 
-			<div style=" height:1380px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center;    ">
-				<section style=" margin:auto;" class="sheet  frontpage">
-					<table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 90%; ">
-						<tr>
-							<td style=" width: 35%;">
-								<span>REPUBLIQUE DU CAMEROUN</span><br/>
-								<span style="margin-left:1.5em;">
-									<i>Paix - Travail - Patrie</i>
-								</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>Minist&eacutere des enseignements secondaires</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>D&eacutel&eacutegation R&eacutegionale du Centre</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>D&eacutel&eacutegation D&eacutepartementale de la
-																																																																																	n>
-									<H5>
-										INSTITUT SECONDAIRE
-										<br/>
-										BILINGUE BETHESDA
-									</H5>
-								</td>
-							</td>
-							<td style=" width: 30%; ">
-								<img style="border-radius:5%;" src="{{pathToWeb}}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%"/>
-								<div style="font-size: 1em;">
-									<b>
-										<h6>
-											DISCIPLINE-PERSEVERANCE-SUCCES
-										</h6>
-									</b><br/><br/>
-									<i>
-										<span>BP : 31367 YDE</span><br/>
-										<span>TEL : 699545124</span><br/>
-									</i>
-								</b>
-							</td>
-							<td style=" width: 35%;">
-								<span>REPUBLIC OF CAMEROON</span><br/>
-								<span style="margin-left:1em;">
-									<i>Peace - Work - Fatherland</i>
-								</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>Ministery of Secondary Education</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>Regional Delegation of the Center</span><br/>
-								<span style="margin-left:2.5em;">*************</span><br/>
-								<span>MEFOU and AKONO Divisional Delegation</span>
-
-								<H5>
-									BETHESDA BILINGUAL
-									<br/>
-									SECONDARY INSTITUTE
-								</H5>
-							</td>
-						</tr>
-
-
-					</table>
-					<hr style="margin-left:0px; width: 100%;"><br/>
-					<table style=" width: 100%; text-align:center; font-size: 80%; ">
-						<tr>
-							<td style=" width: 30%;">
-								{% if std.profileImagePath is null %}
-									<img src="{{pathToWeb}}/img/student/ondasblue.jpeg"/>
-
-								{% else %}
-									<img src="{{pathToWeb}}/img/student/{{std.profileImagePath}}" {# src="{{ asset('img/student/'~std.profileImagePath)}}" #} height="140em" width="170em"/>
-
-								{% endif  %}
-							</td>
-							<td style=" width: 30%;">
-								<h3>
-									<span>
-										{% if room.level.cycle.section.name == "Francophone" %}
-											Nom
-										{% else %}
-											Name
-										{% endif %}
-										:
-									</span>
-									<b>{{std.lastname}}
-
-
-										{{std.firstname}}</b>
-								</h3>
-								<h3>
-
-									<span>
-										{% if room.level.cycle.section.name == "Francophone" %}
-											N&eacute(e) le  &nbsp;&nbsp; :  &nbsp;&nbsp;
-											{% if std.birthday %}
-												{{ std.birthday|date('d-m-Y') }}
-											{% endif %}
-										{% else %}
-											Born on   &nbsp;&nbsp;:  &nbsp;&nbsp;
-											{% if std.birthday %}
-												{{ std.birthday|date('Y-m-d') }}
-											{% endif %}
-										{% endif %}
-
-										<br/><br/><br/>
-										{% if room.level.cycle.section.name == "Francophone" %}
-											&agrave;  &nbsp;&nbsp;
-										{% else %}
-											at  &nbsp;&nbsp;
-										{% endif %}
-										:  &nbsp;&nbsp;
-										{{std.birthplace}}
-									</span><br/></h3>
-
-								<h3>
-									<span>Sexe:
-										{% if std.gender %}F{% else %}M
-										{% endif %}
-									</span><br/>
-								</h3>
-							</td>
-
-
-							<td style=" width: 30%;">
-
-
-								<div style="margin-bottom:0.2em;">
-
-									{% if room.level.cycle.section.name == "Francophone" %}
-
-										{{year.wording}}
-										&nbsp;&nbsp; /  &nbsp;&nbsp;
-										{{quater.wording}}
-									{% else %}
-
-										{{year.wording}}
-										&nbsp;&nbsp; /   &nbsp;&nbsp;
-										{{quater.wording}}
-
-									{% endif %}
-								</div><br/>
-
-
-								<h3>
-									<span>
-										{% if room.level.cycle.section.name == "Francophone" %}
-											Matricule
-										{% else %}
-											reg.number
-										{% endif %}
-									</span>
-									{{std.matricule}}<br/></h3>
-								<br/>
-								<h3>
-									<span>
-										{% if room.level.cycle.section.name == "Francophone" %}
-											Classe
-										{% else %}
-											class
-										{% endif %}
-
-										:</span>
-									<b>{{room.name}}
-									</b>
-								</h3>
-								<br/>
-
-							</td>
-						</tr>
-					</table>
-					<table style="font-size: 85%;" cellspacing="0" align="center" cellpadding="1" border="1" width="100%">
-						<tr style="text-align:center;" style="background-color:#EBECEC;" border="0.5">
-							<th border="0.5" width="15%">
-								<b>DISCIPLINE</b>
-							</th>
-							<th border="0.5" width="4%">
-								<b>{{sequence1.code}}</b>
-							</th>
-
-							<th border="0.5" width="4%">
-								<b>COEF</b>
-							</th>
-							<th border="0.5" cellspacing="1" width="4%">
-								<b>{{sequence1.code}}*C</b>
-							</th>
-							<th border="0.5" width="4%">
-								<b>{{sequence2.code}}</b>
-							</th>
-							<th border="0.5" cellspacing="1" width="4%">
-								<b>{{sequence2.code}}*C</b>
-							</th>
-
-							<th border="0.5" width="7%">
-								<b>
-									{% if room.level.cycle.section.name == "Francophone" %}
-										TRIM
-									{% else %}
-										QUATER
-									{% endif %}
-								</b>
-							</th>
-							<th border="0.5" cellspacing="1" width="30%">
-								<b>APPR.</b>
-							</th>
-							<th border="0.5">
-								<b>
-
-									{% if room.level.cycle.section.name == "Francophone" %}
-										RANG
-									{% else %}
-										RANK
-									{% endif %}
-								</b>
-							</th>
-							<th border="0.5" width="15%">
-								<b>
-									{% if room.level.cycle.section.name == "Francophone" %}
-										PROFESSEUR
-									{% else %}
-										TEACHER
-									{% endif %}
-								</b>
-							</th>
-							<th border="0.5" width="3%">
-								<b>SIGNATURE</b>
-							</th>
-						</tr>
-						{% set totalCoef1 = 0 %}
-						{# Total global des coefficients seq1#}
-						{% set totalCoef2 = 0 %}
-						{# Total global des coefficients seq2#}
-						{% set totalNCoefModule1 = 0 %}
-						{# Total global des Note * coefficient seq1 #}
-						{% set totalNCoefModule2 = 0 %}
-						{# Total global des Note * coefficient seq2 #}
-						{% set totalNCoefModuleTrim = 0 %}
-						{# Total global des Note * coefficient Trim #}
-
-						{% for module in room.modules %}
-							{% set totalCoefModule1 =0 %}
-							{# Total partiel des coefficients du module #}
-							{% set NCoef1 =0 %}
-							{% set totalCoefModule2 =0 %}
-							{# Total partiel des coefficients du module #}
-							{% set NCoef2 =0 %}
-							{# Total partiel des Note * coefficient du module #}
-							{% for course in module.courses %}
-								{% set break = false %}
-								{% for mark1 in dataseq1 %}
-									{% if std.matricule == mark1.matricule %}
-										{% if module.name == mark1.module %}
-											{% if mark1.wording == course.wording  and not break  %}
-												<tr height="20" border="0.5" style="text-align:center;">
-													<td border="0.5" style="text-align:center;" width="90">
-														{{course.wording}}
-													</td>
-													<td border="0.5" style="text-align:center;" width="15">
-														{% if mark1.weight == 1 %}
-															{{mark1.valeur}}
-														{% else %}
-															/
-														{% endif %}
-													</td>
-													<td border="0.5" style="text-align:center;">{{course.coefficient}}</td>
-													<td border="0.5" style="text-align:center;">
-														{% if mark1.weight == 1 %}
-															{{mark1.valeur * course.coefficient}}
-														{% else %}
-															/
-														{% endif %}
-													</td>
-
-													{% for mark in dataseq2 %}
-														{% if std.matricule == mark.matricule %}
-															{% if module.name == mark.module %}
-																{% if mark.wording == course.wording  and not break  %}
-
-																	<td border="0.5" style="text-align:center;" width="15">
-																		{% if mark.weight == 1 %}
-																			{{mark.valeur}}
-																		{% else %}
-																			/
-																		{% endif %}
-																	</td>
-																	<td border="0.5" style="text-align:center;" width="40">
-																		{% if mark.weight == 1 %}
-																			{{mark.valeur * course.coefficient}}
-																		{% else %}
-																			/
-																		{% endif %}
-																	</td>
-
-																	<td border="0.5" style="text-align:center;" class="notetrim" width="40">
-																		{% if (mark1.weight == 1) and (mark.weight == 1) %}
-																			{{((mark1.valeur + mark.valeur)/2)|round(2,'floor')}}
-																		{% else %}
-																			{% if (mark1.weight == 1)  %}
-																				{{mark1.valeur }}
-																			{% else %}
-																				{% if (mark.weight == 1)  %}
-																					{{mark.valeur }}
-																				{% else %}
-																					/
-																				{% endif %}
-
-																			{% endif %}
-																		{% endif %}
-
-
-																	</td>
-																	{# {{ (max(mark1.weight, mark.weight)*((mark1.valeur + mark.valeur)/2))|round(2,'floor') }} #}
-																	<td border="0.5" style="text-align:center;"></td>
-																	<td border="0.5" style="text-align:center;" cellspacing="1"></td>
-
-																	<td border="0.5" style="text-align:center;">{{mark.teacher}}</td>
-																	<td border="0.5" style="text-align:center;"></td>
-
-																	{% set break = true %}
-																	{% if mark.weight == 1 %}
-																		{% set totalCoefModule2 = totalCoefModule2 + course.coefficient %}
-																		{% set NCoef2 = NCoef2 +  mark.valeur * course.coefficient %}
-																	{% endif %}
-																{% endif %}
-															{% endif %}
-														{% endif %}
-
-													{% endfor %}
-
-												</tr>
-												{% set break = true %}
-												{% if mark1.weight == 1 %}
-													{% set totalCoefModule1 = totalCoefModule1 + course.coefficient %}
-													{% set NCoef1 = NCoef1 +  mark1.valeur * course.coefficient %}
-												{% endif %}
-											{% endif %}
-										{% endif %}
-									{% endif %}
-
-								{% endfor %}
-
-
-							{% endfor %}
-							{% set totalNCoefModule1 = totalNCoefModule1 + NCoef1 %}
-							{% set totalNCoefModule2 = totalNCoefModule2 + NCoef2 %}
-							{% set totalCoef2 = totalCoef2 + totalCoefModule2 %}
-							{% set totalCoef1 = totalCoef1 + totalCoefModule1 %}
-							<tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
-								<td border="0.5" style="text-align:center;" width="70">
-									<b>{{module.name}}</b>
-								</td>
-
-								{% if totalCoefModule1 != 0 %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b>{{ (NCoef1/totalCoefModule1)|round(2,'floor') }}/20</b>
-									</td>
-								{% else %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b></b>
-									</td>
-								{% endif %}
-
-								<td border="0.5" style="text-align:center;" width="25">
-									<b>{{ totalCoefModule1  }}</b>
-								</td>
-
-								<td border="0.5" style="text-align:center;">
-									<b>{{NCoef1}}</b>
-								</td>
-
-								{% if totalCoefModule2 != 0 %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b>{{ (NCoef2/totalCoefModule2)|round(2,'floor') }}/20</b>
-									</td>
-								{% else %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b></b>
-									</td>
-								{% endif %}
-								<td border="0.5" style="text-align:center;">
-									<b>{{NCoef2}}</b>
-								</td>
-
-								<td border="0.5" style="text-align:center;" cellspacing="1" class="notetrim">
-									{% if ((totalCoefModule1 != 0) and (totalCoefModule2 != 0)) %}
-										{{ (((NCoef2/totalCoefModule2)+(NCoef1/totalCoefModule1))/2)|round(2,'floor') }}
-										{% else %}
-
-									{% endif %}
-								</td>
-								{% set totalNCoefModuleTrim = totalNCoefModuleTrim +(NCoef2+NCoef1)/2 %}
-								<td border="0.5" style="text-align:center;">
-									<b></b>
-								</td>
-								<td border="0.5" style="text-align:center;">
-									<b></b>
-								</td>
-								<td border="0.5" style="text-align:center;">
-									<b></b>
-								</td>
-								<td border="0.5" style="text-align:center;">
-									<b></b>
-								</td>
-							</tr>
-						{% endfor %}
-
-						<tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
-							<td border="0.5" style="text-align:center;" width="90">
-								<b>MOY.  ELEVE<br/></td>
-								{% if totalCoef1 != 0 %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b>
-											<i>
-												{{ (totalNCoefModule1 / totalCoef1)|round(2,'floor') }}/20</i>
-										</b>
-									</td>
-								{% else %}
-									<td border="0.5" style="text-align:center;" width="15">
-										<b>
-											<i></i>
-										</b>
-									</td>
-								{% endif %}
-							</td>
-							<td border="0.5" style="text-align:center;" width="25">
-								<b>{{ totalCoef1 }}</b>
-							</td>
-
-							<td border="0.5" style="text-align:center;" width="15">
-								<b>
-									<i>
-										{{ (totalNCoefModule1)|round(2,'floor') }}</i>
-								</b>
-							</td>
-
-
-							{% if totalCoef2 != 0 %}
-								<td border="0.5" style="text-align:center;" width="15">
-									<b>
-										<i>
-											{{  (totalNCoefModule2 / totalCoef2)|round(2,'floor') }}/20</i>
-									</b>
-								</td>
-							{% else %}
-								<td border="0.5" style="text-align:center;" width="15">
-									<b>
-										<i></i>
-									</b>
-								</td>
-							{% endif %}
-							<td border="0.5" style="text-align:center;">
-								<b>{{ totalNCoefModule2  }}</b>
-							</td>
-							{% if ((totalCoef1 != 0) and (totalCoef2 != 0)) %}
-								<td border="0.5" style="text-align:center;">
-									<b>{{(((totalNCoefModule1 / totalCoef1)+(totalNCoefModule2 / totalCoef2))/2)|round(2,'floor') }}/20</b>
-								</td>
-							{% else %}
-								<td border="0.5" style="text-align:center;" width="15">
-									<b></b>
-								</td>
-							{% endif %}
-
-
-							<td border="0.5" style="text-align:center;">
-								<b>MOY G. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /20</b>
-							</td>
-							<td border="0.5" style="text-align:center;"></td>
-							<td border="0.5" style="text-align:center;"></td>
-							<td border="0.5" style="text-align:center;"></td>
-						</tr>
-					</table>
-					<br/><br/>
-					<br/><br/>
-					<br/><br/>
-
-					<table class="footer" style="font-size: 80%;">
-							<tr style="text-align:center; background-color: grey; color:white; font-size: 1em;">
-								<td  colspan="7">
-									<b>
-										{% if room.level.cycle.section.name == "Francophone" %}
-										DECISIONS ET OBSERVATIONS
-										{% else %}
-										DECISIONS AND OBSERVATIONS
-										{% endif %}
-									
-									
-									</b>
-									
-									</td>
-								</td>
-								<td rowspan="2" colspan="4"><b>OBSERVATION ET VISA DU CHEF
-																																																																										                        D'ETABLISSEMENT</b></td>
-							</tr>
-							<tr >
-								<td >
-									<b>DISCIPLINE</b>
-								</td>
-								<td  colspan="5">
-									<b>
-                                        {% if room.level.cycle.section.name == "Francophone" %}
-										TRAVAIL
-									{% else %}
-										WORK
-									{% endif %}
+            <div style=" height:1380px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center;    ">
+                <section style=" margin:auto;" class="sheet  frontpage">
+                    <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 90%; ">
+                        <tr>
+                            <td style=" width: 35%;">
+                                <span>
+                                    REPUBLIQUE DU CAMEROUN
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:1.5em;">
+                                    <i>
+                                        Paix - Travail - Patrie
+                                                                            
+                                    </i>
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Minist&eacutere des enseignements secondaires
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    D&eacutel&eacutegation R&eacutegionale du Centre
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    D&eacutel&eacutegation D&eacutepartementale de la
+                                                                        																																																																																	n>
+                                                                        									
+                                                                        
+                                    <H5>
+                                        INSTITUT SECONDAIRE
+                                                                                										
+                                                                                
+                                        <br/>
+                                        BILINGUE BETHESDA
+                                                                                									
+                                                                            
+                                    </H5>
+                                </td>
+                            </td>
+                            <td style=" width: 30%; ">
+                                <img style="border-radius:5%;" src="{{ pathToWeb }}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%" />
+                                <div style="font-size: 1em;">
+                                    <b>
+                                        <h6>
+                                            DISCIPLINE-PERSEVERANCE-SUCCES
+                                                                                        										
+                                                                                    
+                                        </h6>
                                     </b>
-								</td>
-							</tr>
-							<tr  style="text-align:center;background-color:#EBECEC;">
-								<td  colspan="2" style=" text-align:left; border:1px dashed black;">
-									{% if room.level.cycle.section.name == "Francophone" %}
-									ABS. JUSTIFIEES
-								{% else %}
-								JUSTIFICATED ABS. 
-								{% endif %}
-								</td>
-									<td style="border:1px dashed black;">
-									<b>
-										<i>
+                                    <br/>
+                                    <br/>
+                                    <i>
+                                        <span>
+                                            BP : 31367 YDE
+                                                                                    
+                                        </span>
+                                        <br/>
+                                        <span>
+                                            TEL : 699545124
+                                                                                    
+                                        </span>
+                                        <br/>
+                                    </i>
+                                </b>
+                            </td>
+                            <td style=" width: 35%;">
+                                <span>
+                                    REPUBLIC OF CAMEROON
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:1em;">
+                                    <i>
+                                        Peace - Work - Fatherland
+                                                                            
+                                    </i>
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Ministery of Secondary Education
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Regional Delegation of the Center
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    MEFOU and AKONO Divisional Delegation
+                                                                    
+                                </span>
 
-                                        	{% if room.level.cycle.section.name == "Francophone" %}
-										MOYENNE DE L'ELEVE
-									{% else %}
-										STUDENT AVERAGE
-									{% endif %}
+                                <H5>
+                                    BETHESDA BILINGUAL
+                                                                        									
+                                                                        
+                                    <br/>
+                                    SECONDARY INSTITUTE
+                                                                        								
+                                                                    
+                                </H5>
+                            </td>
+                        </tr>
 
+                    </table>
+                    <hr style="margin-left:0px; width: 100%;">
+                    <br/>
+                    <table style=" width: 100%; text-align:center; font-size: 80%; ">
+                        <tr>
+                            <td style=" width: 30%;">
+                                {% if std.profileImagePath is null %}
+                                    <img
+                                src="{{ pathToWeb }}/img/student/ondasblue.jpeg" />
+
+                                    {% else %}
+                                    <img src="{{ pathToWeb }}/img/student/{{ std.profileImagePath }}" {# src="{{ asset('img/student/'~std.profileImagePath)}}" #} height="140em" width="170em" />
+
+                                {% endif %}
+                            </td>
+                            <td style=" width: 30%;">
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Nom
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            Name
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                        :
+                                                                                									
+                                                                            
+                                    </span>
+                                    <b>
+                                        {{ std.lastname }}
+
+                                        {{ std.firstname }}
+                                    </b>
+                                </h3>
+                                <h3>
+
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            N&eacute(e) le  &nbsp;&nbsp; :  &nbsp;&nbsp;
+                                                                                        											
+                                                                                        
+                                            {% if std.birthday %}
+                                                {{ std.birthday|date('d-m-Y') }}
+                                            {% endif %}
+                                        {% else %}
+                                            Born on   &nbsp;&nbsp;:  &nbsp;&nbsp;
+                                                                                        											
+                                                                                        
+                                            {% if std.birthday %}
+                                                {{ std.birthday|date('Y-m-d') }}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            &agrave;  &nbsp;&nbsp;
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            at  &nbsp;&nbsp;
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                        :  &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ std.birthplace }}
+                                    </span>
+                                    <br/>
+                                </h3>
+
+                                <h3>
+                                    <span>
+                                        Sexe:
+                                                                                										
+                                                                                
+                                        {% if std.gender %}
+                                            F
+                                                                                    
+                                        {% else %}
+                                            M
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                    </span>
+                                    <br/>
+                                </h3>
+                            </td>
+
+                            <td style=" width: 30%;">
+
+                                <div style="margin-bottom:0.2em;">
+
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+
+                                        {{ year.wording }}
+                                        &nbsp;&nbsp; /  &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ quater.wording }}
+                                    {% else %}
+
+                                        {{ year.wording }}
+                                        &nbsp;&nbsp; /   &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ quater.wording }}
+
+                                    {% endif %}
+                                </div>
+                                <br/>
+
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Matricule
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            reg.number
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                    </span>
+                                    {{ std.matricule }}
+                                    <br/>
+                                </h3>
+                                <br/>
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Classe
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            class
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+
+                                        :
+                                                                            
+                                    </span>
+                                    <b>
+                                        {{ room.name }}
+                                    </b>
+                                </h3>
+                                <br/>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="font-size: 85%;" cellspacing="0" align="center" cellpadding="1" border="1" width="100%">
+                        <tr style="text-align:center;" style="background-color:#EBECEC;" border="0.5">
+                            <th border="0.5" width="15%">
+                                <b>
+                                    DISCIPLINE
+                                                                    
+                                </b>
+                            </th>
+                            <th border="0.5" width="4%">
+                                <b>
+                                    {{ sequence1.code }}
+                                </b>
+                            </th>
+
+                            <th border="0.5" width="4%">
+                                <b>
+                                    COEF
+                                                                    
+                                </b>
+                            </th>
+                            <th border="0.5" cellspacing="1" width="4%">
+                                <b>
+                                    {{ sequence1.code }}
+                                    *C
+                                                                    
+                                </b>
+                            </th>
+                            <th border="0.5" width="4%">
+                                <b>
+                                    {{ sequence2.code }}
+                                </b>
+                            </th>
+                            <th border="0.5" cellspacing="1" width="4%">
+                                <b>
+                                    {{ sequence2.code }}
+                                    *C
+                                                                    
+                                </b>
+                            </th>
+
+                            <th border="0.5" width="7%">
+                                <b>
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                        TRIM
+                                                                                									
+                                                                            
+                                    {% else %}
+                                        QUATER
+                                                                                									
+                                                                            
+                                    {% endif %}
+                                </b>
+                            </th>
+                            <th border="0.5" cellspacing="1" width="30%">
+                                <b>
+                                    APPR.
+                                                                    
+                                </b>
+                            </th>
+                            <th border="0.5">
+                                <b>
+
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                        RANG
+                                                                                									
+                                                                            
+                                    {% else %}
+                                        RANK
+                                                                                									
+                                                                            
+                                    {% endif %}
+                                </b>
+                            </th>
+                            <th border="0.5" width="15%">
+                                <b>
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                        PROFESSEUR
+                                                                                									
+                                                                            
+                                    {% else %}
+                                        TEACHER
+                                                                                									
+                                                                            
+                                    {% endif %}
+                                </b>
+                            </th>
+                            <th border="0.5" width="3%">
+                                <b>
+                                    SIGNATURE
+                                                                    
+                                </b>
+                            </th>
+                        </tr>
+                        {% set totalCoef1 = 0 %}
+                        {# Total global des coefficients seq1#}
+                        {% set totalCoef2 = 0 %}
+                        {# Total global des coefficients seq2#}
+                        {% set totalNCoefModule1 = 0 %}
+                        {# Total global des Note * coefficient seq1 #}
+                        {% set totalNCoefModule2 = 0 %}
+                        {# Total global des Note * coefficient seq2 #}
+                        {% set totalNCoefModuleTrim = 0 %}
+                        {# Total global des Note * coefficient Trim #}
+
+                        {% for module in room.modules %}
+                            {% set totalCoefModule1 =0 %}
+                            {# Total partiel des coefficients du module #}
+                            {% set NCoef1 =0 %}
+                            {% set totalCoefModule2 =0 %}
+                            {# Total partiel des coefficients du module #}
+                            {% set NCoef2 =0 %}
+                            {# Total partiel des Note * coefficient du module #}
+                            {% for course in module.courses %}
+                                {% set break = false %}
+                                {% for mark1 in dataseq1 %}
+                                    {% if std.matricule == mark1.matricule %}
+                                        {% if module.name == mark1.module %}
+                                            {% if mark1.wording == course.wording  and not break %}
+                                                <tr height="20" border="0.5" style="text-align:center;">
+                                                    <td border="0.5" style="text-align:center;" width="90">
+                                                        {{ course.wording }}
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;" width="15">
+                                                        {% if mark1.weight == 1 %}
+                                                            {{ mark1.valeur }}
+                                                        {% else %}
+                                                            /
+                                                                                                                        														
+                                                                                                                    
+                                                        {% endif %}
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;">
+                                                        {{ course.coefficient }}
+                                                    </td>
+                                                    <td border="0.5" style="text-align:center;">
+                                                        {% if mark1.weight == 1 %}
+                                                            {{ mark1.valeur * course.coefficient }}
+                                                        {% else %}
+                                                            /
+                                                                                                                        														
+                                                                                                                    
+                                                        {% endif %}
+                                                    </td>
+
+                                                    {% for mark in dataseq2 %}
+                                                        {% if std.matricule == mark.matricule %}
+                                                            {% if module.name == mark.module %}
+                                                                {% if mark.wording == course.wording  and not break %}
+
+                                                                    <td border="0.5" style="text-align:center;" width="15">
+                                                                        {% if mark.weight == 1 %}
+                                                                            {{ mark.valeur }}
+                                                                        {% else %}
+                                                                            /
+                                                                                                                                                        																		
+                                                                                                                                                    
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td border="0.5" style="text-align:center;" width="40">
+                                                                        {% if mark.weight == 1 %}
+                                                                            {{ mark.valeur * course.coefficient }}
+                                                                        {% else %}
+                                                                            /
+                                                                                                                                                        																		
+                                                                                                                                                    
+                                                                        {% endif %}
+                                                                    </td>
+
+                                                                    <td border="0.5" style="text-align:center;" class="notetrim" width="40">
+                                                                        {% if (mark1.weight == 1) and (mark.weight == 1) %}
+                                                                            {{ ((mark1.valeur + mark.valeur)/2)|round(2,'floor') }}
+                                                                        {% else %}
+                                                                            {% if (mark1.weight == 1) %}
+                                                                                {{ mark1.valeur }}
+                                                                            {% else %}
+                                                                                {% if (mark.weight == 1) %}
+                                                                                    {{ mark.valeur }}
+                                                                                {% else %}
+                                                                                    /
+                                                                                                                                                                        																				
+                                                                                                                                                                    
+                                                                                {% endif %}
+
+                                                                            {% endif %}
+                                                                        {% endif %}
+
+                                                                    </td>
+                                                                    {# {{ (max(mark1.weight, mark.weight)*((mark1.valeur + mark.valeur)/2))|round(2,'floor') }} #}
+                                                                    <td border="0.5" style="text-align:center;"></td>
+                                                                    <td border="0.5" style="text-align:center;" cellspacing="1"></td>
+
+                                                                    <td border="0.5" style="text-align:center;">
+                                                                        {{ mark.teacher }}
+                                                                    </td>
+                                                                    <td border="0.5" style="text-align:center;"></td>
+
+                                                                    {% set break = true %}
+                                                                    {% if mark.weight == 1 %}
+                                                                        {% set totalCoefModule2 = totalCoefModule2 + course.coefficient %}
+                                                                        {% set NCoef2 = NCoef2 +  mark.valeur * course.coefficient %}
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+
+                                                    {% endfor %}
+
+                                                </tr>
+                                                {% set break = true %}
+                                                {% if mark1.weight == 1 %}
+                                                    {% set totalCoefModule1 = totalCoefModule1 + course.coefficient %}
+                                                    {% set NCoef1 = NCoef1 +  mark1.valeur * course.coefficient %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            {% endfor %}
+                            {% set totalNCoefModule1 = totalNCoefModule1 + NCoef1 %}
+                            {% set totalNCoefModule2 = totalNCoefModule2 + NCoef2 %}
+                            {% set totalCoef2 = totalCoef2 + totalCoefModule2 %}
+                            {% set totalCoef1 = totalCoef1 + totalCoefModule1 %}
+                            <tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                                <td border="0.5" style="text-align:center;" width="70">
+                                    <b>
+                                        {{ module.name }}
+                                    </b>
+                                </td>
+
+                                {% if totalCoefModule1 != 0 %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b>
+                                            {{ (NCoef1/totalCoefModule1)|round(2,'floor') }}
+                                            /20
+                                                                                    
+                                        </b>
+                                    </td>
+                                {% else %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b></b>
+                                    </td>
+                                {% endif %}
+
+                                <td border="0.5" style="text-align:center;" width="25">
+                                    <b>
+                                        {{ totalCoefModule1 }}
+                                    </b>
+                                </td>
+
+                                <td border="0.5" style="text-align:center;">
+                                    <b>
+                                        {{ NCoef1 }}
+                                    </b>
+                                </td>
+
+                                {% if totalCoefModule2 != 0 %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b>
+                                            {{ (NCoef2/totalCoefModule2)|round(2,'floor') }}
+                                            /20
+                                                                                    
+                                        </b>
+                                    </td>
+                                {% else %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b></b>
+                                    </td>
+                                {% endif %}
+                                <td border="0.5" style="text-align:center;">
+                                    <b>
+                                        {{ NCoef2 }}
+                                    </b>
+                                </td>
+
+                                <td border="0.5" style="text-align:center;" cellspacing="1" class="notetrim">
+                                    {% if ((totalCoefModule1 != 0) and (totalCoefModule2 != 0)) %}
+                                        {{ (((NCoef2/totalCoefModule2)+(NCoef1/totalCoefModule1))/2)|round(2,'floor') }}
+                                        {% else %}
+
+                                    {% endif %}
+                                </td>
+                                {% set totalNCoefModuleTrim = totalNCoefModuleTrim +(NCoef2+NCoef1)/2 %}
+                                <td border="0.5" style="text-align:center;">
+                                    <b></b>
+                                </td>
+                                <td border="0.5" style="text-align:center;">
+                                    <b></b>
+                                </td>
+                                <td border="0.5" style="text-align:center;">
+                                    <b></b>
+                                </td>
+                                <td border="0.5" style="text-align:center;">
+                                    <b></b>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
+                            <td border="0.5" style="text-align:center;" width="90">
+                                <b>
+                                    MOY.  ELEVE
+                                                                        
+                                    <br/>
+                                </td>
+                                {% if totalCoef1 != 0 %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b>
+                                            <i>
+                                                {{ (totalNCoefModule1 / totalCoef1)|round(2,'floor') }}
+                                                /20
+                                                                                            
+                                            </i>
+                                        </b>
+                                    </td>
+                                {% else %}
+                                    <td border="0.5" style="text-align:center;" width="15">
+                                        <b>
+                                            <i></i>
+                                        </b>
+                                    </td>
+                                {% endif %}
+                            </td>
+                            <td border="0.5" style="text-align:center;" width="25">
+                                <b>
+                                    {{ totalCoef1 }}
+                                </b>
+                            </td>
+
+                            <td border="0.5" style="text-align:center;" width="15">
+                                <b>
+                                    <i>
+                                        {{ (totalNCoefModule1)|round(2,'floor') }}
+                                    </i>
+                                </b>
+                            </td>
+
+                            {% if totalCoef2 != 0 %}
+                                <td border="0.5" style="text-align:center;" width="15">
+                                    <b>
+                                        <i>
+                                            {{ (totalNCoefModule2 / totalCoef2)|round(2,'floor') }}
+                                            /20
+                                                                                    
                                         </i>
-									</b>
-								</td>
-								<td  colspan="2" class="noteYear">
-									<b>{{(((totalNCoefModule1 / totalCoef1)+(totalNCoefModule2 / totalCoef2))/2)|round(2,'floor') }}</b>
-								</td>
-								<td style="border:1px dashed black;"  colspan="2"></td>
+                                    </b>
+                                </td>
+                            {% else %}
+                                <td border="0.5" style="text-align:center;" width="15">
+                                    <b>
+                                        <i></i>
+                                    </b>
+                                </td>
+                            {% endif %}
+                            <td border="0.5" style="text-align:center;">
+                                <b>
+                                    {{ totalNCoefModule2 }}
+                                </b>
+                            </td>
+                            {% if ((totalCoef1 != 0) and (totalCoef2 != 0)) %}
+                                <td border="0.5" style="text-align:center;">
+                                    <b>
+                                        {{ (((totalNCoefModule1 / totalCoef1)+(totalNCoefModule2 / totalCoef2))/2)|round(2,'floor') }}
+                                        /20
+                                                                            
+                                    </b>
+                                </td>
+                            {% else %}
+                                <td border="0.5" style="text-align:center;" width="15">
+                                    <b></b>
+                                </td>
+                            {% endif %}
 
+                            <td border="0.5" style="text-align:center;">
+                                <b>
+                                    MOY G. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /20
+                                                                    
+                                </b>
+                            </td>
+                            <td border="0.5" style="text-align:center;"></td>
+                            <td border="0.5" style="text-align:center;"></td>
+                            <td border="0.5" style="text-align:center;"></td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
 
-								<td style="border:1px dashed black;" colspan="2" rowspan="7">
-									<br/><br/><br/><br/><br/><br/><br/>MBADOUMOU, 
-									{% if room.level.cycle.section.name == "Francophone" %}
-									le ___________________<br/><br/><br/>LE
-								{% else %}
-								the ___________________<br/><br/><br/>THE
-								{% endif %}
-																																																																										                        PRINCIPAL</td>
-							
-							</tr>
-							<tr >
-								<td colspan="2" style= "text-align:left; border:1px dashed black;">
-									{% if room.level.cycle.section.name == "Francophone" %}
-									ABS. NON JUSTIFIEES 
-								{% else %}
-								ABS. UNJUSTIFIED
-								{% endif %}
-								</td>
-								
+                    <table class="footer" style="font-size: 80%;">
+                        <tr style="text-align:center; background-color: grey; color:white; font-size: 1em;">
+                            <td colspan="7">
+                                <b>
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                        DECISIONS ET OBSERVATIONS
+                                                                                										
+                                                                            
+                                    {% else %}
+                                        DECISIONS AND OBSERVATIONS
+                                                                                										
+                                                                            
+                                    {% endif %}
 
-								<td style="border:1px dashed black;" colspan="5">
-									<b>APPRECIATIONS</b>
-								</td>
-							</tr>
-							<tr style="text-align:left ;background-color:#EBECEC;">
-								<td  colspan="2" style="border:1px dashed black;" >AVERTISSEMENTS</td>
-								
-								<td colspan="2" style="border:1px dashed black;">
-									{% if room.level.cycle.section.name == "Francophone" %}
-										TABLEAU D'HONNEUR
-									{% else %}
-										ROLL OF HONOR
-									{% endif %}
-									&nbsp;&nbsp;
-								</td>
-								<td colspan="2" style="border:1px dashed black;">
-								{% if room.level.cycle.section.name == "Francophone" %}
-									AVERTISSEMENT
-								{% else %}
-									WARNING
-								{% endif %}
-								</td>
-								
-							</tr>
-							<tr style="text-align:left ;">
-								<td colspan="2" style="border:1px dashed black;">BLAME</td>
-								
-								<td  colspan="2" style="border:1px dashed black;">
+                                </b>
+                            </td>
+                        </tr>
+                    </td>
+                    <td rowspan="2" colspan="4">
+                        <b>
+                            OBSERVATION ET VISA DU CHEF
+                                                        																																																																										                        D'ETABLISSEMENT
+                                                    
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            DISCIPLINE
+                                                    
+                        </b>
+                    </td>
+                    <td colspan="5">
+                        <b>
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                TRAVAIL
+                                                                									
+                                                            
+                            {% else %}
+                                WORK
+                                                                									
+                                                            
+                            {% endif %}
+                        </b>
+                    </td>
+                </tr>
+                <tr style="text-align:center;background-color:#EBECEC;">
+                    <td colspan="2" style=" text-align:left; border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ABS. JUSTIFIEES
+                                                        								
+                                                    
+                        {% else %}
+                            JUSTIFICATED ABS. 
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
+                    <td style="border:1px dashed black;">
+                        <b>
+                            <i>
 
-									{% if room.level.cycle.section.name == "Francophone" %}
-										ENCOURAGEMENT
-									{% else %}
-										ACKNOLEGMENT
-									{% endif %}
-									&nbsp;&nbsp;
-								</td>
-								
-								<td colspan="2" style="border:1px dashed black;">
-									{% if room.level.cycle.section.name == "Francophone" %}
-										BLAME DE TRAVAIL
-									{% else %}
-										WORK'S BLAME
-									{% endif %}
-								</td>
-								
-							</tr>
-							<tr style="text-align:left ;background-color:#EBECEC;">
-								<td colspan="2"  style="border:1px dashed black;">
+                                {% if room.level.cycle.section.name == "Francophone" %}
+                                    MOYENNE DE L'ELEVE
+                                                                        									
+                                                                    
+                                {% else %}
+                                    STUDENT AVERAGE
+                                                                        									
+                                                                    
+                                {% endif %}
 
-									{% if room.level.cycle.section.name == "Francophone" %}
-										EXCLUSION
-									{% else %}
-										DISMISSED
-									{% endif %}
-								</td>
-								
-								<td colspan="2"  style="border:1px dashed black;">
+                            </i>
+                        </b>
+                    </td>
+                    <td colspan="2" class="noteYear">
+                        <b>
+                            {{ (((totalNCoefModule1 / totalCoef1)+(totalNCoefModule2 / totalCoef2))/2)|round(2,'floor') }}
+                        </b>
+                    </td>
+                    <td style="border:1px dashed black;" colspan="2"></td>
 
-									{% if room.level.cycle.section.name == "Francophone" %}
-										FELICITATIONS
-									{% else %}
-										CONGRATULATIONS
-									{% endif %}
-								</td>
-								
-								<td></td>
-							</tr>
-							<tr >
-								<td style="border:1px dashed black;"  colspan="2">
-									<b>SIGNATURE
-										
-										DU PARENT</b>
-										<br/>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								</td>
-								<td style="border:1px dashed black;" colspan="2">
-									<b>
-										
-										PROF. PRINC.</b>
-										<br/>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								</td>
-								<td style="border:1px dashed black;" colspan="3">
-									<b>
-										PREFET D'ETUDES</b>
-										<br/>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								</td>
-							</tr>
-							<tr  style="text-align:left;background-color:#EBECEC;">
-								<td style="border:1px dashed black;" colspan="7">
-									{% if room.level.cycle.section.name == "Francophone" %}
-									Légende
-								{% else %}
-									Legend
-								{% endif %}
-									 &nbsp;:&nbsp;
-									<i>
-										<b>A+:&nbsp;</b>
-										Expert(18-20)</i>&nbsp;&nbsp;
-									<i>
-										<b>A:&nbsp;</b>
-										Acquis(15-17.99)</i>&nbsp;&nbsp;
-									<i>
-										<b>ECA:&nbsp;</b>
-										En cours d'acquisition(10-14.99)</i>&nbsp;&nbsp;
-									<i>
-										<b>NA:&nbsp;</b>
-										Non Acquis(0-9.99)</i>&nbsp;&nbsp;</td>
+                    <td style="border:1px dashed black;" colspan="2" rowspan="7">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        MBADOUMOU, 
+                                                									
+                                                
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            le ___________________
+                                                        
+                            <br/>
+                            <br/>
+                            <br/>
+                            LE
+                                                        								
+                                                    
+                        {% else %}
+                            the ___________________
+                                                        
+                            <br/>
+                            <br/>
+                            <br/>
+                            THE
+                                                        								
+                                                    
+                        {% endif %}
+                        PRINCIPAL
+                                            
+                    </td>
 
-								
-							</tr>
-							<tr>
-							
-							<td  colspan="8" >
-									<i>
-											{% if room.level.cycle.section.name == "Francophone" %}
-																		Conception et implementation de FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
-																	fopoar@gmail.com
-											{% else %}
-												Designed by FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
-														fopoar@gmail.com
-														{% endif %}
-										</i>
-								</td>
-							</tr>
-						</table>
-						
-					</section>
-					
-				</div>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:left; border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ABS. NON JUSTIFIEES 
+                                                        								
+                                                    
+                        {% else %}
+                            ABS. UNJUSTIFIED
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
 
-		{% endfor %}
-		<script type="text/javascript" src="{{pathToWeb}}/assets/js/jquery-3.1.1.js"></script>
-		<script type="text/javascript" src="{{pathToWeb}}/assets/js/repportCard.js"></script>
-	</body>
-</html></body></html></body></html>
+                    <td style="border:1px dashed black;" colspan="5">
+                        <b>
+                            APPRECIATIONS
+                                                    
+                        </b>
+                    </td>
+                </tr>
+                <tr style="text-align:left ;background-color:#EBECEC;">
+                    <td colspan="2" style="border:1px dashed black;">
+                        AVERTISSEMENTS
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            TABLEAU D'HONNEUR
+                                                        									
+                                                    
+                        {% else %}
+                            ROLL OF HONOR
+                                                        									
+                                                    
+                        {% endif %}
+                        &nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            AVERTISSEMENT
+                                                        								
+                                                    
+                        {% else %}
+                            WARNING
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
+
+                </tr>
+                <tr style="text-align:left ;">
+                    <td colspan="2" style="border:1px dashed black;">
+                        BLAME
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ENCOURAGEMENT
+                                                        									
+                                                    
+                        {% else %}
+                            ACKNOLEGMENT
+                                                        									
+                                                    
+                        {% endif %}
+                        &nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            BLAME DE TRAVAIL
+                                                        									
+                                                    
+                        {% else %}
+                            WORK'S BLAME
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                </tr>
+                <tr style="text-align:left ;background-color:#EBECEC;">
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            EXCLUSION
+                                                        									
+                                                    
+                        {% else %}
+                            DISMISSED
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            FELICITATIONS
+                                                        									
+                                                    
+                        {% else %}
+                            CONGRATULATIONS
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border:1px dashed black;" colspan="2">
+                        <b>
+                            SIGNATURE
+                                                        										
+                                                        										DU PARENT
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td style="border:1px dashed black;" colspan="2">
+                        <b>
+
+                            PROF. PRINC.
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td style="border:1px dashed black;" colspan="3">
+                        <b>
+                            PREFET D'ETUDES
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                </tr>
+                <tr style="text-align:left;background-color:#EBECEC;">
+                    <td style="border:1px dashed black;" colspan="7">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            Légende
+                                                        								
+                                                    
+                        {% else %}
+                            Legend
+                                                        								
+                                                    
+                        {% endif %}
+                        &nbsp;:&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                A+:&nbsp;
+                                                            
+                            </b>
+                            Expert(18-20)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                A:&nbsp;
+                                                            
+                            </b>
+                            Acquis(15-17.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                ECA:&nbsp;
+                                                            
+                            </b>
+                            En cours d'acquisition(10-14.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                NA:&nbsp;
+                                                            
+                            </b>
+                            Non Acquis(0-9.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                            
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <td colspan="8">
+                        <i>
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                Conception et implementation de FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
+                                                                																	fopoar@gmail.com
+                                                                											
+                                                            
+                            {% else %}
+                                Designed by FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
+                                                                														fopoar@gmail.com
+                                                                														
+                                                            
+                            {% endif %}
+                        </i>
+                    </td>
+                </tr>
+            </table>
+
+        </section>
+    </body>
+</html></div>{% endfor %}<script type="text/javascript" src="{{ pathToWeb }}/assets/js/jquery-3.1.1.js"></script><script type="text/javascript" src="{{ pathToWeb }}/assets/js/repportCard.js"></script></body></html></body></html></body></html>

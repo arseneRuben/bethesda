@@ -30,59 +30,60 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $userPasswordEncoderInterface, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator,ValidatorInterface $validator): Response
+    public function register(Request $request, UserPasswordEncoderInterface $userPasswordEncoderInterface, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator, ValidatorInterface $validator): Response
     {
         if ($this->getUser()) {
             $this->addFlash('error', 'Already logged in!');
-             return $this->redirectToRoute('app_account');
-         }
+            return $this->redirectToRoute('app_account');
+        }
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-        
-       
 
-         if   ($form->isSubmitted() && $form->isValid()) {
-                // encode the plain password
-                $user->setPassword(
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword(
                 $userPasswordEncoderInterface->encodePassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                // generate a signed url and email it to the user
-                $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                    (new TemplatedEmail())
-                        ->from(new Address($this->getParameter('app_mail_from_address'), $this->getParameter('app_mail_from_name')))
-                        ->to($user->getEmail())
-                        ->subject('Please Confirm your Email')
-                        ->htmlTemplate('emails/registration/confirmation_email.html.twig')
-                );
-                // do anything else you need here, like send an email
-
-                return $guardHandler->authenticateUserAndHandleSuccess(
                     $user,
-                    $request,
-                    $authenticator,
-                    'main' // firewall name in security.yaml
-                );
-                
-            } else  {
-                    $errors = $validator->validate($user);
-                    if (count($errors) == 0) {
+                    $form->get('plainPassword')->getData()
+                )
+            );
 
-                        $errors = $validator->validate($user);
-                    }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // generate a signed url and email it to the user
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
+                (new TemplatedEmail())
+                    ->from(new Address($this->getParameter('app_mail_from_address'), $this->getParameter('app_mail_from_name')))
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->htmlTemplate('emails/registration/confirmation_email.html.twig')
+            );
+            // do anything else you need here, like send an email
+
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $authenticator,
+                'main' // firewall name in security.yaml
+            );
+        } else {
+            $errors = $validator->validate($user);
+            if (count($errors) == 0) {
+
+                $errors = $validator->validate($user);
             }
-        
+        }
+
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
-            'errors' => $errors ,
+            'errors' => $errors,
         ]);
     }
 

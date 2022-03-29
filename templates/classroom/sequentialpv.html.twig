@@ -2,58 +2,141 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Fiche simple</title>
-        
-        <link href="{{pathToWeb}}/assets/css/pdf.css"      rel="stylesheet" type="text/css" /> 
-        <link rel="stylesheet"  type="text/css" href="{{pathToWeb}}/assets/css/bootstrap.min.css">
+        <title>
+            Fiche simple
+        </title>
+        <link href="{{ pathToWeb }}/assets/css/pdf.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ pathToWeb }}/assets/css/bootstrap.min.css">
     </head>
     <body>
         <header class="clearfix">
-
-            <h1><b> Fiche de notes </b> </h1>
+            <h1>
+                <b>
+                    Fiche de notes 
+                </b>
+            </h1>
             <div id="company" class="clearfix">
-                <div><h5><b><span>Classe</span> {{room.name}}</b></h5></div>
-                  <div><h5><b><span>Année scolaire</span> {{year}}</b></h5></div>
+                <div>
+                    <h5>
+                        <b>
+                            <span>
+                                Classe
+                            </span>
+                            {{ room.name }}
+                        </b>
+                    </h5>
+                </div>
+                <div>
+                    <h5>
+                        <b>
+                            <span>
+                                Année scolaire
+                            </span>
+                            {{ year }}
+                        </b>
+                    </h5>
+                </div>
             </div>
-            <div id="project">
-
-            </div>
+            <div id="project"></div>
         </header>
         <main>
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="service"  style="width:10%;">Matricule</th>
-                        <th class="desc"  style="width:30%;"><h8>Nom et prénom</h8></th>
-                        <th  style="width:5%;"><b>SEQ1</b></th>
-                        <th  style="width:5%;"><b>SEQ2</b></th>
-                        <th  style="width:5%;"><b>EB</b></th>
-                        <th  style="width:5%;"><b>TRIM1</b></th>
-                        <th  style="width:5%;"><b>SEQ3</b></th>
-                        <th  style="width:5%;"><b>SEQ4</b></th>
-                         <th  style="width:5%;"><b>EB</b></th>
-                        <th  style="width:5%;"><b>TRIM2</b></th>
-                        <th  style="width:5%;"><b>SEQ5</b></th>
-                        <th  style="width:5%;"><b>SEQ6</b></th>
-                         <th  style="width:5%;"><b>EB</b></th>
-                        <th  style="width:5%;"><b>TRIM3</b></th>
+                        <th class="service" style="width:10%;">
+                            Matricule
+                        </th>
+                        <th class="desc" style="width:30%;">
+                            <h8>
+                                Nom et prénom
+                            </h8>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ1
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ2
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                EB
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                TRIM1
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ3
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ4
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                EB
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                TRIM2
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ5
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SEQ6
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                EB
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                TRIM3
+                            </b>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for std in students%}
+                    {% for std in students %}
                         <tr>
-                            <td class="service"><b>{{std.matricule}}</b></td>
-                            <td class="desc"><b>{{std.lastname }} {{   std.firstname}}</b></td>
+                            <td class="service">
+                                <b>
+                                    {{ std.matricule }}
+                                </b>
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.lastname }}
+                                    {{ std.firstname }}
+                                </b>
+                            </td>
                             <td class="qty"></td>
                             <td class="qty"></td>
-                             <td class="qty"></td>
+                            <td class="qty"></td>
                             <td class="total"></td>
-                             <td class="qty"></td>
-                             <td class="qty"></td>
+                            <td class="qty"></td>
+                            <td class="qty"></td>
                             <td class="qty"></td>
                             <td class="total"></td>
                             <td class="qty"></td>
-                             <td class="qty"></td>
+                            <td class="qty"></td>
                             <td class="qty"></td>
                             <td class="total"></td>
                         </tr>
@@ -61,12 +144,17 @@
                 </tbody>
             </table>
             <div id="notices">
-                <div>NOTICE:</div>
-                <div class="notice"> Chaque enseignant n'a droit qu'à un exeplaire de cette fiche de procès verbal.</div>
+                <div>
+                    NOTICE:
+                </div>
+                <div class="notice">
+                    Chaque enseignant n'a droit qu'à un exeplaire de cette fiche de procès verbal.
+                </div>
             </div>
         </main>
         <footer>
-           Fiche de procès verbal
+            Fiche de procès verbal
+                    
         </footer>
     </body>
 </html>

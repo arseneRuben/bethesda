@@ -28,7 +28,7 @@ class SchoolYearController extends AbstractController
         $this->em = $em;
     }
 
-     /**
+    /**
      * Lists all SchoolYearme entities.
      *
      * @Route("/", name="admin_school_years")
@@ -37,10 +37,10 @@ class SchoolYearController extends AbstractController
      */
     public function indexAction(SchoolYearRepository $repo)
     {
-       
+
         $schoolyears = $repo->findAll();
-        
-       return $this->render('school_year/index.html.twig', compact("schoolyears"));
+
+        return $this->render('school_year/index.html.twig', compact("schoolyears"));
     }
 
     /**
@@ -52,37 +52,35 @@ class SchoolYearController extends AbstractController
      */
     public function showAction(SchoolYear $school_year)
     {
-        
+
         return $this->render('school_year/show.html.twig', compact("school_year"));
     }
 
-  /**
+    /**
      * @Route("/create",name= "admin_schoolyears_new", methods={"GET","POST"})
      */
     public function create(Request $request): Response
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
-        if(!$this->getUser()->isVerified())
-        {
+        if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
         $schoolyear = new SchoolYear();
-    	$form = $this->createForm(SchoolYearType::class, $schoolyear);
-    	$form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid())
-    	{
+        $form = $this->createForm(SchoolYearType::class, $schoolyear);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($schoolyear);
             $this->em->flush();
             $this->addFlash('success', 'SchoolYear succesfully created');
             return $this->redirectToRoute('admin_school_years');
-    	}
-    	 return $this->render('school_year/new.html.twig'
-    	 	, ['form'=>$form->createView()]
+        }
+        return $this->render(
+            'school_year/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
@@ -92,44 +90,42 @@ class SchoolYearController extends AbstractController
      * @Route("/{id}/edt", name="admin_schoolyears_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,SchoolYear $schoolyear): Response
+    public function edit(Request $request, SchoolYear $schoolyear): Response
     {
-       
+
         $form = $this->createForm(SchoolYearType::class, $schoolyear, [
             'method' => 'GET',
-         ]);
+        ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'SchoolYear succesfully updated');
             return $this->redirectToRoute('admin_school_years');
         }
-        return $this->render('school_year/edit.html.twig'	, [
-            'schoolyear'=>$schoolyear,
-            'form'=>$form->createView()
+        return $this->render('school_year/edit.html.twig', [
+            'schoolyear' => $schoolyear,
+            'form' => $form->createView()
         ]);
     }
 
-    
+
 
     /**
      * Deletes a SchoolYearme entity.
      *
      * @Route("/{id}/delete", name="admin_schoolyears_delete", requirements={"id"="\d+"}, methods={"DELETE"})
      */
-    public function delete(SchoolYear $schoolyear, Request $request):Response
+    public function delete(SchoolYear $schoolyear, Request $request): Response
     {
-      
-        if($this->isCsrfTokenValid('schoolyears_deletion'.$schoolyear->getId(), $request->request->get('csrf_token') )){
+
+        if ($this->isCsrfTokenValid('schoolyears_deletion' . $schoolyear->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($schoolyear);
-           
+
             $this->em->flush();
             $this->addFlash('info', 'SchoolYear succesfully deleted');
         }
-       
+
         return $this->redirectToRoute('admin_school_years');
     }
-
 }

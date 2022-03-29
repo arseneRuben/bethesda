@@ -20,7 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  *
  * @Route("/admin/attributions")
  */
-class AttributionController extends AbstractController {
+class AttributionController extends AbstractController
+{
 
     private $em;
     private $repo;
@@ -29,7 +30,7 @@ class AttributionController extends AbstractController {
     public function __construct(EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo)
     {
         $this->em = $em;
-        $this->repo= $repo;
+        $this->repo = $repo;
         $this->scRepo = $scRepo;
     }
     /**
@@ -39,13 +40,14 @@ class AttributionController extends AbstractController {
      * @Method("GET")
      * @Template()
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
-       //$this->setAttributionAction();
+        //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
-                    'entities' => $entities,
+            'entities' => $entities,
         ));
     }
 
@@ -55,8 +57,8 @@ class AttributionController extends AbstractController {
         $em = $this->getDoctrine()->getManager();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
-        foreach ($entities as $attribution){
-            if( $attribution->getCourse()->getAttributions()->contains($attribution)){
+        foreach ($entities as $attribution) {
+            if ($attribution->getCourse()->getAttributions()->contains($attribution)) {
                 $attribution->getCourse()->setAttributed(True);
                 $em->persist($attribution->getCourse());
             }
@@ -70,12 +72,13 @@ class AttributionController extends AbstractController {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Attribution $attribution) {
+    public function showAction(Attribution $attribution)
+    {
         $deleteForm = $this->createDeleteForm($attribution->getId(), 'admin_attributions_delete');
 
         return $this->render('attribution/show.html.twig', array(
-                    'attribution' => $attribution,
-                    'delete_form' => $deleteForm->createView(),
+            'attribution' => $attribution,
+            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -86,19 +89,20 @@ class AttributionController extends AbstractController {
      * @Method("GET")
      * @Template()
      */
-    public function undoAction() {
-          
-         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $entities = $this->repo->findAllThisYear($year);   
-        foreach ($entities as $attribution){
-             $attribution->getCourse()->setAttributed(FALSE);
-                $this->em->remove($attribution);
+    public function undoAction()
+    {
+
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $entities = $this->repo->findAllThisYear($year);
+        foreach ($entities as $attribution) {
+            $attribution->getCourse()->setAttributed(FALSE);
+            $this->em->remove($attribution);
         }
-         $em->flush();
-         return $this->redirect($this->generateUrl('admin_attributions'));
+        $em->flush();
+        return $this->redirect($this->generateUrl('admin_attributions'));
     }
 
-  /**
+    /**
      * Creates a new Section entity.
      *
      * @Route("/create", name="admin_attributions_new")
@@ -106,15 +110,14 @@ class AttributionController extends AbstractController {
      */
     public function createAction(Request $request)
     {
-        if(!$this->getUser())
-        {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
         $form->handleRequest($request);
-    	if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $year = $this->scRepo->findOneBy(array("activated" => true));
             $attribution->setSchoolYear($year);
             $this->em->persist($attribution);
@@ -123,13 +126,14 @@ class AttributionController extends AbstractController {
             return $this->redirect($this->generateUrl('admin_attributions'));
         }
 
-        return $this->render('attribution/new.html.twig'
-        , ['form'=>$form->createView()]
+        return $this->render(
+            'attribution/new.html.twig',
+            ['form' => $form->createView()]
         );
     }
 
 
-   
+
 
     /**
      * Displays a form to edit an existing Programme entity.
@@ -137,44 +141,41 @@ class AttributionController extends AbstractController {
      * @Route("/{id}/edit", name="admin_attributions_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request,Attribution $attribution): Response
+    public function edit(Request $request, Attribution $attribution): Response
     {
         $form = $this->createForm(AttributionType::class, $attribution, [
-            'method'=> 'PUT'
+            'method' => 'PUT'
         ]);
         $form->handleRequest($request);
-     
-        if($form->isSubmitted() && $form->isValid())
-        {
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Attribution succesfully updated');
             return $this->redirectToRoute('admin_attributions');
         }
-        return $this->render('attribution/edit.html.twig'	, [
-            'attribution'=>$attribution,
-            'form'=>$form->createView()
+        return $this->render('attribution/edit.html.twig', [
+            'attribution' => $attribution,
+            'form' => $form->createView()
         ]);
     }
 
-   
 
-    
-       /**
+
+
+    /**
      * Deletes a Programme entity.
      *
      * @Route("/{id}/delete", name="admin_attributions_delete", requirements={"id"="\d+"}, methods={"GET","DELETE"})
      */
-    public function delete(Attribution $attribution , Request $request):Response
+    public function delete(Attribution $attribution, Request $request): Response
     {
-       // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
-            $this->em->remove($attribution);
-           
-            $this->em->flush();
-            $this->addFlash('info', 'Attribution succesfully deleted');
-    //    }
-       
+        // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
+        $this->em->remove($attribution);
+
+        $this->em->flush();
+        $this->addFlash('info', 'Attribution succesfully deleted');
+        //    }
+
         return $this->redirectToRoute('admin_attributions');
     }
-  
-
 }

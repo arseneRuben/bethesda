@@ -1,55 +1,79 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
-
-
 {% block content %}
-  
-    
-        <div class="row mt-4">
-            <div class="col-1" >
-                <a class="btn btn-info" href="{{ path('admin_attributions_new') }}">
-                    <i class="fa fa-plus"></i> <h1>New </h1>
-                </a>
-            </div>
-            <div class="col-11 jumbotron" >
-                <div class="m-1 box-shadow">
-                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste  des cours par classe et par module  </h4>
-                    </div>
-                <table  width="100%" class="table table-striped">
+
+    <div class="row mt-4">
+        <div class="col-1">
+            <a class="btn btn-info" href="{{ path('admin_attributions_new') }}">
+                <i class="fa fa-plus"></i>
+                <h1>
+                    New 
+                </h1>
+            </a>
+        </div>
+        <div class="col-11 jumbotron">
+            <div class="m-1 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                        Liste  des cours par classe et par module  
+                    </h4>
+                </div>
+                <table width="100%" class="table table-striped">
                     <thead>
                         <tr>
 
-                            <th>Profeseur</th>
-                            <th>Matière (coef)</th>
-                            <th>Année scolaire</th>
-                            <th>Action</th>
+                            <th>
+                                Profeseur
+                            </th>
+                            <th>
+                                Matière (coef)
+                            </th>
+                            <th>
+                                Année scolaire
+                            </th>
+                            <th>
+                                Action
+                            </th>
 
                         </tr>
                     </thead>
                     <tbody>
                         {% for attribution in entities %}
                             <tr>
-                                <td>{{ attribution.teacher.fullName }}</td>
-                                <td><a href="{{ path('admin_courses_show', {id: attribution.course.id}) }}">{{ attribution.course }}({{ attribution.course.coefficient}})</a></td>
-                                <td><a href="{{ path('admin_schoolyears_show', {id: attribution.schoolyear.id}) }}">{{ attribution.schoolyear.wording }}</a></td>
+                                <td>
+                                    {{ attribution.teacher.fullName }}
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_courses_show', {id: attribution.course.id}) }}">
+                                        {{ attribution.course }}
+                                        (
+                                        {{ attribution.course.coefficient }}
+                                        )
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_schoolyears_show', {id: attribution.schoolyear.id}) }}">
+                                        {{ attribution.schoolyear.wording }}
+                                    </a>
+                                </td>
                                 <td>
                                     <div class="btn-group">
                                         <a class="btn btn-info btn-sm" href="{{ path('admin_attributions_edit', {id: attribution.id}) }}">
-                                            <i class="fa fa-edit"></i> {{ 'edit'|trans({}, 'admin') }}
+                                            <i class="fa fa-edit"></i>
+                                            {{ 'edit'|trans({}, 'admin') }}
                                         </a>
                                         <a class="btn btn-danger btn-sm" href="{{ path('admin_attributions_delete', {id: attribution.id}) }}">
-                                            <i class="fa fa-edit"></i> {{ 'delete'|trans({}, 'admin') }}
+                                            <i class="fa fa-edit"></i>
+                                            {{ 'delete'|trans({}, 'admin') }}
                                         </a>
                                     </div>
                                 </td>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-            </div>
     </div>
-{% endblock %}
+</div>{% endblock %}
