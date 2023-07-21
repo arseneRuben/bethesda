@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 /**
- * SchoolYear controller.
+ * Sequence controller.
  *
  * @Route("/admin/sequences")
  */
@@ -105,6 +105,15 @@ class SequenceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if($sequence->getActivated()){
+                $sequences = $this->repo->findAll();
+                foreach ($sequences as $seq) {
+                    if(($seq->getId() != $sequence->getId())&&($seq->getActivated()) ){
+                        $seq = $seq->setActivated(false);
+                    }
+                }
+            }
+            
             $this->em->flush();
             $this->addFlash('success', 'Sequence succesfully updated');
             return $this->redirectToRoute('admin_sequences');

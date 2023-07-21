@@ -1,5 +1,6 @@
 {% extends 'layout/base.html.twig' %}
 {% block stylesheets %}
+
 {{parent()}}
 <link href="{{ asset('assets/css/versions.css')}}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('assets/css/responsive.css')}}" rel="stylesheet" type="text/css"/>
@@ -9,7 +10,8 @@
  <script src="{{asset('assets/js/modernizer.js')}}"></script>
 {% endblock  stylesheets %}
 
-{% block title %}Bethesda Website
+{% block title %}
+{{parent()}}
 {% endblock  title %}
 
 {% block body %}

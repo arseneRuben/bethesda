@@ -19,6 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(fields={"matricule"}, message="There is already an account with this matricule")
  * @ORM\HasLifecycleCallbacks
  * @Vich\Uploadable
+ * 
  */
 class Student
 {

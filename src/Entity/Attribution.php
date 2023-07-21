@@ -4,7 +4,7 @@ use App\Entity\Course;
 use App\Entity\User;
 use App\Entity\SchoolYear;
 use App\Repository\AttributionRepository;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="attribution")
  * @ORM\Entity(repositoryClass=AttributionRepository::class)
-
+ * @UniqueEntity(fields={"course", "schoolYear"}, message= "There is already an attribution othe this course to this teacher at this year")
  */
 class Attribution {
     /**

@@ -104,8 +104,10 @@ class CourseRepository extends ServiceEntityRepository
             ->select(['crs'])
             ->from('App\Entity\Course', 'crs')
             ->where($queryBuilder->expr()->notIn('crs.id', ':subQuery'))
+            ->andWhere('crs.attributed=:a')
             ->orderBy('crs.domain')
             ->setParameter('subQuery', $subQuery)
+            ->setParameter('a', false)
             
          
         ;

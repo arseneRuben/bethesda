@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 /**
- * SchoolYear controller.
+ * Quater controller.
  *
  * @Route("/admin/quaters")
  */
@@ -71,14 +71,14 @@ class QuaterController extends AbstractController
      */
     public function create(Request $request): Response
     {
-        if (!$this->getUser()) {
+       /* if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
-        }
+        }*/
         $schoolyear = new Quater();
         $form = $this->createForm(QuaterType::class, $schoolyear);
         $form->handleRequest($request);
@@ -108,6 +108,15 @@ class QuaterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+           
+            if($quater->getActivated()){
+                $quaters = $this->repo->findAll();
+                foreach ($quaters as $quat) {
+                    if(($quat->getId() != $quater->getId())&&($quat->getActivated()) ){
+                        $quat = $quat->setActivated(false);
+                    }
+                }
+            }
             $this->em->flush();
             $this->addFlash('success', 'Quater succesfully updated');
             return $this->redirectToRoute('admin_quaters');

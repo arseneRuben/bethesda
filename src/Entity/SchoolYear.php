@@ -6,9 +6,13 @@ use App\Repository\SchoolYearRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=SchoolYearRepository::class)
+ *  @UniqueEntity(fields={"code"}, message= "There is already a classroom  with this code")
  */
 class SchoolYear
 {
@@ -21,8 +25,6 @@ class SchoolYear
     private $id;
 
     
-	
-
 
      /**
      * @var int

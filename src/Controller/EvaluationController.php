@@ -148,6 +148,7 @@ class EvaluationController extends AbstractController
      */
     public function create(Request $request)
     {
+        
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
@@ -262,7 +263,7 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation): Response
     {
-        if (!$this->getUser()) {
+       /* if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }

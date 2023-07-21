@@ -1,78 +1,157 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
-
-
 {% block content %}
-  
-    
-        <div class="row mt-4">
-            <div class="col-1" >
-                <a class="btn btn-info" href="{{ path('admin_courses_new') }}">
-                    <i class="fa fa-plus"></i> <h1>New </h1>
-                </a>
-            </div>
-            <div class="col-11 jumbotron" >
-                <div class="m-1 box-shadow">
-                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste  des cours par classe et par module  </h4>
-                    </div>
-                    <table  width="100%" class="table table-striped">
-                        <thead>
+
+    <div class="row mt-4">
+        <div class="col-1">
+            <a class="btn btn-info" href="{{ path('admin_courses_new') }}">
+                <i class="fa fa-plus"></i>
+                <h1>
+                    New 
+                                    
+                </h1>
+            </a>
+        </div>
+        <div class="col-11 jumbotron">
+            <div class="m-1 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                        Liste  des cours par classe et par module  
+                                            
+                    </h4>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;" class="text-center" scope="col">
+                                #
+                                                            
+                            </th>
+                            <th style="width:15%;" class="text-center" scope="col">
+                                Domaine
+                                                            
+                            </th>
+                            <th style="width:15%;" class="text-center" scope="col">
+                                Module
+                                                            
+                            </th>
+                            <th style="width:10%;" class="text-center" scope="col">
+                                Code
+                                                            
+                            </th>
+                            <th style="width:20%;" class="text-center" scope="col">
+                                Insitule
+                                                            
+                            </th>
+                            <th style="width:15%;" class="text-center" scope="col">
+                                Coef
+                                                            
+                            </th>
+
+                            <th style="width:20%;" class="text-center" scope="col">
+                                Statu
+                                                            
+                            </th>
+                            <th style="width:15%;" class="text-center" scope="col">
+                                Action
+                                                            
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for room in rooms %}
                             <tr>
-                                <th style="width:5%;" class="text-center" scope="col">#</th>
-                                <th style="width:15%;" class="text-center" scope="col">Domaine</th>
-                                <th style="width:15%;" class="text-center" scope="col">Module</th>
-                                <th style="width:10%;" class="text-center" scope="col">Code</th>
-                                <th style="width:20%;" class="text-center" scope="col">Insitule</th>
-                                <th style="width:15%;" class="text-center" scope="col">Coef</th>
-                             
-                                <th style="width:20%;" class="text-center" scope="col">Statu</th>
-                                <th style="width:15%;" class="text-center" scope="col">Action</th>
+                                <td class="text-center" colspan="1" scope="row">
+                                    {{ loop.index }}
+                                </th>
+                                <td class="text-center" colspan="7">
+                                    <a href="{{ path('admin_classrooms_show', {id: room.id}) }}">
+                                        <h3>
+                                            {{ room.name }}
+                                        </h3>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                          {% for room in rooms %}
-                             <tr>
-                                <td  class="text-center" colspan="1" scope="row">{{ loop.index }}</th>
-                                <td  class="text-center"  colspan="7" ><a href="{{ path('admin_classrooms_show', {id: room.id}) }}"><h3>{{ room.name }}</h3></a></td>
-                            </tr> 
-                                {% for module in room.modules %}
+                            {% for module in room.modules %}
                                 <tr>
-                                <td  class="text-center" colspan="4" scope="row">{{ loop.index }}</th>
-                                <td  class="text-center"  colspan="4" ><a href="{{ path('admin_modules_show', {id: module.id}) }}"><h3>{{ module.name }}</h3></a></td>
-                            </tr> 
-                                    {% for course in module.courses %}
+                                    <td class="text-center" colspan="4" scope="row">
+                                        {{ loop.index }}
+                                    </th>
+                                    <td class="text-center" colspan="4">
+                                        <a href="{{ path('admin_modules_show', {id: module.id}) }}">
+                                            <h3>
+                                                {{ module.name }}
+                                            </h3>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% for course in module.courses %}
                                     <tr>
-                                        <td style="width:5%;" class="text-center" scope="row">{{ loop.index }}</th>
-                                        <td style="width:15%;" class="text-center" ><a href="{{ path('admin_domains_show', {id: course.domain.id}) }}"><h3>{{ course.domain.name }}</h3></a></td>
-                                        <td style="width:15%;" class="text-center" ><a href="{{ path('admin_modules_show', {id: course.module.id}) }}"><h3>{{ course.module.name }}</h3></a></td>
-                                        <td style="width:10%;" class="text-center" ><h3>{{ course.code }}</h3></td>
-                                        <td style="width:20%;" class="text-center" ><h3>{{ course.wording }}</h3></td>
-                                        <td style="width:15%;" class="text-center" ><h3> {{ course.coefficient }}</h3></td>
-                                        <td style="width:20%;" class="text-center" ><h3>  {% if course.attributed  %}  PRIS{% else %} NON {% endif %}</h3></td>
-                                        
+                                        <td style="width:5%;" class="text-center" scope="row">
+                                            {{ loop.index }}
+                                        </th>
+                                        <td style="width:15%;" class="text-center">
+                                            <a href="{{ path('admin_domains_show', {id: course.domain.id}) }}">
+                                                <h3>
+                                                    {{ course.domain.name }}
+                                                </h3>
+                                            </a>
+                                        </td>
+                                        <td style="width:15%;" class="text-center">
+                                            <a href="{{ path('admin_modules_show', {id: course.module.id}) }}">
+                                                <h3>
+                                                    {{ course.module.name }}
+                                                </h3>
+                                            </a>
+                                        </td>
+                                        <td style="width:10%;" class="text-center">
+                                            <h3>
+                                                {{ course.code }}
+                                            </h3>
+                                        </td>
+                                        <td style="width:20%;" class="text-center">
+                                            <h3>
+                                                {{ course.wording }}
+                                            </h3>
+                                        </td>
+                                        <td style="width:15%;" class="text-center">
+                                            <h3>
+                                                {{ course.coefficient }}
+                                            </h3>
+                                        </td>
+                                        <td style="width:20%;" class="text-center">
+                                            <h3>
+                                                {% if course.attributed %}
+                                                    PRIS
+                                                                                                    
+                                                {% else %}
+                                                    NON 
+                                                                                                    
+                                                {% endif %}
+                                            </h3>
+                                        </td>
+
                                         <td style="width:15%;" class="text-center">
                                             <div class="btn-group">
-                                                
-                                                  <a class="btn btn-info" href="{{ path('admin_courses_show', {id: course.id}) }}">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i> 
-                                        </a>
-                                        <a class="btn btn-warning" href="{{path('admin_courses_edit', {id: course.id})}}"> 
-                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        </a>
-                                                
-                                            
+
+                                                <a class="btn btn-info" href="{{ path('admin_courses_show', {id: course.id}) }}">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                </a>
+                                                <a class="btn btn-warning" href="{{ path('admin_courses_edit', {id: course.id}) }}">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                </a>
+
                                             </div>
                                         </td>
                                     </tr>
-                                    {% endfor %}
-                                 {% endfor %}
-                              {% endfor %}
-                        </tbody>
-                    </table>
-                 </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            
         </div>
-   
+
+    </div>
+
 {% endblock %}

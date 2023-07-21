@@ -40,7 +40,7 @@ class Cycle
      */
     private $levels;
 
-   
+
 
     public function __construct()
     {
@@ -76,10 +76,11 @@ class Cycle
         return $this;
     }
 
-    public function __toString() {
-        $name = ( is_null($this->getName())) ? "" : $this->getName();
-         $section = ( is_null($this->getSection())) ? "" : $this->getSection();
-        return (string) ($section."/".$name );
+    public function __toString()
+    {
+        $name = (is_null($this->getName())) ? "" : $this->getName();
+        $section = (is_null($this->getSection())) ? "" : $this->getSection();
+        return (string) ($section . "/" . $name);
     }
 
     /**

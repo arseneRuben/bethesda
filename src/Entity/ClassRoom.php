@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,14 +9,16 @@ use App\Repository\ClassRoomRepository;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Persistence\ObjectManagerAware;
+
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ClassRoomRepository::class)
+ * @UniqueEntity(fields={"name"}, message= "There is already a classroom  with this name")
  */
-class ClassRoom  implements ObjectManagerAware
+class ClassRoom
 {
     /**
      * @ORM\Id
@@ -32,9 +33,11 @@ class ClassRoom  implements ObjectManagerAware
     private $name;
 
     /**
+     * Cette classe est-elle une classe d'examen?
      * @ORM\Column(type="boolean")
      */
     private $apc;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Module::class, mappedBy="room", orphanRemoval=true)
@@ -65,13 +68,13 @@ class ClassRoom  implements ObjectManagerAware
     {
         $this->modules = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
-       
     }
 
-    public function __toString() {
-        $name = ( is_null($this->getName())) ? "" : $this->getName();
-        $level = ( is_null($this->getLevel())) ? "" : $this->getLevel(); 
-        return (string) ($level."/".$name );
+    public function __toString()
+    {
+        $name = (is_null($this->getName())) ? "" : $this->getName();
+        $level = (is_null($this->getLevel())) ? "" : $this->getLevel();
+        return (string) ($level . "/" . $name);
     }
     public function getId(): ?int
     {
@@ -156,7 +159,7 @@ class ClassRoom  implements ObjectManagerAware
         return $this;
     }
 
-   
+
 
     /**
      * @return Collection|Subscription[]
@@ -172,8 +175,8 @@ class ClassRoom  implements ObjectManagerAware
     ) {
         $this->em = $objectManager;
     }
-    
-     
+
+
     public function getCurrentYearSubscriptions()
     {
         $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
@@ -202,6 +205,4 @@ class ClassRoom  implements ObjectManagerAware
 
         return $this;
     }
-
-  
 }

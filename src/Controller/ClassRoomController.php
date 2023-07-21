@@ -15,19 +15,21 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
+use App\Repository\QuaterRepository;
 use App\Repository\SequenceRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\StudentRepository;
-use App\Repository\QuaterRepository;
+
 use App\Repository\MarkRepository;
 use App\Entity\ClassRoom;
+use App\Entity\SchoolYear;
 use App\Form\ClassRoomType;
 use App\Entity\Sequence;
 use App\Entity\Quater;
 
 
 /**
- * SchoolYear controller.
+ * ClassRoom controller.
  *
  * @Route("/admin/rooms")
  */
@@ -41,9 +43,11 @@ class ClassRoomController extends AbstractController
     private $evalRepo;
     private $qtRepo;
     private $markRepo;
+    private  $snappy;
 
-    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo, EntityManagerInterface $em)
+    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo, EntityManagerInterface $em, Pdf $snappy)
     {
+
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
@@ -52,6 +56,7 @@ class ClassRoomController extends AbstractController
         $this->stdRepo = $stdRepo;
         $this->qtRepo = $qtRepo;
         $this->markRepo = $markRepo;
+        $this->snappy = $snappy;
     }
 
     /**
@@ -65,7 +70,6 @@ class ClassRoomController extends AbstractController
     {
 
         $classrooms = $this->repo->findAll();
-
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
 
@@ -176,100 +180,103 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsYearAction(ClassRoom $classroom, SchoolYear  $year = null)
+    public function reportCardsYearAction(ClassRoom $classroom)
     {
+
         set_time_limit(600);
-        $em = $this->getDoctrine()->getManager();
-        $connection = $em->getConnection();
+        $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-        $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ6 AS
-                     SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,std.birthplace as birthplace , teach.username as teacher    , modu.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   JOIN  Student    std     ON  m.student_id        =   std.id
-                                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                                        JOIN  Class_Room room    ON   eval.classroom_id     =   room.id
-                                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                                        JOIN  Attribution att    ON  att.course_id      =   crs.id
-                                        JOIN  Utilisateur  teach ON  att.teacher_id  =   teach.id
-                                        JOIN  Module     modu    ON  modu.id       =   crs.module_id
-                                        JOIN  Sequence   seq     ON  seq.id     =   eval.sequence_id
-                                        JOIN  Quater   quat     ON  seq.quater_id     =   quat.id
-                                        JOIN  School_year   year     ON  quat.school_year_id     =   year.id
-                          WHERE    room.id = ? AND eval.sequence_id = 6
-                          ORDER BY room.id, std.matricule, crs.module_id, crs.wording; "
-        );
-        $statement->bindValue(1, $classroom->getId());
-        $statement->execute();
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ1 AS
-                     SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,std.birthplace as birthplace , teach.username as teacher    , modu.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   JOIN  Student    std     ON  m.student_id        =   std.id
-                                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                                        JOIN  Class_Room room    ON   eval.classroom_id     =   room.id
-                                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                                        JOIN  Attribution att    ON  att.course_id      =   crs.id
-                                        JOIN  Utilisateur  teach ON  att.teacher_id  =   teach.id
-                                        JOIN  Module     modu    ON  modu.id       =   crs.module_id
-                                        JOIN  Sequence   seq     ON  seq.id     =   eval.sequence_id
-                                        JOIN  Quater   quat     ON  seq.quater_id     =   quat.id
-                                        JOIN  School_year   year     ON  quat.school_year_id     =   year.id
-                          WHERE    room.id = ?  AND eval.sequence_id = 1
-                          ORDER BY room.id, std.matricule, crs.module_id, crs.wording; "
+            SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.matricule as matricule, std.image_name as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,std.birthplace as birthplace , teach.full_name as teacher    , modu.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  class_room room    ON   eval.class_room_id     =   room.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            JOIN  attribution att    ON  att.course_id      =   crs.id
+            JOIN  user  teach ON  att.teacher_id  =   teach.id
+            JOIN  module     modu    ON  modu.id       =   crs.module_id
+            JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+            JOIN  quater   quat     ON  seq.quater_id     =   quat.id
+            JOIN  school_year   year     ON  quat.school_year_id     =   year.id
+            WHERE    room.id = ? AND eval.sequence_id =1
+          "
         );
+
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
         $statement = $connection->prepare(
             "CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ2 AS
-                     SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   
-                        JOIN  Student    std     ON  m.student_id        =   std.id
-                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                        WHERE  eval.classroom_id = ? AND eval.sequence_id = 2
-                        ORDER BY matricule,eval; "
+            SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   
+            JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            WHERE  eval.class_room_id = ? AND eval.sequence_id = 2
+            ORDER BY matricule,eval; "
         );
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
         $statement = $connection->prepare(
             "CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ3 AS
-                     SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   
-                        JOIN  Student    std     ON  m.student_id        =   std.id
-                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                        WHERE  eval.classroom_id =? AND eval.sequence_id = 3
-                        ORDER BY matricule,eval; "
+            SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   
+            JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            WHERE  eval.class_room_id =? AND eval.sequence_id = 3
+            ORDER BY matricule,eval; "
         );
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
         $statement = $connection->prepare(
             "CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ4 AS
-                     SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   
-                        JOIN  Student    std     ON  m.student_id        =   std.id
-                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                        WHERE  eval.classroom_id = ? AND eval.sequence_id = 4
-                        ORDER BY matricule,eval; "
+            SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   
+            JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            WHERE  eval.class_room_id = ? AND eval.sequence_id = 4
+            ORDER BY matricule,eval; "
         );
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
         $statement = $connection->prepare(
             "CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ5 AS
-                     SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   
-                        JOIN  Student    std     ON  m.student_id        =   std.id
-                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                        WHERE  eval.classroom_id = ? AND eval.sequence_id = 5
-                        ORDER BY matricule,eval; "
+            SELECT DISTINCT  crs.id as crs, eval.id as eval, std.matricule as matricule, m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   
+            JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            WHERE  eval.class_room_id = ? AND eval.sequence_id = 5
+            ORDER BY matricule,eval; "
         );
         $statement->bindValue(1, $classroom->getId());
         $statement->execute();
-        $dataYear = $em->getConnection()->executeQuery("select *  from data")->fetchAll();
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ6 AS
+            SELECT DISTINCT  eval.id as eval,crs.id as crs, std.matricule as matricule,  m.value as valeur, m.weight as weight, m.appreciation as appreciation
+            FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  class_room room    ON   eval.class_room_id     =   room.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            WHERE    room.id = ? AND eval.sequence_id = 6
+            ORDER BY std.matricule"
+        );
+        $statement->bindValue(1, $classroom->getId());
+        $statement->execute();
+        $dataYear = $this->em->getConnection()->executeQuery("select *  from V_STUDENT_MARK_DATA_SEQ1 
+            INNER JOIN  V_STUDENT_MARK_DATA_SEQ2 ON  V_STUDENT_MARK_DATA_SEQ1.matricule = V_STUDENT_MARK_DATA_SEQ2.matricule 
+            INNER JOIN  V_STUDENT_MARK_DATA_SEQ3 ON  V_STUDENT_MARK_DATA_SEQ2.matricule = V_STUDENT_MARK_DATA_SEQ3.matricule 
+            INNER JOIN  V_STUDENT_MARK_DATA_SEQ4 ON  V_STUDENT_MARK_DATA_SEQ3.matricule = V_STUDENT_MARK_DATA_SEQ4.matricule 
+            INNER JOIN  V_STUDENT_MARK_DATA_SEQ5 ON  V_STUDENT_MARK_DATA_SEQ4.matricule = V_STUDENT_MARK_DATA_SEQ5.matricule 
+            INNER JOIN  V_STUDENT_MARK_DATA_SEQ6 ON  V_STUDENT_MARK_DATA_SEQ5.matricule = V_STUDENT_MARK_DATA_SEQ6.matricule 
 
-        $this->get('knp_snappy.pdf')->setTimeout(600);
+            ")->fetchAll();
+
+        $this->snappy->setTimeout(600);
 
         $html = $this->renderView('classroom/reportcardYear.html.twig', array(
             'year' => $year,
@@ -279,7 +286,7 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            $this->snappy->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type' => 'application/pdf',
@@ -291,131 +298,154 @@ class ClassRoomController extends AbstractController
     /**
      * Finds and displays a ClassRoom entity.
      *
-     * @Route("/{id}/reportCardsApcYear", name="admin_classrooms_reportcards_apc_year", requirements={"id"="\d+"})
+     * @Route("/{id}/reportCardsApcYearapc", name="admin_class_reportcards_apc_year", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
-    public function reportCards2YearAction(ClassRoom $classroom, SchoolYear  $year = null)
+    public function reportCards2YearAction(ClassRoom $classroom)
     {
         set_time_limit(600);
-        $em = $this->getDoctrine()->getManager();
-        $connection = $em->getConnection();
+        $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $sequences = $this->seqRepo->findSequencesBySchoolYear($year);
-
-
+        $sequences  = $this->seqRepo->findSequenceThisYear($year);
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
-
-        $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_DATA AS
-                     SELECT DISTINCT   room.id as room,year.id as year, std.matricule as matricule, std.profileImagePath as profileImagePath,  std.lastname as lastname, std.firstname as firstname, std.birthday as birthday, std.gender as gender,std.birthplace as birthplace 
-                                        FROM  Student    std     
-                                        JOIN  inscription sub    ON   std.id     =   sub.student_id
-                                        JOIN  Class_Room room    ON   sub.classroom_id     =   room.id
-                                        JOIN  School_year   year     ON  sub.year_id     =   year.id
-                          WHERE    room.id = ? 
-                          AND    year.id = ? 
-                          ORDER BY room.id, std.matricule "
-        );
-        $statement->bindValue(1, $classroom->getId());
-        $statement->bindValue(2, $year->getId());
-        $statement->execute();
         $i = 1;
         foreach ($sequences as $seq) {
-
-
+            /*******************************************************************************************************************/
+            /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
+            /*******************************************************************************************************************/
+            // CAS DES NOTES SEQUENTIELLES
             $statement = $connection->prepare(
-                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_SEQ" . $i . " AS
-                     SELECT DISTINCT  crs.id as crs, room.id as room, std.matricule as matricule,  teach.username as teacher    , modu.name as module , crs.wording as wording, crs.coefficient as coefficient,m.value as value, m.weight as weight, m.appreciation as appreciation
-                        FROM  Mark  m   JOIN  Student    std     ON  m.student_id        =   std.id
-                                        JOIN  Evaluation eval    ON  m.evaluation_id     =   eval.id
-                                        JOIN  Class_Room room    ON   eval.classroom_id     =   room.id
-                                        JOIN  Course     crs     ON  eval.course_id      =   crs.id
-                                        JOIN  Attribution att    ON  att.course_id      =   crs.id
-                                        JOIN  Utilisateur  teach ON  att.teacher_id  =   teach.id
-                                        JOIN  Module     modu    ON  modu.id       =   crs.module_id
-                                        JOIN  Sequence   seq     ON  seq.id     =   eval.sequence_id
-                                       
-                                       
-                          WHERE    room.id = ?  AND eval.sequence_id = ? AND att.year_id = ?
-                          ORDER BY  std.matricule; "
+                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+                SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+                FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+                JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+                JOIN  class_room room    ON   eval.class_room_id     =   room.id
+                JOIN  course     crs     ON  eval.course_id      =   crs.id
+                JOIN  attribution att    ON  att.course_id      =   crs.id  
+                JOIN  user  teach        ON  att.teacher_id  =   teach.id
+                JOIN  module     modu    ON  modu.id       =   crs.module_id
+                JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                JOIN  quater   quat      ON  seq.quater_id     =   quat.id
+                JOIN  school_year   year ON  quat.school_year_id     =   year.id
+                WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
+                ORDER BY room.id,modu.id ,  std; "
             );
 
-            $statement->bindValue(1, $classroom->getId());
-            $statement->bindValue(2, $seq->getId());
-            $statement->bindValue(3, $year->getId());
+            $statement->bindValue(1, $year->getId());
+            $statement->bindValue(2, $classroom->getId());
+            $statement->bindValue(3, $seq->getId());
+           
             $statement->execute();
             $i++;
         }
-
+        // CAS DES NOTES TRIMESTRIELLES
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_QUATER1 AS
-                    SELECT DISTINCT  seq1.matricule as matricule , seq1.wording as course, seq1.module as module,seq1.teacher as teacher, (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight
-                    FROM V_STUDENT_MARK_DATA_SEQ1 seq1
-                    JOIN  V_STUDENT_MARK_DATA_SEQ2   seq2  
-                    ON  seq1.matricule    =   seq2.matricule 
-                    WHERE seq1.crs = seq2.crs
-                    ORDER BY seq1.matricule"
-        );
-
-        $statement->execute();
-        $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_QUATER2 AS
-                    SELECT DISTINCT  seq3.matricule as matricule ,seq3.wording as course, seq3.module as module, (seq3.value*seq3.weight + seq4.value*seq4.weight)/(seq3.weight+seq4.weight)  as value, greatest(seq3.weight , seq4.weight ) as weight
-                    FROM V_STUDENT_MARK_DATA_SEQ3    seq3
-                    JOIN  V_STUDENT_MARK_DATA_SEQ4   seq4  
-                    ON  seq3.matricule    =   seq4.matricule
-                    WHERE seq3.crs = seq4.crs 
-                    ORDER BY seq3.matricule"
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER1 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  
+            ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs)
+            ORDER BY seq1.std"
         );
 
         $statement->execute();
 
+
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_DATA_QUATER3 AS
-                    SELECT DISTINCT  seq5.matricule as matricule ,seq5.wording as course, seq5.module as module, (seq5.value*seq5.weight + seq6.value*seq6.weight)/(seq5.weight+seq6.weight)  as value, greatest(seq5.weight , seq6.weight ) as weight
-                    FROM V_STUDENT_MARK_DATA_SEQ5    seq5
-                    JOIN  V_STUDENT_MARK_DATA_SEQ6   seq6  
-                    ON  seq5.matricule    =   seq6.matricule
-                    WHERE seq5.crs = seq6.crs 
-                    ORDER BY seq5.matricule"
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER2 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ3 seq1
+            JOIN  V_STUDENT_MARK_SEQ4 seq2  
+            ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs)
+            ORDER BY seq1.std"
         );
+
 
         $statement->execute();
 
+
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE TABLE ANNUAL_DATA AS
-                    SELECT DISTINCT  vdata.matricule as matricule , vdata.room as room, vdata.year as year,  vdata.profileImagePath as profileImagePath, 
-                     vdata.lastname as lastname, vdata.firstname as firstname, vdata.birthday as birthday, vdata.gender as gender,vdata.birthplace as birthplace , 
-                     quat1.course as course, quat1.module as module,quat1.teacher as teacher,
-                    quat1.value as value1, quat1.weight as weight1,   quat2.weight as weight2, quat2.value as value2 ,   quat3.weight as weight3, quat3.value as value3 
-                    FROM V_STUDENT_DATA vdata,  V_STUDENT_MARK_DATA_QUATER1   quat1 , V_STUDENT_MARK_DATA_QUATER2   quat2   , V_STUDENT_MARK_DATA_QUATER3   quat3 
-                    WHERE  vdata.matricule    =   quat1.matricule
-                    AND  quat1.matricule    =   quat2.matricule
-                    AND  quat1.matricule    =   quat3.matricule
-                    AND  quat1.course    =   quat2.course
-                    AND  quat1.course    =   quat3.course
-                    ORDER BY vdata.matricule
-                  "
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER3 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ5 seq1
+            JOIN  V_STUDENT_MARK_SEQ6 seq2  
+            ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs)
+            ORDER BY seq1.std"
         );
+
 
         $statement->execute();
 
-        $dataYear = $connection->executeQuery("select *  from ANNUAL_DATA")->fetchAll();
+        // CAS DES NOTES ANNUELLES
 
+        $statement = $connection->prepare(
+            "CREATE OR REPLACE VIEW ANNUAL_DATA AS
+            SELECT DISTINCT   student.id as idStd ,  student.matricule as matricule ,  student.image_name as profileImagePath, 
+            student.lastname as lastname, student.firstname as firstname, student.birthday as birthday,
+            student.gender as gender,student.birthplace as birthplace , 
+            class_room.name as room_name,
+            course.wording as course, course.coefficient as coef, 
+            module.name as module,
+            user.full_name as teacher,
+            quat1.std,quat1.modu,
+            quat1.value as value1, quat1.weight as weight1,  
+            quat2.value as value2,  quat2.weight as weight2,  
+            quat3.value as value3,quat3.weight as weight3,
+            greatest(quat1.weight , quat2.weight, quat3.weight ) as weight,
+            ( quat1.value*quat1.weight+ quat2.value*quat2.weight + quat3.value*quat3.weight) /(quat1.weight+quat2.weight+quat3.weight) as value
+            FROM student  
+            JOIN V_STUDENT_MARK_QUATER1  quat1 ON  student.id = quat1.std
+            JOIN  class_room ON class_room.id = quat1.room
+            JOIN  course    ON course.id = quat1.crs
+            JOIN  module    ON course.module_id = quat1.modu
+            JOIN user ON user.full_name = quat1.teacher
+            JOIN   V_STUDENT_MARK_QUATER2   quat2  ON  quat1.std = quat2.std AND quat1.crs = quat2.crs
+            JOIN 
+            V_STUDENT_MARK_QUATER3   quat3  ON  quat1.std = quat3.std AND quat1.crs = quat3.crs
+            ORDER BY  quat1.std, quat1.modu
+        
+            "
+        );
+        $statement->execute();
+        $dataYear = $connection->executeQuery("SELECT *  FROM ANNUAL_DATA ")->fetchAll();
+         // For calculating ranks
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+            SELECT DISTINCT idStd , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
+            FROM ANNUAL_DATA 
+            GROUP BY idStd
+            ORDER BY SUM(value*weight*coef) DESC"
+            );
+            $statement->execute();
+            $annualAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+            $annualAvgArray=[];
+            $sumAvg = 0;
+            $rank=0;
+            $rankArray=[];
+            foreach($annualAvg as $avg){
+                
+                $annualAvgArray[$avg['idStd']] = $avg['moyenne'];
+                $rankArray[$avg['idStd']] = ++$rank;
+                $sumAvg += $avg['moyenne'];
+            }
+           
+        $this->snappy->setTimeout(600);
 
-        $this->get('knp_snappy.pdf')->setTimeout(600);
-
-        $html = $this->renderView('classroom/reportcardYearApc.html.twig', array(
+        $html = $this->renderView('classroom/reportcardYear.html.twig', array(
             'year' => $year,
             'data' => $dataYear,
             'room' => $classroom,
-            'year' => $year,
             'students' => $studentEnrolled,
+            'ranks' => $rankArray,
+            'means' => $annualAvgArray,
+            'genMean' => $sumAvg/sizeof($annualAvgArray),
         ));
+      
+       //return new Response($html);
         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            $this->snappy->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type' => 'application/pdf',
@@ -446,7 +476,8 @@ class ClassRoomController extends AbstractController
 
         return new Response(
             $snappy->getOutputFromHtml($html, array(
-                'default-header' => false
+                'default-header' => false,
+                'orientation' => 'landscape'
             )),
             200,
             array(
@@ -471,6 +502,7 @@ class ClassRoomController extends AbstractController
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
+
 
         $datas = $this->markRepo->findMarksBySequenceAndClassOrderByStd($seq, $room);
 
@@ -612,7 +644,7 @@ class ClassRoomController extends AbstractController
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
-
+        //  dd($this->getParameter('kernel.project_dir'));
 
         $html = $this->renderView('classroom/fichesimple.html.twig', array(
             'year' => $year,
@@ -626,7 +658,40 @@ class ClassRoomController extends AbstractController
           'Content-Type' => 'application/pdf',
           'Content-Disposition' => 'attachment; filename="'.$classroom->getName().'.pdf"',
           )
-          ); */
+      );*/
+        return new Response(
+            $snappy->getOutputFromHtml($html, array(
+                'default-header' => false
+            )),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+            )
+        );
+
+        //   return new Response($html);
+    }
+
+    /**
+     * LISTE DES ELEVES DE LA CLASSE DANS UNE FICHE DE PRESENTATION.
+     *
+     * @Route("/{id}/presentation", name="admin_classrooms_presentation", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function presentationAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
+    {
+        // Année scolaire en cours
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+
+        $html = $this->renderView('classroom/list.html.twig', array(
+            'year' => $year,
+            'room' => $classroom,
+            'students' => $studentEnrolled,
+        ));
+
         return new Response(
             $snappy->getOutputFromHtml($html, array(
                 'default-header' => false
@@ -642,38 +707,6 @@ class ClassRoomController extends AbstractController
     }
 
     /**
-     * LISTE DES ELEVES DE LA CLASSE DANS UNE FICHE DE PRESENTATION.
-     *
-     * @Route("/{id}/presentation", name="admin_classrooms_presentation", requirements={"id"="\d+"})
-     * @Method("GET")
-     * @Template()
-     */
-    public function presentationAction(ClassRoom $classroom)
-    {
-        // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-
-        $html = $this->renderView('classroom/list.html.twig', array(
-            'year' => $year,
-            'room' => $classroom,
-            'students' => $studentEnrolled,
-        ));
-
-        /* return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html, array(
-                    'default-header' => false)),
-            200,
-            array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
-                )
-        );*/
-
-        return new Response($html);
-    }
-
-    /**
      * MOYENNE GENERALE DE LA CLASSE A UNE SEQUENCE
      * @Route("/{id_room}/{id_seq}/sqavg", name="admin_classrooms_avg_seq", requirements={"id_room"="\d+", "id_seq"="\d+"})
      * @ParamConverter("room", options={"mapping": {"id_room" : "id"}})
@@ -684,7 +717,7 @@ class ClassRoomController extends AbstractController
     public function generalSeqAverage(ClassRoom $room, Sequence $seq)
     {
         $dql =     "SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
-            WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
+        WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
         $avg_seq1 = $this->em->createQuery($dql)
             ->setParameter(1, $room->getId())
             ->setParameter(2, $seq->getId())
@@ -703,7 +736,7 @@ class ClassRoomController extends AbstractController
     public function generalQuatAverage(ClassRoom $room, Quater $quater)
     {
         $dql =     "SELECT SUM(evaluation.moyenne * course.coefficient)/SUM(course.coefficient)  FROM App\Entity\Evaluation evaluation , App\Entity\Course  course
-            WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
+        WHERE evaluation.course= 		course.id AND evaluation.sequence=?2 AND evaluation.classRoom=?1 ";
 
         $avg_seq = 0;
         foreach ($quater->getSequences() as $seq) {
@@ -755,7 +788,7 @@ class ClassRoomController extends AbstractController
                                          'default-header'=>true,
             'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $room->getName() . '.pdf"',
                 )
-        );*/
+            );*/
         // return new Response($html);
 
     }
@@ -815,57 +848,101 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsTrimAction(ClassRoom $classroom, Pdf $pdf)
+    public function reportCardsTrimAction(ClassRoom $room, Pdf $pdf,  Request $request)
     {
-        // dd();
+         
         set_time_limit(600);
-        $em = $this->getDoctrine()->getManager();
+
+        $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
-        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-        $dataSeq1 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[0], $classroom);
-        $dataSeq2 = $this->markRepo->findMarksBySequenceAndClassOrderByStd2($sequences[1], $classroom);
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
+       
+        $i = 1;
+        foreach ($sequences as $seq) {
+            /*******************************************************************************************************************/
+            /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
+            /*******************************************************************************************************************/
+            // CAS DES NOTES SEQUENTIELLES
+            $statement = $connection->prepare(
+                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+                SELECT DISTINCT  eval.id as eval,crs.id as crs, crs.coefficient as coef, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+                FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+                JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+                JOIN  class_room room    ON   eval.class_room_id     =   room.id
+                JOIN  course     crs     ON  eval.course_id      =   crs.id
+                JOIN  attribution att    ON  att.course_id      =   crs.id  
+                JOIN  user  teach        ON  att.teacher_id  =   teach.id
+                JOIN  module     modu    ON  modu.id       =   crs.module_id
+                JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                JOIN  quater   quat      ON  seq.quater_id     =   quat.id
+                JOIN  school_year   year ON  quat.school_year_id     =   year.id
+                WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
+                ORDER BY room.id,modu.id ,  std; "
+            );
 
+
+            $statement->bindValue(2, $room->getId());
+            $statement->bindValue(3, $seq->getId());
+            $statement->bindValue(1, $year->getId());
+            $statement->execute();
+            $i++;
+        }
+       
+        // CAS DES NOTES TRIMESTRIELLES
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   module, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
+            ORDER BY std , module"
+        );
+        $statement->execute();
+        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
+       // $this->snappy->setTimeout(600);
+       // For calculating ranks
+       $statement = $connection->prepare(
+        "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+        SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
+        FROM V_STUDENT_MARK_QUATER 
+        GROUP BY std
+        ORDER BY SUM(value*weight*coef) DESC"
+        );
+        $statement->execute();
+        $quaterAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+        $quaterAvgArray=[];
+        $sumAvg = 0;
+        $rank=0;
+        $rankArray=[];
+        foreach($quaterAvg as $avg){
+            
+            $quaterAvgArray[$avg['std']] = $avg['moyenne'];
+            $rankArray[$avg['std']] = ++$rank;
+            $sumAvg += $avg['moyenne'];
+        }
+       
         $pdf->setTimeout(600);
-        //     if($classroom->getApc()){
-        $html = $this->renderView('classroom/reportcardTrimApc.html.twig', array(
+        // dd($quater);
+        $html = $this->renderView('classroom/newReportcardTrim.html.twig', array(
             'year' => $year,
-            'dataseq1' => $dataSeq1,
-            'dataseq2' => $dataSeq2,
-            'sequence1' => $sequences[0],
-            'sequence2' => $sequences[1],
-            'room' => $classroom,
+            'data' => $dataQuater,
+            'ranks' => $rankArray,
+            'means' => $quaterAvgArray,
+            'genMean' => $sumAvg/sizeof($quaterAvgArray),
+            'room' => $room,
             'quater' => $quater,
-            'avg' => $this->generalQuatAverage($classroom, $quater),
+            'sequences' => $sequences,
             'students' => $studentEnrolled,
 
         ));
-
-        /*  } else {
-        $html = $this->renderView('classroom/reportcardTrim.html.twig', array(
-            'year' => $year,
-            'dataseq1' => $dataSeq1,
-            'dataseq2' => $dataSeq2,
-            'sequence1' => $sequences[0],
-            'sequence2' => $sequences[1],
-            'room' => $classroom,
-            'quater' => $quater,
-            'students' => $studentEnrolled,
-        ));
-   
-         return new PdfResponse(
-            $pdf->getOutputFromHtml($html),
-            200,
-             $classroom->getName() . '.pdf'
-        );  }*/
-
+//dd($html);
         return new Response(
             $pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="' . $classroom->getName() . '.pdf"'
+                'Content-Disposition'   => 'inline; filename="' . $room->getName() . '.pdf"'
             )
         );
         // return new Response($html);

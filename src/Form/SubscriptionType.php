@@ -24,22 +24,21 @@ class SubscriptionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-       
-                $builder
-                       ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'query_builder' => function (StudentRepository $repository) {
-                    return $repository->createQueryBuilder('s')->where('s.enrolled=:er')->setParameter('er', false)->add('orderBy', 's.lastname');
-                } ))
-                ->add('classRoom', EntityType::class, array('class' => ClassRoom::class, 'label' => 'Classe', 'required' => true))
-                ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
-                    return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
-                }))
-             /*   ->add('financeHolder', ChoiceType::class, array(
+
+        $builder
+            ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'query_builder' => function (StudentRepository $repository) {
+                return $repository->createQueryBuilder('s')->where('s.enrolled=:er')->setParameter('er', false)->add('orderBy', 's.lastname');
+            }))
+            ->add('classRoom', EntityType::class, array('class' => ClassRoom::class, 'label' => 'Classe', 'required' => true))
+            ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
+                return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
+            }))
+            /*   ->add('financeHolder', ChoiceType::class, array(
                     'constraints' => new Assert\NotBlank(),
                     'choices' => array(
                         '0' => 'NON',
                         '1' => 'OUI',
-                    ), 'label' => 'Conditions financières'))*/
-        ;
+                    ), 'label' => 'Conditions financières'))*/;
     }
 
     /**

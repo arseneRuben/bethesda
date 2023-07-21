@@ -46,7 +46,6 @@ class SubscriptionController extends AbstractController
      */
     public function indexAction()
     {
-
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $subscriptions = $this->repo->findEnrollementThisYear($year);
         return $this->render('subscription/index.html.twig', compact("subscriptions"));
@@ -62,6 +61,7 @@ class SubscriptionController extends AbstractController
      */
     public function showAction(Subscription $subscription)
     {
+
         return $this->render('subscription/show.html.twig', compact("subscription"));
     }
 

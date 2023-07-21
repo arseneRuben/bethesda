@@ -4,9 +4,10 @@
         <meta charset="utf-8">
         <title>
             Récapitulatif séquentiel
+                    
         </title>
-        <link href="{{ pathToWeb }}/assets/css/pdf.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="{{ pathToWeb }}/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
 
     </head>
     <body>
@@ -16,10 +17,12 @@
                 <b>
                     {% if(room.level.cycle.section.name=="Francophone") %}
                         FICHE ANNUELLE DE NOTES 
+                                                
                         {{ seq.wording }}
                     {% else %}
                         {{ seq.wording }}
                         ANNUAL GRADE SHEET
+                                                                    
                                             
                     {% endif %}
                 </b>
@@ -31,10 +34,12 @@
                         <span>
                             {% if(room.level.cycle.section.name=="Francophone") %}
                                 CLASSE 
-                                                        
+                                                                                        
+                                                            
                             {% else %}
                                 CLASS
-                                                    
+                                                                                    
+                                                            
                             {% endif %}
 
                         </span>
@@ -48,11 +53,13 @@
                         <span>
                             {% if(room.level.cycle.section.name=="Francophone") %}
                                 ANNEE SCOLAIRE &nbsp;   
+                                                                
                                 {{ year }}
                             {% else %}
                                 {{ year }}
                                 &nbsp; SCHOOL YEAR
-                                                    
+                                                                                    
+                                                            
                             {% endif %}
                         </span>
                     </b>
@@ -71,18 +78,20 @@
                                     <span>
                                         <b>
                                             N°    
+                                                                                    
                                         </b>
                                     </span>
                                 </div>
                             </h6>
                         </th>
 
-                        <th>
-                            <div style="text-align:right;">
+                        <th style="width:20%">
+                            <div style="text-align:right; ">
                                 <h6>
                                     <span>
                                         <b>
                                             NOMS    
+                                                                                    
                                         </b>
                                     </span>
                                 </div>
@@ -97,8 +106,10 @@
                                         <span>
                                             <b>
                                                 &nbsp;&nbsp;&nbsp; 
+                                                                                                
                                                 {{ course.wording }}
                                                 &nbsp;&nbsp;&nbsp; 
+                                                                                            
                                             </b>
                                         </span>
                                     </div>
@@ -107,33 +118,33 @@
                             {% endfor %}
                         {% endfor %}
 
-                        <th class="rotate">
-                            <div>
-                                <span>
-                                    <b>
-                                        &nbsp;&nbsp;&nbsp;TOTAL&nbsp;&nbsp;&nbsp;
-                                    </b>
-                                </span>
-                            </div>
-                        </th>
-                        <th class="rotate">
-                            <div>
-                                <span>
-                                    <b>
-                                        &nbsp;&nbsp;&nbsp;MOYENNE&nbsp;&nbsp;&nbsp;
-                                    </b>
-                                </span>
-                            </div>
-                        </th>
-                        <th class="rotate">
-                            <div>
-                                <span>
-                                    <b>
-                                        &nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;
-                                    </b>
-                                </span>
-                            </div>
-                        </th>
+                    {# <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;TOTAL&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;MOYENNE&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>#}
                     </tr>
                 </thead>
                 <tbody>
@@ -147,14 +158,18 @@
                                     {{ std.lastname }}
                                 </b>
                                 ( 
+                                                                
                                 {% if std.gender ==0 %}
                                     M
-                                                                      
+                                                                                                          
+                                                                    
                                 {% else %}
                                     F
-                                                                     
+                                                                                                         
+                                                                    
                                 {% endif %}
                                 )
+                                                                                            
                                                             
                             </td>
 
@@ -164,9 +179,9 @@
 
                                 {% endfor %}
                             {% endfor %}
-                            <td class="total"></td>
-                            <td class="total"></td>
-                            <td class="total"></td>
+                        {#<td class="total"></td>
+                                                    <td class="total"></td>
+                                                    <td class="total"></td>#}
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -174,17 +189,21 @@
             <div id="notices">
                 <div>
                     NB:
+                                    
                 </div>
                 <div class="notice">
                     Chaque élève est tenu de vérifier la conformité des informations ci dessus mentionnées et en cas de problème, se rapprocher l'enseignant. 
+                                    
                 </div>
                 <div class="notice">
                     Délai : Une semaine à compter de la date d'affichage  
+                                    
                 </div>
             </div>
         </main>
         <footer>
             Fiche de procès verbal
+                                
                     
         </footer>
     </body>

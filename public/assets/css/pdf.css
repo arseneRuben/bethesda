@@ -1,0 +1,10 @@
+td {
+  border: 1px solid black;
+  text-align: center;
+}
+th.rotate {
+  transform: rotate(-90deg);
+  text-align: center;
+}
+td.total {
+}

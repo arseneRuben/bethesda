@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Entity\User;
 use App\Entity\Course;
-use App\Entity\Domain;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\DomainRepository;
 use Doctrine\Common\Collections\Collection;

@@ -42,11 +42,6 @@ class Quater
     {
         return $this->id;
     }
-
-   
-
-   
-
     public function getSchoolYear(): ?SchoolYear
     {
         return $this->schoolYear;

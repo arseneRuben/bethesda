@@ -36,6 +36,7 @@ class Subscription
      */
     private $schoolYear;
 
+  
     /**
      * @ORM\Column(type="boolean")
      */

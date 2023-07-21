@@ -11,17 +11,17 @@ use Doctrine\Persistence\ObjectManager;
 use App\Repository\EvaluationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Persistence\ObjectManagerAware;
+
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity(repositoryClass=EvaluationRepository::class)
  */
-class Evaluation  implements ObjectManagerAware
+class Evaluation 
 {
     use TimeStampable;
 
-    public const NUM_ITEMS_PER_PAGE = 15;
+    public const NUM_ITEMS_PER_PAGE = 20;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

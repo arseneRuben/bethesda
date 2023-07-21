@@ -8,8 +8,11 @@ use App\Repository\StudentRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\SequenceRepository;
 use App\Repository\MarkRepository;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use App\Repository\SchoolYearRepository;
 use App\Repository\SubscriptionRepository;
+use App\Repository\QuaterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,9 +36,10 @@ class StudentController extends AbstractController
     private $subRepo;
     private $markRepo;
     private $evalRepo;
+    private $qtRepo;
+    private  $snappy;
 
-
-    public function __construct(EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo)
+    public function __construct(EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -44,6 +48,8 @@ class StudentController extends AbstractController
         $this->seqRepo = $seqRepo;
         $this->evalRepo = $evalRepo;
         $this->subRepo = $subRepo;
+        $this->qtRepo = $qtRepo;
+        $this->snappy = $snappy;
     }
 
     /**
@@ -74,45 +80,56 @@ class StudentController extends AbstractController
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
+        $results['student'] = $student;
+        $results['cours'] = null;
+        $results['session1'] = null;
+        $results['session2'] = null;
+        $results['session3'] = null;
+        $results['session4'] = null;
+        $results['session5'] = null;
+        $results['session6'] = null;
 
         $evals = [];
         $evalSeqs = [];
         $seqs = $this->seqRepo->findSequenceThisYear($year);
-        foreach ($seqs as $seq) {
+        if ($sub != null) {
+            //  dd($seqs);
+            foreach ($seqs as $seq) {
 
-            $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $sub->getClassRoom(), "sequence" => $seq));
-        }
-
-        $courses = [];
-        $averageSeqs = [];
-        // Traitements de donnees pour les graphes
-        foreach ($evalSeqs[$seq->getId()] as $eval) {
-            $courses[] = $eval->getCourse()->getWording();
-        }
-
-        foreach ($seqs as $seq) {
-            $average = [];
-            foreach ($evalSeqs[$seq->getId()]  as $eval) {
-                if ($this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval)))
-                    $average[] = $this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval))->getValue();
+                $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $sub->getClassRoom(), "sequence" => $seq));
             }
 
-            $averageSeqs[$seq->getId()] = $average;
+            $courses = [];
+            $averageSeqs = [];
+            // Traitements de donnees pour les graphes
+
+            foreach ($evalSeqs[$seq->getId()] as $eval) {
+                $courses[] = $eval->getCourse()->getWording();
+            }
+
+            foreach ($seqs as $seq) {
+                $average = [];
+                foreach ($evalSeqs[$seq->getId()]  as $eval) {
+                    if ($this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval)))
+                        $average[] = $this->markRepo->findOneBy(array("student" => $student, "evaluation" => $eval))->getValue();
+                }
+
+                $averageSeqs[$seq->getId()] = $average;
+            }
+
+
+            $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
+            // dd($filename);
+            $file_exists = file_exists($filename);
+            // dd($file_exists);
+
+            $results['file_exists'] = $file_exists;
+            $results['cours'] = json_encode($courses);
+
+            foreach ($seqs as $seq) {
+                $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
+            }
         }
-
-        $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
-        // dd($filename);
-        $file_exists = file_exists($filename);
-        // dd($file_exists);
-        $results['student'] = $student;
-        $results['file_exists'] = $file_exists;
-        $results['cours'] = json_encode($courses);
-
-        foreach ($seqs as $seq) {
-            $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
-        }
-
-
         return $this->render('student/show.html.twig', $results);
     }
 
@@ -181,5 +198,164 @@ class StudentController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_students');
+    }
+
+
+    /**
+     * Finds and displays a ClassRoom entity.
+     *
+     * @Route("/{id}/reportCardTrim", name="admin_students_reportcards_quat", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function reporCardTrimAction(Student $std)
+    {
+
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $quater = $this->qtRepo->findOneBy(array("activated" => true));
+        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        $data1 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[0], $sub->getClassRoom(), $std);
+        dump($data1);
+
+
+        $data2 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[1], $sub->getClassRoom(), $std);
+        dump($data2);
+        die();
+        //$this->get('knp_snappy.pdf')->setTimeout(600);
+        $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
+            'year' => $year,
+            'std' => $std,
+            'room' => $sub->getClassRoom(),
+            'dataseq1' => $data1,
+            'dataseq2' => $data2,
+            'quater' => $quater
+        ));
+        // return new Response($html);
+        return new Response(
+            $this->snappy->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $std->getMatricule() . '.pdf"',
+            )
+        );
+    }
+
+    /**
+     * Finds and displays a ClassRoom entity.
+     *
+     * @Route("/{id}/reportCardYear", name="admin_students_reportcards_year", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function reporCardYear(Student $std)
+    {
+        $connection = $this->em->getConnection();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $sequences = $this->seqRepo->findSequenceThisYear($year);
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+
+        $i = 1;
+        foreach ($sequences as $seq) {
+            /*******************************************************************************************************************/
+            /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE L'ELEVE**************/
+            /*******************************************************************************************************************/
+            // CAS DES NOTES SEQUENTIELLES
+            $statement = $connection->prepare(
+                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+                    SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year,  teach.id as teacher    , modu.id as module,m.value as value, m.weight as weight
+                    FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+                    JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+                    JOIN  class_room room    ON   eval.class_room_id     =   room.id
+                    JOIN  course     crs     ON  eval.course_id      =   crs.id
+                    JOIN  attribution att    ON  att.course_id      =   crs.id
+                    JOIN  user  teach ON  att.teacher_id  =   teach.id
+                    JOIN  module     modu    ON  modu.id       =   crs.module_id
+                    JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                    JOIN  quater   quat     ON  seq.quater_id     =   quat.id
+                    JOIN  school_year   year ON  quat.school_year_id     =   year.id
+                    WHERE   std.id = ? AND  room.id = ? AND eval.sequence_id =?
+                    ORDER BY crs.id; "
+            );
+
+            $statement->bindValue(1, $std->getId());
+            $statement->bindValue(2, $sub->getClassRoom()->getId());
+            $statement->bindValue(3, $seq->getId());
+            $statement->execute();
+            $i++;
+        }
+        // CAS DES NOTES TRIMESTRIELLES
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER1 AS
+            SELECT DISTINCT    seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  
+            ON  (seq1.crs = seq2.crs)
+            ORDER BY seq1.crs"
+        );
+        $statement->execute();
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER2 AS
+            SELECT DISTINCT    seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ3 seq1
+            JOIN  V_STUDENT_MARK_SEQ4 seq2  
+            ON  (seq1.crs = seq2.crs)
+            ORDER BY seq1.crs"
+        );
+        $statement->execute();
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER3 AS
+            SELECT DISTINCT    seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ5 seq1
+            JOIN  V_STUDENT_MARK_SEQ6 seq2  
+            ON  (seq1.crs = seq2.crs)
+            ORDER BY seq1.crs"
+        );
+        $statement->execute();
+
+        // CAS DES NOTES ANNUELLES
+
+        $statement = $connection->prepare(
+            "CREATE OR REPLACE VIEW ANNUAL_DATA AS
+            SELECT DISTINCT 
+            course.wording as course, course.coefficient as coef, 
+            module.name as module,
+            user.full_name as teacher,
+            quat1.value as value1, quat1.weight as weight1,  
+            quat2.value as value2,  quat2.weight as weight2,  
+            quat3.value as value3,quat3.weight as weight3,
+            ( quat1.value*quat1.weight+ quat2.value*quat2.weight + quat3.value*quat3.weight) /(quat1.weight+quat2.weight+quat3.weight) as value
+             
+            FROM V_STUDENT_MARK_QUATER1  quat1 
+            JOIN  class_room ON class_room.id = quat1.room
+            JOIN  course    ON course.id = quat1.crs
+            JOIN  module    ON course.module_id = quat1.modu
+            JOIN user ON user.id = quat1.teacher
+            JOIN   V_STUDENT_MARK_QUATER2   quat2  ON   quat1.crs = quat2.crs
+            JOIN 
+            V_STUDENT_MARK_QUATER3   quat3  ON  quat2.crs = quat3.crs
+            ORDER BY  module
+            "
+        );
+        $statement->execute();
+
+        $dataYear = $connection->executeQuery("SELECT *  FROM ANNUAL_DATA ")->fetchAll();
+
+        $html = $this->renderView('student/reportcardYearApc.html.twig', array(
+            'year' => $year,
+            'data' => $dataYear,
+            'std'  => $std,
+            'room' => $sub->getClassRoom()
+        ));
+
+        return new Response(
+            $this->snappy->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $std->getMatricule() . '.pdf"',
+            )
+        );
     }
 }

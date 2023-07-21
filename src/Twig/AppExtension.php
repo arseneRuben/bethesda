@@ -20,6 +20,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('pluralize', [$this, 'pluralize']),
+            new TwigFunction('get_env', [$this, 'getEnvironmentVariable']),
         ];
     }
 
@@ -27,5 +28,18 @@ class AppExtension extends AbstractExtension
     {
         $plu ??= $sing . 's' ;
         return $count == 1 ? "$count $sing"  :  "$count $plu" ;
+    }
+
+   
+    
+    /**
+     * Return the value of the requested environment variable.
+     * 
+     * @param String $varname
+     * @return String
+     */
+    public function getEnvironmentVariable($varname)
+    {
+        return $_ENV[$varname];
     }
 }

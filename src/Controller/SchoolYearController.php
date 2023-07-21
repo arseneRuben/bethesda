@@ -52,6 +52,16 @@ class SchoolYearController extends AbstractController
      */
     public function showAction(SchoolYear $school_year)
     {
+        if ($school_year->getActivated()) {
+            foreach ($school_year->getSubscriptions() as $sub) {
+                // var_dump($school_year);
+                // die();
+                if ($sub->getStudent() != null)
+                    var_dump($sub);
+
+                // $sub->getStudent()->setEnrolled(true);
+            }
+        }
 
         return $this->render('school_year/show.html.twig', compact("school_year"));
     }

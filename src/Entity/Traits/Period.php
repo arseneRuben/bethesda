@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity\Traits;
-
 trait Period  {
 
 
@@ -85,6 +84,8 @@ trait Period  {
     {
         return $this->activated;
     }
+
+   
 
     public function setActivated(bool $activated): self
     {

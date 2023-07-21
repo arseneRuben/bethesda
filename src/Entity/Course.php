@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\Evaluation;
 use App\Entity\Attribution;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,19 +50,29 @@ class Course
     /**
      * @ORM\Column(type="boolean")
      */
-    private $attributed=false;
+    private $attributed = false;
 
     /**
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="course")
      */
     private $evaluations;
 
-      /**
+    /**
      * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="course",cascade={"persist"})    
      * @ORM\JoinColumn(nullable=true)
      *    
      * */
     private $attributions;
+
+    public function currentTeacher()
+    {
+
+        $teacher = null;
+        if (!$this->attributions->isEmpty()) {
+            $teacher = $this->attributions->last()->getTeacher();
+        }
+        return $teacher;
+    }
 
     public function __construct()
     {
@@ -74,25 +85,26 @@ class Course
         return $this->id;
     }
 
-    public function __toString() {
-        $domain= ( is_null($this->getDomain())) ? "" : $this->getDomain();
-       $wording= ( is_null($this->getWording())) ? "" : $this->getWording();
-        $code = ( is_null($this->getCode())) ? "" : $this->getCode();
-       return (string) ($domain."/" .$code."_".$wording );
-   }
+    public function __toString()
+    {
+        $domain = (is_null($this->getDomain())) ? "" : $this->getDomain();
+        $wording = (is_null($this->getWording())) ? "" : $this->getWording();
+        $code = (is_null($this->getCode())) ? "" : $this->getCode();
+        return (string) ($domain . "/" . $code . "_" . $wording);
+    }
 
 
-   public function getCoefficient(): ?int
-   {
-       return $this->coefficient;
-   }
+    public function getCoefficient(): ?int
+    {
+        return $this->coefficient;
+    }
 
-   public function setCoefficient(int $coefficient): self
-   {
-       $this->coefficient = $coefficient;
+    public function setCoefficient(int $coefficient): self
+    {
+        $this->coefficient = $coefficient;
 
-       return $this;
-   }
+        return $this;
+    }
     public function getDomain(): ?Domain
     {
         return $this->domain;
@@ -129,7 +141,7 @@ class Course
         return $this;
     }
 
- 
+
 
     public function getCode(): ?string
     {
@@ -185,7 +197,7 @@ class Course
     }
 
 
-   
+
     public function addAttribution(Attribution $attribution)
     {
         $this->attributions[] = $attribution;

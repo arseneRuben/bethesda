@@ -1,11 +1,17 @@
 twig:
-    default_path: '%kernel.project_dir%/templates'
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
-    exception_controller: null
-    globals:
-        #software_name : '%software_name%'
-        #commercial_name : '%commercial_name%'
-        pathToWeb: "%kernel.project_dir%/public"
-    form_themes:
-
+  default_path: "%kernel.project_dir%/templates"
+  debug: "%kernel.debug%"
+  strict_variables: "%kernel.debug%"
+  exception_controller: null
+  globals:
+    #software_name : '%software_name%'
+    #commercial_name : '%commercial_name%'
+    pathToWeb: "%kernel.project_dir%/public"
+    imagePath: "assets/images/student/"
+    sess1_color: #33FF86
+    sess2_color: #33FFEC
+    sess3_color: #33ACFF
+    sess4_color: #3346FF
+    sess5_color: #FF5733
+    sess6_color: #EC33FF
+  form_themes:

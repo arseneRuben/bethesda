@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+          <link rel="icon" type="image/ico" href="{{  absolute_url(asset('favicon.jpg'))}}" {# href="{{ asset('favicon.jpg')}}"#}  />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+        <title>
+            {% if room.level.cycle.section.name == "Francophone" %}
+                Bulletins trimestriel
+                                			
+                            
+            {% else %}
+                Quaterly reportcard
+                                			
+                            
+            {% endif %}
+            {{ room.name }}
+        </title>
+    </head>
+
+    <body style="font-family:  times, serif;">
+           
+
+ 
+        <script type="text/javascript" src="{{ absolute_url(asset('assets/js/jquery-3.1.1.js'))}}"></script>
+        <script type="text/javascript" src="{{ absolute_url(asset('assets/js/repportCard.js'))}}"></script>
+    </body>
+</html>

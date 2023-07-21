@@ -1,59 +1,90 @@
 {% extends 'layout/backEndLayout.html.twig' %}
-{% block title %}Présentation de l̀annee scolaire - {{ parent() }}{% endblock %}
+{% block title %}
+    Présentation de l̀annee scolaire -
+        	
+        
+    {{ parent() }}
+{% endblock %}
 
 {% block content %}
-            
-            
-            <div class="row mt-3">
 
-                    <div class="col-lg-2" >
-                        <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_students') }}">
-                                <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
-                            </a>
-                           
-                        </div>
-                        
-                          <img src="{{ (student.imageName ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{  student.lastname }}"  class="w-100">
+    <div class="row mt-3">
 
-		
+        <div class="col-lg-2">
+            <div class="btn-group record_actions  m-2">
+                <a class="btn btn-info" href="{{ path('admin_students') }}">
+                    <i class="fa fa-list"></i>
+                    {{ 'Back to the list'|trans({}, 'admin') }}
+                </a>
+
+            </div>
+
+            <img src="{{ (student.imageName ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100"></div>
+            <div class="col-lg-10 card">
+
+                <article class="p-3">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                            Identite  de l eleve
+                                                        					
+                                                    
+                        </h4>
                     </div>
-                    <div class="col-lg-10 card">
-                    
-				    <article  class="p-3" >
-                     <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Identite  de l eleve  </h4>
-                                  </div>
-                        <div class="container">
+                    <div class="container">
                         <div class="card-deck mb-3 text-center">
                             <table class="table table-hover record_properties center">
-                         
+
                                 <tbody>
 
                                     <tr>
-                                        <th scope="row">Matricule</th>
-                                        <td>{{ student.matricule }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Nom</th>
-                                        <td>{{ student.lastName }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Prénom</th>
-                                        <td>{{ student.firstName }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Sexe</th>
+                                        <th scope="row">
+                                            Matricule
+                                                                                    
+                                        </th>
                                         <td>
-                                            {% if student.gender  %}
+                                            {{ student.matricule }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Nom
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.lastName }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Prénom
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.firstName }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Sexe
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {% if student.gender %}
                                                 F
+                                                                                                										
+                                                                                            
                                             {% else %}
                                                 M
+                                                                                                										
+                                                                                            
                                             {% endif %}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Date de naissace</th>
+                                        <th scope="row">
+                                            Date de naissace
+                                                                                    
+                                        </th>
                                         <td>
                                             {% if student.birthday %}
                                                 {{ student.birthday|date('Y-m-d') }}
@@ -61,121 +92,217 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Lieu de naissance</th>
-                                        <td>{{ student.birthplace }}</td>
+                                        <th scope="row">
+                                            Lieu de naissance
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.birthplace }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Père</th>
-                                        <td>{{ student.fatherName }}</td>
+                                        <th scope="row">
+                                            Père
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.fatherName }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Mère</th>
-                                        <td>{{ student.motherName }}</td>
+                                        <th scope="row">
+                                            Mère
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.motherName }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Contact 1</th>
-                                        <td>{{ student.primaryContact }}</td>
+                                        <th scope="row">
+                                            Contact 1
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.primaryContact }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Contact 2</th>
-                                        <td>{{ student.secondaryContact }}</td>
+                                        <th scope="row">
+                                            Contact 2
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.secondaryContact }}
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Maladie particulière</th>
-                                        <td>{{ student.particularDisease }}</td>
+                                        <th scope="row">
+                                            Maladie particulière
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.particularDisease }}
+                                        </td>
                                     </tr>
 
                                     <tr>
-                                        <th scope="row">Autres</th>
-                                        <td>{{ student.otherInformations }}</td>
+                                        <th scope="row">
+                                            Autres
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.otherInformations }}
+                                        </td>
                                     </tr>
-                                     <tr>
-                                        <th scope="row">Photo d identite</th>
-                                        <td>{{ student.imageName }}</td>
+                                    <tr>
+                                        <th scope="row">
+                                            Photo d identite
+                                                                                    
+                                        </th>
+                                        <td>
+                                            {{ student.imageName }}
+                                        </td>
                                     </tr>
-                                    
+
                                 </tbody>
                             </table>
-                            <div class=" ">			
-                                <a class="btn btn-outline-warning" href="{{path('admin_students_edit', {id: student.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
-                                <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
-                                <form id="js-student-delete-form" action="{{path('admin_students_delete', {id: student.id})}}" method="post" style="display: none;">
+                            <div class=" ">
+
+                                <a class="btn btn-outline-file" href="{{ path('admin_students_reportcards_quat', {id: student.id}) }}">
+                                    <i class="fa fa-file"></i>
+                                    Bull Trim
+                                                                        							
+                                                                    
+                                </a>
+                                |
+                                                                							
+                                                                
+                                <a class="btn btn-warning" href="{{ path('admin_students_reportcards_year', {id: student.id}) }}">
+                                    <i class="fa fa-file"></i>
+                                    Bull Ann
+                                                                        													
+                                                                        							
+                                                                    
+                                </a>
+                                |
+                                                                							
+                                                                
+                                <a class="btn btn-outline-warning" href="{{ path('admin_students_edit', {id: student.id}) }}">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    Edit
+                                                                        							
+                                                                    
+                                </a>
+                                |
+                                                                							
+                                                                
+                                <a class="btn btn-outline-danger" href="#" onclick="event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();">
+                                    <i class="fa fa-trash"></i>
+                                    Delete
+                                                                        							
+                                                                    
+                                </a>
+
+                                <form id="js-student-delete-form" action="{{ path('admin_students_delete', {id: student.id}) }}" method="post" style="display: none;">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
-                                    <input type="hidden" name="_method" value="DELETE">
-
-                                </form>
+                                        <input type="hidden" name="_method" value="DELETE"></form>
+                                    </div>
+                                </div>
                             </div>
-                         </div>
-                        </div>
-                     </article>
-                </div>      
-            </div>
-           			
-             <div class="row jumbotron">
-               <div class="col-lg-2" >
-               </div>
-                <div class="col-lg-10">
-                <br/>
-                <br/>
-                    <div class="text-center">
-                        <h2>
-                            Scolarité-Versements éffectués pour l'élève
-                        </h2>
+                        </article>
                     </div>
-                    <table class="table table-striped table-hover table-bordered records_list center">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date
-                                </th>
-                                <th scope="col">Montant
-                                </th>
+                </div>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if(student.payments) %}
-                                {% set total =0 %}
-                                {% for p in student.payments %}
-                                    <tr>
-                                        <td>
-                                            {% if p.instant %}
-                                                {{ p.instant|date('Y-m-d') }}
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ p.amount }}</td>
-
-                                    </tr>
-                                    {% set total = total + p.amount %}
-                                {% endfor %}
+                <div class="row jumbotron">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-10">
+                        <br/>
+                        <br/>
+                        <div class="text-center">
+                            <h2>
+                                Scolarité-Versements éffectués pour l'élève
+                                                                				
+                                                            
+                            </h2>
+                        </div>
+                        <table class="table table-striped table-hover table-bordered records_list center">
+                            <thead>
                                 <tr>
-                                    <td class="center">
-                                        <b>Total</b>
-                                    </td>
-                                    <td>{{ total }}</td>
+                                    <th scope="col">
+                                        Date
+                                                                                						
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Montant
+                                                                                						
+                                                                            
+                                    </th>
+
                                 </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% if(student.payments) %}
+                                    {% set total =0 %}
+                                    {% for p in student.payments %}
+                                        <tr>
+                                            <td>
+                                                {% if p.instant %}
+                                                    {{ p.instant|date('Y-m-d') }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ p.amount }}
+                                            </td>
+
+                                        </tr>
+                                        {% set total = total + p.amount %}
+                                    {% endfor %}
+                                    <tr>
+                                        <td class="center">
+                                            <b>
+                                                Total
+                                                                                            
+                                            </b>
+                                        </td>
+                                        <td>
+                                            {{ total }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-             </div>
-            <div class="row jumbotron">
-                <div class="col-lg-2" >
-                </div>
-                <div class="col-lg-10">
+                <div class="row jumbotron">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-10">
                         <div class="text-center">
                             <h2>
                                 Ancienneté de l'élève
+                                                                				
+                                                            
                             </h2>
                         </div>
                         <table class="table table-striped table-hover table-bordered records_list center">
                             <thead>
                                 <tr>
 
-                                    <th scope="col">Date d'inscription
+                                    <th scope="col">
+                                        Date d'inscription
+                                                                                						
+                                                                            
                                     </th>
-                                    <th scope="col">Année
+                                    <th scope="col">
+                                        Année
+                                                                                						
+                                                                            
                                     </th>
-                                    <th scope="col">Classe
+                                    <th scope="col">
+                                        Classe
+                                                                                						
+                                                                            
                                     </th>
 
                                 </tr>
@@ -190,10 +317,12 @@
                                                     {{ s.createdAt|date('Y-m-d H:m:s') }}
                                                 {% endif %}
                                             </td>
-                                            <td>{{ s.schoolYear.wording }}</td>
                                             <td>
-                                                <a  href="{{path('admin_classrooms_show', {id: s.classRoom.id})}}"> 
-                                                 {{ s.classRoom.name }}
+                                                {{ s.schoolYear.wording }}
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('admin_classrooms_show', {id: s.classRoom.id}) }}">
+                                                    {{ s.classRoom.name }}
                                                 </a>
                                             </td>
 
@@ -204,50 +333,63 @@
                                 {% endif %}
                             </tbody>
                         </table>
-                         <article  class="p-3" >
+                        <article class="p-3">
+
                             <canvas id="myChart" width="600" height="200"></canvas>
-                        </article >
+
+                        </article>
+                    </div>
+
                 </div>
-                
-            </div>
 
-
-{% endblock %}
-{% block javascripts %}
-						{{parent()}}
-            <script type="text/javascript">
-                        let myChart = document.querySelector("#myChart");
-                        let graph = new Chart(myChart, {
-                            type:"bar",
-                            data : {
-                                labels: {{cours|raw}},
-                                datasets: [{
-                                    label:"Session 1",
-                                    data: {{session1|raw}},
-                                    fill:false,
-                                    backgroundColor: "#e8c3b9"
-                                },
-                                {
-                                    label:"Session 2",
-                                    data: {{session2|raw}},
-                                    fill:false,
-                                     backgroundColor: "#8e5ea2"
-                                },
-                                 {
-                                    label:"Session 3",
-                                    data: {{session3|raw}},
-                                    fill:false,
-                                     backgroundColor: "#fcba03"
-                                },
-                                 {
-                                    label:"Session 4",
-                                    data: {{session4|raw}},
-                                    fill:false,
-                                     backgroundColor: "#4263f5"
-                                },
-                                
-                                ]
-                            }
-                        })
-            </script>
-{% endblock %}
+            {% endblock %}
+            {% block javascripts %}
+                {{ parent() }}
+                <script type="text/javascript">
+		let myChart = document.querySelector("#myChart");
+let graph = new Chart(myChart, {
+type: "bar",
+data: {
+labels: {{ cours|raw }},
+datasets: [
+{
+label: "Session 1",
+data: {{ session1|raw }},
+fill: false,
+backgroundColor: "#e8c3b9"
+},
+{
+label: "Session 2",
+data: {{ session2|raw }},
+fill: false,
+backgroundColor: "#8e5ea2"
+},
+{
+label: "Session 3",
+data: {{ session3|raw }},
+fill: false,
+backgroundColor: "#fcba03"
+},
+{
+label: "Session 4",
+data: {{ session4|raw }},
+fill: false,
+backgroundColor: "#4263f5"
+}  
+]
+}
+})
+	</script>
+            {#, {
+                                label: "Session 5",
+                                data: {{ session5|raw }},
+                                fill: false,
+                                backgroundColor: "#6da832"
+                                }, {
+                                label: "Session 6",
+                                data: {{ session6|raw }},
+                                fill: false,
+                                backgroundColor: "#32a852"
+                                } #}
+            {% endblock %}
+            

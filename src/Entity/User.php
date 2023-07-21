@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Entity;
-use App\Entity\Payment;
-use App\Entity\Subscription;
+use App\Entity\Domain;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
 use App\Entity\Traits\TimeStampable;
-//use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+
 //use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\Traits\HasUploadableField;
+use App\Repository\AttributionRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -522,7 +522,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return User
      */
-    public function setDomain(\App\Entity\Domain $domain = null) {
+    public function setDomain(Domain $domain = null) {
         $this->domain = $domain;
 
         return $this;
@@ -860,12 +860,17 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         if ($this->attributions->removeElement($attribution)) {
             // set the owning side to null (unless already changed)
             if ($attribution->getTeacher() === $this) {
-                $attribution->setTeacher(null);
+                 
             }
         }
 
         return $this;
     }
 
+    public function getUserIdentifier() {
+      return $this->getEmail();
+    }
+
+  
 
 }

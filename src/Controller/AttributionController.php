@@ -48,6 +48,8 @@ class AttributionController extends AbstractController
         //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
             'entities' => $entities,
+            'year' => $year,
+
         ));
     }
 
@@ -110,16 +112,18 @@ class AttributionController extends AbstractController
      */
     public function createAction(Request $request)
     {
-        if (!$this->getUser()) {
+       /* if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
-        }
+        }*/
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
+        
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $year = $this->scRepo->findOneBy(array("activated" => true));
             $attribution->setSchoolYear($year);
+            $attribution->getCourse()->setAttributed(true);
             $this->em->persist($attribution);
             $this->em->flush();
 

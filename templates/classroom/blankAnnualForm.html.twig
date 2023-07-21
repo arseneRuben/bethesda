@@ -4,9 +4,10 @@
         <meta charset="utf-8">
         <title>
             Fiche annuelle de notes
+                    
         </title>
-        <link href="{{ pathToWeb }}/assets/css/pdf.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="{{ pathToWeb }}/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
     </head>
     <body>
         <header class="clearfix">
@@ -14,9 +15,11 @@
                 <b>
                     {% if(room.level.cycle.section.name=="Francophone") %}
                         FICHE ANNUELLE DE NOTES 
-                                                
+                                                                        
+                                            
                     {% else %}
                         ANNUAL GRADE SHEET
+                                                                    
                                             
                     {% endif %}
                 </b>
@@ -27,10 +30,12 @@
                         <span>
                             {% if(room.level.cycle.section.name=="Francophone") %}
                                 CLASSE 
-                                                        
+                                                                                        
+                                                            
                             {% else %}
                                 CLASS
-                                                    
+                                                                                    
+                                                            
                             {% endif %}
                         </span>
                         {{ room.name }}
@@ -43,11 +48,13 @@
                         <span>
                             {% if(room.level.cycle.section.name=="Francophone") %}
                                 ANNEE SCOLAIRE &nbsp;   
+                                                                
                                 {{ year }}
                             {% else %}
                                 {{ year }}
                                 &nbsp; SCHOOL YEAR
-                                                    
+                                                                                    
+                                                            
                             {% endif %}
                         </span>
                     </b>
@@ -64,6 +71,7 @@
                                     <span>
                                         <b>
                                             N°    
+                                                                                    
                                         </b>
                                     </span>
                                 </div>
@@ -76,10 +84,12 @@
                                         <b>
                                             {% if(room.level.cycle.section.name=="Francophone") %}
                                                 NOM(S)
-                                                                        
+                                                                                                                        
+                                                                                            
                                             {% else %}
                                                 SECOND NAME(S)
-                                                                    
+                                                                                                                    
+                                                                                            
                                             {% endif %}
                                         </b>
                                     </span>
@@ -93,10 +103,12 @@
                                         <b>
                                             {% if(room.level.cycle.section.name=="Francophone") %}
                                                 PRENOMS(S)
-                                                                        
+                                                                                                                        
+                                                                                            
                                             {% else %}
                                                 FIRSTNAME(S)
-                                                                    
+                                                                                                                    
+                                                                                            
                                             {% endif %}
                                         </b>
                                     </span>
@@ -106,13 +118,16 @@
                         {% for i in 1..6 %}
                             <td class="total">
                                 DP
+                                                            
                             </td>
                             <td class="total">
                                 DA
+                                                            
                             </td>
                             <td border="medium" class="qty">
                                 <b>
                                     EVAL 
+                                                                        
                                     {{ i }}
                                 </b>
                             </td>
@@ -147,6 +162,7 @@
         </main>
         <footer>
             Fiche annuelle de report de notes
+                                
                     
         </footer>
     </body>
