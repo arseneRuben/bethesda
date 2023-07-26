@@ -24,4 +24,4 @@
 ###< liip/imagine-bundle ###
 
 ### Image of students ###
-/public/assets/images
+/public/assets/images/student/*
