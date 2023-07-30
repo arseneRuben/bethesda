@@ -169,20 +169,6 @@ class ClassRoom
         return $this->subscriptions;
     }
 
-    public function injectObjectManager(
-        ObjectManager $objectManager,
-        ClassMetadata $classMetadata
-    ) {
-        $this->em = $objectManager;
-    }
-
-
-    public function getCurrentYearSubscriptions()
-    {
-        $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
-        $subscriptions  = $this->em->getRepository(Subscription::class)->findBy(array("schoolYear" => $year, "classRoom" => $this));
-        return $subscriptions;
-    }
 
     public function addSubscription(Subscription $subscription): self
     {
