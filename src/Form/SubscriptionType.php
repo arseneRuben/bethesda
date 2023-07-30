@@ -33,12 +33,17 @@ class SubscriptionType extends AbstractType
             ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
                 return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
             }))
-            /*   ->add('financeHolder', ChoiceType::class, array(
-                    'constraints' => new Assert\NotBlank(),
-                    'choices' => array(
-                        '0' => 'NON',
-                        '1' => 'OUI',
-                    ), 'label' => 'Conditions financières'))*/;
+            ->add('officialExamResult', ChoiceType::class, array(
+                'constraints' => new Assert\NotBlank(),
+                'choices' => array(
+                    'ECHEC'         => '0',
+                    'PASSABLE'      => '1p',
+                    'ASSEZ-BIEN'    => '1a',
+                    'BIEN'          => '1b',
+                    'TRES-BIEN'     => '1t',
+                    'EXCELLENT'     => '1e',
+                ), 'label' => 'Resultat a l\'examen officiel'
+            ));
     }
 
     /**

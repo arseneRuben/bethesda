@@ -123,6 +123,10 @@ class Subscription
         return $this->officialExamResult;
     }
 
+    public function getVerbalResult()
+    {
+    }
+
     public function setOfficialExamResult(?string $officialExamResult): static
     {
         $this->officialExamResult = $officialExamResult;
