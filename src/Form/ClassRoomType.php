@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\ClassRoom;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,10 +14,9 @@ class ClassRoomType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('apc')
+            ->add('apc', CheckboxType::class, array('label' => 'Classe d\'examen ?'))
             ->add('level')
-            ->add('fullTeacher')
-        ;
+            ->add('fullTeacher');
     }
 
     public function configureOptions(OptionsResolver $resolver)
