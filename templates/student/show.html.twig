@@ -331,11 +331,12 @@
                                                 </a>
                                             </td>
                                              <td>
-                                                 {% if(s.classRoom.apc) %}
+                                                
                                                     <a href="{{ path('admin_subscriptions_show', {id: s.id}) }}">
-                                                        {{ s.verbalOfficialExamResult }}
+                                                    
+                                                        {{ s.verbalOfficialExamResult }}{% if(s.classRoom.apc) %} (Examen officiel)  {% endif %}
                                                     </a>
-                                                 {% endif %}
+                                                
                                             </td>
 
                                         </tr>

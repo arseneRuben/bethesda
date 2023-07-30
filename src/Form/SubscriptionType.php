@@ -42,6 +42,11 @@ class SubscriptionType extends AbstractType
                     'BIEN'          => '1b',
                     'TRES-BIEN'     => '1t',
                     'EXCELLENT'     => '1e',
+                    '5 POINTS'      => 'A',
+                    '4 POINTS'      => 'B',
+                    '3 POINTS'      => 'C',
+                    '2 POINTS'      => 'D',
+                    '1 POINTS'      => 'E',
                 ), 'label' => 'Resultat a l\'examen officiel'
             ));
     }
