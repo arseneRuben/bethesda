@@ -26,7 +26,7 @@ use App\Entity\SchoolYear;
 use App\Form\ClassRoomType;
 use App\Entity\Sequence;
 use App\Entity\Quater;
-
+use App\Repository\SubscriptionRepository;
 
 /**
  * ClassRoom controller.
@@ -39,13 +39,14 @@ class ClassRoomController extends AbstractController
     private $repo;
     private $scRepo;
     private $stdRepo;
+    private $subRepo;
     private $seqRepo;
     private $evalRepo;
     private $qtRepo;
     private $markRepo;
     private  $snappy;
 
-    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo, EntityManagerInterface $em, Pdf $snappy)
+    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy)
     {
 
         $this->em = $em;
@@ -55,6 +56,7 @@ class ClassRoomController extends AbstractController
         $this->evalRepo = $evalRepo;
         $this->stdRepo = $stdRepo;
         $this->qtRepo = $qtRepo;
+        $this->subRepo = $subRepo;
         $this->markRepo = $markRepo;
         $this->snappy = $snappy;
     }
@@ -102,11 +104,11 @@ class ClassRoomController extends AbstractController
             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
             $fileExists[] = file_exists($filename);
         }
-
+        // Liste des inscriptions pour resulats au examens officiels
+        $subscriptions = $this->subRepo->findBy(array("schoolYear" => $year, "classRoom" => $classroom));
 
         // Extraction de donnees pour les graphes
         $seqs = $this->seqRepo->findSequenceThisYear($year);
-        $evals = [];
         $evalSeqs = [];
 
         foreach ($seqs as $seq) {
@@ -336,7 +338,7 @@ class ClassRoomController extends AbstractController
             $statement->bindValue(1, $year->getId());
             $statement->bindValue(2, $classroom->getId());
             $statement->bindValue(3, $seq->getId());
-           
+
             $statement->execute();
             $i++;
         }
@@ -410,27 +412,27 @@ class ClassRoomController extends AbstractController
         );
         $statement->execute();
         $dataYear = $connection->executeQuery("SELECT *  FROM ANNUAL_DATA ")->fetchAll();
-         // For calculating ranks
+        // For calculating ranks
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
             SELECT DISTINCT idStd , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
             FROM ANNUAL_DATA 
             GROUP BY idStd
             ORDER BY SUM(value*weight*coef) DESC"
-            );
-            $statement->execute();
-            $annualAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
-            $annualAvgArray=[];
-            $sumAvg = 0;
-            $rank=0;
-            $rankArray=[];
-            foreach($annualAvg as $avg){
-                
-                $annualAvgArray[$avg['idStd']] = $avg['moyenne'];
-                $rankArray[$avg['idStd']] = ++$rank;
-                $sumAvg += $avg['moyenne'];
-            }
-           
+        );
+        $statement->execute();
+        $annualAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+        $annualAvgArray = [];
+        $sumAvg = 0;
+        $rank = 0;
+        $rankArray = [];
+        foreach ($annualAvg as $avg) {
+
+            $annualAvgArray[$avg['idStd']] = $avg['moyenne'];
+            $rankArray[$avg['idStd']] = ++$rank;
+            $sumAvg += $avg['moyenne'];
+        }
+
         $this->snappy->setTimeout(600);
 
         $html = $this->renderView('classroom/reportcardYear.html.twig', array(
@@ -440,10 +442,10 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
             'ranks' => $rankArray,
             'means' => $annualAvgArray,
-            'genMean' => $sumAvg/sizeof($annualAvgArray),
+            'genMean' => $sumAvg / sizeof($annualAvgArray),
         ));
-      
-       //return new Response($html);
+
+        //return new Response($html);
         return new Response(
             $this->snappy->getOutputFromHtml($html),
             200,
@@ -850,7 +852,7 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrimAction(ClassRoom $room, Pdf $pdf,  Request $request)
     {
-         
+
         set_time_limit(600);
 
         $connection = $this->em->getConnection();
@@ -858,7 +860,7 @@ class ClassRoomController extends AbstractController
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-       
+
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
@@ -889,7 +891,7 @@ class ClassRoomController extends AbstractController
             $statement->execute();
             $i++;
         }
-       
+
         // CAS DES NOTES TRIMESTRIELLES
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER AS
@@ -900,10 +902,10 @@ class ClassRoomController extends AbstractController
         );
         $statement->execute();
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
-       // $this->snappy->setTimeout(600);
-       // For calculating ranks
-       $statement = $connection->prepare(
-        "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+        // $this->snappy->setTimeout(600);
+        // For calculating ranks
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
         SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
         FROM V_STUDENT_MARK_QUATER 
         GROUP BY std
@@ -911,17 +913,17 @@ class ClassRoomController extends AbstractController
         );
         $statement->execute();
         $quaterAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
-        $quaterAvgArray=[];
+        $quaterAvgArray = [];
         $sumAvg = 0;
-        $rank=0;
-        $rankArray=[];
-        foreach($quaterAvg as $avg){
-            
+        $rank = 0;
+        $rankArray = [];
+        foreach ($quaterAvg as $avg) {
+
             $quaterAvgArray[$avg['std']] = $avg['moyenne'];
             $rankArray[$avg['std']] = ++$rank;
             $sumAvg += $avg['moyenne'];
         }
-       
+
         $pdf->setTimeout(600);
         // dd($quater);
         $html = $this->renderView('classroom/newReportcardTrim.html.twig', array(
@@ -929,14 +931,14 @@ class ClassRoomController extends AbstractController
             'data' => $dataQuater,
             'ranks' => $rankArray,
             'means' => $quaterAvgArray,
-            'genMean' => $sumAvg/sizeof($quaterAvgArray),
+            'genMean' => $sumAvg / sizeof($quaterAvgArray),
             'room' => $room,
             'quater' => $quater,
             'sequences' => $sequences,
             'students' => $studentEnrolled,
 
         ));
-//dd($html);
+        //dd($html);
         return new Response(
             $pdf->getOutputFromHtml($html),
             200,
