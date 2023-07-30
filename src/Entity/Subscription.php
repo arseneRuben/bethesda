@@ -37,10 +37,19 @@ class Subscription
      */
     private $schoolYear;
 
+    /*
+        0  : Echec
+        1p : Success  Passable
+        1a : Success  Assez-bien
+        1b : Success  Bien
+        1t : Success  Tres-Bien
+        1e : Success  Excellent
+
+    */
     /**
      * @var string
      *
-     * @ORM\Column(name="officialExamResult", type="string", length=10, nullable=true)
+     * @ORM\Column(name="officialExamResult", type="string", length=10 , options={"default" = "1p"})
      */
     private $officialExamResult;
 
