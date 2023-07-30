@@ -44,6 +44,11 @@ class Subscription
         1b : Success  Bien
         1t : Success  Tres-Bien
         1e : Success  Excellent
+        A : 5 points
+        B : 4 points
+        C : 3 points
+        D : 2 points
+        E : 1 point
 
     */
     /**
