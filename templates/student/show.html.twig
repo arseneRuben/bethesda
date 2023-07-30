@@ -332,8 +332,10 @@
                                             </td>
                                              <td>
                                                  {% if(s.classRoom.apc) %}
-                                                    {{ s.officialExamResult }}
-                                                   {% endif %}
+                                                    <a href="{{ path('admin_subscriptions_show', {id: s.id}) }}">
+                                                        {{ s.verbalOfficialExamResult }}
+                                                    </a>
+                                                 {% endif %}
                                             </td>
 
                                         </tr>

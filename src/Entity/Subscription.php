@@ -92,6 +92,7 @@ class Subscription
         return $this->classRoom;
     }
 
+
     public function setClassRoom(?ClassRoom $classRoom): self
     {
         $this->classRoom = $classRoom;
@@ -128,8 +129,45 @@ class Subscription
         return $this->officialExamResult;
     }
 
-    public function getVerbalResult()
+    public function getVerbalOfficialExamResult()
     {
+        $result = "PASSABLE";
+        switch ($this->officialExamResult) {
+            case "0":
+                $result = "ECHEC";
+                break;
+            case "1p":
+                $result = "PASSABLE";
+                break;
+            case "1a":
+                $result = "ASSEZ-BIEN";
+                break;
+            case "1b":
+                $result = "BIEN";
+                break;
+            case "1t":
+                $result = "TRES-BIEN";
+                break;
+            case "1e":
+                $result = "EXCELLENT";
+                break;
+            case "A":
+                $result = "5 POINTS";
+                break;
+            case "B":
+                $result = "4 POINTS";
+                break;
+            case "C":
+                $result = "3 POINTS";
+                break;
+            case "B":
+                $result = "2 POINTS";
+                break;
+            case "A":
+                $result = "1 POINTS";
+                break;
+        }
+        return $result;
     }
 
     public function setOfficialExamResult(?string $officialExamResult): static
