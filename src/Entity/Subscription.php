@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
+
 /**
  * @ORM\Entity(repositoryClass=SubscriptionRepository::class)
  */
@@ -36,16 +37,23 @@ class Subscription
      */
     private $schoolYear;
 
-  
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="officialExamResult", type="string", length=10, nullable=true)
+     */
+    private $officialExamResult;
+
+
     /**
      * @ORM\Column(type="boolean")
      */
     private $financeHolder;
     public function __construct()
     {
-       
+
         $this->updateTimestamp();
-        $this->financeHolder=false;
+        $this->financeHolder = false;
     }
 
     public function getId(): ?int
@@ -99,5 +107,22 @@ class Subscription
         $this->financeHolder = $financeHolder;
 
         return $this;
+    }
+
+    public function getOfficialExamResult(): ?string
+    {
+        return $this->officialExamResult;
+    }
+
+    public function setOfficialExamResult(?string $officialExamResult): static
+    {
+        $this->officialExamResult = $officialExamResult;
+
+        return $this;
+    }
+
+    public function isFinanceHolder(): ?bool
+    {
+        return $this->financeHolder;
     }
 }

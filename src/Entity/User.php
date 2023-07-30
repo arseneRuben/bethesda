@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 use App\Entity\Domain;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
 use App\Repository\UserRepository;
@@ -869,6 +870,11 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier() {
       return $this->getEmail();
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
     }
 
   

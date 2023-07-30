@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Mark;
 use App\Entity\Payment;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
 use App\Repository\StudentRepository;
@@ -696,5 +697,10 @@ class Student
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    public function isEnrolled(): ?bool
+    {
+        return $this->enrolled;
     }
 }

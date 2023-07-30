@@ -191,4 +191,9 @@ class ClassRoom
 
         return $this;
     }
+
+    public function isApc(): ?bool
+    {
+        return $this->apc;
+    }
 }

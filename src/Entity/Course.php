@@ -220,4 +220,9 @@ class Course
     {
         return $this->attributions;
     }
+
+    public function isAttributed(): ?bool
+    {
+        return $this->attributed;
+    }
 }
