@@ -364,29 +364,29 @@ class StudentController extends AbstractController
      */
     public function officialExam()
     {
-        // Récupérer les catégories d'étudiants depuis le repository correspondant
+        // Retrieve student categories from the corresponding repository
         $categoriesStudent = $this->getDoctrine()->getRepository(CategStudent::class)->findAll();
-
-        // Initialiser les tableaux pour les catégories d'étudiants, les mentions et les compteurs
-        $categStudent = [];
-        $categMention = [];
-        $categCountStudent = [];
-        $categCountMention = [];
-
-        // Remplir les tableaux avec les données des catégories d'étudiants
-        foreach ($categoriesStudent as $categorie) {
-            $categStudent[] = $categorie->getName();
-            $categMention[] = $categorie->getMention();
-            $categCountStudent[] = $categorie->getCountStudent();
-            $categCountMention[] = $categorie->getCountMention();
+    
+        // Initialize arrays for student categories, mentions, and counters
+        $studentCategories = [];
+        $mentionCategories = [];
+        $studentCountCategories = [];
+        $mentionCountCategories = [];
+    
+        // Fill the arrays with data from student categories
+        foreach ($categoriesStudent as $category) {
+            $studentCategories[] = $category->getName();
+            $mentionCategories[] = $category->getMention();
+            $studentCountCategories[] = $category->getCountStudent();
+            $mentionCountCategories[] = $category->getCountMention();
         }
-
-        // Rendre le template Twig et passer les données en format JSON
+    
+        // Render the Twig template and pass the data in JSON format
         return $this->render('admin/class_room/show.html.twig', [
-            'categStudent' => json_encode($categStudent),
-            'categMention' => json_encode($categMention),
-            'categCountStudent' => json_encode($categCountStudent),
-            'categCountMention' => json_encode($categCountMention),
+            'studentCategories' => json_encode($studentCategories),
+            'mentionCategories' => json_encode($mentionCategories),
+            'studentCountCategories' => json_encode($studentCountCategories),
+            'mentionCountCategories' => json_encode($mentionCountCategories),
         ]);
     }
-}
+}    

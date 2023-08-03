@@ -510,36 +510,38 @@
                                          backgroundColor: "#32a852"
                                     }#
 
+<!-- Include the Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Récupérer l'élément du graphique pour la catégorie des étudiants
-    let categStudent = document.querySelector("#categStudent");
-    // Créer le graphique pour la catégorie des étudiants
-    let categStudentChart = new Chart(categStudent, {
+    // Get the chart element for student category
+    let studentCategoryChartElement = document.querySelector("#studentCategoryChart");
+    // Create the chart for student category
+    let studentCategoryChart = new Chart(studentCategoryChartElement, {
         type: "pie",
         data: {
-            labels: ["Admis", "Echec"],
+            labels: ["Passed", "Failed"],
             datasets: [{
-                data: [/* Ajouter ici les données pour le nombre d'étudiants admis et échoués */],
+                data: [/* Add data here for the number of students passed and failed */],
                 backgroundColor: ["green", "red"]
             }]
         }
     });
 
-    // Récupérer l'élément du graphique pour la catégorie des mentions
-    let categoriesMention = document.querySelector("#categMention");
-    // Créer le graphique pour la catégorie des mentions
-    let categoriesMentionChart = new Chart(categoriesMention, {
+    // Get the chart element for mention category
+    let mentionCategoryChartElement = document.querySelector("#mentionCategoryChart");
+    // Create the chart for mention category
+    let mentionCategoryChart = new Chart(mentionCategoryChartElement, {
         type: "pie",
         data: {
-            labels: ["Très bien", "Bien", "Assez bien", "Passable", "Echec"],
+            labels: ["Excellent", "Good", "Fairly Good", "Passable", "Failed"],
             datasets: [{
-                data: [/* Ajouter ici les données pour le nombre d'étudiants dans chaque mention */],
+                data: [/* Add data here for the number of students in each mention */],
                 backgroundColor: ["#4CAF50", "#8BC34A", "#FFC107", "#FF9800", "#F44336"]
             }]
         }
     });
 </script>
+
 
 
 {% endblock %}
