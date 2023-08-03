@@ -362,31 +362,5 @@ class StudentController extends AbstractController
     /**
      * @Route("/admin/rooms/{id}/show", name="admin_room_show")
      */
-    public function officialExam()
-    {
-        // Retrieve student categories from the corresponding repository
-        $categoriesStudent = $this->getDoctrine()->getRepository(CategStudent::class)->findAll();
     
-        // Initialize arrays for student categories, mentions, and counters
-        $studentCategories = [];
-        $mentionCategories = [];
-        $studentCountCategories = [];
-        $mentionCountCategories = [];
-    
-        // Fill the arrays with data from student categories
-        foreach ($categoriesStudent as $category) {
-            $studentCategories[] = $category->getName();
-            $mentionCategories[] = $category->getMention();
-            $studentCountCategories[] = $category->getCountStudent();
-            $mentionCountCategories[] = $category->getCountMention();
-        }
-    
-        // Render the Twig template and pass the data in JSON format
-        return $this->render('admin/class_room/show.html.twig', [
-            'studentCategories' => json_encode($studentCategories),
-            'mentionCategories' => json_encode($mentionCategories),
-            'studentCountCategories' => json_encode($studentCountCategories),
-            'mentionCountCategories' => json_encode($mentionCountCategories),
-        ]);
-    }
 }    
