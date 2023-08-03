@@ -160,10 +160,10 @@ class Subscription
             case "C":
                 $result = "3 POINTS";
                 break;
-            case "B":
+            case "D":
                 $result = "2 POINTS";
                 break;
-            case "A":
+            case "E":
                 $result = "1 POINTS";
                 break;
         }

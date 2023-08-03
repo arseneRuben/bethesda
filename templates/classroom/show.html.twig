@@ -508,5 +508,38 @@
                                         data: {{ session6|raw }},
                                         fill:false,
                                          backgroundColor: "#32a852"
-                                    }#}
+                                    }#
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Récupérer l'élément du graphique pour la catégorie des étudiants
+    let categStudent = document.querySelector("#categStudent");
+    // Créer le graphique pour la catégorie des étudiants
+    let categStudentChart = new Chart(categStudent, {
+        type: "pie",
+        data: {
+            labels: ["Admis", "Echec"],
+            datasets: [{
+                data: [/* Ajouter ici les données pour le nombre d'étudiants admis et échoués */],
+                backgroundColor: ["green", "red"]
+            }]
+        }
+    });
+
+    // Récupérer l'élément du graphique pour la catégorie des mentions
+    let categoriesMention = document.querySelector("#categMention");
+    // Créer le graphique pour la catégorie des mentions
+    let categoriesMentionChart = new Chart(categoriesMention, {
+        type: "pie",
+        data: {
+            labels: ["Très bien", "Bien", "Assez bien", "Passable", "Echec"],
+            datasets: [{
+                data: [/* Ajouter ici les données pour le nombre d'étudiants dans chaque mention */],
+                backgroundColor: ["#4CAF50", "#8BC34A", "#FFC107", "#FF9800", "#F44336"]
+            }]
+        }
+    });
+</script>
+
+
 {% endblock %}
