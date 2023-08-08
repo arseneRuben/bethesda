@@ -117,9 +117,8 @@ class ClassRoomController extends AbstractController
 
         $courses = [];
         $averageSeqs = [];
-        $seqs = $this->seqRepo->findSequenceThisYear($year);
 
-        // Traitements de donnees pour les graphes
+        // Traitements de donnees pour les graphes de notes sequentielles
 
         foreach ($evalSeqs[$seq->getId()] as $eval) {
             $courses[] = $eval->getCourse()->getWording();
@@ -151,6 +150,7 @@ class ClassRoomController extends AbstractController
         $results['studentEnrolled'] = $studentEnrolled;
         $results['cours'] = json_encode($courses);
         $results['fileExists'] = $fileExists;
+        $results['sessions'] = json_encode($seqs);
 
         foreach ($seqs as $seq) {
             $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
@@ -1006,13 +1006,13 @@ class ClassRoomController extends AbstractController
     {
         // Retrieve student categories from the corresponding repository
         $categoriesStudent = $this->getDoctrine()->getRepository(CategStudent::class)->findAll();
-    
+
         // Initialize arrays for student categories, mentions, and counters
         $studentCategories = [];
         $mentionCategories = [];
         $studentCountCategories = [];
         $mentionCountCategories = [];
-    
+
         // Fill the arrays with data from student categories
         foreach ($categoriesStudent as $category) {
             $studentCategories[] = $category->getName();
@@ -1020,7 +1020,7 @@ class ClassRoomController extends AbstractController
             $studentCountCategories[] = $category->getCountStudent();
             $mentionCountCategories[] = $category->getCountMention();
         }
-    
+
         // Render the Twig template and pass the data in JSON format
         return $this->render('admin/class_room/show.html.twig', [
             'studentCategories' => json_encode($studentCategories),
@@ -1030,7 +1030,7 @@ class ClassRoomController extends AbstractController
         ]);
     }
 
-        /**
+    /**
      * @Route("/classroom/{id}", name="class_room_stats")
      */
     public function showClassRoomStats(ClassRoomRepository $classRoomRepository, int $id): Response
@@ -1051,5 +1051,4 @@ class ClassRoomController extends AbstractController
             'mentionStatistics' => $mentionStatistics,
         ]);
     }
-
 }
