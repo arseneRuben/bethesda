@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\Domain;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -23,7 +25,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\HasLifecycleCallbacks
  * 
  */
-class User implements UserInterface//, PasswordAuthenticatedUserInterface
+class User implements UserInterface //, PasswordAuthenticatedUserInterface
 {
     use TimeStampable;
     use HasUploadableField;
@@ -40,37 +42,37 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @Assert\NotBlank(message="Please enter a valid  email address")
      */
     private $email;
-      /** @ORM\Column(name="github_id", type="string", length=255, nullable=true) */
-     private $github_id;
-    
+    /** @ORM\Column(name="github_id", type="string", length=255, nullable=true) */
+    private $github_id;
 
-     /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
-     private $github_access_token;
- 
-     /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
-     private $facebook_id;
- 
-     /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
-     private $facebook_access_token;
- 
-     /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
-     private $google_id;
- 
-     /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
-     private $google_access_token;
- 
-     /** @ORM\Column(name="linkedin_id", type="string", length=255, nullable=true) */
-     private $linkedin_id;
- 
-     /** @ORM\Column(name="linkedin_access_token", type="string", length=255, nullable=true) */
-     private $linkedin_access_token;
+
+    /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
+    private $github_access_token;
+
+    /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
+    private $facebook_id;
+
+    /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
+    private $facebook_access_token;
+
+    /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
+    private $google_id;
+
+    /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
+    private $google_access_token;
+
+    /** @ORM\Column(name="linkedin_id", type="string", length=255, nullable=true) */
+    private $linkedin_id;
+
+    /** @ORM\Column(name="linkedin_access_token", type="string", length=255, nullable=true) */
+    private $linkedin_access_token;
 
     /** @ORM\Column(name="twitter_id", type="string", length=255, nullable=true) */
     private $twitter_id;
-     /** @ORM\Column(name="twitter_access_token", type="string", length=255, nullable=true) */
-     private $twitter_access_token;
+    /** @ORM\Column(name="twitter_access_token", type="string", length=255, nullable=true) */
+    private $twitter_access_token;
 
-     /** @ORM\Column(name="yahoo_id", type="string", length=255, nullable=true) */
+    /** @ORM\Column(name="yahoo_id", type="string", length=255, nullable=true) */
     private $yahoo_id;
     /** @ORM\Column(name="yahoo_access_token", type="string", length=255, nullable=true) */
     private $yahoo_access_token;
@@ -86,7 +88,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
-      /**
+    /**
      * @Assert\EqualTo( value="password",
      * message = " Le mot de passe et le mot de passe de verification doivent etre les memes ")
      */
@@ -97,21 +99,21 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     private $isVerified = false;
 
-      /**
+    /**
      * @ORM\OneToMany(targetEntity=Email::class, mappedBy="sender")
      */
     private $emails;
-  
-    
 
 
-   
 
-      /**
+
+
+
+    /**
      * @ORM\Column(name="avatarPath", type="string", length=255, nullable=true)
      */
     protected $avatarPath;
-   
+
 
 
 
@@ -169,7 +171,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     protected $numCni;
 
-  
+
 
 
 
@@ -189,7 +191,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="fullTeacher")
      */
     private $fullTeacherOf;
-    
+
     /**
      * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="teacher")
      */
@@ -199,17 +201,21 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $fullName;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $resetToken;
 
-  
-   
+
+
     public function getAvatar(int $size = 50): ?string
     {
-        return "https://www.gravatar.com/avatar/". md5(strtolower(trim($this->getEmail())))."/?s=".$size;
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getEmail()))) . "/?s=" . $size;
     }
 
     public function __construct()
     {
-        
+
         $this->emails = new ArrayCollection();
         $this->fullTeacherOf = new ArrayCollection();
         $this->attributions = new ArrayCollection();
@@ -232,12 +238,13 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-   
 
 
 
-    public function __toString() {
-        $username = ( is_null($this->getFullName())) ? "" : $this->getFullName();
+
+    public function __toString()
+    {
+        $username = (is_null($this->getFullName())) ? "" : $this->getFullName();
         return $username;
     }
 
@@ -342,23 +349,25 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-     /**
+    /**
      * Get firstName
      *
      * @return string
      */
-    public function getStatus() {
+    public function getStatus()
+    {
         return $this->status;
     }
 
-    public function setStatus($email) {
+    public function setStatus($email)
+    {
         if (!empty($email))
             $this->status = $email;
 
         return $this;
     }
 
-      /**
+    /**
      * Set birthplace
      *
      * @param string $birthplace
@@ -382,7 +391,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this->birthplace;
     }
 
-     /**
+    /**
      * Set birthday
      *
      * @param \DateTime $birthday
@@ -406,14 +415,15 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this->birthday;
     }
 
-     /**
+    /**
      * Set gender
      *
      * @param string $gender
      *
      * @return User
      */
-    public function setGender($gender) {
+    public function setGender($gender)
+    {
         $this->gender = $gender;
 
         return $this;
@@ -424,18 +434,20 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return string
      */
-    public function getGender() {
+    public function getGender()
+    {
         return $this->gender;
     }
 
-     /**
+    /**
      * Set nationality
      *
      * @param string $nationality
      *
      * @return User
      */
-    public function setNationality($nationality) {
+    public function setNationality($nationality)
+    {
         $this->nationality = $nationality;
 
         return $this;
@@ -446,7 +458,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return string
      */
-    public function getNationality() {
+    public function getNationality()
+    {
         return $this->nationality;
     }
 
@@ -457,7 +470,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return User
      */
-    public function setLocation($location) {
+    public function setLocation($location)
+    {
         $this->location = $location;
 
         return $this;
@@ -468,7 +482,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return string
      */
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this->location;
     }
 
@@ -479,7 +494,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return User
      */
-    public function setAcademicLevel($academicLevel) {
+    public function setAcademicLevel($academicLevel)
+    {
         $this->academicLevel = $academicLevel;
 
         return $this;
@@ -490,7 +506,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return string
      */
-    public function getAcademicLevel() {
+    public function getAcademicLevel()
+    {
         return $this->academicLevel;
     }
 
@@ -501,7 +518,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return User
      */
-    public function setNumCni($numCni) {
+    public function setNumCni($numCni)
+    {
         $this->numCni = $numCni;
 
         return $this;
@@ -512,18 +530,20 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return string
      */
-    public function getNumCni() {
+    public function getNumCni()
+    {
         return $this->numCni;
     }
 
-     /**
+    /**
      * Set domain
      *
      * @param \App\Entity\Domain $domain
      *
      * @return User
      */
-    public function setDomain(Domain $domain = null) {
+    public function setDomain(Domain $domain = null)
+    {
         $this->domain = $domain;
 
         return $this;
@@ -534,7 +554,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      *
      * @return \App\Entity\Domain
      */
-    public function getDomain() {
+    public function getDomain()
+    {
         return $this->domain;
     }
 
@@ -861,15 +882,15 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         if ($this->attributions->removeElement($attribution)) {
             // set the owning side to null (unless already changed)
             if ($attribution->getTeacher() === $this) {
-                 
             }
         }
 
         return $this;
     }
 
-    public function getUserIdentifier() {
-      return $this->getEmail();
+    public function getUserIdentifier()
+    {
+        return $this->getEmail();
     }
 
     public function isIsVerified(): ?bool
@@ -877,6 +898,15 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this->isVerified;
     }
 
-  
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
 
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
 }
