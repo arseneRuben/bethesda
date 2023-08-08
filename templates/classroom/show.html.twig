@@ -510,38 +510,49 @@
                                          backgroundColor: "#32a852"
                                     }#
 
-<!-- Include the Chart.js library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Get the chart element for student category
-    let studentCategoryChartElement = document.querySelector("#studentCategoryChart");
-    // Create the chart for student category
-    let studentCategoryChart = new Chart(studentCategoryChartElement, {
-        type: "pie",
-        data: {
-            labels: ["Passed", "Failed"],
+ <h1>Statistiques de la classe {{ classRoom.name }}</h1>
+
+    <div style="width: 50%; display: inline-block;">
+        <canvas id="successFailureChart"></canvas>
+    </div>
+    <div style="width: 50%; display: inline-block;">
+        <canvas id="mentionChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const successFailureData = {
+            labels: ['Réussites', 'Échecs'],
             datasets: [{
-                data: [/* Add data here for the number of students passed and failed */],
-                backgroundColor: ["green", "red"]
+                data: [{{ successfulCount }}, {{ unsuccessfulCount }}],
+                backgroundColor: ['#36A2EB', '#FF6384'],
+                borderWidth: 1
             }]
-        }
-    });
+        };
 
-    // Get the chart element for mention category
-    let mentionCategoryChartElement = document.querySelector("#mentionCategoryChart");
-    // Create the chart for mention category
-    let mentionCategoryChart = new Chart(mentionCategoryChartElement, {
-        type: "pie",
-        data: {
-            labels: ["Excellent", "Good", "Fairly Good", "Passable", "Failed"],
+        const mentionData = {
+            labels: {% autoescape false %}{{ mentionStatistics|keys|json_encode|raw }}{% endautoescape %},
             datasets: [{
-                data: [/* Add data here for the number of students in each mention */],
-                backgroundColor: ["#4CAF50", "#8BC34A", "#FFC107", "#FF9800", "#F44336"]
+                data: {% autoescape false %}{{ mentionStatistics|values|json_encode|raw }}{% endautoescape %},
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    // Ajoutez plus de couleurs 
+                ],
+                borderWidth: 1
             }]
-        }
-    });
-</script>
+        };
 
+        const successFailureChart = new Chart(document.getElementById('successFailureChart'), {
+            type: 'pie',
+            data: successFailureData
+        });
 
+        const mentionChart = new Chart(document.getElementById('mentionChart'), {
+            type: 'doughnut',
+            data: mentionData
+        });
+    </script>
 
 {% endblock %}
