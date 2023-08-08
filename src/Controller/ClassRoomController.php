@@ -1029,4 +1029,27 @@ class ClassRoomController extends AbstractController
             'mentionCountCategories' => json_encode($mentionCountCategories),
         ]);
     }
+
+        /**
+     * @Route("/classroom/{id}", name="class_room_stats")
+     */
+    public function showClassRoomStats(ClassRoomRepository $classRoomRepository, int $id): Response
+    {
+        $classRoom = $classRoomRepository->find($id);
+        if (!$classRoom) {
+            throw $this->createNotFoundException('ClassRoom not found');
+        }
+
+        $successfulCount = $classRoomRepository->countSuccessfulStudentsForClass($classRoom);
+        $unsuccessfulCount = $classRoomRepository->countUnsuccessfulStudentsForClass($classRoom);
+        $mentionStatistics = $classRoomRepository->getMentionStatisticsForClass($classRoom);
+
+        return $this->render('class_room/stats.html.twig', [
+            'classRoom' => $classRoom,
+            'successfulCount' => $successfulCount,
+            'unsuccessfulCount' => $unsuccessfulCount,
+            'mentionStatistics' => $mentionStatistics,
+        ]);
+    }
+
 }
