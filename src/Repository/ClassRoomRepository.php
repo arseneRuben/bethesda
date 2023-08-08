@@ -81,6 +81,31 @@ class ClassRoomRepository extends ServiceEntityRepository
          return $mentionStatistics;
      }
 
+     public function getClassRoomSuccessStatisticsByLevel($level)
+    {
+        $queryBuilder = $this->createQueryBuilder('cl')
+            ->select('cl.name AS className, COUNT(s.id) AS successfulCount')
+            ->join('cl.subscriptions', 's')
+            ->where('s.financialHolder = 0') // Inscrits
+            ->andWhere('s.officialExam <> 0') // Réussis
+            ->andWhere('cl.level = :level')
+            ->groupBy('cl.name')
+            ->setParameter('level', $level);
+
+        $query = $queryBuilder->getQuery();
+        $results = $query->getResult();
+
+        $successStatistics = [];
+        foreach ($results as $result) {
+            $className = $result['className'];
+            $successfulCount = $result['successfulCount'];
+            $successStatistics[$className] = $successfulCount;
+        }
+
+        return $successStatistics;
+    }
+}
+
 
 
     // /**
