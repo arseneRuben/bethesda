@@ -469,69 +469,29 @@
                             let b = Math.floor(Math.random() * 256); // Random between 0-255
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
                         };
-
-                        sessions.map(session => {
-                        
-                            datasets.push({
+                       
+                       sessions.map(session => {
+                            datasets.push( {
                                 label: session.wording,
-                                data : session.wording,
+                                data : session.wording|raw,
                                 fill : false,
                                 backgroundColor: randomRgbColor()
-                            })
-                        })
+                            } )
+                        });
+                        
+
                         let graph = new Chart(myChart, {
                             type:"bar",
                             data : {
                                 labels: {{ cours|raw }},
-                                datasets: [{
-                                    label:"Session 1",
-                                    data: {{ session1|raw }},
-                                    fill:false,
-                                    backgroundColor: randomRgbColor()
-                                },
-                                {
-                                    label:"Session 2",
-                                    data: {{ session2|raw }},
-                                    fill:false,
-                                     backgroundColor: randomRgbColor()
-                                },
-                                 {
-                                    label:"Session 3",
-                                    data: {{ session3|raw }},
-                                    fill:false,
-                                     backgroundColor: randomRgbColor()
-                                }  ,
-                                {
-                                    label:"Session 4",
-                                    data: {{ session4|raw }},
-                                    fill:false,
-                                     backgroundColor: randomRgbColor()
-                                } ,
-                                {
-                                    label:"Session 5",
-                                    data: {{ session5|raw }},
-                                    fill:false,
-                                     backgroundColor: randomRgbColor()
-                                } ,
-                                  {
-                                    label:"Session 6",
-                                    data: {{ session6|raw }},
-                                    fill:false,
-                                     backgroundColor: randomRgbColor()
-                                } 
-
-                                
-                            
-
-                                ]
+                                datasets: datasets,
                             }
-                        })
+                        });
        
              
                                 
                                     
-     </script>
-<script>
+    =
     // Get the chart element for student category
     let studentCategoryChartElement = document.querySelector("#studentCategoryChart");
     // Create the chart for student category

@@ -56,30 +56,55 @@ class ClassRoomRepository extends ServiceEntityRepository
     }
 
 
-     // Méthode pour obtenir les statistiques de mentions pour une classe donnée
-     public function getMentionStatisticsForClass(ClassRoom $classRoom)
-     {
-         $queryBuilder = $this->createQueryBuilder('cl')
-             ->select('s.officialExam AS mention, COUNT(s.id) AS mentionCount')
-             ->join('cl.subscriptions', 's')
-             ->where('cl = :classRoom')
-             ->andWhere('s.officialExam <> 0') // Uniquement les élèves ayant passé l'examen
-             ->groupBy('s.officialExam')
-             ->setParameter('classRoom', $classRoom);
- 
-         $query = $queryBuilder->getQuery();
-         $results = $query->getResult();
- 
-         $mentionStatistics = [];
-         foreach ($results as $result) {
-             $mention = $result['mention'];
-             $mentionCount = $result['mentionCount'];
-             $verbalMention = $this->getVerbalOfficialExamResult($mention); // Utilisez la méthode pour obtenir la mention verbale
-             $mentionStatistics[$verbalMention] = $mentionCount;
-         }
- 
-         return $mentionStatistics;
-     }
+    // Méthode pour obtenir les statistiques de mentions pour une classe donnée
+    public function getMentionStatisticsForClass(ClassRoom $classRoom)
+    {
+        $queryBuilder = $this->createQueryBuilder('cl')
+            ->select('s.officialExam AS mention, COUNT(s.id) AS mentionCount')
+            ->join('cl.subscriptions', 's')
+            ->where('cl = :classRoom')
+            ->andWhere('s.officialExam <> 0') // Uniquement les élèves ayant passé l'examen
+            ->groupBy('s.officialExam')
+            ->setParameter('classRoom', $classRoom);
+
+        $query = $queryBuilder->getQuery();
+        $results = $query->getResult();
+
+        $mentionStatistics = [];
+        foreach ($results as $result) {
+            $mention = $result['mention'];
+            $mentionCount = $result['mentionCount'];
+            $verbalMention = $this->getVerbalOfficialExamResult($mention); // Utilisez la méthode pour obtenir la mention verbale
+            $mentionStatistics[$verbalMention] = $mentionCount;
+        }
+
+        return $mentionStatistics;
+    }
+
+    public function getClassRoomSuccessStatisticsByLevel($level)
+    {
+        $queryBuilder = $this->createQueryBuilder('cl')
+            ->select('cl.name AS className, COUNT(s.id) AS successfulCount')
+            ->join('cl.subscriptions', 's')
+            ->where('s.financialHolder = 0') // Inscrits
+            ->andWhere('s.officialExam <> 0') // Réussis
+            ->andWhere('cl.level = :level')
+            ->groupBy('cl.name')
+            ->setParameter('level', $level);
+
+        $query = $queryBuilder->getQuery();
+        $results = $query->getResult();
+
+        $successStatistics = [];
+        foreach ($results as $result) {
+            $className = $result['className'];
+            $successfulCount = $result['successfulCount'];
+            $successStatistics[$className] = $successfulCount;
+        }
+
+        return $successStatistics;
+    }
+
 
 
 
