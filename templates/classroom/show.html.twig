@@ -450,7 +450,7 @@
             </article>
 
             <article class="p-3">
-                <canvas id="schoolPerformanceGraph" width="600" height="200" data-sessions-objects="{{sessions|json_encode()}}"></canvas>
+                <canvas id="schoolPerformanceGraph" width="700" height="200" data-sessions-objects="{{sessions|json_encode()}}"></canvas>
             </article>
         </div>
     </div>
@@ -536,6 +536,21 @@
                             data : {
                                 labels: {{ cours|raw }},
                                 datasets: datasets,
+                            }, 
+                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Performances generales annuelles ',
+                                        font: {
+                                            size: 24,
+                                            style: 'bold',
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                    }
+                                }
                             }
                         });
        
