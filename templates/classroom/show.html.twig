@@ -454,7 +454,7 @@
             </article>
         </div>
     </div>
-   
+ 
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -474,19 +474,60 @@
 
                         {% set index=0 %}
                       
-                        for( let i=0; i< sessionsObjects.length; i++){
+                       
+                                {% if session1 is defined %}
+                                    datasets.push( {
+                                        label: "Session 1",
+                                        data : {{session1|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                {% if session2 is defined %}
+                                    datasets.push( {
+                                        label: "Session 2",
+                                        data : {{session2|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session3 is defined %}
+                                    datasets.push( {
+                                        label: "Session 3",
+                                        data : {{session3|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session4 is defined %}
+                                    datasets.push( {
+                                        label: "Session 4",
+                                        data : {{session4|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session5 is defined %}
+                                    datasets.push( {
+                                        label: "Session 5",
+                                        data : {{session5|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session6 is defined %}
+                                    datasets.push( {
+                                        label: "Session 6",
+                                        data : {{session3|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
                            
-                                datasets[i]=
-                                {
-                                    label: sessionsObjects[i].wording,
-                                    data :  {{sessions[index]|lower|raw}},
-                                    fill : false,
-                                    backgroundColor : randomRgbColor()
-                                }
                             
-                            {% set index=index+1 %}
+                           
                             
-                        }
+                        
                              
                        
 
