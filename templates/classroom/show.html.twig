@@ -454,8 +454,7 @@
             </article>
         </div>
     </div>
-  
-{% endblock %}
+s{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     
@@ -470,14 +469,16 @@
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
                         };
                        
-                       sessions.map(session => {
-                            datasets.push( {
-                                label: session.wording,
-                                data : session.wording|raw,
+                        {% if session1 is defined %}
+                              datasets.push( {
+                                label: "Session 1",
+                                data : {{session1|raw}},
                                 fill : false,
                                 backgroundColor: randomRgbColor()
                             } )
-                        });
+                        {% endif %}
+                           
+                        
                         
 
                         let graph = new Chart(myChart, {
