@@ -158,7 +158,7 @@ class ClassRoomController extends AbstractController
             $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
         }
 
-        // dd(json_encode($results['session1']));
+
         return $this->render('classroom/show.html.twig', $results);
     }
 
