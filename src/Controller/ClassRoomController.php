@@ -150,13 +150,15 @@ class ClassRoomController extends AbstractController
         $results['studentEnrolled'] = $studentEnrolled;
         $results['cours'] = json_encode($courses);
         $results['fileExists'] = $fileExists;
-        $results['sessions'] = json_encode($seqs);
+
+        $results['sessions'] = $seqs;
+
 
         foreach ($seqs as $seq) {
             $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
         }
 
-        //dd(json_encode($results));
+        // dd(json_encode($results['session1']));
         return $this->render('classroom/show.html.twig', $results);
     }
 

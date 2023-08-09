@@ -8,11 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Period;
+use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass=SequenceRepository::class)
  */
-class Sequence
+class Sequence implements JsonSerializable
 {
     use Period;
     /**
@@ -43,9 +44,16 @@ class Sequence
         $this->evaluations = new ArrayCollection();
     }
 
-    
+    public function jsonSerialize()
+    {
+        return [
 
-   
+            'wording' => strtolower($this->wording),
+        ];
+    }
+
+
+
 
     public function getId(): ?int
     {
@@ -106,8 +114,4 @@ class Sequence
 
         return $this;
     }
-
-  
-
-   
 }

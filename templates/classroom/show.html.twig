@@ -450,37 +450,47 @@
             </article>
 
             <article class="p-3">
-                <canvas id="myChart" width="600" height="200"></canvas>
+                <canvas id="schoolPerformanceGraph" width="600" height="200" data-sessions-objects="{{sessions|json_encode()}}"></canvas>
             </article>
         </div>
     </div>
-  
+   
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     
     <script type="text/javascript">
-                        let myChart = document.querySelector("#myChart");
+                        const schoolPerformanceGraph = $("#schoolPerformanceGraph");
+                        const sessionsObjects = schoolPerformanceGraph.data('sessionsObjects');
+                       ;
                         let datasets = [];
-                        let sessions = {{sessions}};
+                       
                         const randomRgbColor = () => {
                             let r = Math.floor(Math.random() * 256); // Random between 0-255
                             let g = Math.floor(Math.random() * 256); // Random between 0-255
                             let b = Math.floor(Math.random() * 256); // Random between 0-255
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
                         };
-                       
-                       sessions.map(session => {
-                            datasets.push( {
-                                label: session.wording,
-                                data : session.wording|raw,
-                                fill : false,
-                                backgroundColor: randomRgbColor()
-                            } )
-                        });
-                        
 
-                        let graph = new Chart(myChart, {
+                        {% set index=0 %}
+                      
+                        for( let i=0; i< sessionsObjects.length; i++){
+                           
+                                datasets[i]=
+                                {
+                                    label: sessionsObjects[i].wording,
+                                    data :  {{sessions[index]|lower|raw}},
+                                    fill : false,
+                                    backgroundColor : randomRgbColor()
+                                }
+                            
+                            {% set index=index+1 %}
+                            
+                        }
+                             
+                       
+
+                       let graph = new Chart(schoolPerformanceGraph, {
                             type:"bar",
                             data : {
                                 labels: {{ cours|raw }},
@@ -491,7 +501,7 @@
              
                                 
                                     
-    =
+    
     // Get the chart element for student category
     let studentCategoryChartElement = document.querySelector("#studentCategoryChart");
     // Create the chart for student category
