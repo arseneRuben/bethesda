@@ -119,10 +119,7 @@ class StudentController extends AbstractController
 
 
             $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
-            // dd($filename);
             $file_exists = file_exists($filename);
-            // dd($file_exists);
-
             $results['file_exists'] = $file_exists;
             $results['cours'] = json_encode($courses);
 
@@ -362,5 +359,4 @@ class StudentController extends AbstractController
     /**
      * @Route("/admin/rooms/{id}/show", name="admin_room_show")
      */
-    
-}    
+}

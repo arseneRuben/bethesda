@@ -460,11 +460,9 @@
     {{ parent() }}
     
     <script type="text/javascript">
-                        const schoolPerformanceGraph = $("#schoolPerformanceGraph");
-                        const sessionsObjects = schoolPerformanceGraph.data('sessionsObjects');
-                       ;
-                        let datasets = [];
-                       
+                        const schoolPerformanceGraph = $("#schoolPerformanceGraph");                       
+                        const datasets = [];
+                        //Generate a random color
                         const randomRgbColor = () => {
                             let r = Math.floor(Math.random() * 256); // Random between 0-255
                             let g = Math.floor(Math.random() * 256); // Random between 0-255
@@ -472,8 +470,7 @@
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
                         };
 
-                        {% set index=0 %}
-                      
+                       
                        
                                 {% if session1 is defined %}
                                     datasets.push( {
