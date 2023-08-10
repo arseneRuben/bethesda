@@ -109,7 +109,42 @@ class ClassRoomController extends AbstractController
         $mentionCategories = [];
         $mentionCountCategories = [];
         foreach ($officialExamResults as $exam) {
-            $mentionCategories[] = $exam["officialExamResult"];
+
+            switch ($exam["officialExamResult"]) {
+                case  "0":
+                    $mentionCategories[] = "ECHEC";
+                    break;
+                case  "1p":
+                    $mentionCategories[] = "PASSABLE";
+                    break;
+                case  "1a":
+                    $mentionCategories[] = "ASSEZ-BIEN";
+                    break;
+                case  "1b":
+                    $mentionCategories[] = "BIEN";
+                    break;
+                case  "1t":
+                    $mentionCategories[] = "TRES-BIEN";
+                    break;
+                case  "1e":
+                    $mentionCategories[] = "EXCELLENT";
+                    break;
+                case  "A":
+                    $mentionCategories[] = "5 POINTS";
+                    break;
+                case  "B":
+                    $mentionCategories[] = "4 POINTS";
+                    break;
+                case  "C":
+                    $mentionCategories[] = "3 POINTS";
+                    break;
+                case  "D":
+                    $mentionCategories[] = "2 POINTS";
+                    break;
+                case  "E":
+                    $mentionCategories[] = "1 POINT";
+                    break;
+            }
             $mentionCountCategories[] = $exam["count"];
         }
 

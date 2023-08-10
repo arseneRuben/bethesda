@@ -442,13 +442,17 @@
                     </tbody>
                 </table>
             </article>
-
-            <article class="p-3">
-                <canvas id="schoolPerformanceGraph" width="700" height="300" data-sessions-objects="{{sessions|json_encode()}}"></canvas>
+            <section id="graphs">
+                <article class="p-3">
+                    <canvas id="schoolPerformanceGraph" width="700" height="250"></canvas>
+                </article>
+                  <article class="p-3">
+                <canvas id="officialExamsGraph" width="200" height="220" ></canvas>
             </article>
+            </section>
         </div>
     </div>
- 
+
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -564,17 +568,37 @@
     });
 
     // Get the chart element for mention category
-    let mentionCategoryChartElement = document.querySelector("#mentionCategoryChart");
+    let officialExamsGraph = document.querySelector("#officialExamsGraph");
     // Create the chart for mention category
-    let mentionCategoryChart = new Chart(mentionCategoryChartElement, {
+    const colors = [];
+    const mentionCountCategories = {{mentionCountCategories}};
+    mentionCountCategories.map(cat => {
+        colors.push(randomRgbColor());
+    })
+    let officialExamsChart = new Chart(officialExamsGraph, {
         type: "pie",
         data: {
-            labels: ["Excellent", "Good", "Fairly Good", "Passable", "Failed"],
+            labels:  {{ mentionCategories|raw }},
             datasets: [{
-                data: [/* Add data here for the number of students in each mention */],
-                backgroundColor: ["#4CAF50", "#8BC34A", "#FFC107", "#FF9800", "#F44336"]
+                data: {{mentionCountCategories|raw}},
+                backgroundColor: colors
             }]
-        }
+        }, 
+         options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Resultats aux examens officiels ',
+                                        font: {
+                                            size: 24,
+                                            style: 'bold',
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                    }
+                                }
+                            }
     });
 </script>
 
