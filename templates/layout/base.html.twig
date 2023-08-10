@@ -68,15 +68,19 @@
         {{ app.session.set('referer',    app.request.get('_route')  ) }}
 
         {% block javascripts %}
-            <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-            <script src="{{ asset('assets/js/jquery-3.2.1.min.js') }}"></script>
-            <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
-            <script src="{{ asset('assets/js/jsjquery.simpleAccordion.min.js') }}"></script>
-            <script src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-            <script src="{{ asset('assets/js/menu.js') }}"></script>
-            <script src="{{ asset('assets/js/all.js') }}"></script>
-            <script src="{{ asset('assets/js/custom.js') }}"></script>
-            <script src="{{ asset('assets/js/timeline.min.js') }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('assets/js/jquery-3.1.1.js') }}"></script>
+             <script type="text/javascript" src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js') }}"></script>
+             <script type="text/javascript" src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js') }}" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+             <script src="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js') }}" integrity="sha512-ToL6UYWePxjhDQKNioSi4AyJ5KkRxY+F1+Fi7Jgh0Hp5Kk2/s8FD7zusJDdonfe5B00Qw+B8taXxF6CFLnqNCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+     
+            <script type="text/javascript" src="{{ asset('assets/js/jsjquery.simpleAccordion.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('assets/js/menu.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('assets/js/all.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('assets/js/custom.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('assets/js/timeline.min.js') }}"></script>
             <script type="text/javascript" src="{{ asset('https://d3js.org/d3.v4.min.js') }}"></script>
 
             <script>
