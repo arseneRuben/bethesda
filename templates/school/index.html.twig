@@ -442,11 +442,13 @@
     <section class="card">
         <article class="row" id="officialExams">
              {% for key in results|keys %}
-                    <div class="col-3" >
+                    <div class="col-6 col-md-3 " >
                         <canvas id={{key}}  height="120" data-exam-objects=" {{results[key]}}"></canvas>
                     </div>
                     
              {% endfor %}
+
+            
               
         </article>
        
@@ -459,7 +461,6 @@
             //Generate a random color
             const randomRgbColor = (type) => {
                             let r = Math.floor(Math.random() * 256); // Random between 0-255
-                            
                             let g = Math.floor(Math.random() * 256); // Random between 0-255
                             let b = Math.floor(Math.random() * 256); // Random between 0-255
                             if(type==="ECHEC"){
@@ -473,136 +474,74 @@
              };
             const colors=[], datasets = []; 
              
-           const premiereCExamsGraph = $("#premiere_c"), premiereDExamsGraph = $("#premiere_d") , premiereAEspExamsGraph = $("#premierea4esp"), premiereAAllExamsGraph = $("#premierea4all");    
-                      
-           const premiereCExamsData = premiereCExamsGraph.data('examObjects'), premiereDExamsData = premiereDExamsGraph.data('examObjects'), premiereAEspExamsData = premiereAEspExamsGraph.data('examObjects'), premiereAAllExamsData = premiereAAllExamsGraph.data('examObjects');
+           const  troisiemeAllExamsGraph = $("#troisiemeall"), troisiemeEspExamsGraph = $("#troisiemeesp") ,
+            premiereCExamsGraph = $("#premiere_c"), premiereDExamsGraph = $("#premiere_d") ,
+            premiereAEspExamsGraph = $("#premierea4esp"), premiereAAllExamsGraph = $("#premierea4all"),
+            terminaleCExamsGraph = $("#terminalec"), terminaleDExamsGraph = $("#terminale_d") , 
+            terminaleAEspExamsGraph = $("#terminaleaesp"), terminaleAAllExamsGraph = $("#terminaleaall"); 
            
-           // Case of Premiere C
-           JSON.parse(premiereCExamsData)['mentionCategories'].map(cat => {
-                colors.push(randomRgbColor(cat));
-           });
-           const premiereCExamsChart = new Chart(premiereCExamsGraph, {
-            type: "pie",
-            data: {
-                labels:  JSON.parse(premiereCExamsData)["mentionCategories"] ,
-                datasets: [{
-                    data: JSON.parse(premiereCExamsData)["mentionCountCategories"],
-                    backgroundColor: colors
-                }]
-            }, 
-            options: {
-                        plugins: {
-                            title: {
-                                        display: true,
-                                        text: ' Premiere C ',
-                                        font: {
-                                            size: 24,
-                                            
-                                            family: 'Helvetica Neue',
-                                        },
-                                        position: 'bottom',
-                                        
-                                 }
-                         }
-                }
-            });
+           const troisiemeAllExamsData = troisiemeAllExamsGraph.data('examObjects'), troisiemeEspExamsData = troisiemeEspExamsGraph.data('examObjects'),
+           premiereCExamsData = premiereCExamsGraph.data('examObjects'), premiereDExamsData = premiereDExamsGraph.data('examObjects'), 
+           premiereAEspExamsData = premiereAEspExamsGraph.data('examObjects'), premiereAAllExamsData = premiereAAllExamsGraph.data('examObjects'),
+           terminaleCExamsData = terminaleCExamsGraph.data('examObjects'), terminaleDExamsData = terminaleDExamsGraph.data('examObjects'),
+           terminaleAEspExamsData = terminaleAEspExamsGraph.data('examObjects'), terminaleAAllExamsData = terminaleAAllExamsGraph.data('examObjects');
+           
+          
 
-
-             // Case of Premiere D
-
-            JSON.parse(premiereDExamsData)['mentionCategories'].map(cat => {
-                colors.push(randomRgbColor(cat));
-           });
-
-            const premiereDExamsChart = new Chart(premiereDExamsGraph, {
-            type: "pie",
-            data: {
-                labels:  JSON.parse(premiereDExamsData)["mentionCategories"] ,
-                datasets: [{
-                    data: JSON.parse(premiereDExamsData)["mentionCountCategories"],
-                    backgroundColor: colors
-                }]
-            }, 
-            options: {
-                        plugins: {
-                            title: {
-                                        display: true,
-                                        text: 'Premiere D ',
-                                        font: {
-                                            size: 24,
-                                            
-                                            family: 'Helvetica Neue',
-                                        },
-                                        position: 'bottom',
-                                        
-                                 }
-                         }
-                }
-            });
+          
             
-             // Case of Premiere A4 Esp
-
-            JSON.parse(premiereAEspExamsData)['mentionCategories'].map(cat => {
-                colors.push(randomRgbColor(cat));
-           });
-
-            const premiereAEspExamsChart = new Chart(premiereAEspExamsGraph, {
-            type: "pie",
-            data: {
-                labels:  JSON.parse(premiereAEspExamsData)["mentionCategories"] ,
-                datasets: [{
-                    data: JSON.parse(premiereAEspExamsData)["mentionCountCategories"],
-                    backgroundColor: colors
-                }]
-            }, 
-            options: {
-                        plugins: {
-                            title: {
-                                        display: true,
-                                        text: 'Premiere A4 Esp',
-                                        font: {
-                                            size: 24,
-                                            family: 'Helvetica Neue',
-                                        },
-                                        position: 'bottom',
-                                        
-                                 }
-                         }
-                }
-            });
-
-              // Case of Premiere A4 All
-
-            JSON.parse(premiereAAllExamsData)['mentionCategories'].map(cat => {
-                colors.push(randomRgbColor(cat));
-           });
-
-            const premiereAAllExamsChart = new Chart(premiereAAllExamsGraph, {
-            type: "pie",
-            data: {
-                labels:  JSON.parse(premiereAAllExamsData)["mentionCategories"] ,
-                datasets: [{
-                    data: JSON.parse(premiereAAllExamsData)["mentionCountCategories"],
-                    backgroundColor: colors
-                }]
-            }, 
-            options: {
-                        plugins: {
-                            title: {
-                                        display: true,
-                                        text: 'Premiere A4 All',
-                                        font: {
-                                            size: 24,
-                                            family: 'Helvetica Neue',
-                                        },
-                                        position: 'bottom',
-                                        
-                                 }
-                         }
-                }
-            });
+         
           
           
+            // Draw the graph of official exam results
+            const drawCanvas = (examData, examGraph, name) => {
+                // console.log(examData, examGraph, name)
+                JSON.parse(examData)['mentionCategories'].map(cat => {
+                        colors.push(randomRgbColor(cat));
+                });
+                const  examChart = new Chart(examGraph, {
+                    type: "pie",
+                    data: {
+                        labels:  JSON.parse(examData)["mentionCategories"] ,
+                        datasets: [{
+                            data: JSON.parse(examData)["mentionCountCategories"],
+                            backgroundColor: colors
+                        }]
+                    }, 
+                    options: {
+                            plugins: {
+                                title: {
+                                        display: true,
+                                        text: name,
+                                        font: {
+                                                size: 24,
+                                                family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',        
+                                }
+                            }
+                        }
+                    });
+            }
+
+             // Case of Tle A4 Esp
+            drawCanvas(terminaleDExamsData,terminaleDExamsGraph , "Terminale D" );
+            drawCanvas(terminaleCExamsData,terminaleCExamsGraph , "Terminale D" );
+             drawCanvas(terminaleAAllExamsData,terminaleAAllExamsGraph , "Terminale A All" );
+               drawCanvas(terminaleAEspExamsData,terminaleAEspExamsGraph , "Terminale A Esp" );
+             drawCanvas(premiereAAllExamsData,premiereAAllExamsGraph , "Premiere A All" );
+             drawCanvas(premiereAEspExamsData,premiereAEspExamsGraph , "Premiere A Esp" );
+             drawCanvas(premiereCExamsData,premiereCExamsGraph , "Premiere C" );
+             drawCanvas(premiereDExamsData,premiereDExamsGraph , "Premiere D" );
+
+             drawCanvas(troisiemeAllExamsData,troisiemeAllExamsGraph , "Troisieme All" );
+             drawCanvas(troisiemeEspExamsData,troisiemeEspExamsGraph , "Troisieme Esp" );
+
+            
+            
+          
+            
+           
           
            
           

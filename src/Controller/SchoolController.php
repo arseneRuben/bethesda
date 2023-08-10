@@ -60,7 +60,7 @@ class SchoolController extends AbstractController
                         $mentionCategories[] = "ECHEC";
                         break;
                     case  "1p":
-                        $mentionCategories[] = "PASSABLE";
+                        $mentionCategories[] = "SUCCESS";
                         break;
                     case  "1a":
                         $mentionCategories[] = "ASSEZ-BIEN";
