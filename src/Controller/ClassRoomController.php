@@ -104,8 +104,16 @@ class ClassRoomController extends AbstractController
             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
             $fileExists[] = file_exists($filename);
         }
-        // Liste des inscriptions pour resulats au examens officiels
-        $subscriptions = $this->subRepo->findBy(array("schoolYear" => $year, "classRoom" => $classroom));
+        // Liste des resulats au examens officiels
+        $officialExamResults = $this->subRepo->countByMention($year, $classroom);
+        $mentionCategories = [];
+        $mentionCountCategories = [];
+        foreach ($officialExamResults as $exam) {
+            $mentionCategories[] = $exam["officialExamResult"];
+            $mentionCountCategories[] = $exam["count"];
+        }
+
+
 
         // Extraction de donnees pour les graphes
         $seqs = $this->seqRepo->findSequenceThisYear($year);
@@ -151,6 +159,8 @@ class ClassRoomController extends AbstractController
         $results['cours'] = json_encode($courses);
         $results['fileExists'] = $fileExists;
         $results['sessions'] = json_encode($seqs);
+        $results['mentionCategories'] = json_encode($mentionCategories);
+        $results['mentionCountCategories'] = json_encode($mentionCountCategories);
 
         foreach ($seqs as $seq) {
             $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);

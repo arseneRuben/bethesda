@@ -448,10 +448,14 @@
                     </tbody>
                 </table>
             </article>
-
-            <article class="p-3">
-                <canvas id="myChart" width="600" height="200"></canvas>
-            </article>
+            <section id="graphs">
+                <article class="p-3">
+                    <canvas id="myChart" width="600" height="200"></canvas>
+                </article>
+                <article class="p-3">
+                    <canvas id="myChart" width="600" height="200"></canvas>
+                </article>
+            </section>
         </div>
     </div>
 s{% endblock %}
@@ -459,6 +463,7 @@ s{% endblock %}
     {{ parent() }}
     
     <script type="text/javascript">
+    // Graphs of annual performance by sequence
                         let myChart = document.querySelector("#myChart");
                         let datasets = [];
                         let sessions = {{sessions}};
@@ -492,7 +497,7 @@ s{% endblock %}
              
                                 
                                     
-    =
+    
     // Get the chart element for student category
     let studentCategoryChartElement = document.querySelector("#studentCategoryChart");
     // Create the chart for student category

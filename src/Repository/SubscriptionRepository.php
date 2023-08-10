@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repository;
+
 use App\Entity\ClassRoom;
 use App\Entity\Student;
 use App\Entity\SchoolYear;
@@ -21,40 +22,57 @@ class SubscriptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Subscription::class);
     }
 
-    public function findNotEnrolledStudents3ThisYear(ClassRoom $room, SchoolYear $year) {
-      
+    public function findNotEnrolledStudents3ThisYear(ClassRoom $room, SchoolYear $year)
+    {
+
         return $this->createQueryBuilder('s')
-                         ->leftJoin('s.schoolYear', 'sc')
-                         ->leftJoin('s.classRoom', 'cl')
-                         ->where('sc.id=:year')
-                         ->where('cl.id=:room')
-                         ->setParameter('year', $year->getId())
-                         ->setParameter('room', $room->getId());
-                         
-     }
-     public function findEnrollementThisYear( SchoolYear $year) {
-       
-                 $qb = $this->createQueryBuilder('s')
-                          ->leftJoin('s.schoolYear', 'sc')
-                          ->where('sc.id=:year')
-                          ->addOrderBy('s.classRoom', 'ASC')
-                          ->setParameter('year', $year->getId());
-                 return $qb->getQuery()->getResult();          
-      }
+            ->leftJoin('s.schoolYear', 'sc')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('sc.id=:year')
+            ->where('cl.id=:room')
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId());
+    }
+    public function findEnrollementThisYear(SchoolYear $year)
+    {
 
-      public function findByYear_Room( SchoolYear $year, ClassRoom $room) {
-       
         $qb = $this->createQueryBuilder('s')
-                 ->leftJoin('s.schoolYear', 'sc')
-                 ->where('sc.id=:year')
-                 ->leftJoin('s.classRoom', 'cl')
-                 ->where('cl.id=:room')
-                
-                 ->setParameter('year', $year->getId())
-                 ->setParameter('room', $room->getId());
-        return $qb->getQuery()->getResult();          
-}
+            ->leftJoin('s.schoolYear', 'sc')
+            ->where('sc.id=:year')
+            ->addOrderBy('s.classRoom', 'ASC')
+            ->setParameter('year', $year->getId());
+        return $qb->getQuery()->getResult();
+    }
 
+    public function findByYear_Room(SchoolYear $year, ClassRoom $room)
+    {
+
+        $qb = $this->createQueryBuilder('s')
+            ->leftJoin('s.schoolYear', 'sc')
+            ->where('sc.id=:year')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('cl.id=:room')
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId());
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Return number of subscription per mention
+     */
+    public function countByMention(SchoolYear $year, ClassRoom $room)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(s) as count, s.officialExamResult')
+            ->leftJoin('s.schoolYear', 'sc')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('sc.id=:year')
+            ->andWhere('cl.id=:room')
+            ->groupBy('s.officialExamResult')
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId());
+        return $query->getQuery()->getResult();
+    }
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */
