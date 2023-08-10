@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="row mt-4">
-        <div class="col-lg-1 mar-bot30">
+        <div class="col-1 mar-bot30">
             <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
                 <i class="fa fa-plus"></i>
                 
@@ -13,18 +13,12 @@
                                                                                             
      
             </a>
-            <div class="input-group mt-3">
-           
-                <input type="number" name="repportcardSize" class="form-control" placeholder="taille"  min="1300" max="1400"  aria-describedby="basic-addon1">
-              
-            </div>
-        
         </div>
           
           
         </div>
 
-        <div class="col-lg-11 jumbotron">
+        <div class="col-11 jumbotron">
             <article class="p-3">
                 <table class="table table-hover record_properties center">
                     <tbody>
@@ -448,49 +442,106 @@
                     </tbody>
                 </table>
             </article>
-            <section id="graphs">
-                <article class="p-3">
-                    <canvas id="myChart" width="600" height="200"></canvas>
-                </article>
-                <article class="p-3">
-                    <canvas id="myChart" width="600" height="200"></canvas>
-                </article>
-            </section>
+
+            <article class="p-3">
+                <canvas id="schoolPerformanceGraph" width="700" height="300" data-sessions-objects="{{sessions|json_encode()}}"></canvas>
+            </article>
         </div>
     </div>
-s{% endblock %}
+ 
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     
     <script type="text/javascript">
-    // Graphs of annual performance by sequence
-                        let myChart = document.querySelector("#myChart");
-                        let datasets = [];
-                        let sessions = {{sessions}};
+                        const schoolPerformanceGraph = $("#schoolPerformanceGraph");                       
+                        const datasets = [];
+                        //Generate a random color
                         const randomRgbColor = () => {
                             let r = Math.floor(Math.random() * 256); // Random between 0-255
                             let g = Math.floor(Math.random() * 256); // Random between 0-255
                             let b = Math.floor(Math.random() * 256); // Random between 0-255
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
                         };
-                       
-                        {% if session1 is defined %}
-                              datasets.push( {
-                                label: "Session 1",
-                                data : {{session1|raw}},
-                                fill : false,
-                                backgroundColor: randomRgbColor()
-                            } )
-                        {% endif %}
-                           
-                        
-                        
 
-                        let graph = new Chart(myChart, {
+                       
+                       
+                                {% if session1 is defined %}
+                                    datasets.push( {
+                                        label: "Session 1",
+                                        data : {{session1|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                {% if session2 is defined %}
+                                    datasets.push( {
+                                        label: "Session 2",
+                                        data : {{session2|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session3 is defined %}
+                                    datasets.push( {
+                                        label: "Session 3",
+                                        data : {{session3|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session4 is defined %}
+                                    datasets.push( {
+                                        label: "Session 4",
+                                        data : {{session4|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session5 is defined %}
+                                    datasets.push( {
+                                        label: "Session 5",
+                                        data : {{session5|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                                 {% if session6 is defined %}
+                                    datasets.push( {
+                                        label: "Session 6",
+                                        data : {{session3|raw}},
+                                        fill : false,
+                                        backgroundColor: randomRgbColor()
+                                    } )
+                                {% endif %}
+                           
+                            
+                           
+                            
+                        
+                             
+                       
+
+                       let graph = new Chart(schoolPerformanceGraph, {
                             type:"bar",
                             data : {
                                 labels: {{ cours|raw }},
                                 datasets: datasets,
+                            }, 
+                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Performances generales annuelles ',
+                                        font: {
+                                            size: 24,
+                                            style: 'bold',
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                    }
+                                }
                             }
                         });
        
