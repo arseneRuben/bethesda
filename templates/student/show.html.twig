@@ -10,15 +10,18 @@
 {% endblock %}
 {% block content %}
     <div class="row mt-3">
-        <div class="col-lg-2">
+        <div class="col-2">
             <div class="btn-group record_actions  m-2">
                 <a class="btn btn-info" href="{{ path('admin_students') }}">
                     <i class="fa fa-list"></i>
                     {{ 'Back to the list'|trans({}, 'admin') }}
                 </a>
             </div>
-            <img src="{{ (student.imageName ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100"></div>
-            <div class="col-lg-10 card">
+            <div class="card" > 
+             <img src="{{ (student.imageName ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
+              
+            </div>
+            <div class="col-10 card">
                 <article class="p-3">
                     <div class="card-header">
                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
@@ -274,8 +277,7 @@
                     </div>
                 </div>
                 <div class="row jumbotron">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-10">
+                    <div class="col">
                         <br/>
                         <br/>
                         <div class="text-center">
@@ -345,8 +347,8 @@
                     </div>
                 </div>
                 <div class="row jumbotron">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-10">
+                    
+                    <div class="col">
                         <div class="text-center">
                             <h2>
                                 Ancienneté de l'élève
