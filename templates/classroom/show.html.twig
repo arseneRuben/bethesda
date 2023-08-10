@@ -446,9 +446,11 @@
                 <article class="p-3">
                     <canvas id="schoolPerformanceGraph" width="700" height="250"></canvas>
                 </article>
+                {% if classroom.apc %}
                   <article class="p-3">
-                <canvas id="officialExamsGraph" width="200" height="220" ></canvas>
-            </article>
+                    <canvas id="officialExamsGraph" width="200" height="220" ></canvas>
+                </article>
+                {% endif %}
             </section>
         </div>
     </div>

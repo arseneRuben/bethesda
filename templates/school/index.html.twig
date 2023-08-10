@@ -439,101 +439,80 @@
         </div>
     </div>
 
-    <section>
-        <article class="container" id="my_dataviz">
-            <h2>
-                Resultats aux axamens officiels.  Session 2021-2022
-                            
-            </h2>
-
+    <section class="card">
+        <article class="card-body d-flex flex-row" id="officialExams">
+             {% for key in results|keys %}
+                    <div>
+                        <canvas class="p-3" id={{key}} width="200" height="220" data-exam-objects=" {{results[key]}}"></canvas>
+                    </div>
+                    
+             {% endfor %}
+              
         </article>
+       
     </section>
+ 
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
-    <script>
-	// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 20, left: 30},
-width = 1000 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-.append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
-.append("g")
-.attr("transform",
-	  "translate(" + margin.left + "," + margin.top + ")");
-
-// Parse the Data
-d3.csv("result.csv", function(data) {
-
-// List of subgroups = header of the csv files = soil condition here
-var subgroups = data.columns.slice(1)
-
-// List of groups = species here = value of the first column called group -> I show them on the X axis
-var groups = d3.map(data, function(d){return(d.group)}).keys()
-
-// Add X axis
-var x = d3.scaleBand()
-  .domain(groups)
-  .range([0, width])
-  .padding([0.2])
-svg.append("g")
-.attr("transform", "translate(0," + height + ")")
-.call(d3.axisBottom(x).tickSizeOuter(0));
-
-// Add Y axis
-var y = d3.scaleLinear()
-.domain([0, 100])
-.range([ height, 0 ]);
-svg.append("g")
-.call(d3.axisLeft(y));
-
-// color palette = one color per subgroup
-var color = d3.scaleOrdinal()
-.domain(subgroups)
-.range(['#377eb8','#ffffcc'])
-
-//stack the data? --> stack per subgroup
-var stackedData = d3.stack()
-.keys(subgroups)
-(data)
-
-// Show the bars
-svg.append("g")
-.selectAll("g")
-// Enter in the stack data = loop key per key = group per group
-.data(stackedData)
-.enter().append("g")
-  .attr("fill", function(d) { return color(d.key); })
-  .selectAll("rect")
-  // enter a second time = loop subgroup per subgroup to add all rectangles
-  .data(function(d) { return d; })
-  .enter().append("rect")
-	.attr("x", function(d) { return x(d.data.group); })
-	.attr("y", function(d) { return y(d[1]); })
-	.attr("height", function(d) { return y(d[0]) - y(d[1]); })
-	.attr("width",x.bandwidth())
-});
-
-svg.append("text")
-    .text("effectif")
-    .attr("transform", "rotate(-90)")
-	.attr("x",30)
-	.attr("y",-20)
-    .attr("font-family" , "sans-serif")
-    .attr("font-size" , "14px")
-    .attr("fill" , "black")
-    .attr("text-anchor", "middle");
-
-svg.append("circle").attr("cx",920).attr("cy",130).attr("r", 6).style("fill", "#377eb8")
-svg.append("circle").attr("cx",920).attr("cy",160).attr("r", 6).style("fill", "#ffffcc")
-svg.append("text").attr("x", 1100).attr("y", 130).text("%SUCCESS").style("font-size", "15px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 1100).attr("y", 160).text("%ECHECS").style("font-size", "15px").attr("alignment-baseline","middle")
-</script>
+   <script type="text/javascript">
+            //Generate a random color
+            const randomRgbColor = (type) => {
+                            let r = Math.floor(Math.random() * 256); // Random between 0-255
+                            
+                            let g = Math.floor(Math.random() * 256); // Random between 0-255
+                            let b = Math.floor(Math.random() * 256); // Random between 0-255
+                            if(type==="ECHEC"){
+                                    r =  128+ Math.floor(Math.random() * 128);
+                                    b =0;
+                            } else {
+                                    r = 0;
+                                    b =  128+ Math.floor(Math.random() * 128);
+                            }   
+                            return 'rgb(' + r + ',' + g + ',' + b + ')';
+             };
+             
+           const premiereCExamsGraph = $("#premiere_c");                       
+           const datasets = [];
+           const premiereCExamsData =premiereCExamsGraph.data('examObjects');
+           
+           const colors = [];     
+           JSON.parse(premiereCExamsData)['mentionCategories'].map(cat => {
+                colors.push(randomRgbColor(cat));
+           });
+          
+           let opremiereCExamsChart = new Chart(premiereCExamsGraph, {
+            type: "pie",
+            data: {
+                labels:  JSON.parse(premiereCExamsData)["mentionCategories"] ,
+                datasets: [{
+                    data: JSON.parse(premiereCExamsData)["mentionCountCategories"],
+                    backgroundColor: colors
+                }]
+            }, 
+            options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Resultats aux examens officiels Premiere C ',
+                                        font: {
+                                            size: 24,
+                                            style: 'bold',
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                    }
+                                }
+                            }
+    });
+          
+          
+           
+          
+              
+            
+        
+   </script>
 
 {% endblock javascripts %}
