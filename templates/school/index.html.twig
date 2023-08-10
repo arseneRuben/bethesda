@@ -440,16 +440,13 @@
     </div>
 
     <section class="card">
-        <article class="row" id="officialExams">
+        <article class="row card-body" id="officialExams">
+            <h1 class="card-title text-center">Taux de reussite aux examens officiels session 2022-2023</h1> 
              {% for key in results|keys %}
                     <div class="col-6 col-md-3 " >
                         <canvas id={{key}}  height="120" data-exam-objects=" {{results[key]}}"></canvas>
                     </div>
-                    
              {% endfor %}
-
-            
-              
         </article>
        
     </section>
@@ -524,18 +521,17 @@
                     });
             }
 
-             // Case of Tle A4 Esp
+             // Disposition des canVas dans le frontEnd
             drawCanvas(terminaleDExamsData,terminaleDExamsGraph , "Terminale D" );
             drawCanvas(terminaleCExamsData,terminaleCExamsGraph , "Terminale D" );
-             drawCanvas(terminaleAAllExamsData,terminaleAAllExamsGraph , "Terminale A All" );
-               drawCanvas(terminaleAEspExamsData,terminaleAEspExamsGraph , "Terminale A Esp" );
-             drawCanvas(premiereAAllExamsData,premiereAAllExamsGraph , "Premiere A All" );
-             drawCanvas(premiereAEspExamsData,premiereAEspExamsGraph , "Premiere A Esp" );
-             drawCanvas(premiereCExamsData,premiereCExamsGraph , "Premiere C" );
-             drawCanvas(premiereDExamsData,premiereDExamsGraph , "Premiere D" );
-
-             drawCanvas(troisiemeAllExamsData,troisiemeAllExamsGraph , "Troisieme All" );
-             drawCanvas(troisiemeEspExamsData,troisiemeEspExamsGraph , "Troisieme Esp" );
+            drawCanvas(terminaleAAllExamsData,terminaleAAllExamsGraph , "Terminale A All" );
+            drawCanvas(terminaleAEspExamsData,terminaleAEspExamsGraph , "Terminale A Esp" );
+            drawCanvas(premiereAAllExamsData,premiereAAllExamsGraph , "Premiere A All" );
+            drawCanvas(premiereAEspExamsData,premiereAEspExamsGraph , "Premiere A Esp" );
+            drawCanvas(premiereCExamsData,premiereCExamsGraph , "Premiere C" );
+            drawCanvas(premiereDExamsData,premiereDExamsGraph , "Premiere D" );
+            drawCanvas(troisiemeAllExamsData,troisiemeAllExamsGraph , "Troisieme All" );
+            drawCanvas(troisiemeEspExamsData,troisiemeEspExamsGraph , "Troisieme Esp" );
 
             
             
