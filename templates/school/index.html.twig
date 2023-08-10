@@ -440,10 +440,10 @@
     </div>
 
     <section class="card">
-        <article class="card-body d-flex flex-row" id="officialExams">
+        <article class="row" id="officialExams">
              {% for key in results|keys %}
-                    <div>
-                        <canvas class="p-3" id={{key}} width="200" height="220" data-exam-objects=" {{results[key]}}"></canvas>
+                    <div class="col-3" >
+                        <canvas id={{key}}  height="120" data-exam-objects=" {{results[key]}}"></canvas>
                     </div>
                     
              {% endfor %}
@@ -471,17 +471,17 @@
                             }   
                             return 'rgb(' + r + ',' + g + ',' + b + ')';
              };
+            const colors=[], datasets = []; 
              
-           const premiereCExamsGraph = $("#premiere_c");                       
-           const datasets = [];
-           const premiereCExamsData =premiereCExamsGraph.data('examObjects');
+           const premiereCExamsGraph = $("#premiere_c"), premiereDExamsGraph = $("#premiere_d") , premiereAEspExamsGraph = $("#premierea4esp"), premiereAAllExamsGraph = $("#premierea4all");    
+                      
+           const premiereCExamsData = premiereCExamsGraph.data('examObjects'), premiereDExamsData = premiereDExamsGraph.data('examObjects'), premiereAEspExamsData = premiereAEspExamsGraph.data('examObjects'), premiereAAllExamsData = premiereAAllExamsGraph.data('examObjects');
            
-           const colors = [];     
+           // Case of Premiere C
            JSON.parse(premiereCExamsData)['mentionCategories'].map(cat => {
                 colors.push(randomRgbColor(cat));
            });
-          
-           let opremiereCExamsChart = new Chart(premiereCExamsGraph, {
+           const premiereCExamsChart = new Chart(premiereCExamsGraph, {
             type: "pie",
             data: {
                 labels:  JSON.parse(premiereCExamsData)["mentionCategories"] ,
@@ -491,21 +491,117 @@
                 }]
             }, 
             options: {
-                                plugins: {
-                                    title: {
+                        plugins: {
+                            title: {
                                         display: true,
-                                        text: 'Resultats aux examens officiels Premiere C ',
+                                        text: ' Premiere C ',
                                         font: {
                                             size: 24,
-                                            style: 'bold',
+                                            
                                             family: 'Helvetica Neue',
                                         },
                                         position: 'bottom',
                                         
-                                    }
-                                }
-                            }
-    });
+                                 }
+                         }
+                }
+            });
+
+
+             // Case of Premiere D
+
+            JSON.parse(premiereDExamsData)['mentionCategories'].map(cat => {
+                colors.push(randomRgbColor(cat));
+           });
+
+            const premiereDExamsChart = new Chart(premiereDExamsGraph, {
+            type: "pie",
+            data: {
+                labels:  JSON.parse(premiereDExamsData)["mentionCategories"] ,
+                datasets: [{
+                    data: JSON.parse(premiereDExamsData)["mentionCountCategories"],
+                    backgroundColor: colors
+                }]
+            }, 
+            options: {
+                        plugins: {
+                            title: {
+                                        display: true,
+                                        text: 'Premiere D ',
+                                        font: {
+                                            size: 24,
+                                            
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                 }
+                         }
+                }
+            });
+            
+             // Case of Premiere A4 Esp
+
+            JSON.parse(premiereAEspExamsData)['mentionCategories'].map(cat => {
+                colors.push(randomRgbColor(cat));
+           });
+
+            const premiereAEspExamsChart = new Chart(premiereAEspExamsGraph, {
+            type: "pie",
+            data: {
+                labels:  JSON.parse(premiereAEspExamsData)["mentionCategories"] ,
+                datasets: [{
+                    data: JSON.parse(premiereAEspExamsData)["mentionCountCategories"],
+                    backgroundColor: colors
+                }]
+            }, 
+            options: {
+                        plugins: {
+                            title: {
+                                        display: true,
+                                        text: 'Premiere A4 Esp',
+                                        font: {
+                                            size: 24,
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                 }
+                         }
+                }
+            });
+
+              // Case of Premiere A4 All
+
+            JSON.parse(premiereAAllExamsData)['mentionCategories'].map(cat => {
+                colors.push(randomRgbColor(cat));
+           });
+
+            const premiereAAllExamsChart = new Chart(premiereAAllExamsGraph, {
+            type: "pie",
+            data: {
+                labels:  JSON.parse(premiereAAllExamsData)["mentionCategories"] ,
+                datasets: [{
+                    data: JSON.parse(premiereAAllExamsData)["mentionCountCategories"],
+                    backgroundColor: colors
+                }]
+            }, 
+            options: {
+                        plugins: {
+                            title: {
+                                        display: true,
+                                        text: 'Premiere A4 All',
+                                        font: {
+                                            size: 24,
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                 }
+                         }
+                }
+            });
+          
           
           
            

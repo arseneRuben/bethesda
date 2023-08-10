@@ -69,6 +69,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->where('sc.id=:year')
             ->andWhere('cl.id=:room')
             ->groupBy('s.officialExamResult')
+
             ->setParameter('year', $year->getId())
             ->setParameter('room', $room->getId());
         return $query->getQuery()->getResult();

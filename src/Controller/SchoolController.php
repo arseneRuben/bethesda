@@ -44,7 +44,7 @@ class SchoolController extends AbstractController
      */
     public function index(): Response
     {
-        $rooms = $this->rmRepo->findBy(array("apc" => true));
+        $rooms = $this->rmRepo->findBy(array("apc" => true), array("level" => "ASC"));
         $year = $this->scRepo->findOneBy(array("activated" => true));
 
         $results = [];
