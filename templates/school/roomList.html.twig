@@ -12,8 +12,7 @@
             <div class="section-title row text-center">
                 <div class="col-md-8 offset-md-2">
                     <h1 class="card-title text-center">
-                        Liste par classe des laureats aux examens officiels.
-                                            
+                        Liste des classes  et resultats aux examens officiels 2022-2023  
                     </h1>
                 </div>
             </div>
@@ -74,38 +73,51 @@
                                                             </p>
                                                         </div>#}
                                                         {% if  room.apc %}
+                                                            {% set success = 0 %}
+                                                            {% set candidats = 0 %}
                                                             <ul class="list-group">
                                                             {% for subscription in room.subscriptions %}
                                                                 {% if  subscription.schoolYear.activated %}
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center row m-1">
-                                                                    <div class="col-3">
-                                                                    <img src="{{ (subscription.student.imageName ? asset('assets/images/student/'~ subscription.student.imageName ) : (subscription.student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ subscription.student.lastname }}" class="img-fluid rounded-start">
-                                                                    </div>
-                                                                    <div class="col-3 ">
-                                                                       
-                                                                           <h5> {{subscription.student.lastname|title ~ subscription.student.firstname|title}} </h5>
-                                                                      
-                                                                    </div>
-                                                                    <div class="col-3 ">
-                                                                       
-                                                                            <h5 class="text-muted">{{subscription.verbalOfficialExamResult|lower}}</h5>
-                                                                      
-                                                                    </div>
-                                                                </li>
+                                                                   
+                                                                    {% set candidats = candidats + 1 %}
+                                                                    {% if subscription.officialExamResult != "0" %}
+                                                                         {% set success = success + 1 %}
+                                                                    {% endif %}
+                                                                    <li class="list-group-item d-flex justify-content-between align-items-center row m-1">
+                                                                        <div class="col-3">
+                                                                        <img src="{{ (subscription.student.imageName ? asset('assets/images/student/'~ subscription.student.imageName ) : (subscription.student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ subscription.student.lastname }}" class="img-fluid rounded-start">
+                                                                        </div>
+                                                                        <div class="col-3 ">
+                                                                        
+                                                                            <h5> {{subscription.student.lastname|title ~ subscription.student.firstname|title}} </h5>
+                                                                        
+                                                                        </div>
+                                                                        <div class="col-3 ">
+                                                                        
+                                                                                <h5 class="text-muted"><b>{{subscription.verbalOfficialExamResult|lower}}</b></h5>
+                                                                        
+                                                                        </div>
+                                                                    </li>                                                               
                                                                 {% endif %}
                                                             {% endfor %}
                                                             </ul>
-                                                         {% endif %}
+                                                        
                                                         <div class="course-rating">
-                                                            4.5
+                                                            {{ (100 * success / candidats)|round(2, 'floor') ~ "%"}}
                                                                                                                                                                             
                                                                                                                         
                                                             <i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-half"></i>
+                                                              {% if success == candidats %}
+                                                                         <i class="fa fa-star"></i>
+                                                                    {% else %}
+                                                                          <i class="fa fa-star-half"></i>
+                                                             {% endif %}
+                                                          
                                                         </div>
+                                                         {% endif %}
                                                     </div>
                                                     <div class="course-meta-bot">
                                                         <ul>
