@@ -475,13 +475,16 @@
             premiereCExamsGraph = $("#premiere_c"), premiereDExamsGraph = $("#premiere_d") ,
             premiereAEspExamsGraph = $("#premierea4esp"), premiereAAllExamsGraph = $("#premierea4all"),
             terminaleCExamsGraph = $("#terminalec"), terminaleDExamsGraph = $("#terminale_d") , 
-            terminaleAEspExamsGraph = $("#terminaleaesp"), terminaleAAllExamsGraph = $("#terminaleaall"); 
+            terminaleAEspExamsGraph = $("#terminaleaesp"), terminaleAAllExamsGraph = $("#terminaleaall"),
+            formvArtExamsGraph = $("#formvart"), formvScienceExamsGraph = $("#formvscience")
+            ; 
            
            const troisiemeAllExamsData = troisiemeAllExamsGraph.data('examObjects'), troisiemeEspExamsData = troisiemeEspExamsGraph.data('examObjects'),
            premiereCExamsData = premiereCExamsGraph.data('examObjects'), premiereDExamsData = premiereDExamsGraph.data('examObjects'), 
            premiereAEspExamsData = premiereAEspExamsGraph.data('examObjects'), premiereAAllExamsData = premiereAAllExamsGraph.data('examObjects'),
            terminaleCExamsData = terminaleCExamsGraph.data('examObjects'), terminaleDExamsData = terminaleDExamsGraph.data('examObjects'),
-           terminaleAEspExamsData = terminaleAEspExamsGraph.data('examObjects'), terminaleAAllExamsData = terminaleAAllExamsGraph.data('examObjects');
+           terminaleAEspExamsData = terminaleAEspExamsGraph.data('examObjects'), terminaleAAllExamsData = terminaleAAllExamsGraph.data('examObjects'),
+           formvArtExamsData = formvArtExamsGraph.data('examObjects'),formvScienceExamsData = formvScienceExamsGraph.data('examObjects');
            
           
 
@@ -532,6 +535,9 @@
             drawCanvas(premiereDExamsData,premiereDExamsGraph , "Premiere D" );
             drawCanvas(troisiemeAllExamsData,troisiemeAllExamsGraph , "Troisieme All" );
             drawCanvas(troisiemeEspExamsData,troisiemeEspExamsGraph , "Troisieme Esp" );
+            drawCanvas(formvArtExamsData,formvArtExamsGraph , "FORM 5 Art" );
+            drawCanvas(formvScienceExamsData,formvScienceExamsGraph , "FORM 5 Science" );
+            
 
             
             
