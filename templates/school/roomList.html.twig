@@ -11,10 +11,10 @@
         <div class="container">
             <div class="section-title row text-center">
                 <div class="col-md-8 offset-md-2">
-                    <p class="lead">
-                        List of classrooms, staff, courses and tenured teachers
+                    <h1 class="card-title text-center">
+                        Liste par classe des laureats aux examens officiels.
                                             
-                    </p>
+                    </h1>
                 </div>
             </div>
             <!-- end title -->
@@ -26,12 +26,12 @@
                         {% for row in rooms|batch(4) %}
                             <div class="row">
                                 {% for room in row %}
-                                    <div class="col-lg-3 col-md-6 col-12">
+                                    <div class="col-lg-4 col-md-6 col-12">
                                         <div class="course-item">
                                             <div class="image-blog">
-                                                {% if  room.fullTeacher %}
+                                                     {% if  room.fullTeacher %}
                                                     <img
-                                                    src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
+                                                             src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
                                                         {% else %}
                                                         <img src="{{ asset('assets/images/teacher_default.png') }}" alt="" class="img-fluid">
                                                         {% endif %}
@@ -44,7 +44,7 @@
                                                                 </a>
                                                             </h2>
                                                         </div>
-                                                        <div class="course-desc">
+                                                        {#<div class="course-desc">
                                                             <p>
                                                                 <ul class="list-unstyled h3 mt-3 mb-4">
                                                                     {% for moduule in room.modules %}
@@ -72,7 +72,30 @@
                                                                     {% endfor %}
                                                                 </ul>
                                                             </p>
-                                                        </div>
+                                                        </div>#}
+                                                        {% if  room.apc %}
+                                                            <ul class="list-group">
+                                                            {% for subscription in room.subscriptions %}
+                                                                {% if  subscription.schoolYear.activated %}
+                                                                <li class="list-group-item d-flex justify-content-between align-items-center row m-1">
+                                                                    <div class="col-3">
+                                                                    <img src="{{ (subscription.student.imageName ? asset('assets/images/student/'~ subscription.student.imageName ) : (subscription.student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ subscription.student.lastname }}" class="img-fluid rounded-start">
+                                                                    </div>
+                                                                    <div class="col-3 ">
+                                                                       
+                                                                           <h5> {{subscription.student.lastname|title ~ subscription.student.firstname|title}} </h5>
+                                                                      
+                                                                    </div>
+                                                                    <div class="col-3 ">
+                                                                       
+                                                                            <h5 class="text-muted">{{subscription.verbalOfficialExamResult|lower}}</h5>
+                                                                      
+                                                                    </div>
+                                                                </li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            </ul>
+                                                         {% endif %}
                                                         <div class="course-rating">
                                                             4.5
                                                                                                                                                                             
@@ -97,8 +120,8 @@
                                                             </li>
                                                         </ul>
                                                     </div>
-                                                </div>
                                             </div>
+                                        </div>
                                         <!-- end col -->
                                         {% endfor %}
                                     </div>

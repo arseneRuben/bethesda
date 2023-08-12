@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ClassRoom;
+use App\Entity\Level;
 use App\Entity\Student;
 use App\Entity\SchoolYear;
 use App\Entity\Subscription;
@@ -57,6 +58,7 @@ class SubscriptionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+
     /**
      * Return number of subscription per mention
      */
@@ -74,6 +76,26 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('room', $room->getId());
         return $query->getQuery()->getResult();
     }
+
+    /**
+     * Return number of subscription per mention
+     */
+    public function countByMentionByLevel(Level $year, ClassRoom $room)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(s) as count, s.officialExamResult')
+            ->leftJoin('s.schoolYear', 'sc')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('sc.id=:year')
+            ->andWhere('cl.id=:room')
+            ->groupBy('s.officialExamResult')
+
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId());
+        return $query->getQuery()->getResult();
+    }
+
+
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */

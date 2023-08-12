@@ -132,8 +132,9 @@ class SchoolController extends AbstractController
 
         //phpinfo();
         $rooms = $this->rmRepo->findAll();
+        $year = $this->scRepo->findOneBy(array("activated" => true));
 
-        return $this->render('school/roomList.html.twig', compact("rooms"));
+        return $this->render('school/roomList.html.twig', compact("rooms", "year"));
     }
 
 
