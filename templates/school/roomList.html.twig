@@ -102,11 +102,11 @@
                                                             {% endfor %}
                                                             </ul>
                                                         
-                                                        <div class="course-rating">
-                                                            {{ (100 * success / candidats)|round(2, 'floor') ~ "%"}}
+                                                        <div class="course-rating text-center">
+                                                            <b>{{ (100 * success / candidats)|round(2, 'floor') ~ "%"}}</b>
                                                                                                                                                                             
                                                                                                                         
-                                                            <i class="fa fa-star"></i>
+                                                            {#<i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
                                                             <i class="fa fa-star"></i>
@@ -114,7 +114,7 @@
                                                                          <i class="fa fa-star"></i>
                                                                     {% else %}
                                                                           <i class="fa fa-star-half"></i>
-                                                             {% endif %}
+                                                             {% endif %}#}
                                                           
                                                         </div>
                                                          {% endif %}
