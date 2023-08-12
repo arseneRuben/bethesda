@@ -500,7 +500,7 @@
                         colors.push(randomRgbColor(cat));
                 });
                 const  examChart = new Chart(examGraph, {
-                    type: "pie",
+                    type: "polarArea",
                     data: {
                         labels:  JSON.parse(examData)["mentionCategories"] ,
                         datasets: [{
