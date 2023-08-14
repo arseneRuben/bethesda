@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\ClassRoom;
 use App\Repository\UserRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
 use App\Repository\SubscriptionRepository;
 use App\Service\OfficialExamService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -127,11 +129,17 @@ class SchoolController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function roomListAction()
+    public function roomListAction(PaginatorInterface $paginator,  Request $request)
     {
-        $rooms = $this->rmRepo->findAll();
+        $entities = $this->rmRepo->findAll();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $subscriptions = $this->subRepo->findEnrollementThisYear($year);
+        $rooms = $paginator->paginate($entities, $request->query->get('page', 1), ClassRoom::NUM_ITEMS_PER_PAGE);
+        $rooms->setCustomParameters([
+            'position' => 'centered',
+            'size' => 'large',
+            'rounded' => true,
+        ]);
         return $this->render('school/roomList.html.twig', compact("rooms", "year", "subscriptions"));
     }
 

@@ -20,6 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class ClassRoom
 {
+    public const NUM_ITEMS_PER_PAGE = 3;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
