@@ -7,10 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method SchoolYear|null find($id, $lockMode = null, $lockVersion = null)
- * @method SchoolYear|null findOneBy(array $criteria, array $orderBy = null)
- * @method SchoolYear[]    findAll()
- * @method SchoolYear[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Le repository pour l'entité SchoolYear.
  */
 class SchoolYearRepository extends ServiceEntityRepository
 {
@@ -19,32 +16,21 @@ class SchoolYearRepository extends ServiceEntityRepository
         parent::__construct($registry, SchoolYear::class);
     }
 
-    // /**
-    //  * @return SchoolYear[] Returns an array of SchoolYear objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Récupère toutes les années scolaires activées, sauf celle spécifiée.
+     *
+     * @param SchoolYear $schoolYear L'année scolaire spécifique à exclure.
+     * @return SchoolYear[] Un tableau d'années scolaires activées, excluant la spécifique.
+     */
+    public function findAllActivatedExcept(SchoolYear $schoolYear): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('sy')
+            ->andWhere('sy != :schoolYear') // Exclut l'année scolaire spécifique
+            ->setParameter('schoolYear', $schoolYear)
+            ->andWhere('sy.activated = 1') // Sélectionne les années scolaires activées (activated = true)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?SchoolYear
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
+

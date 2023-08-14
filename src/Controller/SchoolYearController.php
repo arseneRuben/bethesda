@@ -50,19 +50,31 @@ class SchoolYearController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function showAction(SchoolYear $school_year)
-    {
-        if ($school_year->getActivated()) {
-            foreach ($school_year->getSubscriptions() as $sub) {
-                // var_dump($school_year);
-                // die();
-                if ($sub->getStudent() != null)
-                    var_dump($sub);
-
-                // $sub->getStudent()->setEnrolled(true);
+    public function showAction(SchoolYear $school_year, SchoolYearRepository $schoolYearRepository)
+    {   
+        $em = $this->getDoctrine()->getManager();
+        
+        $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($school_year);
+    
+        foreach ($allSchoolYears as $otherSchoolYear) {
+            if ($otherSchoolYear !== $school_year && $otherSchoolYear->getActivated()) {
+                $otherSchoolYear->setActivated(false);
+                $em->persist($otherSchoolYear);
             }
         }
-
+    
+        // Ne flush qu'une seule fois après avoir désactivé toutes les autres années
+        $em->flush();
+    
+        if ($school_year->getActivated()) {
+            foreach ($school_year->getSubscriptions() as $sub) {
+                if ($sub->getStudent() != null) {
+                    var_dump($sub);
+                    // $sub->getStudent()->setEnrolled(true);
+                }
+            }
+        }
+    
         return $this->render('school_year/show.html.twig', compact("school_year"));
     }
 
