@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
 use App\Repository\SubscriptionRepository;
-
+use App\Service\OfficialExamService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,12 +129,29 @@ class SchoolController extends AbstractController
      */
     public function roomListAction()
     {
-
-        //phpinfo();
         $rooms = $this->rmRepo->findAll();
         $year = $this->scRepo->findOneBy(array("activated" => true));
+        $subscriptions = $this->subRepo->findEnrollementThisYear($year);
+        return $this->render('school/roomList.html.twig', compact("rooms", "year", "subscriptions"));
+    }
 
-        return $this->render('school/roomList.html.twig', compact("rooms", "year"));
+    /**
+     * Finds and displays a Section entity.
+     *
+     * @Route("/{roomId}/exam", name="official_exam", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function callOffialExam(int $roomId, OfficialExamService $officialExamService)
+    {
+
+
+        $rate = $officialExamService->successRate($roomId);
+        $subscriptions = $officialExamService->subscriptions($roomId);
+        return $this->render('school/roomList.html.twig', [
+            'rate' => $rate,
+            'subscriptions' => $subscriptions
+        ]);
     }
 
 

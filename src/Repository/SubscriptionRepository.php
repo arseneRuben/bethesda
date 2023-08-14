@@ -78,6 +78,40 @@ class SubscriptionRepository extends ServiceEntityRepository
     }
 
     /**
+     * Return number of subscriptions per year in a ClassRoom
+     */
+    public function countCandidates(SchoolYear $year, ClassRoom $room)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(s) as count')
+            ->leftJoin('s.schoolYear', 'sc')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('sc.id=:year')
+            ->andWhere('cl.id=:room')
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId());
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Return number of subscription per year in a ClassRoom
+     */
+    public function countSuccessfullCandidates(SchoolYear $year, ClassRoom $room)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(s) as count')
+            ->leftJoin('s.schoolYear', 'sc')
+            ->leftJoin('s.classRoom', 'cl')
+            ->where('sc.id=:year')
+            ->andWhere('cl.id=:room')
+            ->andWhere('s.officialExamResult=:res')
+            ->setParameter('year', $year->getId())
+            ->setParameter('room', $room->getId())
+            ->setParameter('res', "0");
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * Return number of subscription per mention
      */
     public function countByMentionByLevel(Level $year, ClassRoom $room)
