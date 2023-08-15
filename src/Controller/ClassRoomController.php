@@ -104,8 +104,51 @@ class ClassRoomController extends AbstractController
             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
             $fileExists[] = file_exists($filename);
         }
-        // Liste des inscriptions pour resulats au examens officiels
-        $subscriptions = $this->subRepo->findBy(array("schoolYear" => $year, "classRoom" => $classroom));
+        // Liste des resulats au examens officiels
+        $officialExamResults = $this->subRepo->countByMention($year, $classroom);
+        $mentionCategories = [];
+        $mentionCountCategories = [];
+        foreach ($officialExamResults as $exam) {
+
+            switch ($exam["officialExamResult"]) {
+                case  "0":
+                    $mentionCategories[] = "ECHEC";
+                    break;
+                case  "1p":
+                    $mentionCategories[] = "PASSABLE";
+                    break;
+                case  "1a":
+                    $mentionCategories[] = "ASSEZ-BIEN";
+                    break;
+                case  "1b":
+                    $mentionCategories[] = "BIEN";
+                    break;
+                case  "1t":
+                    $mentionCategories[] = "TRES-BIEN";
+                    break;
+                case  "1e":
+                    $mentionCategories[] = "EXCELLENT";
+                    break;
+                case  "A":
+                    $mentionCategories[] = "5 POINTS";
+                    break;
+                case  "B":
+                    $mentionCategories[] = "4 POINTS";
+                    break;
+                case  "C":
+                    $mentionCategories[] = "3 POINTS";
+                    break;
+                case  "D":
+                    $mentionCategories[] = "2 POINTS";
+                    break;
+                case  "E":
+                    $mentionCategories[] = "1 POINT";
+                    break;
+            }
+            $mentionCountCategories[] = $exam["count"];
+        }
+
+
 
         // Extraction de donnees pour les graphes
         $seqs = $this->seqRepo->findSequenceThisYear($year);
@@ -150,9 +193,9 @@ class ClassRoomController extends AbstractController
         $results['studentEnrolled'] = $studentEnrolled;
         $results['cours'] = json_encode($courses);
         $results['fileExists'] = $fileExists;
-
-        $results['sessions'] = $seqs;
-
+        $results['sessions'] = json_encode($seqs);
+        $results['mentionCategories'] = json_encode($mentionCategories);
+        $results['mentionCountCategories'] = json_encode($mentionCountCategories);
 
         foreach ($seqs as $seq) {
             $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);

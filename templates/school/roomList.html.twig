@@ -11,117 +11,118 @@
         <div class="container">
             <div class="section-title row text-center">
                 <div class="col-md-8 offset-md-2">
-                    <p class="lead">
-                        List of classrooms, staff, courses and tenured teachers
-                                            
-                    </p>
+                    <h1 class="card-title text-center">
+                        Liste des classes  et resultats aux examens officiels 2022-2023  
+                    </h1>
                 </div>
             </div>
             <!-- end title -->
 
             <hr class="invis">
-                {% if  rooms|length > 0 %}
-                    <div id="teachers" class="section wb">
+                            {% if  rooms|length > 0 %}
+                                <div id="teachers" class="section wb">
 
-                        {% for row in rooms|batch(4) %}
-                            <div class="row">
-                                {% for room in row %}
-                                    <div class="col-lg-3 col-md-6 col-12">
-                                        <div class="course-item">
-                                            <div class="image-blog">
-                                                {% if  room.fullTeacher %}
-                                                    <img
-                                                    src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
-                                                        {% else %}
-                                                        <img src="{{ asset('assets/images/teacher_default.png') }}" alt="" class="img-fluid">
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="course-br">
-                                                        <div class="course-title">
-                                                            <h2>
-                                                                <a href="#" title="">
-                                                                    {{ room.name }}
-                                                                </a>
-                                                            </h2>
-                                                        </div>
-                                                        <div class="course-desc">
-                                                            <p>
-                                                                <ul class="list-unstyled h3 mt-3 mb-4">
-                                                                    {% for moduule in room.modules %}
-                                                                        <li>
-                                                                            <h4>
-                                                                                <b>
-                                                                                    {{ moduule.name }}
-                                                                                    &nbsp;&nbsp;
-                                                                                                                                                                    
-                                                                                </b>
-                                                                            </h4>
-                                                                        </li>
-                                                                        {% for course in moduule.courses %}
-                                                                            <li>
-                                                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                                                                                                
-                                                                                <h4>
-                                                                                    {{ course.wording }}
-                                                                                    &nbsp;&nbsp; |&nbsp;&nbsp; 
-                                                                                                                                                                        
-                                                                                    {{ course.coefficient }}
-                                                                                </h4>
-                                                                            </li>
-                                                                        {% endfor %}
+                                {% for row in rooms|batch(4) %}
+                                <div class="row">
+                                    {% for room in row %}
+                                        <div class="col-lg-4 col-md-6 col-12">
+                                                    <div class="course-item">
+                                                            <div class="image-blog">
+                                                                {% if  room.fullTeacher %}
+                                                                <img
+                                                                    src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
+                                                                {% else %}
+                                                                <img src="{{ asset('assets/images/teacher_default.png') }}" alt="" class="img-fluid">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="course-br">
+                                                                <div class="course-title">
+                                                                    <h2>
+                                                                        <a href="#" title="">
+                                                                            {{ room.name }}
+                                                                        </a>
+                                                                    </h2>
+                                                                </div>
+                                                            
+                                                                {% if  room.apc %}
+                                                                    {% set success = 0 %}
+                                                                    {% set candidats = 0 %}
+                                                                    <ul class="list-group">
+                                                                    {% for subscription in subscriptions %}
+                                                                    
+                                                                        {% if(subscription.classRoom.id == room.id) %}
+                                                                            {% set candidats = candidats + 1 %}
+                                                                            {% if subscription.officialExamResult != "0" %}
+                                                                                {% set success = success + 1 %}
+                                                                            {% endif %}
+                                                                            <li class="list-group-item d-flex justify-content-between align-items-center row m-1">
+                                                                                <div class="col-3">
+                                                                                <img src="{{ (subscription.student.imageName ? asset('assets/images/student/'~ subscription.student.imageName ) : (subscription.student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ subscription.student.lastname }}" class="img-fluid rounded-start">
+                                                                                </div>
+                                                                                <div class="col-3 ">
+                                                                                
+                                                                                    <h5> {{subscription.student.lastname|title ~ subscription.student.firstname|title}} </h5>
+                                                                                
+                                                                                </div>
+                                                                                <div class="col-3 ">
+                                                                                
+                                                                                        <h5 class="text-muted"><b>{{subscription.verbalOfficialExamResult|lower}}</b></h5>
+                                                                                
+                                                                                </div>
+                                                                            </li>                                                               
+                                                                        {% endif %}
                                                                     {% endfor %}
+                                                                    </ul>
+                                                                
+                                                                    <div class="course-rating text-center">
+                                                                        {{ (100 * success / candidats)|round(2, 'floor') ~ "%"}}
+                                                                                                                                                                                        
+                                                                                                                                    
+                                                                        {#<i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        <i class="fa fa-star"></i>
+                                                                        {% if success == candidats %}
+                                                                                    <i class="fa fa-star"></i>
+                                                                                {% else %}
+                                                                                    <i class="fa fa-star-half"></i>
+                                                                        {% endif %}#}
+                                                                    
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="course-meta-bot">
+                                                                <ul>
+                                                                    <li>
+                                                                        <i class="fa fa-book" aria-hidden="true"></i>
+                                                                        {{ pluralize(room.modules|length, 'Module' , 'Modules') }}
+                                                                    </li>
                                                                 </ul>
-                                                            </p>
-                                                        </div>
-                                                        <div class="course-rating">
-                                                            4.5
-                                                                                                                                                                            
-                                                                                                                        
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-half"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="course-meta-bot">
-                                                        <ul>
-
-                                                            {#<li>
-                                                                                                                            <i class="fa fa-users" aria-hidden="true"></i>
-                                                                                                                            {{ pluralize(room.currentYearSubscriptions|length, 'Student' , 'Students') }}
-                                                                                                                        </li>#}
-                                                            <li>
-                                                                <i class="fa fa-book" aria-hidden="true"></i>
-                                                                {{ pluralize(room.modules|length, 'Module' , 'Modules') }}
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <!-- end col -->
-                                        {% endfor %}
-                                    </div>
-                                <!-- end row -->
+                                                            </div>
+                                                    </div>  
+                                        </div>
+                                    <!-- end row -->
+                                    {% endfor %}
+                                </div>
                                 {% endfor %}
-
-                            </div>
+                                <div class="navigation  text-center h3 m-5">
+                                    {{ knp_pagination_render(rooms) }}
+                                </div>
                         <!-- end container -->
                             {% else %}
-                            <p class="mt-5 h1 text-center">
-                                No classroom yet.   	
-                                                                
-                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                    <a href="{{ path('admin_classrooms_new') }}">
-                                        Be the first! 
-                                                                            
-                                    </a>
-                                {% endif %}
-                            </p>
-                        {% endif %}
+                                <p class="mt-5 h1 text-center">
+                                    No classroom yet.   	
+                                                                    
+                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                        <a href="{{ path('admin_classrooms_new') }}">
+                                            Be the first! 
+                                                                                
+                                        </a>
+                                    {% endif %}
+                                </p>
+                            {% endif %}
 
-                    </div>
-                <!-- end row -->
+                 
 
                 </div>
             </div>

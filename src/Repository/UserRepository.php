@@ -37,18 +37,39 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function findAllOfCurrentYear(SchoolYear $year) {
-      
+    public function findAllOfCurrentYear(SchoolYear $year)
+    {
+
         $qb = $this->createQueryBuilder('u')
             ->leftJoin('u.attributions', 'a')
             ->leftJoin('a.schoolYear', 'sc')
             ->where('sc.id=:year')
             ->orderBy('u.fullName')
             ->setParameter('year', $year->getId());
-              
+
         return $qb->getQuery()->getResult();
     }
 
+    public function findTeacherSize(SchoolYear $year)
+    {
+        $userIds =  $this->createQueryBuilder('u')
+            ->select('id')
+            ->leftJoin('u.attributions', 'a')
+            ->where('a.year_id=:year')
+            ->groupBy('u.id')
+            ->having($this->createQueryBuilder('a')->expr()->gte('count(a.id)', ':minimumCount'))
+            ->setParameter('year', $year->getId())
+            ->setParameter('minimumCount', "0")
+            ->getQuery()->getResult();
+
+        $query = $this->createQueryBuilder('u')
+            ->select('COUNT(id) ')
+            ->where($this->createQueryBuilder('u')->expr()->in('u.userIds', ':userIds'))
+            ->setParameter('userIds', $userIds);
+
+
+        return $query->getQuery()->getResult();
+    }
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
