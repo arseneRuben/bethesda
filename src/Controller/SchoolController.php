@@ -48,6 +48,7 @@ class SchoolController extends AbstractController
     {
         $rooms = $this->rmRepo->findBy(array("apc" => true), array("level" => "ASC"));
         $year = $this->scRepo->findOneBy(array("activated" => true));
+       // dd($this->userRepo->findTeacherSize($year));
 
         $results = [];
 
