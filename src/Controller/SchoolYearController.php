@@ -84,30 +84,45 @@ class SchoolYearController extends AbstractController
     /**
      * @Route("/create",name= "admin_schoolyears_new", methods={"GET","POST"})
      */
-    public function create(Request $request): Response
+    public function create(Request $request, SchoolYearRepository $schoolYearRepository): Response
     {
         if (!$this->getUser()) {
-            $this->addFlash('warning', 'You need login first!');
+            $this->addFlash('warning', 'You need to log in first!');
             return $this->redirectToRoute('app_login');
         }
+        
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
+        
+        $em = $this->getDoctrine()->getManager();
         $schoolyear = new SchoolYear();
         $form = $this->createForm(SchoolYearType::class, $schoolyear);
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($schoolyear);
-            $this->em->flush();
-            $this->addFlash('success', 'SchoolYear succesfully created');
+            $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($schoolyear);
+            
+            foreach ($allSchoolYears as $otherSchoolYear) {
+                $otherSchoolYear->setActivated(false);
+                $em->persist($otherSchoolYear);
+            }
+            
+            $schoolyear->setActivated(true);
+            $em->persist($schoolyear);
+            $em->flush();
+            
+            $this->addFlash('success', 'SchoolYear successfully created');
             return $this->redirectToRoute('admin_school_years');
         }
+        
         return $this->render(
             'school_year/new.html.twig',
             ['form' => $form->createView()]
         );
     }
+
 
     /**
      * Displays a form to edit an existing SchoolYearme entity.
@@ -115,19 +130,34 @@ class SchoolYearController extends AbstractController
      * @Route("/{id}/edt", name="admin_schoolyears_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request, SchoolYear $schoolyear): Response
+    public function edit(Request $request, SchoolYear $schoolyear, SchoolYearRepository $schoolYearRepository): Response
     {
-
+        $em = $this->getDoctrine()->getManager();
+        
         $form = $this->createForm(SchoolYearType::class, $schoolyear, [
             'method' => 'GET',
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->flush();
-            $this->addFlash('success', 'SchoolYear succesfully updated');
+            $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($schoolyear);
+            
+            foreach ($allSchoolYears as $otherSchoolYear) {
+                $otherSchoolYear->setActivated(false);
+                $em->persist($otherSchoolYear);
+            }
+            
+            if (!$schoolyear->getActivated()) {
+                $schoolyear->setActivated(true);
+                $em->persist($schoolyear);
+            }
+
+            $em->flush();
+            
+            $this->addFlash('success', 'SchoolYear successfully updated');
             return $this->redirectToRoute('admin_school_years');
         }
+        
         return $this->render('school_year/edit.html.twig', [
             'schoolyear' => $schoolyear,
             'form' => $form->createView()
