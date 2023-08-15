@@ -59,4 +59,16 @@ class SequenceRepository extends ServiceEntityRepository
                  ->setParameter('year', $year->getId());
         return $qb->getQuery()->getResult();          
 }
+
+public function findActivatedSequenceThisYear(SchoolYear $year)
+{
+    $qb = $this->createQueryBuilder('s')
+        ->leftJoin('s.quater', 'q')
+        ->leftJoin('q.schoolYear', 'y')
+        ->where('y = :year')
+        ->andWhere('s.activated = true')
+        ->setParameter('year', $year);
+
+    return $qb->getQuery()->getResult();
+}
 }

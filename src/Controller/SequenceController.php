@@ -74,22 +74,36 @@ class SequenceController extends AbstractController
     /**
      * @Route("/create",name= "admin_sequences_new", methods={"GET","POST"})
      */
-    public function create(Request $request): Response
-    {
-        $schoolyear = new Sequence();
-        $form = $this->createForm(SequenceType::class, $schoolyear);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($schoolyear);
-            $this->em->flush();
-            $this->addFlash('success', 'Sequence succesfully created');
-            return $this->redirectToRoute('admin_sequences');
+    public function create(Request $request, SequenceRepository $sequenceRepository): Response
+{
+    $schoolyear = new Sequence();
+    $form = $this->createForm(SequenceType::class, $schoolyear);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        
+        // Désactiver toutes les séquences existantes pour cette année scolaire
+        $allSequences = $sequenceRepository->findAll();
+        foreach ($allSequences as $sequence) {
+            $sequence->setActivated(false);
+            $em->persist($sequence);
         }
-        return $this->render(
-            'sequence/new.html.twig',
-            ['form' => $form->createView()]
-        );
+        
+        // Activer la séquence créée
+        $schoolyear->setActivated(true);
+        $em->persist($schoolyear);
+        $em->flush();
+
+        $this->addFlash('success', 'Sequence successfully created');
+        return $this->redirectToRoute('admin_sequences');
     }
+
+    return $this->render(
+        'sequence/new.html.twig',
+        ['form' => $form->createView()]
+    );
+}
 
     /**
      * Displays a form to edit an existing Sequenceme entity.
@@ -97,32 +111,36 @@ class SequenceController extends AbstractController
      * @Route("/{id}/edt", name="admin_sequences_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request, Sequence $sequence): Response
-    {
-        $form = $this->createForm(SequenceType::class, $sequence, [
-            'method' => 'GET',
-        ]);
-        $form->handleRequest($request);
+    public function edit(Request $request, Sequence $sequence, SequenceRepository $sequenceRepository): Response
+{
+    $form = $this->createForm(SequenceType::class, $sequence, [
+        'method' => 'GET',
+    ]);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if($sequence->getActivated()){
-                $sequences = $this->repo->findAll();
-                foreach ($sequences as $seq) {
-                    if(($seq->getId() != $sequence->getId())&&($seq->getActivated()) ){
-                        $seq = $seq->setActivated(false);
-                    }
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        
+        if ($sequence->getActivated()) {
+            $allSequences = $sequenceRepository->findAll();
+            foreach ($allSequences as $seq) {
+                if (($seq->getId() != $sequence->getId()) && ($seq->getActivated())) {
+                    $seq->setActivated(false);
+                    $em->persist($seq);
                 }
             }
-            
-            $this->em->flush();
-            $this->addFlash('success', 'Sequence succesfully updated');
-            return $this->redirectToRoute('admin_sequences');
         }
-        return $this->render('sequence/edit.html.twig', [
-            'sequence' => $sequence,
-            'form' => $form->createView()
-        ]);
+        
+        $em->flush();
+        $this->addFlash('success', 'Sequence successfully updated');
+        return $this->redirectToRoute('admin_sequences');
     }
+
+    return $this->render('sequence/edit.html.twig', [
+        'sequence' => $sequence,
+        'form' => $form->createView()
+    ]);
+}
 
 
 

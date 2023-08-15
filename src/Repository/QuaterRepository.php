@@ -58,4 +58,16 @@ class QuaterRepository extends ServiceEntityRepository
                  ->setParameter('year', $year->getId());
         return $qb->getQuery()->getResult();          
 }
+    
+public function findActivatedQuaterThisYear(SchoolYear $year)
+{
+    $qb = $this->createQueryBuilder('q')
+        ->leftJoin('q.schoolYear', 'y')
+        ->where('y = :year')
+        ->andWhere('q.activated = true')
+        ->setParameter('year', $year);
+
+    return $qb->getQuery()->getResult();
+}
+
 }

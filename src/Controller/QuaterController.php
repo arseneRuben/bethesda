@@ -69,30 +69,36 @@ class QuaterController extends AbstractController
     /**
      * @Route("/create",name= "admin_quaters_new", methods={"GET","POST"})
      */
-    public function create(Request $request): Response
-    {
-       /* if (!$this->getUser()) {
-            $this->addFlash('warning', 'You need login first!');
-            return $this->redirectToRoute('app_login');
+    public function create(Request $request, QuaterRepository $quaterRepository): Response
+{
+    $schoolyear = new Quater();
+    $form = $this->createForm(QuaterType::class, $schoolyear);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        
+        // Désactiver tous les trimestres existants pour cette année scolaire
+        $allQuaters = $quaterRepository->findAll();
+        foreach ($allQuaters as $quater) {
+            $quater->setActivated(false);
+            $em->persist($quater);
         }
-        if (!$this->getUser()->isVerified()) {
-            $this->addFlash('warning', 'You need to have a verified account!');
-            return $this->redirectToRoute('app_login');
-        }*/
-        $schoolyear = new Quater();
-        $form = $this->createForm(QuaterType::class, $schoolyear);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($schoolyear);
-            $this->em->flush();
-            $this->addFlash('success', 'Quater succesfully created');
-            return $this->redirectToRoute('admin_quaters');
-        }
-        return $this->render(
-            'quater/new.html.twig',
-            ['form' => $form->createView()]
-        );
+        
+        // Activer le trimestre créé
+        $schoolyear->setActivated(true);
+        $em->persist($schoolyear);
+        $em->flush();
+
+        $this->addFlash('success', 'Quater successfully created');
+        return $this->redirectToRoute('admin_quaters');
     }
+
+    return $this->render(
+        'quater/new.html.twig',
+        ['form' => $form->createView()]
+    );
+}
 
     /**
      * Displays a form to edit an existing Quaterme entity.
@@ -100,32 +106,36 @@ class QuaterController extends AbstractController
      * @Route("/{id}/edt", name="admin_quaters_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request, Quater $quater): Response
-    {
-        $form = $this->createForm(QuaterType::class, $quater, [
-            'method' => 'GET',
-        ]);
-        $form->handleRequest($request);
+    public function edit(Request $request, Quater $quater, QuaterRepository $quaterRepository): Response
+{
+    $form = $this->createForm(QuaterType::class, $quater, [
+        'method' => 'GET',
+    ]);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-           
-            if($quater->getActivated()){
-                $quaters = $this->repo->findAll();
-                foreach ($quaters as $quat) {
-                    if(($quat->getId() != $quater->getId())&&($quat->getActivated()) ){
-                        $quat = $quat->setActivated(false);
-                    }
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        
+        if ($quater->getActivated()) {
+            $allQuaters = $quaterRepository->findAll();
+            foreach ($allQuaters as $quat) {
+                if (($quat->getId() != $quater->getId()) && ($quat->getActivated())) {
+                    $quat->setActivated(false);
+                    $em->persist($quat);
                 }
             }
-            $this->em->flush();
-            $this->addFlash('success', 'Quater succesfully updated');
-            return $this->redirectToRoute('admin_quaters');
         }
-        return $this->render('quater/edit.html.twig', [
-            'quater' => $quater,
-            'form' => $form->createView()
-        ]);
+        
+        $em->flush();
+        $this->addFlash('success', 'Quater successfully updated');
+        return $this->redirectToRoute('admin_quaters');
     }
+
+    return $this->render('quater/edit.html.twig', [
+        'quater' => $quater,
+        'form' => $form->createView()
+    ]);
+}
 
 
 
