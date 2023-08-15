@@ -191,45 +191,5 @@ class SchoolYear
 
         return $this;
     }
-
-
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="activated", type="tinyint", options={"default": 0})
-     */
-    private $activated;
-
-    // ...
-
-    /**
-     * Set activated
-     *
-     * @param int $activated
-     *
-     * @return SchoolYear
-     */
-    public function setActivated(int $activated)
-    {
-        $this->activated = $activated;
-
-        return $this;
-    }
-
-    /**
-     * Get activated
-     *
-     * @return int
-     */
-    public function getActivated(): int
-    {
-        return $this->activated;
-    }
-
-
- 
-
-
    
 }

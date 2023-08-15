@@ -50,34 +50,37 @@ class SchoolYearController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function showAction(SchoolYear $school_year, SchoolYearRepository $schoolYearRepository)
-    {   
-        $em = $this->getDoctrine()->getManager();
-        
-        $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($school_year);
-    
-        foreach ($allSchoolYears as $otherSchoolYear) {
-            if ($otherSchoolYear !== $school_year && $otherSchoolYear->getActivated()) {
-                $otherSchoolYear->setActivated(false);
-                $em->persist($otherSchoolYear);
-            }
-        }
-    
-        // Ne flush qu'une seule fois après avoir désactivé toutes les autres années
-        $em->flush();
-    
-        if ($school_year->getActivated()) {
-            foreach ($school_year->getSubscriptions() as $sub) {
-                if ($sub->getStudent() != null) {
-                    var_dump($sub);
-                    // $sub->getStudent()->setEnrolled(true);
-                }
-            }
-        }
-    
-        return $this->render('school_year/show.html.twig', compact("school_year"));
-    }
 
+     public function showAction(SchoolYear $school_year, SchoolYearRepository $schoolYearRepository): Response
+     {   
+         $em = $this->getDoctrine()->getManager();
+         
+         $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($school_year);
+         
+         foreach ($allSchoolYears as $otherSchoolYear) {
+             $otherSchoolYear->setActivated(false);
+             $em->persist($otherSchoolYear);
+         }
+         
+         if (!$school_year->getActivated()) {
+             $school_year->setActivated(true);
+             $em->persist($school_year);
+         }
+ 
+         $em->flush();
+         
+         if ($school_year->getActivated()) {
+             foreach ($school_year->getSubscriptions() as $sub) {
+                 if ($sub->getStudent() !== null) {
+                     var_dump($sub);
+                     // $sub->getStudent()->setEnrolled(true);
+                 }
+             }
+         }
+         
+         return $this->render('school_year/show.html.twig', compact("school_year"));
+     }
+ 
     /**
      * @Route("/create",name= "admin_schoolyears_new", methods={"GET","POST"})
      */

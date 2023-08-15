@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repository;
-
+use App\Entity\Traits\Period;
 use App\Entity\SchoolYear;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,7 +27,7 @@ class SchoolYearRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('sy')
             ->andWhere('sy != :schoolYear') // Exclut l'année scolaire spécifique
             ->setParameter('schoolYear', $schoolYear)
-            ->andWhere('sy.activated = 1') // Sélectionne les années scolaires activées (activated = true)
+            ->andWhere('sy.activated = true') // Sélectionne les années scolaires activées (activated = true)
             ->getQuery()
             ->getResult();
     }
