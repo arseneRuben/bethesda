@@ -48,7 +48,7 @@ class SchoolController extends AbstractController
     {
         $rooms = $this->rmRepo->findBy(array("apc" => true), array("level" => "ASC"));
         $year = $this->scRepo->findOneBy(array("activated" => true));
-       // dd($this->userRepo->findTeacherSize($year));
+        // dd($this->userRepo->findTeacherSize($year));
 
         $results = [];
 
@@ -105,6 +105,20 @@ class SchoolController extends AbstractController
         return $this->render('school/index.html.twig', compact("results"));
     }
 
+    /**
+     * HELP.
+     *
+     * @Route("/help", name="app_help")
+     * @Method("GET")
+     * @Template()
+     */
+    public function helpAction()
+    {
+
+
+
+        return $this->render('school/help.html.twig');
+    }
 
     /**
      * Lists all User entities.
