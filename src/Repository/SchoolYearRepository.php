@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repository;
+
 use App\Entity\Traits\Period;
 use App\Entity\SchoolYear;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -32,5 +33,32 @@ class SchoolYearRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-}
+      /**
+     * Récupère toutes les années scolaires activées, sauf celle spécifiée.
+     *
+     * @param SchoolYear $schoolYear L'année scolaire spécifique à exclure.
+     * @return SchoolYear[] Un tableau d'années scolaires activées, excluant la spécifique.
+     */
+    public function findAllExcept(SchoolYear $schoolYear): array
+    {
+        return $this->createQueryBuilder('sy')
+            ->andWhere('sy != :schoolYear') // Exclut l'année scolaire spécifique
+            ->setParameter('schoolYear', $schoolYear)
+            ->getQuery()
+            ->getResult();
+    }
 
+    /**
+     * Return number of subscriptions per year in a ClassRoom
+     */
+    public function countActivatedExcept(SchoolYear $year)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('COUNT(s) as count')
+            ->where('s.activated=:val')
+            ->andWhere('s != :year') // Exclut l'année scolaire spécifique
+            ->setParameter('year', $year)
+            ->setParameter('val', true);
+        return $query->getQuery()->getResult();
+    }
+}

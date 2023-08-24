@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Entity;
-use App\Entity\Traits\Period;  
+
+use App\Entity\Traits\Period;
 use App\Repository\QuaterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Quater
 {
     use Period;
-    
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -82,5 +83,20 @@ class Quater
         }
 
         return $this;
+    }
+
+    public function unable()
+    {
+        $this->setActivated(true);
+        if (count($this->getSequences()) > 0)
+            $this->getSequences()[0]->unable();
+    }
+
+    public function disable()
+    {
+        $this->setActivated(false);
+        foreach ($this->getSequences() as $sequence) {
+            $sequence->disable();
+        }
     }
 }

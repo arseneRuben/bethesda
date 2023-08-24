@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\Traits\Period;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,9 +25,9 @@ class SchoolYear
      */
     private $id;
 
-    
 
-     /**
+
+    /**
      * @var int
      *
      * @ORM\Column(name="reductionRrime", type="integer")
@@ -34,19 +35,35 @@ class SchoolYear
     private $reductionPrime;
 
 
-	
-  
-    
-    public function __toString() {
-        $name = ( is_null($this->getWording())) ? "" : $this->getWording();
-        return (string) ($name );
+
+
+
+    public function __toString()
+    {
+        $name = (is_null($this->getWording())) ? "" : $this->getWording();
+        return (string) ($name);
     }
-	
-    
+
+    public function unable()
+    {
+        $this->setActivated(true);
+        if (count($this->getQuaters()) > 0)
+            $this->getQuaters()[0]->unable();
+    }
+
+    public function disable()
+    {
+        $this->setActivated(false);
+        foreach ($this->getQuaters() as $quater) {
+            $quater->disable();
+        }
+    }
 
 
 
-  
+
+
+
     /**
      * @ORM\OneToMany(targetEntity=Quater::class, mappedBy="schoolYear", orphanRemoval=true, cascade={"persist"})
      */
@@ -62,7 +79,7 @@ class SchoolYear
      */
     private $subscriptions;
 
-   
+
 
     public function __construct()
     {
@@ -77,8 +94,8 @@ class SchoolYear
         return $this->id;
     }
 
-   
-        /**
+
+    /**
      * Set reductionPrime
      *
      * @param integer $reductionPrime
@@ -101,7 +118,7 @@ class SchoolYear
     {
         return $this->reductionPrime;
     }
-    
+
     /**
      * @return Collection|Quater[]
      */
@@ -191,5 +208,4 @@ class SchoolYear
 
         return $this;
     }
-   
 }

@@ -156,7 +156,6 @@ class ClassRoom
     public function setFullTeacher(?User $fullTeacher): self
     {
         $this->fullTeacher = $fullTeacher;
-
         return $this;
     }
 

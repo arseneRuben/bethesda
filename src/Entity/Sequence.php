@@ -114,4 +114,15 @@ class Sequence implements JsonSerializable
 
         return $this;
     }
+
+
+    public function unable()
+    {
+        $this->setActivated(true);
+    }
+
+    public function disable()
+    {
+        $this->setActivated(false);
+    }
 }

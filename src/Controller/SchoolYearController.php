@@ -22,9 +22,11 @@ use App\Form\SchoolYearType;
 class SchoolYearController extends AbstractController
 {
     private $em;
+    private $scRepo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo)
     {
+        $this->scRepo = $scRepo;
         $this->em = $em;
     }
 
@@ -55,7 +57,7 @@ class SchoolYearController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $allSchoolYears = $schoolYearRepository->findAllActivatedExcept($school_year);
+        $allSchoolYears = $this->scRepo->findAllActivatedExcept($school_year);
 
         foreach ($allSchoolYears as $otherSchoolYear) {
             $otherSchoolYear->setActivated(false);
@@ -69,14 +71,14 @@ class SchoolYearController extends AbstractController
 
         $em->flush();
 
-        if ($school_year->getActivated()) {
+        /*if ($school_year->getActivated()) {
             foreach ($school_year->getSubscriptions() as $sub) {
                 if ($sub->getStudent() !== null) {
-                    var_dump($sub);
+                   
                     // $sub->getStudent()->setEnrolled(true);
                 }
             }
-        }
+        }*/
 
         return $this->render('school_year/show.html.twig', compact("school_year"));
     }
@@ -117,13 +119,23 @@ class SchoolYearController extends AbstractController
      */
     public function edit(Request $request, SchoolYear $schoolyear): Response
     {
-
         $form = $this->createForm(SchoolYearType::class, $schoolyear, [
             'method' => 'GET',
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($schoolyear->getActivated()) {
+                $allSchoolYears = $this->scRepo->findAllExcept($schoolyear);
+                foreach ($allSchoolYears as $year) {
+                    $year->disable();
+                }
+            } else {
+                if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
+                    $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
+                    return $this->redirectToRoute('admin_school_years');
+                }
+            }
+            $this->em->persist($schoolyear);
             $this->em->flush();
             $this->addFlash('success', 'SchoolYear succesfully updated');
             return $this->redirectToRoute('admin_school_years');
@@ -143,8 +155,12 @@ class SchoolYearController extends AbstractController
      */
     public function delete(SchoolYear $schoolyear, Request $request): Response
     {
+        if ($this->isCsrfTokenValid('school_years_deletion' . $schoolyear->getId(), $request->request->get('csrf_token'))) {
 
-        if ($this->isCsrfTokenValid('schoolyears_deletion' . $schoolyear->getId(), $request->request->get('csrf_token'))) {
+            if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
+                $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
+                return $this->redirectToRoute('admin_school_years');
+            }
             $this->em->remove($schoolyear);
 
             $this->em->flush();
