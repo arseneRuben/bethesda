@@ -70,35 +70,35 @@ class QuaterController extends AbstractController
      * @Route("/create",name= "admin_quaters_new", methods={"GET","POST"})
      */
     public function create(Request $request, QuaterRepository $quaterRepository): Response
-{
-    $schoolyear = new Quater();
-    $form = $this->createForm(QuaterType::class, $schoolyear);
-    $form->handleRequest($request);
+    {
+        $schoolyear = new Quater();
+        $form = $this->createForm(QuaterType::class, $schoolyear);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $em = $this->getDoctrine()->getManager();
-        
-        // Désactiver tous les trimestres existants pour cette année scolaire
-        $allQuaters = $quaterRepository->findAll();
-        foreach ($allQuaters as $quater) {
-            $quater->setActivated(false);
-            $em->persist($quater);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            // Désactiver tous les trimestres existants pour cette année scolaire
+            $allQuaters = $quaterRepository->findAll();
+            foreach ($allQuaters as $quater) {
+                $quater->setActivated(false);
+                $em->persist($quater);
+            }
+
+            // Activer le trimestre créé
+            $schoolyear->setActivated(true);
+            $em->persist($schoolyear);
+            $em->flush();
+
+            $this->addFlash('success', 'Quater successfully created');
+            return $this->redirectToRoute('admin_quaters');
         }
-        
-        // Activer le trimestre créé
-        $schoolyear->setActivated(true);
-        $em->persist($schoolyear);
-        $em->flush();
 
-        $this->addFlash('success', 'Quater successfully created');
-        return $this->redirectToRoute('admin_quaters');
+        return $this->render(
+            'quater/new.html.twig',
+            ['form' => $form->createView()]
+        );
     }
-
-    return $this->render(
-        'quater/new.html.twig',
-        ['form' => $form->createView()]
-    );
-}
 
     /**
      * Displays a form to edit an existing Quaterme entity.
@@ -107,35 +107,37 @@ class QuaterController extends AbstractController
      * @Template()
      */
     public function edit(Request $request, Quater $quater, QuaterRepository $quaterRepository): Response
-{
-    $form = $this->createForm(QuaterType::class, $quater, [
-        'method' => 'GET',
-    ]);
-    $form->handleRequest($request);
+    {
+        $form = $this->createForm(QuaterType::class, $quater, [
+            'method' => 'GET',
+        ]);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $em = $this->getDoctrine()->getManager();
-        
-        if ($quater->getActivated()) {
-            $allQuaters = $quaterRepository->findAll();
-            foreach ($allQuaters as $quat) {
-                if (($quat->getId() != $quater->getId()) && ($quat->getActivated())) {
-                    $quat->setActivated(false);
-                    $em->persist($quat);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($quater->getActivated()) {
+                $allQuaters = $this->repo->findAllExcept($quater);
+                foreach ($allQuaters as $year) {
+                    $year->disable();
+                }
+                $quater->unable();
+            } else {
+                if ($this->repo->countActivatedExcept($quater)[0]["count"] == 0) {
+                    $this->addFlash('warning', 'You cannot deactivate all the quaters, one must be activated at a time.');
+                    return $this->redirectToRoute('admin_quaters');
                 }
             }
+            $em = $this->getDoctrine()->getManager();
+            $this->em->persist($quater);
+            $em->flush();
+            $this->addFlash('success', 'Quater successfully updated');
+            return $this->redirectToRoute('admin_quaters');
         }
-        
-        $em->flush();
-        $this->addFlash('success', 'Quater successfully updated');
-        return $this->redirectToRoute('admin_quaters');
-    }
 
-    return $this->render('quater/edit.html.twig', [
-        'quater' => $quater,
-        'form' => $form->createView()
-    ]);
-}
+        return $this->render('quater/edit.html.twig', [
+            'quater' => $quater,
+            'form' => $form->createView()
+        ]);
+    }
 
 
 
@@ -149,9 +151,11 @@ class QuaterController extends AbstractController
     {
 
         if ($this->isCsrfTokenValid('quaters_deletion' . $q->getId(), $request->request->get('csrf_token'))) {
-
+            if ($this->repo->countActivatedExcept($q)[0]["count"] == 0) {
+                $this->addFlash('warning', 'You cannot deactivate all quaters, one must be activated at a time.');
+                return $this->redirectToRoute('admin_quaters');
+            }
             $this->em->remove($q);
-
             $this->em->flush();
             $this->addFlash('info', 'Quater succesfully deleted');
         }

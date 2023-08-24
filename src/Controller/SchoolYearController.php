@@ -57,21 +57,18 @@ class SchoolYearController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $allSchoolYears = $this->scRepo->findAllActivatedExcept($school_year);
-
+        /*if   $allSchoolYears = $this->scRepo->findAllActivatedExcept($school_year);
         foreach ($allSchoolYears as $otherSchoolYear) {
             $otherSchoolYear->setActivated(false);
             $em->persist($otherSchoolYear);
         }
-
         if (!$school_year->getActivated()) {
             $school_year->setActivated(true);
             $em->persist($school_year);
         }
-
         $em->flush();
 
-        /*if ($school_year->getActivated()) {
+        ($school_year->getActivated()) {
             foreach ($school_year->getSubscriptions() as $sub) {
                 if ($sub->getStudent() !== null) {
                    
@@ -129,6 +126,7 @@ class SchoolYearController extends AbstractController
                 foreach ($allSchoolYears as $year) {
                     $year->disable();
                 }
+                $schoolyear->unable();
             } else {
                 if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
                     $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
@@ -156,17 +154,14 @@ class SchoolYearController extends AbstractController
     public function delete(SchoolYear $schoolyear, Request $request): Response
     {
         if ($this->isCsrfTokenValid('school_years_deletion' . $schoolyear->getId(), $request->request->get('csrf_token'))) {
-
             if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
                 $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
                 return $this->redirectToRoute('admin_school_years');
             }
             $this->em->remove($schoolyear);
-
             $this->em->flush();
             $this->addFlash('info', 'SchoolYear succesfully deleted');
         }
-
         return $this->redirectToRoute('admin_school_years');
     }
 }

@@ -20,54 +20,55 @@ class QuaterRepository extends ServiceEntityRepository
         parent::__construct($registry, Quater::class);
     }
 
-    // /**
-    //  * @return Quater[] Returns an array of Quater objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('q.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Quater
-    {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 
-    public function findQuaterThisYear( SchoolYear $year) {
-       
+    public function findQuaterThisYear(SchoolYear $year)
+    {
         $qb = $this->createQueryBuilder('q')
-                 ->leftJoin('q.schoolYear', 'y')
-                 ->where('y.id=:year')
-               
-                 ->setParameter('year', $year->getId());
-        return $qb->getQuery()->getResult();          
-}
-    
-public function findActivatedQuaterThisYear(SchoolYear $year)
-{
-    $qb = $this->createQueryBuilder('q')
-        ->leftJoin('q.schoolYear', 'y')
-        ->where('y = :year')
-        ->andWhere('q.activated = true')
-        ->setParameter('year', $year);
+            ->leftJoin('q.schoolYear', 'y')
+            ->where('y.id=:year')
+            ->setParameter('year', $year->getId());
+        return $qb->getQuery()->getResult();
+    }
 
-    return $qb->getQuery()->getResult();
-}
+    public function findActivatedQuaterThisYear(SchoolYear $year)
+    {
+        $qb = $this->createQueryBuilder('q')
+            ->leftJoin('q.schoolYear', 'y')
+            ->where('y = :year')
+            ->andWhere('q.activated = true')
+            ->setParameter('year', $year);
 
+        return $qb->getQuery()->getResult();
+    }
+
+
+    /**
+     * Récupère toutes les années scolaires activées, sauf celle spécifiée.
+     *
+     * @param Quater $quat trimestre spécifique à exclure.
+     * @return Quater[] Un tableau de trimestres activés, excluant la spécifique.
+     */
+    public function findAllExcept(Quater $quat): array
+    {
+        return $this->createQueryBuilder('q')
+            ->andWhere('q != :qt') // Exclut le trimestre  spécifique
+            ->setParameter('qt', $quat)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Return number of Quater
+     */
+    public function countActivatedExcept(Quater $quat)
+    {
+        $query = $this->createQueryBuilder('q')
+            ->select('COUNT(q) as count')
+            ->where('q.activated=:val')
+            ->andWhere('q != :quat') // Exclut l'année scolaire spécifique
+            ->setParameter('quat', $quat)
+            ->setParameter('val', true);
+        return $query->getQuery()->getResult();
+    }
 }
