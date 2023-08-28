@@ -56,28 +56,29 @@ class SchoolYearController extends AbstractController
     public function showAction(SchoolYear $school_year, SchoolYearRepository $schoolYearRepository): Response
     {
         $em = $this->getDoctrine()->getManager();
+        return $this->render('school_year/show.html.twig', compact("school_year"));
+    }
 
-        /*if   $allSchoolYears = $this->scRepo->findAllActivatedExcept($school_year);
-        foreach ($allSchoolYears as $otherSchoolYear) {
-            $otherSchoolYear->setActivated(false);
-            $em->persist($otherSchoolYear);
-        }
-        if (!$school_year->getActivated()) {
-            $school_year->setActivated(true);
-            $em->persist($school_year);
-        }
-        $em->flush();
-
-        ($school_year->getActivated()) {
-            foreach ($school_year->getSubscriptions() as $sub) {
-                if ($sub->getStudent() !== null) {
-                   
-                    // $sub->getStudent()->setEnrolled(true);
+    public function uniqueness(SchoolYear $schoolyear = null)
+    {
+        $allSchoolYears = ($schoolyear != null) ? $this->scRepo->findAllExcept($schoolyear) : $this->scRepo->findAll();
+        if ($schoolyear != null) {
+            if ($schoolyear->getActivated()) {
+                foreach ($allSchoolYears as $year) {
+                    $year->disable();
+                }
+                $schoolyear->unable();
+            } else {
+                if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
+                    $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
+                    return $this->redirectToRoute('admin_school_years');
                 }
             }
-        }*/
-
-        return $this->render('school_year/show.html.twig', compact("school_year"));
+        } else {
+            foreach ($allSchoolYears as $year) {
+                $year->disable();
+            }
+        }
     }
 
     /**
@@ -97,6 +98,9 @@ class SchoolYearController extends AbstractController
         $form = $this->createForm(SchoolYearType::class, $schoolyear);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->uniqueness();
+
             $this->em->persist($schoolyear);
             $this->em->flush();
             $this->addFlash('success', 'SchoolYear succesfully created');
@@ -121,18 +125,7 @@ class SchoolYearController extends AbstractController
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($schoolyear->getActivated()) {
-                $allSchoolYears = $this->scRepo->findAllExcept($schoolyear);
-                foreach ($allSchoolYears as $year) {
-                    $year->disable();
-                }
-                $schoolyear->unable();
-            } else {
-                if ($this->scRepo->countActivatedExcept($schoolyear)[0]["count"] == 0) {
-                    $this->addFlash('warning', 'You cannot deactivate all the solar years, one must be activated at a time.');
-                    return $this->redirectToRoute('admin_school_years');
-                }
-            }
+            $this->uniqueness($schoolyear);
             $this->em->persist($schoolyear);
             $this->em->flush();
             $this->addFlash('success', 'SchoolYear succesfully updated');

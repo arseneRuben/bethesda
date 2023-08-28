@@ -53,6 +53,28 @@ class QuaterController extends AbstractController
         return $this->render('quater/index.html.twig', compact("quaters"));
     }
 
+    public function uniqueness(Quater $quater = null)
+    {
+        $allQuaters = ($quater != null) ? $this->repo->findAllExcept($quater) : $this->repo->findAll();
+        if ($quater != null) {
+            if ($quater->getActivated()) {
+                foreach ($allQuaters as $qt) {
+                    $qt->disable();
+                }
+                $quater->unable();
+            } else {
+                if ($this->repo->countActivatedExcept($quater)[0]["count"] == 0) {
+                    $this->addFlash('warning', 'You cannot deactivate all the quaters, one must be activated at a time.');
+                    return $this->redirectToRoute('admin_quaters');
+                }
+            }
+        } else {
+            foreach ($allQuaters as $qt) {
+                $qt->disable();
+            }
+        }
+    }
+
     /**
      * Finds and displays a Quaterme entity.
      *
@@ -71,23 +93,25 @@ class QuaterController extends AbstractController
      */
     public function create(Request $request, QuaterRepository $quaterRepository): Response
     {
-        $schoolyear = new Quater();
-        $form = $this->createForm(QuaterType::class, $schoolyear);
+        $quater = new Quater();
+        $form = $this->createForm(QuaterType::class, $quater);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
             // Désactiver tous les trimestres existants pour cette année scolaire
-            $allQuaters = $quaterRepository->findAll();
-            foreach ($allQuaters as $quater) {
-                $quater->setActivated(false);
-                $em->persist($quater);
+            if ($quater->getActivated()) {
+                $allQuaters = $quaterRepository->findAll(array("schoolYear" =>  $quater->getSchoolYear()));
+                foreach ($allQuaters as $quat) {
+                    $quat->setActivated(false);
+                    $em->persist($quat);
+                }
+                $quater->unable();
             }
 
             // Activer le trimestre créé
-            $schoolyear->setActivated(true);
-            $em->persist($schoolyear);
+            $em->persist($quater);
             $em->flush();
 
             $this->addFlash('success', 'Quater successfully created');
@@ -152,7 +176,7 @@ class QuaterController extends AbstractController
 
         if ($this->isCsrfTokenValid('quaters_deletion' . $q->getId(), $request->request->get('csrf_token'))) {
             if ($this->repo->countActivatedExcept($q)[0]["count"] == 0) {
-                $this->addFlash('warning', 'You cannot deactivate all quaters, one must be activated at a time.');
+                $this->addFlash('warning', 'You cannot delete all quaters, one must be activated at a time.');
                 return $this->redirectToRoute('admin_quaters');
             }
             $this->em->remove($q);
