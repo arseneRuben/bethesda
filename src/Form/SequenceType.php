@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Quater;
 use App\Entity\Sequence;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,8 +14,15 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;;
 
+use App\Repository\QuaterRepository;
+
 class SequenceType extends AbstractType
 {
+    private $repo;
+    public function __construct(QuaterRepository $scRepo)
+    {
+        $this->repo = $scRepo;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -72,7 +81,10 @@ class SequenceType extends AbstractType
                 'constraints' => new Assert\NotBlank(),
                 'trim' => true
             ])
-            ->add('quater');
+            ->add('quater',  EntityType::class, [
+                'class' => Quater::class,
+                'data' => $options['activated_quater'], // Spécifiez la valeur par défaut ici
+            ]);
     }
 
 
@@ -83,6 +95,8 @@ class SequenceType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\Sequence',
+            'activated_quater' => $this->repo->findOneBy(array("activated" => true))
+
         ));
     }
 
