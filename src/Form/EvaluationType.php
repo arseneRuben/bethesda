@@ -24,16 +24,16 @@ class EvaluationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-
-            ->add('sequence', EntityType::class, array('class' => Sequence::class, 'data' => $options['activated_sequence'], 'placeholder' => 'Choisir la séquence', 'required' => true, 'query_builder' => function (SequenceRepository $repository) {
-                return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc')->where('sc.activated = :rep')->setParameter('rep', true)->add('orderBy', 's.id');
-            }))
-            ->add('classRoom', EntityType::class, array('placeholder' => 'Choisir une classe', 'class' => ClassRoom::class, 'required' => true))
-            ->add('competence', TextType::class, [
-                'label' => 'Competence',
-                'required' => false,
-                'trim' => true
-            ]);
+            
+        ->add('sequence', EntityType::class, array('class' => Sequence::class,'data' => $options['activated_sequence'], 'placeholder' => 'Choisir la séquence', 'required' => true,'query_builder' => function (SequenceRepository $repository) {
+                return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc') ->where('sc.activated = :rep')->setParameter('rep', true)->add('orderBy', 's.id');
+             } ))
+         ->add('classRoom', EntityType::class, array('placeholder' => 'Choisir une classe','class' => ClassRoom::class, 'required' => true ))
+         ->add('competence',TextType::class, [
+            'label' => 'Competence',
+            'required' => false,
+            'trim' => true])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

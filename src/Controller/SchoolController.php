@@ -47,9 +47,8 @@ class SchoolController extends AbstractController
     public function index(): Response
     {
         $rooms = $this->rmRepo->findBy(array("apc" => true), array("level" => "ASC"));
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-        // dd($this->userRepo->findTeacherSize($year));
-
+        $year_before = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->scRepo->findOneBy(array("id" => $year_before->getId() - 1));
         $results = [];
 
         foreach ($rooms as $room) {
