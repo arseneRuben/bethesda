@@ -146,7 +146,8 @@ class SchoolController extends AbstractController
     public function roomListAction(PaginatorInterface $paginator,  Request $request)
     {
         $entities = $this->rmRepo->findAll();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year_before = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->scRepo->findOneBy(array("id" => $year_before->getId() - 1));
         $subscriptions = $this->subRepo->findEnrollementThisYear($year);
         $rooms = $paginator->paginate($entities, $request->query->get('page', 1), ClassRoom::NUM_ITEMS_PER_PAGE);
         $rooms->setCustomParameters([
