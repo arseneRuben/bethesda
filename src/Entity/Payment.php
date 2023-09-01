@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\Student;
 use App\Entity\SchoolYear;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
+
 /**
  * Payment
  *
@@ -26,7 +28,7 @@ class Payment
      */
     private $id;
 
-   
+
 
     /**
      * @var int
@@ -35,15 +37,15 @@ class Payment
      */
     private $amount;
     /**
-        * @ORM\ManyToOne(targetEntity=SchoolYear::class)
-        * @ORM\JoinColumn(name="school_year_id", referencedColumnName="id", nullable=true)
-        */
+     * @ORM\ManyToOne(targetEntity=SchoolYear::class)
+     * @ORM\JoinColumn(name="school_year_id", referencedColumnName="id", nullable=true)
+     */
     private $schoolYear;
 
     /**
-    * @ORM\ManyToOne(targetEntity=Student::class)
-    * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=true)
-    */
+     * @ORM\ManyToOne(targetEntity=Student::class)
+     * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=true)
+     */
     private $student;
     /**
      * Get id
@@ -55,7 +57,7 @@ class Payment
         return $this->id;
     }
 
-   
+
 
     /**
      * Set instant
@@ -109,7 +111,7 @@ class Payment
         return $this->amount;
     }
 
-  
+
 
     /**
      * Set schoolYear
@@ -125,9 +127,7 @@ class Payment
         return $this;
     }
 
-    
-    
- 
+
 
     /**
      * Set student
@@ -152,13 +152,13 @@ class Payment
     {
         return $this->student;
     }
-   
-
-   
 
 
 
-  
+
+
+
+
     public function getSchoolYear()
     {
         return $this->schoolYear;

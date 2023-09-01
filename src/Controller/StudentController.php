@@ -355,8 +355,4 @@ class StudentController extends AbstractController
             )
         );
     }
-
-    /**
-     * @Route("/admin/rooms/{id}/show", name="admin_room_show")
-     */
 }
