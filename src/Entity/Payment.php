@@ -29,24 +29,30 @@ class Payment
     private $id;
 
 
-
     /**
      * @var int
      *
      * @ORM\Column(name="amount", type="integer")
      */
     private $amount;
+
+
     /**
      * @ORM\ManyToOne(targetEntity=SchoolYear::class)
      * @ORM\JoinColumn(name="school_year_id", referencedColumnName="id", nullable=true)
      */
     private $schoolYear;
 
+
     /**
      * @ORM\ManyToOne(targetEntity=Student::class)
      * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=true)
      */
     private $student;
+
+
+
+
     /**
      * Get id
      *
@@ -64,8 +70,8 @@ class Payment
      *
      * @param \DateTime $instant
      *
-     * @return Payement
-     */
+     * @return Payment
+     * /
     public function setInstant($instant)
     {
         if (is_string($instant)) {
@@ -77,22 +83,26 @@ class Payment
         return $this;
     }
 
+
+
     /**
      * Get instant
      *
      * @return \DateTime
-     */
+     * /
     public function getInstant()
     {
         return $this->instant;
     }
+
+   
 
     /**
      * Set amount
      *
      * @param integer $amount
      *
-     * @return Payement
+     * @return Payment
      */
     public function setAmount($amount)
     {
@@ -100,6 +110,8 @@ class Payment
 
         return $this;
     }
+
+
 
     /**
      * Get amount
@@ -129,6 +141,18 @@ class Payment
 
 
 
+     /**
+     *  Get schoolYear
+     * 
+     * @return SchoolYear
+     */
+    public function getSchoolYear()
+    {
+        return $this->schoolYear;
+    }
+
+
+
     /**
      * Set student
      *
@@ -143,6 +167,8 @@ class Payment
         return $this;
     }
 
+
+
     /**
      * Get student
      *
@@ -154,13 +180,7 @@ class Payment
     }
 
 
-
-
-
-
-
-    public function getSchoolYear()
-    {
-        return $this->schoolYear;
-    }
 }
+
+
+
