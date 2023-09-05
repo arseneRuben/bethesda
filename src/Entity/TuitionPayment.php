@@ -1,38 +1,32 @@
-<?php 
+<?php
 
 namespace App\Entity;
 
+use App\Entity\Student;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * TuitionPayment
- *
- * @ORM\Table(name="TuitionPayment")
- * @ORM\Entity(repositoryClass=TuitionPaymentRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\TuitionPaymentRepository")
  */
 class TuitionPayment
 {
     /**
-     * @var int
-     * 
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneatedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var int
-     * 
      * @Assert\NotBlank
-     * @ORM\Column(name="amount", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $amount;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Student")
-     * @ORM\JoinColumn(name=Student_id, referencedColumnName="id", nullable=false, )
+     * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=false)
      */
     private $student;
 
@@ -43,79 +37,38 @@ class TuitionPayment
 
     // Les getters et setters de chaque propriété
 
-    /**
-     * Get id
-     * 
-     * @return int
-     */
-    public function getId () 
+    public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * setAmount
-     * 
-     * @param integer $amount
-     * 
-     * @return TuitionPayment
-     */
-    public function setAmount ($amount) 
+    public function setAmount($amount)
     {
         $this->amount = $amount;
         return $this;
     }
 
-    /**
-     * getAmount
-     * 
-     * @return int
-     */
-    public function getAmount ()
+    public function getAmount()
     {
         return $this->amount;
     }
 
-    /**
-     * getStudent
-     * 
-     * @return Student|null
-     */
     public function getStudent(): ?Student
     {
         return $this->student;
     }
 
-    /**
-     * setStudent
-     * 
-     * @param Student|null $student
-     * 
-     * @return TuitionPayment
-     */
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
         return $this;
     }
 
-    /**
-     * getPaymentDate
-     * 
-     * @return \DateTimeInterface|null
-     */
     public function getPaymentDate(): ?\DateTimeInterface
     {
         return $this->paymentDate;
     }
 
-    /**
-     * setPaymentDate
-     * 
-     * @param \DateTimeInterface $paymentDate
-     * 
-     * @return TuitionPayment
-     */
     public function setPaymentDate(\DateTimeInterface $paymentDate): self
     {
         $this->paymentDate = $paymentDate;
