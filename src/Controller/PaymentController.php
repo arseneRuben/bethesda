@@ -12,7 +12,7 @@ use App\Repository\PaymentRepository;
 class PaymentController extends AbstractController
 {
     /**
-     * @Route("admin/payment")
+     * @Route("admin/payments" , name="admin_payments")
      */
     public function index(PaymentRepository $paymentRepository): Response
     {
