@@ -12,15 +12,19 @@ use App\Repository\PaymentRepository;
 class PaymentController extends AbstractController
 {
     /**
-     * @Route("admin/payments" , name="admin_payments")
+     * @Route("/admin/payments", name="admin_payments")
      */
     public function index(PaymentRepository $paymentRepository): Response
     {
-        // Récupérez tous les paiements à partir du repository
+        // Utilisez le PaymentRepository pour récupérer tous les paiements
         $payments = $paymentRepository->findAll();
+
+        // Comptez le nombre total de paiements
+        $totalPayments = count($payments);
 
         return $this->render('payment/index.html.twig', [
             'payments' => $payments,
+            'totalPayments' => $totalPayments,
         ]);
     }
 }
