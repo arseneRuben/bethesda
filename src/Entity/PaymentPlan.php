@@ -42,17 +42,12 @@ class PaymentPlan
      */
     private $schoolYear;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Student::class)
-     * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=true)
-     */
-    private $student;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Class::class) // Lien vers l'entité Class
-     * @ORM\JoinColumn(name="class_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class) 
+     * @ORM\JoinColumn(name="classRoom_id", referencedColumnName="id", nullable=true)
      */
-    private $class; // Ajout du champ class
+    private $classRoom; 
 
     /**
      * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="paymentPlan")
