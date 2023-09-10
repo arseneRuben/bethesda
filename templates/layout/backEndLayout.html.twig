@@ -291,6 +291,23 @@
                                         <a href="{{ path('app_account') }}">
                                             <i class="fa fa-user-circle"></i>
                                             Account
+
+
+
+
+
+                                    <li class="{% if app.request.attributes.get('_route') == "app_account" %}active{% endif %}">
+                                        <a href="{{ path('app_account') }}">
+                                            <i class="fas fa-credit-card"></i>
+                                            Payment
+
+
+
+
+                                    <li class="{% if app.request.attributes.get('_route') == "app_account" %}active{% endif %}">
+                                        <a href="{{ path('app_account') }}">
+                                            <i class="fas fa-list-alt"></i>
+                                            Setting Payment
                                                                                                                                                                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                                     
                                                                                                                                                                                                                                                             

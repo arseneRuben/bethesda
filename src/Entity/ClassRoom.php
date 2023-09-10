@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\TuitionPlan;
 use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use Doctrine\ORM\Mapping as ORM;
@@ -62,6 +62,10 @@ class ClassRoom
      */
     private $subscriptions;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\TuitionPlan", mappedBy="classRooms")
+     */
+    private $tuitionPlans;
 
 
 
@@ -69,6 +73,7 @@ class ClassRoom
     {
         $this->modules = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+        $this->tuitionPlans = new ArrayCollection();
     }
 
     public function __toString()
@@ -196,4 +201,31 @@ class ClassRoom
     {
         return $this->apc;
     }
+
+
+public function getTuitionPlans(): Collection
+{
+    return $this->tuitionPlans;
+}
+
+public function addTuitionPlan(TuitionPlan $tuitionPlan): self
+{
+    if (!$this->tuitionPlans->contains($tuitionPlan)) {
+        $this->tuitionPlans[] = $tuitionPlan;
+        $tuitionPlan->addClassRoom($this);
+    }
+
+    return $this;
+}
+
+public function removeTuitionPlan(TuitionPlan $tuitionPlan): self
+{
+    if ($this->tuitionPlans->contains($tuitionPlan)) {
+        $this->tuitionPlans->removeElement($tuitionPlan);
+        $tuitionPlan->removeClassRoom($this);
+    }
+
+    return $this;
+}
+
 }

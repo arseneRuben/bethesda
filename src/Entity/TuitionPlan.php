@@ -2,9 +2,8 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\ClassRoom;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TuitionPlanRepository")
@@ -12,110 +11,103 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TuitionPlan
 {
     /**
-     * @var int
-     * 
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="integer")
      */
     private $amount;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
+     * @ORM\ManyToOne(targetEntity="App\Entity\ClassRoom", inversedBy="tuitionPlans")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $numberOfInstallments;
+    private $classRoom;
 
-    // Les getters et setters pour chaque propriété
 
     /**
-     * Get id
-     *
-     * @return int
+     * @ORM\Column(type="date")
      */
+    private $startDate;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $endDate;
+
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    /**
-     * setName
-     *
-     * @param string $name
-     *
-     * @return TuitionPlan
-     */
-    public function setName(string $name): self
+    
+    public function getName() 
+    {
+        return $this->name;
+    }
+    
+    public function setName($name) 
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * getName
-     *
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * setAmount
-     *
-     * @param mixed $amount
-     *
-     * @return TuitionPlan
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-        return $this;
-    }
-
-    /**
-     * getAmount
-     *
-     * @return mixed
-     */
-    public function getAmount()
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
 
-    /**
-     * setNumberOfInstallments
-     *
-     * @param int $numberOfInstallments
-     *
-     * @return TuitionPlan
-     */
-    public function setNumberOfInstallments(int $numberOfInstallments): self
+    public function setAmount(int $amount): self
     {
-        $this->numberOfInstallments = $numberOfInstallments;
+        $this->amount = $amount;
+
         return $this;
     }
 
-    /**
-     * getNumberOfInstallments
-     *
-     * @return int|null
-     */
-    public function getNumberOfInstallments(): ?int
+  
+
+    public function getClassRoom(): ?ClassRoom
     {
-        return $this->numberOfInstallments;
+        return $this->classRoom;
     }
+
+    public function setClassRoom(?ClassRoom $classRoom): self
+    {
+        $this->classRoom = $classRoom;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTimeInterface $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(\DateTimeInterface $endDate): self
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
 }

@@ -23,7 +23,15 @@ class StudentRepository extends ServiceEntityRepository
         parent::__construct($registry, Student::class);
         $this->scRepo = $scRepo;
     }
-
+    
+    public function findStudentsByClass($classId)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.class = :classId')
+            ->setParameter('classId', $classId)
+            ->getQuery()
+            ->getResult();
+    }
 
 
 
@@ -244,5 +252,19 @@ class StudentRepository extends ServiceEntityRepository
         return $this->createDefaultQueryBuilder()
             ->where('e.id =: id')
             ->setParameter('id', $id);
+    }
+
+
+
+
+    public function findStudentsByClassRoomId(int $classRoomId)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('s')
+            ->join('c.students', 's')
+            ->where('c.id = :classRoomId')
+            ->setParameter('classRoomId', $classRoomId)
+            ->getQuery()
+            ->getResult();
     }
 }
