@@ -197,6 +197,19 @@
                                                                                     
                                         </a>
                                     </li>
+
+                                    <li class="{% if app.request.attributes.get('_route') == "admin_subscriptions" %}active{% endif %}">
+                                        <a href="{{ path('admin_subscriptions') }}">
+                                            <i class="fa fa-money" aria-hidden="true"></i>
+                                            Payment
+                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                    
+                                                                                                                                            
+                                                                                    
+                                        </a>
+                                    </li>
                                     <li class="{% if app.request.attributes.get('_route') == "admin_students" %}active{% endif %}">
                                         <a href="{{ path('admin_students') }}">
                                             <i class="fa fa-users"></i>
@@ -291,24 +304,8 @@
                                         <a href="{{ path('app_account') }}">
                                             <i class="fa fa-user-circle"></i>
                                             Account
-
-
-
-
-
-                                    <li class="{% if app.request.attributes.get('_route') == "app_account" %}active{% endif %}">
-                                        <a href="{{ path('app_account') }}">
-                                            <i class="fas fa-credit-card"></i>
-                                            Payment
-
-
-
-
-                                    <li class="{% if app.request.attributes.get('_route') == "app_account" %}active{% endif %}">
-                                        <a href="{{ path('app_account') }}">
-                                            <i class="fas fa-list-alt"></i>
-                                            Setting Payment
-                                                                                                                                                                                                                                                                                                                                                                            
+                                        
+                                                                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                                     
                                                                                                                                                                                                                                                             
                                                                                                                                                                                                     
@@ -334,6 +331,7 @@
                                         <a id="toggle-btn" href="#" class="menu-btn">
                                             <i class="fa fa-bars" aria-hidden="true"></i>
                                         </a>
+
                                         <a href="{{ path('app_home') }}" class="navbar-brand text-center">
                                             <div class="brand-text d-none d-md-inline-block">
                                                 <strong class="text-primary">

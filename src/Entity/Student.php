@@ -170,15 +170,6 @@ class Student
     }
 
 
-
-
-
-    public function getFull()
-    {
-        return $this->surname . " " . $this->name;
-    }
-
-
     /**
      *
      * @return string
