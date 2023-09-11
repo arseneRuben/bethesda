@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimeStampable;
 use App\Repository\AbscenceSheetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=AbscenceSheetRepository::class)
  */ class AbscenceSheet
 {
+    use TimeStampable;
+
+    public const NUM_ITEMS_PER_PAGE = 20;
     /**
      * @var int
      *
@@ -21,6 +25,19 @@ use Doctrine\ORM\Mapping as ORM;
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Sequence::class, inversedBy="evaluations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sequence;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $classRoom;
 
 
 
@@ -130,6 +147,30 @@ use Doctrine\ORM\Mapping as ORM;
     public function setEndDate(\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function getSequence(): ?Sequence
+    {
+        return $this->sequence;
+    }
+
+    public function setSequence(?Sequence $sequence): static
+    {
+        $this->sequence = $sequence;
+
+        return $this;
+    }
+
+    public function getClassRoom(): ?ClassRoom
+    {
+        return $this->classRoom;
+    }
+
+    public function setClassRoom(?ClassRoom $classRoom): static
+    {
+        $this->classRoom = $classRoom;
 
         return $this;
     }

@@ -8,12 +8,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Repository\SequenceRepository;
 
-use App\Entity\Course;
 use App\Entity\Sequence;
 use App\Entity\ClassRoom;
-use App\Filter\PropertySearch;
+use App\Filter\AbscenceSearch;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
-class PropertySearchType extends AbstractType
+class AbscenceSheetSearchType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -28,6 +28,14 @@ class PropertySearchType extends AbstractType
                 'label' => false,
                 'attr' => [
                     'placeholder' => 'Date de debut'
+                ]
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'required' => false,
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Date de fin'
                 ]
             ])
             ->add('sequence', EntityType::class, [
@@ -54,7 +62,7 @@ class PropertySearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => PropertySearch::class,
+            'data_class' => AbscenceSearch::class,
             'method' => 'get',
             'csrf_protection' => false
 

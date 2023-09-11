@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\AbscenceSheet;
+use App\Filter\AbscenceSearch;
+use App\Form\AbscenceSheetSearchType;
 use App\Form\AbscenceSheetType;
 use App\Repository\AbscenceSheetRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
-use App\Repository\StudentRepository;
+use App\Repository\SequenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,16 +29,16 @@ class AbscenceSheetController extends AbstractController
 {
     private $em;
     private $repo;
-    private $scRepo;
-    private $stdRepo;
+    private $seqRepo;
+    private $yearRepo;
     private $clRepo;
 
-    public function __construct(EntityManagerInterface $em, AbscenceSheetRepository $repo, SchoolYearRepository $scRepo, StudentRepository $stdRepo, ClassRoomRepository $clRepo)
+    public function __construct(EntityManagerInterface $em, AbscenceSheetRepository $repo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
-        $this->scRepo = $scRepo;
-        $this->stdRepo = $stdRepo;
+        $this->seqRepo = $seqRepo;
+        $this->yearRepo = $yearRepo;
         $this->clRepo = $clRepo;
     }
 
@@ -46,10 +49,31 @@ class AbscenceSheetController extends AbstractController
      * @Route("/", name="admin_abscences_sheet_index", methods={"GET"})
      * @Template()
      */
-    public function index(AbscenceSheetRepository $abscenceSheetRepository): Response
+    public function index(PaginatorInterface $paginator, Request $request, AbscenceSheetRepository $abscenceSheetRepository): Response
     {
+        $search = new AbscenceSearch();
+        $searchForm =  $this->createForm(AbscenceSheetSearchType::class, $search);
+        $year = $this->yearRepo->findOneBy(array("activated" => true));
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
+            $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
+            $entities = $this->repo->findAll();
+        } else {
+            $entities = $this->repo->findAll();
+        }
+
+        $evaluations = $paginator->paginate($entities, $request->query->get('page', 1), AbscenceSheet::NUM_ITEMS_PER_PAGE);
+        $evaluations->setCustomParameters([
+            'position' => 'centered',
+            'size' => 'large',
+            'rounded' => true,
+        ]);
+
+
+
         return $this->render('abscence_sheet/index.html.twig', [
-            'abscence_sheets' => $abscenceSheetRepository->findAll(),
+            'abscence_sheets' => $abscenceSheetRepository->findAll(), 'searchForm' => $searchForm->createView()
         ]);
     }
 

@@ -37,12 +37,12 @@ class AbscenceSearch
         return $this;
     }
 
-    public function getClassRoom(): ?ClassRoom
+    public function getRoom(): ?ClassRoom
     {
         return $this->room;
     }
 
-    public function setClassRoom(?ClassRoom $classRoom): self
+    public function setRoom(?ClassRoom $classRoom): self
     {
         $this->room = $classRoom;
 
@@ -57,6 +57,18 @@ class AbscenceSearch
     public function setStartDate(?Date $startDate): self
     {
         $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?Date
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?Date $endDate): self
+    {
+        $this->endDate = $endDate;
 
         return $this;
     }
