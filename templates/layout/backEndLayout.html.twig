@@ -284,6 +284,18 @@
                                                                                     
                                         </a>
                                     </li>
+                                     <li class="{% if app.request.attributes.get('_route') == "admin_abscences_sheet_index" %}active{% endif %}">
+                                        <a href="{{ path('admin_abscences_sheet_index') }}">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                            Discipline
+                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                    
+                                                                                                                                            
+                                                                                    
+                                        </a>
+                                    </li>
                                     {#<li class="{% if app.request.attributes.get('_route') == "admin_emails" %}active{% endif %}">
                                                                                                                                                                                                                                                                                                                         										<a href="{{ path('admin_emails')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Messages</a>
                                                                                                                                                                                                                                                                                                                         									</li>

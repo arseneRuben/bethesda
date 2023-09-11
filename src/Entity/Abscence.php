@@ -58,6 +58,7 @@ class Abscence
 
 
 
+
     public function getReason(): ?string
     {
         return $this->reason;

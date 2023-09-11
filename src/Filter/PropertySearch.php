@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Filter;
+
 use App\Entity\Course;
 use App\Entity\Sequence;
 use App\Entity\ClassRoom;
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ORM\Entity()
  */
-class PropertySearch {
+class PropertySearch
+{
     private ClassRoom $room;
     private Course $course;
     private Sequence $sequence;
@@ -16,8 +19,6 @@ class PropertySearch {
 
     public function __construct()
     {
-      
-        
     }
 
     /**
@@ -35,7 +36,7 @@ class PropertySearch {
         return $this;
     }
 
-    
+
 
     public function getRoom(): ?ClassRoom
     {

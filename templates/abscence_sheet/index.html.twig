@@ -1,0 +1,47 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+{% form_theme searchForm 'bootstrap_4_layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4">
+        <div class="col-1">
+            <a class="btn btn-info" href="{{ path('admin_attributions_new') }}">
+                <i class="fa fa-plus"></i>
+                <h1>
+                    New 
+                </h1>
+            </a>
+        </div>
+    <h1>AbscenceSheet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for abscence_sheet in abscence_sheets %}
+            <tr>
+                <td>{{ abscence_sheet.id }}</td>
+                <td>{{ abscence_sheet.startDate ? abscence_sheet.startDate|date('Y-m-d') : '' }}</td>
+                <td>{{ abscence_sheet.endDate ? abscence_sheet.endDate|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('admin_abscence_sheet_show', {'id': abscence_sheet.id}) }}">show</a>
+                    <a href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_abscence_sheet_new') }}">Create new</a>
+</div>
+{% endblock %}

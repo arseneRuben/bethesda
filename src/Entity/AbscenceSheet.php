@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\AbscenceSheetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AbscenceSheetRepository::class)]
-class AbscenceSheet
+
+/**
+ * @ORM\Entity(repositoryClass=AbscenceSheetRepository::class)
+ */ class AbscenceSheet
 {
     /**
      * @var int

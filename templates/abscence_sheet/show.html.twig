@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<title>AbscenceSheet</title>
+
+{% block body %}
+    <h1>AbscenceSheet</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ abscence_sheet.id }}</td>
+            </tr>
+            <tr>
+                <th>StartDate</th>
+                <td>{{ abscence_sheet.startDate ? abscence_sheet.startDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ abscence_sheet.endDate ? abscence_sheet.endDate|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_abscence_sheet_index') }}">back to list</a>
+
+    <a href="{{ path('app_abscence_sheet_edit', {'id': abscence_sheet.id}) }}">edit</a>
+
+    {{ include('abscence_sheet/_delete_form.html.twig') }}
+{% endblock %}

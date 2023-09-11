@@ -10,11 +10,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-#[Route('/abscence')]
+/**
+ * AbscenceSheet controller.
+ *
+ * @Route("/admin/abscence")
+ */
 class AbscenceController extends AbstractController
 {
-    #[Route('/', name: 'app_abscence_index', methods: ['GET'])]
+    /**
+     * Lists all Course entities.
+     *
+     * @Route("/", name="admin_abscences")
+     * @Method("GET")
+     * @Template()
+     */
     public function index(AbscenceRepository $abscenceRepository): Response
     {
         return $this->render('abscence/index.html.twig', [
@@ -22,7 +34,13 @@ class AbscenceController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_abscence_new', methods: ['GET', 'POST'])]
+    /**
+     * Creates a new Course entity.
+     *
+     * @Route("/create", name="admin_abscence_create")
+     * @Method("POST")
+    
+     */
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $abscence = new Abscence();
@@ -42,7 +60,13 @@ class AbscenceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_abscence_show', methods: ['GET'])]
+    /**
+     * Finds and displays a Course entity.
+     *
+     * @Route("/{id}/show", name="admin_abscences_show", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
     public function show(Abscence $abscence): Response
     {
         return $this->render('abscence/show.html.twig', [
@@ -50,7 +74,12 @@ class AbscenceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_abscence_edit', methods: ['GET', 'POST'])]
+    /**
+     * Displays a form to edit an existing Abscence entity.
+     *
+     * @Route("/{id}/edit", name="admin_abscences_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
+     * @Template()
+     */
     public function edit(Request $request, Abscence $abscence, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(AbscenceType::class, $abscence);
@@ -71,7 +100,7 @@ class AbscenceController extends AbstractController
     #[Route('/{id}', name: 'app_abscence_delete', methods: ['POST'])]
     public function delete(Request $request, Abscence $abscence, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$abscence->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $abscence->getId(), $request->request->get('_token'))) {
             $entityManager->remove($abscence);
             $entityManager->flush();
         }
