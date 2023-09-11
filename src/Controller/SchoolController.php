@@ -48,7 +48,7 @@ class SchoolController extends AbstractController
     {
         $rooms = $this->rmRepo->findBy(array("apc" => true), array("level" => "ASC"));
         $year_before = $this->scRepo->findOneBy(array("activated" => true));
-        $year = $this->scRepo->findOneBy(array("id" => $year_before->getId() - 1));
+        $year = $this->scRepo->findOneBy(array("id" => $year_before->getId()));
         $results = [];
 
         foreach ($rooms as $room) {
