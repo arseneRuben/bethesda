@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>Abscence</title>
+
+{% block body %}
+    <h1>Abscence</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ abscence.id }}</td>
+            </tr>
+            <tr>
+                <th>StartDate</th>
+                <td>{{ abscence.startDate ? abscence.startDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ abscence.endDate ? abscence.endDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Reason</th>
+                <td>{{ abscence.reason }}</td>
+            </tr>
+            <tr>
+                <th>Justified</th>
+                <td>{{ abscence.justified ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_abscence_index') }}">back to list</a>
+
+    <a href="{{ path('app_abscence_edit', {'id': abscence.id}) }}">edit</a>
+
+    {{ include('abscence/_delete_form.html.twig') }}
+{% endblock %}

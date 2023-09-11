@@ -20,48 +20,43 @@ class Abscence
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $startDate;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $endDate;
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $reason;
+    /**
+     * Cette abscence est t-elle justifiee ?
+     * @ORM\Column(type="boolean", options={"default" = false})
+     */
+    private $justified = false;
 
-    public function getStartDate(): ?\DateTimeInterface
-    {
-        return $this->startDate;
-    }
+    /**
+     * @ORM\ManyToOne(targetEntity=AbscenceSheet::class, inversedBy="abscences")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $abscenceSheet;
 
-    public function setStartDate(\DateTimeInterface $startDate): self
-    {
-        $this->startDate = $startDate;
 
-        return $this;
-    }
-
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(\DateTimeInterface $endDate): self
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function getAbscenceSheet(): ?AbscenceSheet
+    {
+        return $this->abscenceSheet;
+    }
+
+    public function setAbscenceSheet(?AbscenceSheet $abscenceSheet): self
+    {
+        $this->abscenceSheet = $abscenceSheet;
+
+        return $this;
+    }
+
+
 
     public function getReason(): ?string
     {
@@ -71,6 +66,18 @@ class Abscence
     public function setReason(string $reason): static
     {
         $this->reason = $reason;
+
+        return $this;
+    }
+
+    public function isJustified(): ?bool
+    {
+        return $this->justified;
+    }
+
+    public function setJustified(bool $justified): static
+    {
+        $this->justified = $justified;
 
         return $this;
     }
