@@ -60,6 +60,7 @@ use Doctrine\ORM\Mapping as ORM;
     public function __construct()
     {
         $this->abscences = new ArrayCollection();
+        $this->updateTimestamp();
     }
 
 

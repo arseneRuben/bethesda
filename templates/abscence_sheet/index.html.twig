@@ -5,30 +5,56 @@
 {% block content %}
     <div class="row mt-4">
         <div class="col-1">
-            <a class="btn btn-info" href="{{ path('admin_attributions_new') }}">
+            <a class="btn btn-info" href="{{ path('admin_abscence_sheet_new') }}">
                 <i class="fa fa-plus"></i>
                 <h1>
                     New 
                 </h1>
             </a>
         </div>
-    <h1>AbscenceSheet index</h1>
+         <div class="col-12 jumbotron" >
+				{{form_start(searchForm)}}
+				<div class="form-row row">
+					<div class="col-md-3">
+						{{form_row(searchForm.room)}}
+					</div>
+					<div class="col-md-3">
+						{{form_row(searchForm.sequence)}}
+					</div>
+					<div class="col-md-2">
+						{{form_row(searchForm.startDate)}}
+					</div>
+                    <div class="col-md-2">
+						{{form_row(searchForm.endDate)}}
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-primary" type="submit">
+									<b>Rechercher</b>
+						</button>
+					</div>
+				</div>
+				{{form_end(searchForm)}}
+			 </div>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Session</th>
                 <th>StartDate</th>
                 <th>EndDate</th>
+                <th>Classe</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for abscence_sheet in abscence_sheets %}
+        {% for abscence_sheet in pagination %}
             <tr>
                 <td>{{ abscence_sheet.id }}</td>
+                <td>{{ evaluation.sequence.code }}</td>
                 <td>{{ abscence_sheet.startDate ? abscence_sheet.startDate|date('Y-m-d') : '' }}</td>
                 <td>{{ abscence_sheet.endDate ? abscence_sheet.endDate|date('Y-m-d') : '' }}</td>
+                <td>{{ evaluation.classRoom.name }}</td>
                 <td>
                     <a href="{{ path('admin_abscence_sheet_show', {'id': abscence_sheet.id}) }}">show</a>
                     <a href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}">edit</a>
@@ -41,7 +67,8 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('admin_abscence_sheet_new') }}">Create new</a>
+    <div class="navigation  text-center">
+					{{ knp_pagination_render(pagination) }}
+	</div>
 </div>
 {% endblock %}

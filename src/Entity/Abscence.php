@@ -19,6 +19,10 @@ class Abscence
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $weight;
 
 
     /**
@@ -36,12 +40,40 @@ class Abscence
      * @ORM\JoinColumn(nullable=false)
      */
     private $abscenceSheet;
+    /**
+     * @ORM\ManyToOne(targetEntity=Student::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $student;
 
 
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): self
+    {
+        $this->student = $student;
+
+        return $this;
     }
 
     public function getAbscenceSheet(): ?AbscenceSheet

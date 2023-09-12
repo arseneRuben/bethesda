@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Abscence;
 use App\Entity\AbscenceSheet;
 use App\Filter\AbscenceSearch;
 use App\Form\AbscenceSheetSearchType;
@@ -9,6 +10,7 @@ use App\Form\AbscenceSheetType;
 use App\Repository\AbscenceSheetRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
+use App\Repository\StudentRepository;
 use App\Repository\SequenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -32,12 +34,15 @@ class AbscenceSheetController extends AbstractController
     private $seqRepo;
     private $yearRepo;
     private $clRepo;
+    private $stdRepo;
 
-    public function __construct(EntityManagerInterface $em, AbscenceSheetRepository $repo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
+
+    public function __construct(EntityManagerInterface $em, StudentRepository $stdRepo, AbscenceSheetRepository $repo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->seqRepo = $seqRepo;
+        $this->stdRepo = $stdRepo;
         $this->yearRepo = $yearRepo;
         $this->clRepo = $clRepo;
     }
@@ -63,18 +68,14 @@ class AbscenceSheetController extends AbstractController
             $entities = $this->repo->findAll();
         }
 
-        $evaluations = $paginator->paginate($entities, $request->query->get('page', 1), AbscenceSheet::NUM_ITEMS_PER_PAGE);
-        $evaluations->setCustomParameters([
+        $sheets = $paginator->paginate($entities, $request->query->get('page', 1), AbscenceSheet::NUM_ITEMS_PER_PAGE);
+        $sheets->setCustomParameters([
             'position' => 'centered',
             'size' => 'large',
             'rounded' => true,
         ]);
 
-
-
-        return $this->render('abscence_sheet/index.html.twig', [
-            'abscence_sheets' => $abscenceSheetRepository->findAll(), 'searchForm' => $searchForm->createView()
-        ]);
+        return $this->render('abscence_sheet/index.html.twig', ['pagination' => $sheets, 'searchForm' => $searchForm->createView()]);
     }
 
     #[Route('/new', name: 'admin_abscence_sheet_new', methods: ['GET', 'POST'])]
@@ -82,19 +83,11 @@ class AbscenceSheetController extends AbstractController
     {
         $abscenceSheet = new AbscenceSheet();
         $form = $this->createForm(AbscenceSheetType::class, $abscenceSheet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($abscenceSheet);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('admin_abscence_sheet_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('abscence_sheet/new.html.twig', [
+        return $this->render('abscence_sheet/new.html.twig', array(
             'abscence_sheet' => $abscenceSheet,
-            'form' => $form,
-        ]);
+            'response' => null,
+            'form' => $form->createView(),
+        ));
     }
 
     #[Route('/{id}', name: 'admin_abscence_sheet_show', methods: ['GET'])]
@@ -122,6 +115,94 @@ class AbscenceSheetController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    /**
+     * Displays a form to create a new Evaluation entity.
+     *
+     * @Route("/fiche", name="admin_abscence_list_students",  options = { "expose" = true })
+     * @Method("POST")
+     * @Template()
+     */
+    public function listStudentsFicheAction(Request $request)
+    {
+        if ($_POST["idClassRoom"]) {
+            $idClassRoom = $_POST["idClassRoom"];
+
+            if ($idClassRoom != null) {
+
+                $year = $this->yearRepo->findOneBy(array("activated" => true));
+                $classRoom = $this->clRepo->findOneById($idClassRoom);
+                // Liste des élèves inscrit dans la salle de classe sélectionnée
+                $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($classRoom, $year);
+
+                if ($studentsEnrolledInClass != null) {
+                    return $this->render('abscence_sheet/liststudents.html.twig', array('students' => $studentsEnrolledInClass));
+                }
+            }
+        }
+        return new Response("No Students");
+    }
+
+
+    /**
+     * Creates a new Evaluation entity.
+     *
+     * @Route("/create", name="admin_abscences_sheet_create")
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function create(Request $request)
+    {
+
+        /* if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        } */
+        $abscenceSheet = new AbscenceSheet();
+
+        if ($content = $request->getContent()) {
+            $abscences = json_decode($_POST['abscences'], true);
+            $endDate = json_decode($_POST['endDate'], true);
+            $startDate = json_decode($_POST['startDate'], true);
+
+            $room = $request->request->get('idRoom');
+            $idSequence = $request->request->get('idSequence');
+            $classRoom = $this->clRepo->findOneBy(array("id" => $room));
+            $sequence = $this->seqRepo->findOneBy(array("id" => $idSequence));
+
+            $abscenceSheet->setClassRoom($classRoom);
+            $abscenceSheet->setSequence($sequence);
+            $abscenceSheet->setStartDate(new \DateTime($startDate));
+            $abscenceSheet->setEndDate(new \DateTime($endDate));
+
+            foreach ($abscences as $record) {
+                $abscence = new Abscence();
+                $weight = $record["weight"];
+                $matricule = $record["matricule"];
+                $student = $this->stdRepo->findOneByMatricule($matricule);
+                $raison = $record["raison"];
+                $justified = $record["justified"];
+                $abscence->setWeight($weight);
+
+
+                $abscence->setStudent($student);
+                $abscence->setAbscenceSheet($abscenceSheet);
+                $abscence->setReason($raison);
+                $abscence->setJustified($justified);
+                $abscenceSheet->addAbscence($abscence);
+                $this->em->persist($abscence);
+            }
+
+            $this->em->persist($abscenceSheet);
+            $this->em->flush();
+        }
+        return $this->redirect($this->generateUrl('admin_abscence_sheet_new'));
+    }
+
 
     #[Route('/{id}', name: 'admin_abscence_sheet_delete', methods: ['POST'])]
     public function delete(Request $request, AbscenceSheet $abscenceSheet, EntityManagerInterface $entityManager): Response

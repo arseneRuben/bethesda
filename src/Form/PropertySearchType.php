@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Repository\SequenceRepository;
 
 use App\Entity\Course;
@@ -22,12 +23,13 @@ class PropertySearchType extends AbstractType
     {
         $builder
 
-            ->add('startDate', DateType::class, [
-                'widget' => 'single_text',
+            ->add('course', EntityType::class, [
+                'class' => Course::class,
                 'required' => false,
                 'label' => false,
+                'placeholder' => 'Filtrer le cours',
                 'attr' => [
-                    'placeholder' => 'Date de debut'
+                    'placeholder' => 'Matiere'
                 ]
             ])
             ->add('sequence', EntityType::class, [

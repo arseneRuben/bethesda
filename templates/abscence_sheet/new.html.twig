@@ -1,11 +1,142 @@
-<!DOCTYPE html>
+{% extends 'layout/backEndLayout.html.twig' %}
 
-<title>New AbscenceSheet</title>
+{% block content %}
+        	{% form_theme form 'bootstrap_4_layout.html.twig' %}
+			  <div class="col-12 jumbotron" >
+               
+	 				<div class="row mt-4  mx-auto box-shadow">
+						<div class="card-header">
+                                        <h3 class="my-0 text-center text-justify text-uppercase">  Nouvelle fiche d evaluation</h3>
+                        </div>
+						<div class="mt-4 col-md-12 col-sm-12 table-responsive">
 
-{% block body %}
-    <h1>Create new AbscenceSheet</h1>
+							<div class="row">
+								<div class="col-3   table-responsive"></div>
+								<div class="col-6  table-responsive">
 
-    {{ include('abscence_sheet/_form.html.twig') }}
+									{{ form_start(form, {action: path('admin_abscences_sheet_create'),'attr': { 'class':'evaluation'} }) }}
+									<p>
+										{{ form_widget(form.sequence ,{'attr':{'class':'ChoiceSequence'} } ) }}
+									</p>
+									<p>
+										{{ form_widget(form.classRoom,{'attr':{ 'name' :'ChoiceClassRoom'} }) }}
+									</p>
+                                   <div class="row">
+                                        <div class="col-6">
+										{{ form_widget(form.startDate,{'attr':{ 'name' :'StartDate'} }) }}
+                                        </div>
+                                        <div class="col-6">
+                                         {{ form_widget(form.endDate,{'attr':{ 'name' :'EndDate'} }) }}
+                                         </div>
+									</div>
+									
 
-    <a href="{{ path('app_abscence_sheet_index') }}">back to list</a>
+								</div>
+								<div class="col-3  table-responsive"></div>
+							</div>
+						</div>
+						<div id="ficheBodyStudents" class=" col-md-12  row">
+							{% include "abscence_sheet/liststudents.html.twig" %}
+						</div>
+					</div>
+					<div class="row mt-2 mx-auto">
+							<div class=" col-3">
+							</div>
+							<div class=" col-3 mx-auto btn-group d-inline-flex p-2 bd-highlight">
+								<button class="btn btn-danger" type="submit">
+									<b>
+										<i class="fa fa-balance-scale"></i>submit</b>
+								</button>
+                            </div>
+							<div class="  col-3 mx-auto btn-group d-inline-flex p-2 bd-highligh">
+								<a class="btn btn-info" href="{{ path('admin_evaluations') }}">
+									<i class="fa fa-list"></i>
+									{{ 'Back to the list'|trans({}, 'admin') }}
+								</a>
+								
+							</div>
+							<div class=" col-3">
+							</div>
+					</div>
+				
+			{{ form_end(form) }}
+		</div>
+				
 {% endblock %}
+{% block footer %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+    <script type="text/javascript">
+            
+		var classRoom = $("#abscence_sheet_classRoom");
+       
+            var idClassRoom, idSequence=$("#abscence_sheet_sequence").val(), startDate, endDate;
+			console.log(idSequence);
+           
+            classRoom.change(function () {
+				idClassRoom = $("#abscence_sheet_classRoom option:selected").val();
+				$.ajax({
+					type: "POST",
+					url: "{{ path('admin_abscence_list_students') }}",
+					data: {
+					idClassRoom: idClassRoom
+					},
+					datatype: "json",
+					success: function (data) {
+						$("#ficheBodyStudents").html(data).show();
+					}
+				});
+			});
+			$("#abscence_sheet_sequence").change(function () {
+				idSequence = $(this).val();
+			});
+			$("#abscence_sheet_startDate").change(function () {
+				startDate = $(this).val();
+			});
+			$("#abscence_sheet_endDate").change(function () {
+				endDate = $(this).val();
+			});
+
+			var abscencesJson = [],
+			postData;
+
+		$(function () {
+			$(document).on('submit', 'form', function (e) { // il est impératif de commencer avec cette méthode qui va empêcher le navigateur d'envoyer le formulaire lui-même
+			e.preventDefault();
+			
+
+			$("input[max=100]").each(function (index) {
+				abscencesJson.push({"matricule": $(this).attr('id'), "weight": $(this).val(), "raison": $(this).parent().next().next().children().val(), "justified": $(this).parent().next().children().val()});
+			});
+			postData = {
+				"abscences": JSON.stringify(abscencesJson),
+				"idRoom": idClassRoom,
+				"idSequence": idSequence,
+				"startDate": startDate,
+				"endDate": endDate
+			};
+
+		$.ajax({
+			type: "POST",
+			url: "{{ path('admin_abscences_sheet_create') }}",
+			data: postData,
+			datatype: "json",
+			success: function (data) {
+				alert("Enregistre avec succes.");
+			},
+			error: function (e) {
+				console.log(e.message);
+				alert("Echec.");
+			}
+			});
+		});
+		});
+             
+     
+		
+	</script>
+
+{% endblock javascripts %}

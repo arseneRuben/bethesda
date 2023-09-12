@@ -121,18 +121,9 @@ class EvaluationController extends AbstractController
     {
         $evaluation = new Evaluation();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $studentsEnrolledInClass = $this->stdRepo->findNotEnrolledStudentsThisYear($year);
         $form = $this->createForm(EvaluationType::class, $evaluation);
-        //$form->handleRequest($request);
-        /*if($form->isSubmitted() && $form->isValid())
-    	{
-            $this->em->persist($evaluation);
-            $this->em->flush();
-            $this->addFlash('success', 'Evaluation succesfully created');
-            return $this->redirectToRoute('admin_evaluations');
-    	}*/
+
         return $this->render('evaluation/new.html.twig', array(
-            // 'students' => $studentsEnrolledInClass,
             'evaluation' => $evaluation,
             'response' => null,
             'form' => $form->createView(),
@@ -148,7 +139,7 @@ class EvaluationController extends AbstractController
      */
     public function create(Request $request)
     {
-        
+
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
@@ -174,18 +165,7 @@ class EvaluationController extends AbstractController
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
-            /* $attributions = $this->attrRepo->findAll(array("course" => $course,"schoolYear" => $year ));
-		  if(count($attributions) != 1) {
-               if(count($attributions)==0 ) {
-                    $this->addFlash('warning', 'Cours non attribue!');
-                }
 
-                if(count($attributions)>1 ) {
-                    $this->addFlash('warning', 'Cours  attribue plusieurs fois la meme annee!');
-                }
-            }
-            //$evaluation->setInstant($instant);*/
-            //if($course->getAttributed()) {
             $evaluation->setCourse($course);
             $evaluation->setClassRoom($classRoom);
             $evaluation->setSequence($sequence);
@@ -263,7 +243,7 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation): Response
     {
-       /* if (!$this->getUser()) {
+        /* if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }

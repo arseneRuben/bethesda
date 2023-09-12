@@ -561,10 +561,11 @@
     {% block footer %}{% endblock footer %}
     {% block javascripts %}
         {{ parent() }}
-      
+        
        <script type="text/javascript" src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+        
     {% endblock javascripts %}
     
