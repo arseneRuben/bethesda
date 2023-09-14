@@ -142,7 +142,7 @@ class AbscenceSheetController extends AbstractController
 
         foreach ($studentsEnrolledInClass as $std) {
             $raison = $_POST[$std->getMatricule() . "raison"];
-            $just = $_POST[$std->getMatricule() . "just"];
+            $just = array_key_exists($std->getMatricule() . "just", $_POST) ? true : false;
             $weight = $_POST[$std->getMatricule() . "weight"];
 
             foreach ($abscences as $mark) {
