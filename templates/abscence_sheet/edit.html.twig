@@ -1,13 +1,142 @@
-<!DOCTYPE html>
+{% extends "layout/backEndLayout.html.twig" %}
 
-<title>Edit AbscenceSheet</title>
+{% form_theme edit_form 'bootstrap_4_layout.html.twig' %}
 
-{% block body %}
-    <h1>Edit AbscenceSheet</h1>
 
-    {{ include('abscence_sheet/_form.html.twig', {'button_label': 'Update'}) }}
+{% block content %}
+  
+  <div class="row mt-4">
+        		       
+                    <div class="col-12 jumbotron  mx-auto">
+                    
+                        <article class="text-center">
+                            <br/>
+								<div class="card-header">
+												<h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Modifier evaluation {{ abscence_sheet.id }}  </h4>
+									</div>
 
-    <a href="{{ path('app_abscence_sheet_index') }}">back to list</a>
+								<div class="example-wrapper">
+									<h1 class="center">Edition fiche d'abscence N°
+										{{abscence_sheet.id}}
+										Sequence
+										{{abscence_sheet.sequence.code}}
+										Cours
+										{{abscence_sheet.classRoom.name}}
+									</h1>
+									<div class="row">
+										<div class="col-lg-4 mar-bot30"></div>
+										<div class="col-lg-4 mar-bot30">
+											{{ form_start(edit_form) }}
+											{{ form_widget(edit_form) }}
+											
+										</div>
+										<div class="col-lg-4 mar-bot30"></div>
+									</div>
+									<div class="row">
+										<div class="col-lg-1 mar-bot30"></div>
+										<div class="col-lg-10 mar-bot30">
 
-    {{ include('abscence_sheet/_delete_form.html.twig') }}
+											{% if students is defined %}
+
+
+												<table class="table table-bordered table-hover table-sortable" id="tab_logic">
+
+													<thead>
+														<tr>
+															  <th style="width:10%;" class="text-center">Matricule</th>
+                                                                <th style="width:30%;" class="text-center" >Nom et prénom</th>
+                                                                <th style="width:20%;" class="text-center" >Heures d'abscence</th>
+                                                                <th style="width:10%;" class="text-center" >Justifiee?</th>
+                                                                <th style="width:30%;" class="text-center" >Raison</th>
+														</tr>
+													</thead>
+                                                   
+													<tbody>
+														{% for student in students  %}
+															<tr class="hidden" data-id="0" id='addr0'>
+																<td data-name="name">
+																	{{student.matricule}}
+																</td>
+																<td data-name="name">
+																	{{student.lastname}}
+																	{{student.firstname}}
+                                                                   
+																</td>
+																	<td data-name="desc">
+                                                                        <input type="number" id="{{student.matricule}}"  placeholder="0...100" value={{abscences[student.matricule] is defined ? abscences[student.matricule].weight : 0}}
+                                                                                                        min="0" max="100" class="form-control value" name="{{student.matricule}}weight"/>
+                     												</td>
+
+																	 <td data-name="desc">
+                                                                        <input type="checkbox" value=false placeholder="Justifiee"  class="form-check-input mt-0 justification" name="{{student.matricule}}just" checked={{ abscences[student.matricule] is defined ? abscences[student.matricule].justified : false }} />
+                                                                    </td>
+                                                                    <td data-name="desc">
+                                                                        <input type="text" placeholder="Raison" class="form-control" value={{abscences[student.matricule] is defined ? abscences[student.matricule].reason : "RAS"}} name="{{student.matricule}}raison" />
+                                                                    </td>
+																
+															</tr>
+														{% endfor %}
+													</tbody>
+
+												</table>
+
+											{% endif %}
+
+
+										</div>
+										<div class="col-lg-1 mar-bot30"></div>
+									</div>
+
+									<div class="btn-group center record_actions">
+
+										<a class="btn btn-info" href="{{ path('admin_abscences_sheet_index') }}">
+											<i class="fa fa-list"></i>
+											{{ 'Back to the list'|trans({}, 'admin') }}
+										</a>
+
+
+										<button class="btn btn-warning" type="submit">
+											<i class="fa fa-edit"></i>
+											{{ 'Update'|trans({}, 'admin') }}</button>
+
+										
+										
+
+									</div>
+
+								</div>
+							
+						</article>
+                    </div>
+			</div>
+
 {% endblock %}
+
+{% block javascripts %}
+	        	 {{parent()}} 
+	<script type="text/javascript" src="{{ asset('assets/js/jquery.js') }}"></script>
+	<script type="text/javascript">
+
+
+		$(function () {
+$("td input.value").change(function () {
+var note = $(this).val();
+note = parseInt(note);
+
+ 				if (note >= 0 && note < 11) {
+                    $(this).parent().next().children().val("NA");
+                }
+                if (note >= 11 && note < 14) {
+                    $(this).parent().next().children().val("EA/IA");
+                }
+                if (note >= 14 && note < 17) {
+                    $(this).parent().next().children().val("A");
+                }
+                if (note >= 17 && note <= 20) {
+                    $(this).parent().next().children().val("E");
+                }
+
+});
+});
+	</script>
+{% endblock javascripts %}

@@ -8,6 +8,7 @@ use App\Filter\AbscenceSearch;
 use App\Form\AbscenceSheetSearchType;
 use App\Form\AbscenceSheetType;
 use App\Repository\AbscenceSheetRepository;
+use App\Repository\AbscenceRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
 use App\Repository\StudentRepository;
@@ -31,16 +32,18 @@ class AbscenceSheetController extends AbstractController
 {
     private $em;
     private $repo;
+    private $absRepo;
     private $seqRepo;
     private $yearRepo;
     private $clRepo;
     private $stdRepo;
 
 
-    public function __construct(EntityManagerInterface $em, StudentRepository $stdRepo, AbscenceSheetRepository $repo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
+    public function __construct(EntityManagerInterface $em, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
+        $this->absRepo = $absRepo;
         $this->seqRepo = $seqRepo;
         $this->stdRepo = $stdRepo;
         $this->yearRepo = $yearRepo;
@@ -90,31 +93,82 @@ class AbscenceSheetController extends AbstractController
         ));
     }
 
-    #[Route('/{id}', name: 'admin_abscence_sheet_show', methods: ['GET'])]
-    public function show(AbscenceSheet $abscenceSheet): Response
-    {
-        return $this->render('abscence_sheet/show.html.twig', [
-            'abscence_sheet' => $abscenceSheet,
-        ]);
-    }
+
 
     #[Route('/{id}/edit', name: 'admin_abscence_sheet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, AbscenceSheet $abscenceSheet, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(AbscenceSheetType::class, $abscenceSheet);
+        $form = $this->createForm(AbscenceSheetType::class, $abscenceSheet, array(
+            'action' => $this->generateUrl('admin_abscence_sheet_update', array('id' => $abscenceSheet->getId())),
+            'method' => 'PUT',
+        ));
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        $notes  = array();
+        $abscences = $this->absRepo->findBy(array("abscenceSheet" => $abscenceSheet));
+        $year = $this->yearRepo->findOneBy(array("activated" => true));
 
-            return $this->redirectToRoute('admin_abscence_sheet_index', [], Response::HTTP_SEE_OTHER);
+        $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($abscenceSheet->getClassRoom(), $year);
+
+        foreach ($studentsEnrolledInClass as $std) {
+            foreach ($abscences as $abs) {
+                if ($abs->getStudent()->getId() == $std->getId()) {
+                    $notes[$std->getMatricule()] = $abs;
+                    break;
+                }
+            }
         }
-
-        return $this->renderForm('abscence_sheet/edit.html.twig', [
+        // dd($notes);
+        return $this->render('abscence_sheet/edit.html.twig', [
+            'abscences' => $notes,
+            'students' => $studentsEnrolledInClass,
             'abscence_sheet' => $abscenceSheet,
-            'form' => $form,
+            'edit_form' => $form->createView()
         ]);
     }
+
+    /**
+     * Edits an existing Evaluation entity.
+     *
+     * @Route("/{id}/update", name="admin_abscence_sheet_update", requirements={"id"="\d+"})
+     * @Method("PUT")
+     
+     */
+    public function updateAction(AbscenceSheet $sheet, Request $request)
+    {
+        $year = $this->yearRepo->findOneBy(array("activated" => true));
+        $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($sheet->getClassRoom(), $year);
+        $abscences = $this->absRepo->findBy(array("abscenceSheet" => $sheet));
+
+        foreach ($studentsEnrolledInClass as $std) {
+            $raison = $_POST[$std->getMatricule() . "raison"];
+            $just = $_POST[$std->getMatricule() . "just"];
+            $weight = $_POST[$std->getMatricule() . "weight"];
+
+            foreach ($abscences as $mark) {
+                if ($mark->getStudent()->getId() == $std->getId()) {
+                    $this->em->remove($mark);
+                    break;
+                }
+            }
+
+
+            $abs = new Abscence();
+            $abs->setReason($raison);
+            $abs->setJustified($just);
+            $abs->setWeight($weight);
+            $abs->setAbscenceSheet($sheet);
+            $abs->setStudent($std);
+            $sheet->addAbscence($abs);
+            $this->em->persist($abs);
+        }
+
+
+        $this->em->flush();
+        $this->addFlash('success', 'Sheet succesfully updated');
+        return $this->redirect($this->generateUrl('admin_abscences_sheet_index'));
+    }
+
 
     /**
      * Displays a form to create a new Evaluation entity.
@@ -204,14 +258,23 @@ class AbscenceSheetController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'admin_abscence_sheet_delete', methods: ['POST'])]
-    public function delete(Request $request, AbscenceSheet $abscenceSheet, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'admin_abscence_sheet_delete')]
+    public function delete(Request $request, AbscenceSheet $abscenceSheet): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $abscenceSheet->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($abscenceSheet);
-            $entityManager->flush();
+        foreach ($abscenceSheet->getAbscences() as $abs) {
+            $this->em->remove($abs);
         }
+        $this->em->remove($abscenceSheet);
+        $this->em->flush();
+        $this->addFlash('success', 'Sheet succesfully deleted');
 
-        return $this->redirectToRoute('admin_abscence_sheet_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_abscences_sheet_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{id}', name: 'admin_abscence_sheet_show', methods: ['GET'])]
+    public function show(AbscenceSheet $abscenceSheet): Response
+    {
+        return $this->render('abscence_sheet/show.html.twig', [
+            'abscence_sheet' => $abscenceSheet,
+        ]);
     }
 }

@@ -22,9 +22,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_abscence_sheet_index') }}">back to list</a>
+    <a href="{{ path('admin_abscences_sheet_index') }}">back to list</a>
 
-    <a href="{{ path('app_abscence_sheet_edit', {'id': abscence_sheet.id}) }}">edit</a>
+    <a href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}">edit</a>
 
     {{ include('abscence_sheet/_delete_form.html.twig') }}
 {% endblock %}
