@@ -32,7 +32,7 @@ class SubscriptionType extends AbstractType
             ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
                 return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
             }))
-            ->add('officialExamResult', ChoiceType::class, array(
+            /*    ->add('officialExamResult', ChoiceType::class, array(
                 'constraints' => new Assert\NotBlank(),
                 'choices' => array(
                     'ECHEC'         => '0',
@@ -47,7 +47,7 @@ class SubscriptionType extends AbstractType
                     '2 POINTS'      => 'D',
                     '1 POINTS'      => 'E',
                 ), 'label' => 'Resultat a l\'examen officiel'
-            ));
+            ))*/;
     }
 
     /**

@@ -69,6 +69,7 @@ class Subscription
 
         $this->updateTimestamp();
         $this->financeHolder = false;
+        $this->setOfficialExamResult("1p");
     }
 
     public function getId(): ?int

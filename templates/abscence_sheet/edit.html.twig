@@ -45,9 +45,8 @@
 														<tr>
 															  <th style="width:10%;" class="text-center">Matricule</th>
                                                                 <th style="width:30%;" class="text-center" >Nom et prénom</th>
-                                                                <th style="width:20%;" class="text-center" >Heures d'abscence</th>
-                                                                <th style="width:10%;" class="text-center" >Justifiee?</th>
-                                                                <th style="width:30%;" class="text-center" >Raison</th>
+                                                                <th style="width:10%;" class="text-center" >Heures d'abscence</th>
+                                                                <th style="width:50%;" class="text-center" >Raison</th>
 														</tr>
 													</thead>
                                                    
@@ -67,9 +66,7 @@
                                                                                                         min="0" max="100" class="form-control value" name="{{student.matricule}}weight"/>
                      												</td>
 
-																	 <td data-name="desc">
-                                                                        <input type="checkbox" value=false placeholder="Justifiee"  class="form-check-input mt-0 justification" name="{{student.matricule}}just" checked={{ abscences[student.matricule] is defined ? abscences[student.matricule].justified : false }} />
-                                                                    </td>
+																	
                                                                     <td data-name="desc">
                                                                         <input type="text" placeholder="Raison" class="form-control" value={{abscences[student.matricule] is defined ? abscences[student.matricule].reason : "RAS"}} name="{{student.matricule}}raison" />
                                                                     </td>
@@ -111,32 +108,3 @@
 			</div>
 
 {% endblock %}
-
-{% block javascripts %}
-	        	 {{parent()}} 
-	<script type="text/javascript" src="{{ asset('assets/js/jquery.js') }}"></script>
-	<script type="text/javascript">
-
-
-		$(function () {
-$("td input.value").change(function () {
-var note = $(this).val();
-note = parseInt(note);
-
- 				if (note >= 0 && note < 11) {
-                    $(this).parent().next().children().val("NA");
-                }
-                if (note >= 11 && note < 14) {
-                    $(this).parent().next().children().val("EA/IA");
-                }
-                if (note >= 14 && note < 17) {
-                    $(this).parent().next().children().val("A");
-                }
-                if (note >= 17 && note <= 20) {
-                    $(this).parent().next().children().val("E");
-                }
-
-});
-});
-	</script>
-{% endblock javascripts %}

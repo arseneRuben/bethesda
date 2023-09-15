@@ -331,18 +331,13 @@ class EvaluationController extends AbstractController
 
                 foreach ($marks as $mark) {
                     if ($mark->getStudent()->getId() == $std->getId()) {
-                        $this->em->remove($mark);
+                        $mark->setValue($note);
+                        $mark->setWeight($weight);
+                        $mark->setAppreciation($appr);
                         break;
                     }
                 }
 
-
-                $mark = new Mark();
-                $mark->setValue($note);
-                $mark->setWeight($weight);
-                $mark->setAppreciation($appr);
-                $mark->setEvaluation($evaluation);
-                $mark->setStudent($std);
                 if (strcmp($std->getGender(), "M") == 0) {
                     if ($note < 10) {
                         $evaluation->addFailluresH();

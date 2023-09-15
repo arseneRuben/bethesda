@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Sequence;
+
 use App\Entity\Abscence;
 use App\Entity\AbscenceSheet;
 use App\Filter\AbscenceSearch;
@@ -136,36 +138,31 @@ class AbscenceSheetController extends AbstractController
      */
     public function updateAction(AbscenceSheet $sheet, Request $request)
     {
+
         $year = $this->yearRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($sheet->getClassRoom(), $year);
         $abscences = $this->absRepo->findBy(array("abscenceSheet" => $sheet));
-
-        foreach ($studentsEnrolledInClass as $std) {
-            $raison = $_POST[$std->getMatricule() . "raison"];
-            $just = array_key_exists($std->getMatricule() . "just", $_POST) ? true : false;
-            $weight = $_POST[$std->getMatricule() . "weight"];
-
-            foreach ($abscences as $mark) {
-                if ($mark->getStudent()->getId() == $std->getId()) {
-                    $this->em->remove($mark);
-                    break;
+        $newStartDate = new \DateTime($request->request->get("abscence_sheet")["startDate"]);
+        $newEndDate = new \DateTime($request->request->get("abscence_sheet")["endDate"]);
+        $sequence = $this->seqRepo->findOneBy(array("id" => $request->request->get("abscence_sheet")['sequence']));
+        if ($newStartDate >= $sequence->getStartDate() && $newEndDate <= $sequence->getEndDate()) {
+            foreach ($studentsEnrolledInClass as $std) {
+                $raison = $_POST[$std->getMatricule() . "raison"];
+                $weight = $_POST[$std->getMatricule() . "weight"];
+                foreach ($abscences as $abs) {
+                    if ($abs->getStudent()->getMatricule() == $std->getMatricule()) {
+                        $abs->setReason($raison);
+                        $abs->setWeight($weight);
+                        $this->em->persist($abs);
+                        break;
+                    }
                 }
+                $this->em->flush();
+                $this->addFlash('success', 'Sheet succesfully updated');
             }
-
-
-            $abs = new Abscence();
-            $abs->setReason($raison);
-            $abs->setJustified($just);
-            $abs->setWeight($weight);
-            $abs->setAbscenceSheet($sheet);
-            $abs->setStudent($std);
-            $sheet->addAbscence($abs);
-            $this->em->persist($abs);
+        } else {
+            $this->addFlash('danger', 'Les dates ne sont pas incluse dans la session');
         }
-
-
-        $this->em->flush();
-        $this->addFlash('success', 'Sheet succesfully updated');
         return $this->redirect($this->generateUrl('admin_abscences_sheet_index'));
     }
 
@@ -224,35 +221,42 @@ class AbscenceSheetController extends AbstractController
             $startDate = json_decode($_POST['startDate'], true);
 
             $room = $request->request->get('idRoom');
-            $idSequence = $request->request->get('idSequence');
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
+
+            $idSequence = $request->request->get('idSequence');
             $sequence = $this->seqRepo->findOneBy(array("id" => $idSequence));
 
             $abscenceSheet->setClassRoom($classRoom);
             $abscenceSheet->setSequence($sequence);
             $abscenceSheet->setStartDate(new \DateTime($startDate));
             $abscenceSheet->setEndDate(new \DateTime($endDate));
+            if ((new \DateTime($startDate) <= new \DateTime($endDate) || (new \DateTime($startDate) >= $sequence->getStartDate() && new \DateTime($endDate) <= $sequence->getEndDate()))) {
+                foreach ($abscences as $record) {
+                    $abscence = new Abscence();
+                    $weight = $record["weight"];
+                    $matricule = $record["matricule"];
+                    $student = $this->stdRepo->findOneByMatricule($matricule);
+                    $raison = $record["raison"];
+                    $abscence->setWeight($weight);
+                    if ($weight > 0 && $raison != "RAS") {
+                        $abscence->setJustified(true);
+                    }
 
-            foreach ($abscences as $record) {
-                $abscence = new Abscence();
-                $weight = $record["weight"];
-                $matricule = $record["matricule"];
-                $student = $this->stdRepo->findOneByMatricule($matricule);
-                $raison = $record["raison"];
-                $justified = $record["justified"];
-                $abscence->setWeight($weight);
 
-
-                $abscence->setStudent($student);
-                $abscence->setAbscenceSheet($abscenceSheet);
-                $abscence->setReason($raison);
-                $abscence->setJustified($justified);
-                $abscenceSheet->addAbscence($abscence);
-                $this->em->persist($abscence);
+                    $abscence->setStudent($student);
+                    $abscence->setAbscenceSheet($abscenceSheet);
+                    $abscence->setReason($raison);
+                    $abscenceSheet->addAbscence($abscence);
+                    $this->em->persist($abscence);
+                }
+                $this->em->persist($abscenceSheet);
+                $this->em->flush();
+            } else {
+                if (new \DateTime($startDate) <= new \DateTime($endDate))
+                    $this->addFlash('danger', 'Les dates ne sont pas incluse dans la session');
+                else
+                    $this->addFlash('danger', 'La date de debut doit etre anterieure a la date de fin');
             }
-
-            $this->em->persist($abscenceSheet);
-            $this->em->flush();
         }
         return $this->redirect($this->generateUrl('admin_abscence_sheet_new'));
     }
