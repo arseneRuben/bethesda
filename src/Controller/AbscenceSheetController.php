@@ -262,15 +262,25 @@ class AbscenceSheetController extends AbstractController
     }
 
 
-    #[Route('/{id}/delete', name: 'admin_abscence_sheet_delete')]
+    #[Route('/{id}/delete', name: 'admin_abscences_sheet_delete')]
     public function delete(Request $request, AbscenceSheet $abscenceSheet): Response
     {
-        foreach ($abscenceSheet->getAbscences() as $abs) {
-            $this->em->remove($abs);
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
         }
-        $this->em->remove($abscenceSheet);
-        $this->em->flush();
-        $this->addFlash('success', 'Sheet succesfully deleted');
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+        if ($this->isCsrfTokenValid('abscence_sheet_deletion' . $abscenceSheet->getId(), $request->request->get('csrf_token'))) {
+            foreach ($abscenceSheet->getAbscences() as $abs) {
+                $this->em->remove($abs);
+            }
+            $this->em->remove($abscenceSheet);
+            $this->em->flush();
+            $this->addFlash('success', 'Sheet succesfully deleted');
+        }
 
         return $this->redirectToRoute('admin_abscences_sheet_index', [], Response::HTTP_SEE_OTHER);
     }

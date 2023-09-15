@@ -59,8 +59,12 @@
                     <a class="btn btn-warning btn-sm" href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}"><i class="fa fa-edit">
 											</i>
                                             </a>
-                    <a class="btn btn-danger btn-sm" href="{{ path('admin_abscence_sheet_delete', {'id': abscence_sheet.id}) }}"><i class="fa fa-trash" aria-hidden="true"></i>
+                    <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{abscence_sheet.id}}').submit();"> <i class="fa fa-trash"></i> </a>
+										<form id="js-evaluation-delete-form-{{abscence_sheet.id}}" action="{{path('admin_abscences_sheet_delete', {id: abscence_sheet.id})}}" method="post" style="display: none;">
+											<input type="hidden" name="csrf_token" value="{{ csrf_token('abscence_sheet_deletion' ~ abscence_sheet.id ) }}" id="">
+											<input type="hidden" name="_method" value="DELETE">
 
+										</form>
                 </td>
             </tr>
         {% else %}
