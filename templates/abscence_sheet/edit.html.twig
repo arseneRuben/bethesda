@@ -45,8 +45,8 @@
 														<tr>
 															  <th style="width:10%;" class="text-center">Matricule</th>
                                                                 <th style="width:30%;" class="text-center" >Nom et prénom</th>
-                                                                <th style="width:10%;" class="text-center" >Heures d'abscence</th>
-                                                                <th style="width:50%;" class="text-center" >Raison</th>
+                                                                <th style="width:20%;" class="text-center" >Heures d'abscence</th>
+                                                                <th style="width:30%;" class="text-center" >Raison</th>
 														</tr>
 													</thead>
                                                    
@@ -108,3 +108,26 @@
 			</div>
 
 {% endblock %}
+
+{% block javascripts %}
+	        	 {{parent()}} 
+	<script type="text/javascript" src="{{ asset('assets/js/jquery.js') }}"></script>
+	<script type="text/javascript">
+         var idClassRoom, idSequence=$("#abscence_sheet_sequence").val(), startDate, endDate;
+         $("#abscence_sheet_sequence").change(function () {
+				idSequence = $(this).val();
+			});
+			$("#abscence_sheet_startDate").change(function () {
+				startDate = $(this).val();
+			});
+			$("#abscence_sheet_endDate").change(function () {
+				endDate = $(this).val();
+			});
+
+			var abscencesJson = [],
+			postData;
+
+
+	
+	</script>
+{% endblock javascripts %}

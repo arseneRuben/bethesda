@@ -3,16 +3,37 @@
 // src/Controller/PaymentController.php
 
 namespace App\Controller;
+
 use App\Entity\PaymentPlan;
 use App\Form\PaymentPlanType;
+use App\Repository\ClassRoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\PaymentPlanRepository;
+use App\Repository\PaymentRepository;
+use App\Repository\SchoolYearRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PaymentPlanController extends AbstractController
 {
+    private $em;
+    private $clRepo;
+    private $scRepo;
+    private $repo;
+    public function __construct(
+        EntityManagerInterface $em,
+        PaymentPlanRepository $repo,
+        SchoolYearRepository $scRepo,
+        ClassRoomRepository $clRepo,
+
+    ) {
+        $this->em = $em;
+        $this->repo = $repo;
+        $this->scRepo = $scRepo;
+        $this->clRepo = $clRepo;
+    }
     /**
      * @Route("/admin/paymentPlans", name="admin_paymentPlans")
      */
@@ -20,13 +41,12 @@ class PaymentPlanController extends AbstractController
     {
         // Utilisez le PaymentRepository pour récupérer tous les paiements
         $paymentPlans = $paymentPlanRepository->findAll();
-
-        // Comptez le nombre total de paiements
-        $totalPayments = count($paymentPlans);
-
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $rooms = $this->clRepo->findAll();
         return $this->render('paymentPlan/index.html.twig', [
             'paymentPlans' => $paymentPlans,
-            'totalPayments' => $totalPayments,
+            'year' => $year,
+            'rooms' => $rooms
         ]);
     }
 
@@ -61,5 +81,4 @@ class PaymentPlanController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }

@@ -5,52 +5,49 @@
   
     
          <div class="row mt-4">
-            <div class="col-1" >
-                <a class="btn btn-info" href="{{ path('admin_paymentPlans_new') }}">
-                    <i class="fa fa-plus"></i> <h1>New </h1>
-                </a>
+            <div class="col-3" >
+                {% if(year.paymentPlans|length > 0) %}
+
+                {% else %}
+                   <input class="form-control form-control-lg" type="number" value="2" id="slice" placeholder="nombre de tranches">
+                {% endif %}
             </div>
-            <div class="col-11 jumbotron" >
+            <div class="col-9 jumbotron" >
               <div class="m-1 box-shadow">
                     <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Gestion de la Scolarire </h4>
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Grille de tranches de scolarite par classe </h4>
                     </div>
                 <table  width="100%" class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width:5%;" class="text-center" scope="col">ID</th>
-                            <th style="width:15%;" class="text-center" scope="col">Montant</th>
-                            <th style="width:15%;" class="text-center" scope="col">Annee</th>
-                             <th style="width:20%;" class="text-center" scope="col">Etudiant</th>                            
-                            <th style="width:25%;" class="text-center" scope="col">Action</th>
+                            <th style="width:5%;" class="text-center" scope="col">Niveau</th>
+                            <th style="width:5%;" class="text-center" id="room" scope="col">Classe</th>
+                            <th style="width:16%;" class="text-center" scope="col" colspan="2">Frais Examen</th>                            
+                            <th style="width:15%;" class="text-center" scope="col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for paymentPlan in paymentPlans %}
+                        {% for room in rooms %}
                             <tr>
-                                <td style="width:5%;" class="text-center" scope="row">{{ loop.index }}</th>
-                                 <td style="width:15%;" class="text-center" scope="row">{{ level.cycle.section.program.name }}</th>
-                                 <td style="width:15%;" class="text-center" scope="row">{{ paymemt.id }}</th>
-                                 <td style="width:20%;" class="text-center" scope="row">{{ payment.amount }}</th>
-                                 <td style="width:20%;" class="text-center" scope="row">{{ payment.SchoolYear.name }}</th>
-                                <td style="width:20%;" class="text-center" scope="row">{{ payment.student.name }}</th>
-                               
-                                <td style="width:20%;" class="text-center" ><a href="{{ path('admin_levels_show', {id: level.id}) }}"><h3>{{ level.name }}</h3></a></td>
-                             
-                                
-                                <td style="width:25%;" class="text-center">
-                                    <div class="btn-group">
-                                         <a class="btn btn-info" href="{{ path('admin_levels_show', {id: level.id}) }}">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i> 
-                                        </a>
-                                        <a class="btn btn-warning" href="{{path('admin_levels_edit', {id: level.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                <td style="width:5%;" class="text-center" scope="row">{{ room.level.name }}</td>
+                                 <td style="width:15%;" class="text-center" scope="row">{{ room.name }}</td>
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
 
-                                      
-                                        </a>
-                                      
-                                       
-                                    </div>
-                                </td>
+                                
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
+
+                                   <td style="width:8%;" class="text-center" scope="row"></td>
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
+
+                                   <td style="width:8%;" class="text-center" scope="row"></td>
+                                 <td style="width:8%;" class="text-center" scope="row"></td>
+
+                                 <td style="width:15%;" class="text-center" scope="row"></th>
+                             
+                               
+                               
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -60,3 +57,27 @@
         </div>
    
 {% endblock %}
+{% block javascripts %}
+	{{parent()}}
+    <script type="text/javascript">
+        const slice = $("#slice"), room=$("#room")  ;
+        sliceSize = slice.val();
+        for(let i=sliceSize; i>=1 ; i--) {
+                 $(`  <th style=\"width:16%;\" class=\"text-center inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(room);
+        } 
+       /* $('.inserted').each(function(){
+            console.log(this)
+                (this).remove();
+        });*/
+        slice.change(function(){
+            $('.inserted').each(function(){
+                    $(this).remove();
+            });
+            sliceSize = slice.val();
+            for(let i=sliceSize; i>=1 ; i--) {
+                 $(`  <th style=\"width:16%;\" class=\"text-center inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(room);
+             }          
+         })
+
+    </script>
+{% endblock javascripts %}

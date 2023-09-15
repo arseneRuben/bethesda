@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Cycle;
+
 /**
  * @ORM\Entity(repositoryClass=LevelRepository::class)
  */
@@ -30,10 +31,7 @@ class Level
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity=SettingsPayments::class, mappedBy="level", orphanRemoval=true)
-     */
-    private $settingsPayments;
+
 
     /**
      * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="level")
@@ -47,7 +45,6 @@ class Level
 
     public function __construct()
     {
-        $this->settingsPayments = new ArrayCollection();
         $this->rooms = new ArrayCollection();
     }
 
@@ -84,38 +81,12 @@ class Level
     {
         $name = (is_null($this->getName())) ? "" : $this->getName();
         $cycle = (is_null($this->getCycle())) ? "" : $this->getCycle();
-        return (string) ($cycle."/".$name);
+        return (string) ($cycle . "/" . $name);
     }
 
-    /**
-     * @return Collection|SettingsPayments[]
-     */
-    public function getSettingsPayments(): Collection
-    {
-        return $this->settingsPayments;
-    }
 
-    public function addSettingsPayment(SettingsPayments $settingsPayment): self
-    {
-        if (!$this->settingsPayments->contains($settingsPayment)) {
-            $this->settingsPayments[] = $settingsPayment;
-            $settingsPayment->setLevel($this);
-        }
 
-        return $this;
-    }
 
-    public function removeSettingsPayment(SettingsPayments $settingsPayment): self
-    {
-        if ($this->settingsPayments->removeElement($settingsPayment)) {
-            // set the owning side to null (unless already changed)
-            if ($settingsPayment->getLevel() === $this) {
-                $settingsPayment->setLevel(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|ClassRoom[]

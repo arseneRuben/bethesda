@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Period;
+use App\Entity\PaymentPlan;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -69,24 +70,25 @@ class SchoolYear
      */
     private $quaters;
 
-    /**
-     * @ORM\OneToMany(targetEntity=SettingsPayments::class, mappedBy="schoolYear", orphanRemoval=true)
-     */
-    private $settingsPayments;
 
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="schoolYear")
      */
     private $subscriptions;
+    /**
+     * @ORM\OneToMany(targetEntity=PaymentPlan::class, mappedBy="schoolYear")
+     */
+    private $paymentPlans;
 
 
 
     public function __construct()
     {
         $this->quaters = new ArrayCollection();
-        $this->settingsPayments = new ArrayCollection();
         $this->activated = true;
         $this->subscriptions = new ArrayCollection();
+        $this->paymentPlants = new ArrayCollection();
+        $this->paymentPlans = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,35 +151,6 @@ class SchoolYear
         return $this;
     }
 
-    /**
-     * @return Collection|SettingsPayments[]
-     */
-    public function getSettingsPayments(): Collection
-    {
-        return $this->settingsPayments;
-    }
-
-    public function addSettingsPayment(SettingsPayments $settingsPayment): self
-    {
-        if (!$this->settingsPayments->contains($settingsPayment)) {
-            $this->settingsPayments[] = $settingsPayment;
-            $settingsPayment->setSchoolYear($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSettingsPayment(SettingsPayments $settingsPayment): self
-    {
-        if ($this->settingsPayments->removeElement($settingsPayment)) {
-            // set the owning side to null (unless already changed)
-            if ($settingsPayment->getSchoolYear() === $this) {
-                $settingsPayment->setSchoolYear(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Subscription[]
@@ -203,6 +176,36 @@ class SchoolYear
             // set the owning side to null (unless already changed)
             if ($subscription->getSchoolYear() === $this) {
                 $subscription->setSchoolYear(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PaymentPlan>
+     */
+    public function getPaymentPlans(): Collection
+    {
+        return $this->paymentPlans;
+    }
+
+    public function addPaymentPlan(PaymentPlan $paymentPlan): static
+    {
+        if (!$this->paymentPlans->contains($paymentPlan)) {
+            $this->paymentPlans->add($paymentPlan);
+            $paymentPlan->setSchoolYear($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaymentPlan(PaymentPlan $paymentPlan): static
+    {
+        if ($this->paymentPlans->removeElement($paymentPlan)) {
+            // set the owning side to null (unless already changed)
+            if ($paymentPlan->getSchoolYear() === $this) {
+                $paymentPlan->setSchoolYear(null);
             }
         }
 
