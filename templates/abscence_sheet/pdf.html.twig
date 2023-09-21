@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Procès verbal</title>
+          <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+        
+   
+    </head>
+    <body>
+        <header class="clearfix">
+
+            <h1><b> Rapport d'adscences de la {{abscences.sequence.wording}} de  {{abscences.startDate|date('d-m-Y')}}  a   {{abscences.endDate|date('d-m-Y')}}</b> </h1>
+            <div id="company" class="clearfix">
+                <div><h5><b><span>Classe</span> {{abscences.classroom.name}}</b></h5></div>
+                  
+            </div>
+            <div id="project">
+            <div><h5><b><span>Année scolaire</span> {{abscences.sequence.quater.schoolYear.wording}}</b></h5></div>
+            	 
+           
+        </header>
+        <main>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="service"  style="width:20%;">Matricule</th>
+                        <th class="desc"  style="width:40%;"><h8>Nom et prénom</h8></th>
+                        <th  style="width:15%;"><b>Heures</b></th>
+                         
+                        <th  style="width:25%;"><b>Justification</b></th>
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set total = 0 %}
+
+                    {% for mark in abscences.abscences %}
+                        <tr>
+                            <td class="service"><b>{{mark.student.matricule}}</b></td>
+                            <td class="desc"><b>{{mark.student.lastname }} {{   mark.student.firstname}}</b></td>
+                            <td class="qty">{{mark.weight}}</td>
+                            <td class="total">{{mark.reason}}</td>
+                        </tr>
+                        {% set total = total + mark.weight %}
+
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+             <div id="notices">
+               
+                <div>BILAN:</div>
+                <div class="notice"> ABSENCE : {{total}} Heures</div>
+            </div>
+            <div id="notices">
+                <div>NOTICE:</div>
+                <div class="notice">Cette fiche est à conserver en vue de la traçabilité de la gestion des abscences de cette année scolaire.</div>
+            </div>
+        </main>
+        <footer>
+           Fiche de procès verbal
+        </footer>
+    </body>
+</html>

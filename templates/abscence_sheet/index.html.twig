@@ -56,7 +56,11 @@
                 <td>{{ abscence_sheet.endDate ? abscence_sheet.endDate|date('Y-m-d') : '' }}</td>
                 <td>{{ abscence_sheet.classRoom.name }}</td>
                 <td>
-                    <a class="btn btn-warning btn-sm" href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}"><i class="fa fa-edit">
+                    <a class="btn btn-outline-info " href="{{ path('admin_abscence_sheet_pdf', {id: abscence_sheet.id}) }}">
+											<i class="fa fa-cloud-download">
+												</i>
+										</a>
+                    <a class="btn btn-outline-warning " href="{{ path('admin_abscence_sheet_edit', {'id': abscence_sheet.id}) }}"><i class="fa fa-edit">
 											</i>
                                             </a>
                     <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{abscence_sheet.id}}').submit();"> <i class="fa fa-trash"></i> </a>

@@ -17,6 +17,7 @@ use App\Repository\SchoolYearRepository;
 use App\Repository\MarkRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -453,7 +454,7 @@ class EvaluationController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function pdfAction(Evaluation $evaluation, Pdf $snappy)
+    public function pdfAction(Evaluation $evaluation, \Knp\Snappy\Pdf $snappy)
     {
         $html = $this->renderView('evaluation/pdf.html.twig', array(
             'evaluation' => $evaluation,
@@ -466,7 +467,7 @@ class EvaluationController extends AbstractController
             200,
             array(
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $evaluation->getSequence()->getWording() . '_' . $evaluation->getClassRoom()->getName() . '.pdf"',
+                'Content-Disposition' => 'attachment; filename="' . $evaluation->getSequence()->getWording() . '_' . $evaluation->getClassRoom()->getName() . '_' . $evaluation->getId() . '.pdf"',
             )
         );
     }

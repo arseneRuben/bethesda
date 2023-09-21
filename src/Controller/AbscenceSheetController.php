@@ -178,14 +178,11 @@ class AbscenceSheetController extends AbstractController
     {
         if ($_POST["idClassRoom"]) {
             $idClassRoom = $_POST["idClassRoom"];
-
             if ($idClassRoom != null) {
-
                 $year = $this->yearRepo->findOneBy(array("activated" => true));
                 $classRoom = $this->clRepo->findOneById($idClassRoom);
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
                 $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($classRoom, $year);
-
                 if ($studentsEnrolledInClass != null) {
                     return $this->render('abscence_sheet/liststudents.html.twig', array('students' => $studentsEnrolledInClass));
                 }
@@ -290,5 +287,29 @@ class AbscenceSheetController extends AbstractController
         return $this->render('abscence_sheet/show.html.twig', [
             'abscence_sheet' => $abscenceSheet,
         ]);
+    }
+    /**
+     * Finds and displays a Evaluation entity.
+     *
+     * @Route("/{id}/pdf", name="admin_abscence_sheet_pdf", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function pdfAction(AbscenceSheet $abscenceSheet, \Knp\Snappy\Pdf $snappy)
+    {
+        $html = $this->renderView('abscence_sheet/pdf.html.twig', array(
+            'abscences' => $abscenceSheet,
+        ));
+
+        return new Response(
+            $snappy->getOutputFromHtml($html, array(
+                'default-header' => false
+            )),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $abscenceSheet->getSequence()->getWording() . '_' . $abscenceSheet->getClassRoom()->getName() . '_' . $abscenceSheet->getId() . '.pdf"',
+            )
+        );
     }
 }

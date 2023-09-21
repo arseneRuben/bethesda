@@ -3,81 +3,98 @@
 
 {% block content %}
   
-    
-         <div class="row mt-4">
-            <div class="col-3" >
-                {% if(year.paymentPlans|length > 0) %}
+         <form>
+            <div class="row mt-4">
+            
+                <div class="col-12 jumbotron" >
+                <div class="m-1 box-shadow">
+                        <div class="card-header row">
+                                            <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
+                                            {% if(year.paymentPlans|length > 0) %}
 
-                {% else %}
-                   <input class="form-control form-control-lg" type="number" value="2" id="slice" placeholder="nombre de tranches">
-                {% endif %}
-            </div>
-            <div class="col-9 jumbotron" >
-              <div class="m-1 box-shadow">
-                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Grille de tranches de scolarite par classe </h4>
-                    </div>
-                <table  width="100%" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width:5%;" class="text-center" scope="col">Niveau</th>
-                            <th style="width:5%;" class="text-center" id="room" scope="col">Classe</th>
-                            <th style="width:16%;" class="text-center" scope="col" colspan="2">Frais Examen</th>                            
-                            <th style="width:15%;" class="text-center" scope="col">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for room in rooms %}
-                            <tr>
-                                <td style="width:5%;" class="text-center" scope="row">{{ room.level.name }}</td>
-                                 <td style="width:15%;" class="text-center" scope="row">{{ room.name }}</td>
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-
-                                
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-
-                                   <td style="width:8%;" class="text-center" scope="row"></td>
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-
-                                   <td style="width:8%;" class="text-center" scope="row"></td>
-                                 <td style="width:8%;" class="text-center" scope="row"></td>
-
-                                 <td style="width:15%;" class="text-center" scope="row"></th>
-                             
-                               
-                               
+                                            {% else %}
+                                            <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
+                                            <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">
+                                            {% endif %}
+                        </div>
+                    <table  width="100%" class="table table-striped">
+                        <thead>
+                            <tr class="row">
+                                <th class="text-center col-1" scope="col">Niveau</th>
+                                <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
+                                <th  class="text-center col-2" scope="col" colspan="2">Frais Examen</th>                            
+                                <th  class="text-center col-1" scope="col">Total</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-              </div>
+                        </thead>
+                        <tbody>
+                            {% for room in rooms %}
+                                <tr class="row">
+                                    <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                    <td  class="text-center col-1 roomTBody" scope="row">{{ room.name }}</td>
+                                    {%  if(room.apc) %}
+                                        <td  class="text-center col-1" scope="row"><input type="number" class="form-control input-sm" name="tranche_class"/></td>
+                                        <td  class="text-center col-1" scope="row"><input type="date" class="form-control input-sm" name="deadline_class"/></td>
+                                    {% else %}
+                                        <td  class="text-center col-2" colspan="2" scope="row"></td>
+                                    {% endif %}
+                                    <td  class="text-center col-1 sum" scope="row"></th>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
             </div>
-        </div>
+            <div class="row mt-2 mx-auto">
+                                <div class=" col-3">
+                                </div>
+                                <div class=" col-3 mx-auto btn-group d-inline-flex p-2 bd-highlight">
+                                    <button class="btn btn-danger" type="submit">
+                                        <b>
+                                            <i class="fa fa-balance-scale"></i>submit</b>
+                                    </button>
+                                </div>
+                                <div class="  col-3 mx-auto btn-group d-inline-flex p-2 bd-highligh">
+                                    <a class="btn btn-info" href="{{ path('admin_paymentPlans') }}">
+                                        <i class="fa fa-list"></i>
+                                        {{ 'Back to the list'|trans({}, 'admin') }}
+                                    </a>
+                                    
+                                </div>
+                                <div class=" col-3">
+                                </div>
+            </div>
+        </form>
    
+
 {% endblock %}
 {% block javascripts %}
 	{{parent()}}
     <script type="text/javascript">
-        const slice = $("#slice"), room=$("#room")  ;
+        const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
         sliceSize = slice.val();
         for(let i=sliceSize; i>=1 ; i--) {
-                 $(`  <th style=\"width:16%;\" class=\"text-center inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(room);
+                 $(`<th style=\"width:16%;\" class=\"text-center  inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead); 
         } 
-       /* $('.inserted').each(function(){
-            console.log(this)
-                (this).remove();
-        });*/
+     
         slice.change(function(){
             $('.inserted').each(function(){
                     $(this).remove();
             });
             sliceSize = slice.val();
             for(let i=sliceSize; i>=1 ; i--) {
-                 $(`  <th style=\"width:16%;\" class=\"text-center inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(room);
+                  $(`  <th  class=\"text-center col-2 inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead);
+                  $(".roomTBody").each(function() {
+                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\" class=\"form-control input-sm\" name=\"tranche_class\"/></td>
+                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name=\"deadline_class\"/></td>
+                                 `).insertAfter($(this));
+                  });
+                  
              }          
          })
+      
+    
+        
 
     </script>
 {% endblock javascripts %}
