@@ -111,7 +111,7 @@
 			
 
 			$("input[max=20]").each(function (index) {
-				marksJson.push({"matricule": $(this).attr('id'), "note": $(this).val(), "appreciation": $(this).parent().next().children().val(), "weight": $(this).parent().next().next().children().val()});
+				marksJson.push({"matricule": $(this).attr('id'), "note": $(this).val(), "raison": $(this).parent().next().children().val(), "weight": $(this).parent().next().next().children().val()});
 			});
 			idcourse = $("select.ChoiceCourse option:selected").val();
 			postData = {
