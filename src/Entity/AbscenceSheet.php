@@ -27,14 +27,14 @@ use Doctrine\ORM\Mapping as ORM;
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Sequence::class, inversedBy="evaluations")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Sequence::class, inversedBy="abscenceSheets")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $sequence;
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=ClassRoom::class)
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class, inversedBy="abscenceSheets")
      * @ORM\JoinColumn(nullable=false)
      */
     private $classRoom;

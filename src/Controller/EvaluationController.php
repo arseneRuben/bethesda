@@ -75,7 +75,7 @@ class EvaluationController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(PaginatorInterface $paginator, Request $request, EvaluationRepository $repo)
+    public function indexAction(PaginatorInterface $paginator, Request $request)
     {
         $search = new PropertySearch();
         $searchForm =  $this->createForm(PropertySearchType::class, $search);

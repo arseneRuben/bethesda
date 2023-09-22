@@ -22,22 +22,7 @@ class AbscenceSheetSearchType extends AbstractType
     {
         $builder
 
-            ->add('startDate', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-                'label' => false,
-                'attr' => [
-                    'placeholder' => 'Date de debut'
-                ]
-            ])
-            ->add('endDate', DateType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-                'label' => false,
-                'attr' => [
-                    'placeholder' => 'Date de fin'
-                ]
-            ])
+
             ->add('sequence', EntityType::class, [
                 'class' => Sequence::class,
                 'required' => false,

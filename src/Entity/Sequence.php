@@ -38,10 +38,15 @@ class Sequence implements JsonSerializable
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="sequence", orphanRemoval=true)
      */
     private $evaluations;
+    /**
+     * @ORM\OneToMany(targetEntity=AbscenceSheet::class, mappedBy="sequence", orphanRemoval=true)
+     */
+    private $abscenceSheets;
 
     public function __construct()
     {
         $this->evaluations = new ArrayCollection();
+        $this->abscenceSheets = new ArrayCollection();
     }
 
     public function jsonSerialize()
@@ -124,5 +129,35 @@ class Sequence implements JsonSerializable
     public function disable()
     {
         $this->setActivated(false);
+    }
+
+    /**
+     * @return Collection<int, AbscenceSheet>
+     */
+    public function getAbscenceSheets(): Collection
+    {
+        return $this->abscenceSheets;
+    }
+
+    public function addAbscenceSheet(AbscenceSheet $abscenceSheet): static
+    {
+        if (!$this->abscenceSheets->contains($abscenceSheet)) {
+            $this->abscenceSheets->add($abscenceSheet);
+            $abscenceSheet->setSequence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAbscenceSheet(AbscenceSheet $abscenceSheet): static
+    {
+        if ($this->abscenceSheets->removeElement($abscenceSheet)) {
+            // set the owning side to null (unless already changed)
+            if ($abscenceSheet->getSequence() === $this) {
+                $abscenceSheet->setSequence(null);
+            }
+        }
+
+        return $this;
     }
 }

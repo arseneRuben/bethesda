@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,6 +61,17 @@ class ClassRoom
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="classRoom")
      */
     private $subscriptions;
+    /**
+     * @ORM\OneToMany(targetEntity=AbscenceSheet::class, mappedBy="classRoom", orphanRemoval=true)
+     */
+    private $abscenceSheets;
+
+    public function __construct()
+    {
+        $this->modules = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->abscenceSheets = new ArrayCollection();
+    }
 
 
 
@@ -189,7 +201,33 @@ class ClassRoom
         return $this->apc;
     }
 
+    /**
+     * @return Collection<int, AbscenceSheet>
+     */
+    public function getAbscenceSheets(): Collection
+    {
+        return $this->abscenceSheets;
+    }
 
+    public function addAbscenceSheet(AbscenceSheet $abscenceSheet): static
+    {
+        if (!$this->abscenceSheets->contains($abscenceSheet)) {
+            $this->abscenceSheets->add($abscenceSheet);
+            $abscenceSheet->setClassRoom($this);
+        }
 
+        return $this;
+    }
 
+    public function removeAbscenceSheet(AbscenceSheet $abscenceSheet): static
+    {
+        if ($this->abscenceSheets->removeElement($abscenceSheet)) {
+            // set the owning side to null (unless already changed)
+            if ($abscenceSheet->getClassRoom() === $this) {
+                $abscenceSheet->setClassRoom(null);
+            }
+        }
+
+        return $this;
+    }
 }
