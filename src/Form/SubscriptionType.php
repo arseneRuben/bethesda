@@ -8,6 +8,7 @@ use App\Entity\SchoolYear;
 use App\Entity\Subscription;
 use App\Repository\StudentRepository;
 use App\Repository\SchoolYearRepository;
+use App\Repository\SubscriptionRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -18,6 +19,18 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 class SubscriptionType extends AbstractType
 {
 
+    private $repo;
+    private $scRepo;
+    private $stdRepo;
+    private $year;
+    public function __construct(SubscriptionRepository $repo, SchoolYearRepository $scRepo, StudentRepository $stdRepo)
+    {
+        $this->repo = $repo;
+        $this->scRepo = $scRepo;
+        $this->stdRepo = $stdRepo;
+        $this->year = $this->scRepo->findOneBy(array("activated" => true));
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -25,14 +38,13 @@ class SubscriptionType extends AbstractType
     {
 
         $builder
-            ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'query_builder' => function (StudentRepository $repository) {
-                return $repository->createQueryBuilder('s')->where('s.enrolled=:er')->setParameter('er', false)->add('orderBy', 's.lastname');
-            }))
+            ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'choices' => $this->stdRepo->findByNotEnrolledStudentsThisYear2($this->year)))
             ->add('classRoom', EntityType::class, array('class' => ClassRoom::class, 'label' => 'Classe', 'required' => true))
             ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
                 return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
             }))
-            /*    ->add('officialExamResult', ChoiceType::class, array(
+            ->add('officialExamResult', ChoiceType::class, array(
+                'data' => $options['defaultOfficialExamResult'],
                 'constraints' => new Assert\NotBlank(),
                 'choices' => array(
                     'ECHEC'         => '0',
@@ -47,7 +59,7 @@ class SubscriptionType extends AbstractType
                     '2 POINTS'      => 'D',
                     '1 POINTS'      => 'E',
                 ), 'label' => 'Resultat a l\'examen officiel'
-            ))*/;
+            ));
     }
 
     /**
@@ -58,6 +70,7 @@ class SubscriptionType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => Subscription::class,
             'entityManager' => null,
+            'defaultOfficialExamResult' => '1p',
         ));
     }
 

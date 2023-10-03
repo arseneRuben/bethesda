@@ -23,7 +23,7 @@ class StudentRepository extends ServiceEntityRepository
         parent::__construct($registry, Student::class);
         $this->scRepo = $scRepo;
     }
-    
+
     public function findStudentsByClass($classId)
     {
         return $this->createQueryBuilder('s')
@@ -122,22 +122,7 @@ class StudentRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findNotEnrolledStudents2ThisYear(int $year)
-    {
-        //SELECT matricule,firstname, lastname, gender FROM  student  std JOIN inscription sub ON  sub.student_id  =  std.id JOIN school_year sc ON  sub.year_id =  sc.id  WHERE sub.year_id = :year AND  sub.classroom_id = :room
 
-        $query = $this->getEntityManager()
-            ->createQuery(
-                " SELECT st 
-                               FROM    Student  st
-                                WHERE st.matricule not in 
-                                (SELECT std.matricule
-                             FROM  Student  std, Subscription sub, SchoolYear yr 
-                              WHERE  sub.student  =  std.id AND sub.schoolYear   =  yr.id AND sub.schoolYear = :year)   
-                            "
-            )->setParameter('year', $year);
-        return $query->getResult();
-    }
     public function findNotEnrolledStudents2ThisYearRoom(ClassRoom $room, int $year)
     {
         //SELECT matricule,firstname, lastname, gender FROM  student  std JOIN inscription sub ON  sub.student_id  =  std.id JOIN school_year sc ON  sub.year_id =  sc.id  WHERE sub.year_id = :year AND  sub.classroom_id = :room
@@ -192,7 +177,7 @@ class StudentRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
-    public function findNotEnrolledStudentsThisYear2()
+    public function findByNotEnrolledStudentsThisYear2(SchoolYear $year)
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
 
@@ -220,6 +205,7 @@ class StudentRepository extends ServiceEntityRepository
                              JOIN App\Entity\Subscription sub WITH  sub.student  =  std.id
                              JOIN App\Entity\SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
                              WHERE sub.schoolYear = :year
+                             ORDER BY std.lastname
                              AND std.enrolled =:enrolled 
                             "
             )->setParameter('year', $year)

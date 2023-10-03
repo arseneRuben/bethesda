@@ -180,7 +180,7 @@ class Student
         $firstname = (is_null($this->getFirstName())) ? "" : $this->getFirstName();
         $matricule = (is_null($this->getMatricule())) ? "" : $this->getMatricule();
 
-        return $matricule . " " . $lastname . " " . $firstname;
+        return  $lastname . " " . $firstname . " " . $matricule;
     }
 
     /**
