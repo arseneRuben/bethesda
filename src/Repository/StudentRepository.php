@@ -177,7 +177,7 @@ class StudentRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
-    public function findByNotEnrolledStudentsThisYear2(SchoolYear $year)
+    public function findNotEnrolledStudentsThisYear2(SchoolYear $year)
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
 

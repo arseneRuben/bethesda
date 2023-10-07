@@ -38,7 +38,7 @@ class SubscriptionType extends AbstractType
     {
 
         $builder
-            ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'choices' => $this->stdRepo->findByNotEnrolledStudentsThisYear2($this->year)))
+            ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'choices' => $this->stdRepo->findNotEnrolledStudentsThisYear2($this->year)))
             ->add('classRoom', EntityType::class, array('class' => ClassRoom::class, 'label' => 'Classe', 'required' => true))
             ->add('schoolYear', EntityType::class, array('class' => SchoolYear::class, 'label' => 'Année Scolaire', 'required' => true,  'query_builder' => function (SchoolYearRepository $repository) {
                 return $repository->createQueryBuilder('s')->where('s.activated=:ac')->setParameter('ac', true);
