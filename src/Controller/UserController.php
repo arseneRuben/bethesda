@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Form\UserFormType;
 use App\Repository\UserRepository;
 use App\Form\Type\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * User controller.
@@ -151,7 +152,7 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user): Response
     {
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(UserFormType::class, $user, [
             'method' => 'PUT'
         ]);
         $form->handleRequest($request);

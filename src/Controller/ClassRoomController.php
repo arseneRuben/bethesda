@@ -713,7 +713,7 @@ class ClassRoomController extends AbstractController
             200,
             array(
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+                'Content-Disposition' => 'attachment; filename="fich_pv_' . $classroom->getName() . '.pdf"',
             )
         );
 
@@ -746,7 +746,7 @@ class ClassRoomController extends AbstractController
             200,
             array(
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+                'Content-Disposition' => 'attachment; filename="std_list_' . $classroom->getName() . '.pdf"',
             )
         );
 
@@ -822,7 +822,7 @@ class ClassRoomController extends AbstractController
             200,
             array(
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+                'Content-Disposition' => 'attachment; filename="recap_empty_' . $room->getName() . '.pdf"',
             )
         );
 
