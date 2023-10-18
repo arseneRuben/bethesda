@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AttributionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -100,7 +99,7 @@ class AttributionController extends AbstractController
             $attribution->getCourse()->setAttributed(FALSE);
             $this->em->remove($attribution);
         }
-        $em->flush();
+        $this->em->flush();
         return $this->redirect($this->generateUrl('admin_attributions'));
     }
 
@@ -112,21 +111,22 @@ class AttributionController extends AbstractController
      */
     public function createAction(Request $request)
     {
-       /* if (!$this->getUser()) {
+        if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
-        }*/
+        }
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $year = $this->scRepo->findOneBy(array("activated" => true));
             $attribution->setSchoolYear($year);
             $attribution->getCourse()->setAttributed(true);
+            $attribution->getTeacher()->addAttribution($attribution);
+            $attribution->getCourse()->addAttribution($attribution);
             $this->em->persist($attribution);
             $this->em->flush();
-
             return $this->redirect($this->generateUrl('admin_attributions'));
         }
 
@@ -147,14 +147,35 @@ class AttributionController extends AbstractController
      */
     public function edit(Request $request, Attribution $attribution): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
         $form = $this->createForm(AttributionType::class, $attribution, [
             'method' => 'PUT'
         ]);
+        $old_attribution =  $attribution;
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($old_attribution->getTeacher()->getId() !== $attribution->getTeacher()->getId()) {
+                $old_attribution->getTeacher()->removeAttribution($old_attribution);
+                $attribution->getTeacher()->addAttribution($attribution);
+                $this->em->persist($attribution->getTeacher());
+            }
+            if ($old_attribution->getCourse()->getId() !== $attribution->getCourse()->getId()) {
+                $old_attribution->getCourse()->setAttributed(false);
+                $attribution->getCourse()->setAttributed(true);
+                $this->em->persist($attribution->getCourse());
+            }
+
+
+            $this->em->persist($attribution);
+
+
             $this->em->flush();
             $this->addFlash('success', 'Attribution succesfully updated');
+
             return $this->redirectToRoute('admin_attributions');
         }
         return $this->render('attribution/edit.html.twig', [
@@ -174,6 +195,11 @@ class AttributionController extends AbstractController
     public function delete(Attribution $attribution, Request $request): Response
     {
         // if($this->isCsrfTokenValid('sections_deletion'.$section->getId(), $request->request->get('crsf_token') )){
+        $attribution->getCourse()->removeAttribution($attribution);
+        $attribution->getTeacher()->removeAttribution($attribution);
+        $attribution->getCourse()->setAttributed(false);
+        $this->em->persist($attribution->getCourse());
+        $this->em->persist($attribution->getTeacher());
         $this->em->remove($attribution);
 
         $this->em->flush();

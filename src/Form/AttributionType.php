@@ -27,14 +27,25 @@ class AttributionType extends AbstractType
             }
         ))
             OLD
-            ->add('course',  EntityType::class, array( 'class' => Course::class,   'placeholder' => 'Choisir la matière','query_builder' => function (CourseRepository $repository)
-            {return $repository->createQueryBuilder('c')->where('c.attributed=:er')->setParameter('er', false)->add('orderBy', 'c.domain');} 
+             ->add('course',  EntityType::class, array( 'class' => Course::class,   'placeholder' => 'Choisir la matière','query_builder' => function (CourseRepository $repository)
+        {return $repository->findNotAttributedCoursesAtActivatedYear();}
         
-        ))*/
-        ->add('course',  EntityType::class, array( 'class' => Course::class,   'placeholder' => 'Choisir la matière','query_builder' => function (CourseRepository $repository)
-        {return $repository->findNotAttributedCoursesAtActivatedYear();} 
-    
-    ))
+        ))
+        ->add('course',  EntityType::class, array(
+                'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function (CourseRepository $repository) {
+                    return $repository->createQueryBuilder('c')->where('c.attributed=:er')->setParameter('er', false)->add('orderBy', 'c.domain');
+                }
+        
+        */
+
+            ->add('course',  EntityType::class, array(
+                'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function (CourseRepository $repository) {
+                    return $repository->findNotAttributedCoursesAtActivatedYear();
+                }
+
+
+
+            ))
             ->add('teacher', EntityType::class, array('class' => User::class,  'placeholder' => 'Choisir l\'enseignant ', 'label' => 'Enseignant', 'required' =>  true,  'query_builder' => function (UserRepository $repository) {
                 return $repository->createQueryBuilder('u')->add('orderBy', 'u.fullName');
             }));

@@ -25,10 +25,9 @@ class CourseRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->orderBy('c.room.id', 'ASC')
             ->orderBy('c.module', 'ASC')
-           
+
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     // /**
@@ -60,57 +59,56 @@ class CourseRepository extends ServiceEntityRepository
     }
     */
 
-      public function findByClassRoom(int $idClass) {
+    public function findByClassRoom(int $idClass)
+    {
         $query = $this->getEntityManager()
-                        ->createQuery(
-                                "SELECT c.code, c.wording, c.coefficient
+            ->createQuery(
+                "SELECT c.code, c.wording, c.coefficient
                              FROM  App\Entity\ClassRoom  room
                              JOIN  App\Entity\Module mod WITH  room.modules  =  mod.id
                              JOIN App\Entity\Course c  WITH  c.module     =  mod.id
                              WHERE room.id = :idClass
                              GROUP BY mod.id
                             "
-                        )->setParameter('idClass', $idClass)
-        ;
+            )->setParameter('idClass', $idClass);
 
         return $query->getResult();
     }
 
-    public function findProgrammedCoursesInClass(ClassRoom $room) {
+    public function findProgrammedCoursesInClass(ClassRoom $room)
+    {
         $qb = $this->createQueryBuilder('crs')
-                ->leftJoin('crs.module', 'm')
-                ->leftJoin('m.room', 'rm')
-                ->andWhere('rm.id=:room')
-                ->setParameter('room', $room->getId());
+            ->leftJoin('crs.module', 'm')
+            ->leftJoin('m.room', 'rm')
+            ->andWhere('rm.id=:room')
+            ->setParameter('room', $room->getId());
         return $qb->getQuery()->getResult();
     }
 
-    public function findNotAttributedCoursesAtActivatedYear() {
-       
+    public function findNotAttributedCoursesAtActivatedYear()
+    {
+
         $subQueryBuilder  = $this->getEntityManager()->createQueryBuilder();
         $subQuery = $subQueryBuilder
-        ->select(['crs.id'])
-        ->from('App\Entity\Course', 'crs')
-        ->innerJoin('crs.attributions', 'attr')
-        ->innerJoin('attr.schoolYear', 'sc')
-        ->andWhere('sc.activated=:v')
-        ->setParameter('v',true)
-        ->getQuery()
-        ->getArrayResult();
-       
-                
+            ->select(['crs.id'])
+            ->from('App\Entity\Course', 'crs')
+            ->innerJoin('crs.attributions', 'attr')
+            ->innerJoin('attr.schoolYear', 'sc')
+            ->andWhere('sc.activated=:v')
+            ->setParameter('v', true)
+            ->getQuery()
+            ->getArrayResult();
+
+
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $query = $queryBuilder
             ->select(['crs'])
             ->from('App\Entity\Course', 'crs')
             ->where($queryBuilder->expr()->notIn('crs.id', ':subQuery'))
-            ->andWhere('crs.attributed=:a')
+
             ->orderBy('crs.domain')
-            ->setParameter('subQuery', $subQuery)
-            ->setParameter('a', false)
-            
-         
-        ;
+            ->setParameter('subQuery', $subQuery);
+        dd($query->getQuery()->getSQL());
         return $query;
     }
 }
