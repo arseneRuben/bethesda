@@ -213,12 +213,8 @@ class StudentController extends AbstractController
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $data1 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[0], $sub->getClassRoom(), $std);
-        dump($data1);
-
-
         $data2 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[1], $sub->getClassRoom(), $std);
-        dump($data2);
-        die();
+        
         //$this->get('knp_snappy.pdf')->setTimeout(600);
         $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
             'year' => $year,

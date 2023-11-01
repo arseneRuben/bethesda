@@ -2,7 +2,6 @@
 <html>
 
     <head>
-          <link rel="icon" type="image/ico" href="{{  absolute_url(asset('favicon.jpg'))}}" {# href="{{ asset('favicon.jpg')}}"#}  />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
         <title>
@@ -20,7 +19,663 @@
     </head>
 
     <body style="font-family:  times, serif;">
-           
+           <section style=" margin:auto;" class="sheet  frontpage">
+                    <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 90%; ">
+                        <tr>
+                            <td style=" width: 35%;">
+                                <span>
+                                    REPUBLIQUE DU CAMEROUN
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:1.5em;">
+                                    <i>
+                                        Paix - Travail - Patrie
+                                                                            
+                                    </i>
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Minist&eacutere des enseignements secondaires
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    D&eacutel&eacutegation R&eacutegionale du Centre
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    D&eacutel&eacutegation D&eacutepartementale de la
+                                                                        																																																																																	n>
+                                                                        									
+                                                                        
+                                    <H5>
+                                        INSTITUT SECONDAIRE
+                                                                                										
+                                                                                
+                                        <br/>
+                                        BILINGUE BETHESDA
+                                                                                									
+                                                                            
+                                    </H5>
+                                </td>
+                            </td>
+                            <td style=" width: 30%; ">
+                                <img style="border-radius:5%;" src="{{ pathToWeb }}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%" />
+                                <div style="font-size: 1em;">
+                                    <b>
+                                        <h6>
+                                            DISCIPLINE-PERSEVERANCE-SUCCES
+                                                                                        										
+                                                                                    
+                                        </h6>
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <i>
+                                        <span>
+                                            BP : 31367 YDE
+                                                                                    
+                                        </span>
+                                        <br/>
+                                        <span>
+                                            TEL : 699545124
+                                                                                    
+                                        </span>
+                                        <br/>
+                                    </i>
+                                </b>
+                            </td>
+                            <td style=" width: 35%;">
+                                <span>
+                                    REPUBLIC OF CAMEROON
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:1em;">
+                                    <i>
+                                        Peace - Work - Fatherland
+                                                                            
+                                    </i>
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Ministery of Secondary Education
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    Regional Delegation of the Center
+                                                                    
+                                </span>
+                                <br/>
+                                <span style="margin-left:2.5em;">
+                                    *************
+                                                                    
+                                </span>
+                                <br/>
+                                <span>
+                                    MEFOU and AKONO Divisional Delegation
+                                                                    
+                                </span>
+
+                                <H5>
+                                    BETHESDA BILINGUAL
+                                                                        									
+                                                                        
+                                    <br/>
+                                    SECONDARY INSTITUTE
+                                                                        								
+                                                                    
+                                </H5>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <hr style="margin-left:0px; width: 100%;">
+                    <br/>
+                    <table style=" width: 100%; text-align:center; font-size: 80%; ">
+                        <tr>
+                            <td style=" width: 30%;">
+                                {% if std.imagename %}
+                                <img
+                            style="height:140px;width:140px;" src="{{ absolute_url(asset('assets/images/student/' ~ std.imagename)) }}" {#src="{{ imagepath ~  std.imagename}}"#} />
+                                {% else %}
+                                {% if std.gender %}
+                                    <img
+                                style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
+
+                                    {% else %}
+                                    <img style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
+                                {% endif %}
+                            {% endif %}
+                            </td>
+                            <td style=" width: 30%;">
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Nom
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            Name
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                        :
+                                                                                									
+                                                                            
+                                    </span>
+                                    <b>
+                                        {{ std.lastname }}
+
+                                        {{ std.firstname }}
+                                    </b>
+                                </h3>
+                                <h3>
+
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            N&eacute(e) le  &nbsp;&nbsp; :  &nbsp;&nbsp;
+                                                                                        											
+                                                                                        
+                                            {% if std.birthday %}
+                                                {{ std.birthday|date('d-m-Y') }}
+                                            {% endif %}
+                                        {% else %}
+                                            Born on   &nbsp;&nbsp;:  &nbsp;&nbsp;
+                                                                                        											
+                                                                                        
+                                            {% if std.birthday %}
+                                                {{ std.birthday|date('Y-m-d') }}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            &agrave;  &nbsp;&nbsp;
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            at  &nbsp;&nbsp;
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                        :  &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ std.birthplace }}
+                                    </span>
+                                    <br/>
+                                </h3>
+
+                                <h3>
+                                    <span>
+                                        Sexe:
+                                                                                										
+                                                                                
+                                        {% if std.gender %}
+                                            F
+                                                                                    
+                                        {% else %}
+                                            M
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                    </span>
+                                    <br/>
+                                </h3>
+                            </td>
+
+                            <td style=" width: 30%;">
+
+                                <div style="margin-bottom:0.2em;">
+
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+
+                                        {{ year.wording }}
+                                        &nbsp;&nbsp; /  &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ quater.wording }}
+                                    {% else %}
+
+                                        {{ year.wording }}
+                                        &nbsp;&nbsp; /   &nbsp;&nbsp;
+                                                                                										
+                                                                                
+                                        {{ quater.wording }}
+
+                                    {% endif %}
+                                </div>
+                                <br/>
+
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Matricule
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            reg.number
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+                                    </span>
+                                    {{ std.matricule }}
+                                    <br/>
+                                </h3>
+                                <br/>
+                                <h3>
+                                    <span>
+                                        {% if room.level.cycle.section.name == "Francophone" %}
+                                            Classe
+                                                                                        										
+                                                                                    
+                                        {% else %}
+                                            class
+                                                                                        										
+                                                                                    
+                                        {% endif %}
+
+                                        :
+                                                                            
+                                    </span>
+                                    <b>
+                                        {{ room.name }}
+                                    </b>
+                                </h3>
+                                <br/>
+
+                            </td>
+                        </tr>
+                    </table>
+                 
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <table class="footer" style="font-size: 80%;">
+                        <tr style="text-align:center; background-color: grey; color:white; font-size: 1em;">
+                            <td colspan="7">
+                                <b>
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                        DECISIONS ET OBSERVATIONS
+                                                                                										
+                                                                            
+                                    {% else %}
+                                        DECISIONS AND OBSERVATIONS
+                                                                                										
+                                                                            
+                                    {% endif %}
+
+                                </b>
+                            </td>
+                        </tr>
+                    </td>
+                    <td rowspan="2" colspan="4">
+                        <b>
+                            OBSERVATION ET VISA DU CHEF
+                                                        																																																																										                        D'ETABLISSEMENT
+                                                    
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            DISCIPLINE
+                                                    
+                        </b>
+                    </td>
+                    <td colspan="5">
+                        <b>
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                TRAVAIL
+                                                                									
+                                                            
+                            {% else %}
+                                WORK
+                                                                									
+                                                            
+                            {% endif %}
+                        </b>
+                    </td>
+                </tr>
+                <tr style="text-align:center;background-color:#EBECEC;">
+                    <td colspan="2" style=" text-align:left; border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ABS. JUSTIFIEES
+                                                        								
+                                                    
+                        {% else %}
+                            JUSTIFICATED ABS. 
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
+                    <td style="border:1px dashed black;">
+                        <b>
+                            <i>
+
+                                {% if room.level.cycle.section.name == "Francophone" %}
+                                    MOYENNE DE L'ELEVE
+                                                                        									
+                                                                    
+                                {% else %}
+                                    STUDENT AVERAGE
+                                                                        									
+                                                                    
+                                {% endif %}
+
+                            </i>
+                        </b>
+                    </td>
+                    <td colspan="2" class="noteYear">
+                        <b>
+                        </b>
+                    </td>
+                    <td style="border:1px dashed black;" colspan="2"></td>
+
+                    <td style="border:1px dashed black;" colspan="2" rowspan="7">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        MBADOUMOU, 
+                                                									
+                                                
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            le ___________________
+                                                        
+                            <br/>
+                            <br/>
+                            <br/>
+                            LE
+                                                        								
+                                                    
+                        {% else %}
+                            the ___________________
+                                                        
+                            <br/>
+                            <br/>
+                            <br/>
+                            THE
+                                                        								
+                                                    
+                        {% endif %}
+                        PRINCIPAL
+                                            
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:left; border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ABS. NON JUSTIFIEES 
+                                                        								
+                                                    
+                        {% else %}
+                            ABS. UNJUSTIFIED
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
+
+                    <td style="border:1px dashed black;" colspan="5">
+                        <b>
+                            APPRECIATIONS
+                                                    
+                        </b>
+                    </td>
+                </tr>
+                <tr style="text-align:left ;background-color:#EBECEC;">
+                    <td colspan="2" style="border:1px dashed black;">
+                        AVERTISSEMENTS
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            TABLEAU D'HONNEUR
+                                                        									
+                                                    
+                        {% else %}
+                            ROLL OF HONOR
+                                                        									
+                                                    
+                        {% endif %}
+                        &nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            AVERTISSEMENT
+                                                        								
+                                                    
+                        {% else %}
+                            WARNING
+                                                        								
+                                                    
+                        {% endif %}
+                    </td>
+
+                </tr>
+                <tr style="text-align:left ;">
+                    <td colspan="2" style="border:1px dashed black;">
+                        BLAME
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            ENCOURAGEMENT
+                                                        									
+                                                    
+                        {% else %}
+                            ACKNOLEGMENT
+                                                        									
+                                                    
+                        {% endif %}
+                        &nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            BLAME DE TRAVAIL
+                                                        									
+                                                    
+                        {% else %}
+                            WORK'S BLAME
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                </tr>
+                <tr style="text-align:left ;background-color:#EBECEC;">
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            EXCLUSION
+                                                        									
+                                                    
+                        {% else %}
+                            DISMISSED
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                    <td colspan="2" style="border:1px dashed black;">
+
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            FELICITATIONS
+                                                        									
+                                                    
+                        {% else %}
+                            CONGRATULATIONS
+                                                        									
+                                                    
+                        {% endif %}
+                    </td>
+
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border:1px dashed black;" colspan="2">
+                        <b>
+                            SIGNATURE
+                                                        										
+                                                        										DU PARENT
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td style="border:1px dashed black;" colspan="2">
+                        <b>
+
+                            PROF. PRINC.
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                    <td style="border:1px dashed black;" colspan="3">
+                        <b>
+                            PREFET D'ETUDES
+                                                    
+                        </b>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                								
+                                            
+                    </td>
+                </tr>
+                <tr style="text-align:left;background-color:#EBECEC;">
+                    <td style="border:1px dashed black;" colspan="7">
+                        {% if room.level.cycle.section.name == "Francophone" %}
+                            Légende
+                                                        								
+                                                    
+                        {% else %}
+                            Legend
+                                                        								
+                                                    
+                        {% endif %}
+                        &nbsp;:&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                A+:&nbsp;
+                                                            
+                            </b>
+                            Expert(18-20)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                A:&nbsp;
+                                                            
+                            </b>
+                            Acquis(15-17.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                ECA:&nbsp;
+                                                            
+                            </b>
+                            En cours d'acquisition(10-14.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                                									
+                                                
+                        <i>
+                            <b>
+                                NA:&nbsp;
+                                                            
+                            </b>
+                            Non Acquis(0-9.99)
+                                                    
+                        </i>
+                        &nbsp;&nbsp;
+                                            
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <td colspan="8">
+                        <i>
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                Conception et implementation de FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
+                                                                																	fopoar@gmail.com
+                                                                											
+                                                            
+                            {% else %}
+                                Designed by FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:
+                                                                														fopoar@gmail.com
+                                                                														
+                                                            
+                            {% endif %}
+                        </i>
+                    </td>
+                </tr>
+            </table>
+
+        </section>
 
  
         <script type="text/javascript" src="{{ absolute_url(asset('assets/js/jquery-3.1.1.js'))}}"></script>
