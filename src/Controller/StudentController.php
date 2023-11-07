@@ -207,30 +207,66 @@ class StudentController extends AbstractController
      */
     public function reporCardTrimAction(Student $std)
     {
-
+        $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
-        $data1 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[0], $sub->getClassRoom(), $std);
-        $data2 = $this->markRepo->findMarksBySequence_Class_StudentOrderByStd($sequences[1], $sub->getClassRoom(), $std);
+        $i = 1;
+        foreach ($sequences as $seq) {
+            /*******************************************************************************************************************/
+            /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE L'ELEVE**************/
+            /*******************************************************************************************************************/
+            // CAS DES NOTES SEQUENTIELLES
+            $statement = $connection->prepare(
+                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+                    SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+                    FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+                    JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+                    JOIN  class_room room    ON   eval.class_room_id     =   room.id
+                    JOIN  course     crs     ON  eval.course_id      =   crs.id
+                    JOIN  attribution att    ON  att.course_id      =   crs.id
+                    JOIN  user  teach ON  att.teacher_id  =   teach.id
+                    JOIN  module     modu    ON  modu.id       =   crs.module_id
+                    JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                    WHERE   std.id = ?  AND eval.sequence_id =?
+                    ORDER BY crs.id; "
+            );
+
+            $statement->bindValue(1, $std->getId());
+            $statement->bindValue(2, $seq->getId());
+            $statement->execute();
+            $i++;
+        }
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER AS
+            SELECT DISTINCT    seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight , seq1.weight as weight1,seq2.weight as weight2, seq1.value as value1,seq2.value as value2,   seq1.teacher as teacher, seq1.module as   module, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  
+            ON  (seq1.crs = seq2.crs)
+            ORDER BY seq1.crs"
+        );
+        $statement->execute();
         
-        //$this->get('knp_snappy.pdf')->setTimeout(600);
+       
+        
+        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
+
         $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
             'year' => $year,
-            'std' => $std,
-            'room' => $sub->getClassRoom(),
-            'dataseq1' => $data1,
-            'dataseq2' => $data2,
-            'quater' => $quater
+            'quater' => $quater,
+            'data' => $dataQuater,
+            'sequences' => $sequences,
+            'std'  => $std,
+            'room' => $sub->getClassRoom()
         ));
-        // return new Response($html);
+
         return new Response(
             $this->snappy->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $std->getMatricule() . '.pdf"',
+                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $quater->getId().'_'.$std->getMatricule() . '.pdf"',
             )
         );
     }
