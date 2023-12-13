@@ -24,7 +24,7 @@ class Mark
     private $student;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Evaluation::class, inversedBy="marks")
+     * @ORM\ManyToOne(targetEntity=Evaluation::class, inversedBy="marks", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $evaluation;

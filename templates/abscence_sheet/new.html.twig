@@ -106,7 +106,7 @@
 			var abscencesJson = [];
 			if(startDate < endDate) {
 
-					$("input[max=100]").each(function (index) {
+					$("input[max=180]").each(function (index) {
 						abscencesJson.push({"matricule": $(this).attr('id'), "weight": $(this).val(), "raison": $(this).parent().next().children().val()});
 					});
 					console.log(abscencesJson);

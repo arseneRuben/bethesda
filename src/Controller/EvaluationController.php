@@ -41,7 +41,7 @@ class EvaluationController extends AbstractController
     private $crsRepo;
     private $seqRepo;
     private $attrRepo;
-
+    private  $notes ; 
     private $markRepo;
 
     public function __construct(
@@ -59,7 +59,7 @@ class EvaluationController extends AbstractController
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->stdRepo = $stdRepo;
-
+        $this->notes = array();
         $this->clRepo = $clRepo;
         $this->crsRepo = $crsRepo;
         $this->seqRepo = $seqRepo;
@@ -273,6 +273,9 @@ class EvaluationController extends AbstractController
         $notes  = array();
         $year = $this->scRepo->findOneBy(array("activated" => true));
 
+        
+     
+        
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
 
         foreach ($studentsEnrolledInClass as $std) {
@@ -301,6 +304,55 @@ class EvaluationController extends AbstractController
         ]);
     }
 
+    /**
+     * Update a mark on an evaluation entity if the student is not absent or add a new mark if the student was absent.
+     */
+    public function editMark(Request $request, Evaluation $evaluation, String $matricule)
+    {
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
+        $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
+        $note = $_POST[$matricule."note"];
+        $appr = $_POST[$matricule."appr"];
+        $weight = $_POST[$matricule."weight"];
+        $pos = 0;
+        $index=0;
+        $found = false;
+        while($index < count($marks) && !$found)
+        {
+            if($marks[$index]->getStudent()->getMatricule() == $matricule)
+            {
+                $found = true;
+                $marks[$index]->setValue($note);
+                $marks[$index]->setWeight($weight);
+                $marks[$index]->setAppreciation($appr);
+                $this->em->persist($marks[$index]);
+                $this->notes[$pos++] = $marks[$index]; // Construction d'un arrayList pour trie
+            }
+            else
+            {
+                $index++;
+            }
+        }
+        if(!$found)
+        {
+            $newMark = new Mark();
+            $student = $this->stdRepo->findOneByMatricule($matricule);
+            $newMark->setValue($note);
+            $newMark->setWeight($weight);
+            $newMark->setAppreciation($appr);
+            $newMark->setEvaluation($evaluation);
+            $newMark->setStudent($student);
+            $evaluation->addMark($newMark);
+            $this->em->persist($newMark);
+            $this->notes[$pos++] = $newMark; // Construction d'un arrayList pour trie
+        }
+
+        $this->em->persist($evaluation);
+        $this->em->flush();
+        
+       
+    }
 
     /**
      * Edits an existing Evaluation entity.
@@ -311,34 +363,21 @@ class EvaluationController extends AbstractController
      */
     public function updateAction(Evaluation $evaluation, Request $request)
     {
-
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
-        $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
+      
         if ($content = $request->getContent()) {
             $evaluation->setFailluresF(0);
             $evaluation->setFailluresH(0);
             $evaluation->setSuccessF(0);
             $evaluation->setSuccessH(0);
             $evaluation->setAbscent(0);
-            $notes  = array();
             $effectif = 0;
             $total = 0;
-            $pos = 0;
             foreach ($studentsEnrolledInClass as $std) {
-                $note = $_POST[$std->getMatricule() . "note"];
-                $appr = $_POST[$std->getMatricule() . "appr"];
+                $this->editMark($request, $evaluation, $std->getMatricule());
+                $note = $_POST[$std->getMatricule()."note"];
                 $weight = $_POST[$std->getMatricule() . "weight"];
-
-                foreach ($marks as $mark) {
-                    if ($mark->getStudent()->getId() == $std->getId()) {
-                        $mark->setValue($note);
-                        $mark->setWeight($weight);
-                        $mark->setAppreciation($appr);
-                        break;
-                    }
-                }
-
                 if (strcmp($std->getGender(), "M") == 0) {
                     if ($note < 10) {
                         $evaluation->addFailluresH();
@@ -358,19 +397,18 @@ class EvaluationController extends AbstractController
                     $effectif++;
                     $total += $note;
                 }
-                $evaluation->addMark($mark);
-                $notes[$pos++] = $mark; // Construction d'un arrayList pour trie
-                $this->em->persist($mark);
+             
             }
         }
         // disposition des rang dans les notes
-        usort($notes, function ($a, $b) {
+        usort($this->notes, function ($a, $b) {
             if ($a->getValue() == $b->getValue()) {
                 return 0;
             }
             return ($a->getValue() < $b->getValue()) ? -1 : 1;
         });
-        foreach ($notes as $mark) {
+        $pos = count($this->notes);
+        foreach ($this->notes as $mark) {
             $mark->setRank2($pos);
             $pos--;
         }

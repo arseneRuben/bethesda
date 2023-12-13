@@ -129,9 +129,9 @@
 
 
 		$(function () {
-$("td input.value").change(function () {
-var note = $(this).val();
-note = parseInt(note);
+				$("td input.value").change(function () {
+				var note = $(this).val();
+				note = parseInt(note);
 
  				if (note >= 0 && note < 11) {
                     $(this).parent().next().children().val("NA");
@@ -146,7 +146,7 @@ note = parseInt(note);
                     $(this).parent().next().children().val("E");
                 }
 
-});
-});
+			});
+	});
 	</script>
 {% endblock javascripts %}

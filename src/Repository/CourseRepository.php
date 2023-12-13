@@ -108,7 +108,7 @@ class CourseRepository extends ServiceEntityRepository
 
             ->orderBy('crs.domain')
             ->setParameter('subQuery', $subQuery);
-        dd($query->getQuery()->getSQL());
+      
         return $query;
     }
 }

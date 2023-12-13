@@ -899,22 +899,23 @@ class ClassRoomController extends AbstractController
     {
 
         set_time_limit(600);
-
+        
         $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-
+        /*******************************************************************************************************************/
+        /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES  DE LA CLASSE, AINSI QUE DE LA VIEW DES ABSCENCES**************/
+        /*******************************************************************************************************************/
         $i = 1;
         foreach ($sequences as $seq) {
-            /*******************************************************************************************************************/
-            /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
-            /*******************************************************************************************************************/
+           
+           
             // CAS DES NOTES SEQUENTIELLES
             $statement = $connection->prepare(
                 "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
-                SELECT DISTINCT  eval.id as eval,crs.id as crs, crs.coefficient as coef, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+                SELECT DISTINCT  eval.id as eval,crs.id as crs, crs.coefficient as coef, room.id as room, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
                 FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
                 JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
                 JOIN  class_room room    ON   eval.class_room_id     =   room.id
@@ -923,17 +924,34 @@ class ClassRoomController extends AbstractController
                 JOIN  user  teach        ON  att.teacher_id  =   teach.id
                 JOIN  module     modu    ON  modu.id       =   crs.module_id
                 JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                JOIN  abscencesheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
+                JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
                 JOIN  quater   quat      ON  seq.quater_id     =   quat.id
-                JOIN  school_year   year ON  quat.school_year_id     =   year.id
-                WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
+                WHERE   room.id = ? AND eval.sequence_id =?  
                 ORDER BY room.id,modu.id ,  std; "
             );
 
-
-            $statement->bindValue(2, $room->getId());
-            $statement->bindValue(3, $seq->getId());
-            $statement->bindValue(1, $year->getId());
+            $statement->bindValue(1, $room->getId());
+            $statement->bindValue(2, $seq->getId());
+           
             $statement->execute();
+
+            // CAS DES ABSCENCES SEQUENTIELLES
+            $statement = $connection->prepare(
+                "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $i . " AS
+                SELECT DISTINCT  room.id as room, std.id as std, sum(abs.value * abs.weight) as total_hours, seq.id  as seq_id
+                FROM   class_room room  
+                JOIN  abscencesheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
+                JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
+                JOIN  quater   quat      ON  seq.quater_id     =   quat.id
+                WHERE  room.id = ? AND eval.sequence_id =?  
+                GROUP BY  std.id
+                ORDER BY room.id,modu.id ,  std; "
+            );
+            $statement->bindValue(1, $seq->getId());
+            $statement->bindValue(2, $room->getId());
+            $statement->execute();
+
             $i++;
         }
 
@@ -946,7 +964,15 @@ class ClassRoomController extends AbstractController
             ORDER BY std , module"
         );
         $statement->execute();
-        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
+        // CAS DES ABSCENCES TRIMESTRIELLES
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_QUATER AS
+            SELECT DISTINCT   seq1.std as std , seq1.total_hours AS total_hours1, seq2.total_hours as total_hours2,  total_hours1 + total_hours2 as total_hours
+            FROM V_STUDENT_ABSCENCE_SEQ seq1
+            JOIN  V_STUDENT_ABSCENCE_SEQ seq2  ON  (seq1.std    =   seq2.std  )
+            ORDER BY std "
+        );
+        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks JOIN V_STUDENT_ABSCENCE_QUATER abscences ON marks.std=abscences.std ")->fetchAll();
         // $this->snappy->setTimeout(600);
         // For calculating ranks
         $statement = $connection->prepare(
