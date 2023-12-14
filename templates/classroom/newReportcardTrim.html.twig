@@ -3,8 +3,6 @@
 
     <head>
       
-                                                                                                                                                                                                                                                        />#}
-
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>
             {% if room.level.cycle.section.name == "Francophone" %}
@@ -45,7 +43,7 @@
 
     <body style="font-family:  times, serif;">
         {% for std in students %}
-            <div style=" height:1295px;  border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  0px 0px 0px 0px ;   ">
+            <div style=" height:1255px;  border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  0px 0px 0px 0px ; padding:  44px 0px 0px 0px ;  ">
 
                 <section style=" margin:auto;">
 
@@ -2052,14 +2050,14 @@
                                 </tr>
                                 <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
                                     <td border="0.5" style="text-align:center;" colspan="2">
-                                        ABSENCES
+                                        ABSENCES(h)  
                                                                                                                                                                                             
                                                                                                                                                                                     
                                                                                                                                                 
                                                                                                             
                                                                         
                                     </td>
-                                    <td border="0.5" style="text-align:center;" width="45"></td>
+                                    <td border="0.5" style="text-align:center;" width="45">{{ abscences[std.id] }} </td>
                                     <td border="0.5" style="text-align:center;">
                                         FAIBLE
                                                                                                                                                                                             

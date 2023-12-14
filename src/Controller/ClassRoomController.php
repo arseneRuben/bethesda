@@ -898,7 +898,7 @@ class ClassRoomController extends AbstractController
     public function reportCardsTrimAction(ClassRoom $room, Pdf $pdf,  Request $request)
     {
 
-        set_time_limit(600);
+       // set_time_limit(600);
         
         $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
@@ -924,7 +924,7 @@ class ClassRoomController extends AbstractController
                 JOIN  user  teach        ON  att.teacher_id  =   teach.id
                 JOIN  module     modu    ON  modu.id       =   crs.module_id
                 JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
-                JOIN  abscencesheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
+                JOIN  abscence_sheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
                 JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
                 JOIN  quater   quat      ON  seq.quater_id     =   quat.id
                 WHERE   room.id = ? AND eval.sequence_id =?  
@@ -939,14 +939,13 @@ class ClassRoomController extends AbstractController
             // CAS DES ABSCENCES SEQUENTIELLES
             $statement = $connection->prepare(
                 "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $i . " AS
-                SELECT DISTINCT  room.id as room, std.id as std, sum(abs.value * abs.weight) as total_hours, seq.id  as seq_id
+                SELECT DISTINCT  room.id as room, abs.student_id as std, sum( abs.weight) as total_hours, abs.id  as seq
                 FROM   class_room room  
-                JOIN  abscencesheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
+                JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
                 JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
-                JOIN  quater   quat      ON  seq.quater_id     =   quat.id
-                WHERE  room.id = ? AND eval.sequence_id =?  
-                GROUP BY  std.id
-                ORDER BY room.id,modu.id ,  std; "
+                WHERE  room.id = ? 
+                GROUP BY  std
+                ORDER BY room.id, std; "
             );
             $statement->bindValue(1, $seq->getId());
             $statement->bindValue(2, $room->getId());
@@ -967,12 +966,13 @@ class ClassRoomController extends AbstractController
         // CAS DES ABSCENCES TRIMESTRIELLES
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_QUATER AS
-            SELECT DISTINCT   seq1.std as std , seq1.total_hours AS total_hours1, seq2.total_hours as total_hours2,  total_hours1 + total_hours2 as total_hours
-            FROM V_STUDENT_ABSCENCE_SEQ seq1
-            JOIN  V_STUDENT_ABSCENCE_SEQ seq2  ON  (seq1.std    =   seq2.std  )
+            SELECT DISTINCT   seq1.std as std , seq1.total_hours + seq2.total_hours as abscences
+            FROM V_STUDENT_ABSCENCE_SEQ1 seq1
+            JOIN  V_STUDENT_ABSCENCE_SEQ2 seq2  ON  (seq1.std    =   seq2.std  )
             ORDER BY std "
         );
-        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks JOIN V_STUDENT_ABSCENCE_QUATER abscences ON marks.std=abscences.std ")->fetchAll();
+        $statement->execute();
+        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks  ")->fetchAll();
         // $this->snappy->setTimeout(600);
         // For calculating ranks
         $statement = $connection->prepare(
@@ -994,7 +994,12 @@ class ClassRoomController extends AbstractController
             $rankArray[$avg['std']] = ++$rank;
             $sumAvg += $avg['moyenne'];
         }
-
+        // Traitement des abscences
+        $absences = $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_QUATER ")->fetchAll();
+        $absencesArray = [];
+        foreach ($absences as $abs) {
+            $absencesArray[$abs['std']] = $abs['abscences'];
+        }
         $pdf->setTimeout(600);
         // dd($quater);
         $html = $this->renderView('classroom/newReportcardTrim.html.twig', array(
@@ -1002,6 +1007,7 @@ class ClassRoomController extends AbstractController
             'data' => $dataQuater,
             'ranks' => $rankArray,
             'means' => $quaterAvgArray,
+            'abscences' => $absencesArray,
             'genMean' => $sumAvg / sizeof($quaterAvgArray),
             'room' => $room,
             'quater' => $quater,
