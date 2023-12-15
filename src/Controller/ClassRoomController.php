@@ -920,26 +920,27 @@ class ClassRoomController extends AbstractController
                 JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
                 JOIN  class_room room    ON   eval.class_room_id     =   room.id
                 JOIN  course     crs     ON  eval.course_id      =   crs.id
-                JOIN  attribution att    ON  att.course_id      =   crs.id  
+                JOIN  attribution att    ON  att.course_id      =   crs.id  and att.year_id = ?
+                
                 JOIN  user  teach        ON  att.teacher_id  =   teach.id
                 JOIN  module     modu    ON  modu.id       =   crs.module_id
                 JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
                 JOIN  abscence_sheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
                 JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
                 JOIN  quater   quat      ON  seq.quater_id     =   quat.id
-                WHERE   room.id = ? AND eval.sequence_id =?  
+                WHERE    room.id = ? AND eval.sequence_id =? 
                 ORDER BY room.id,modu.id ,  std; "
             );
 
-            $statement->bindValue(1, $room->getId());
-            $statement->bindValue(2, $seq->getId());
-           
+            $statement->bindValue(1, $year->getId());
+            $statement->bindValue(2, $room->getId());
+            $statement->bindValue(3, $seq->getId());
             $statement->execute();
 
             // CAS DES ABSCENCES SEQUENTIELLES
             $statement = $connection->prepare(
                 "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $i . " AS
-                SELECT DISTINCT  room.id as room, abs.student_id as std, sum( abs.weight) as total_hours, abs.id  as seq
+                SELECT DISTINCT  room.id as room, abs.student_id as std, sum( abs.weight) as total_hours
                 FROM   class_room room  
                 JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
                 JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
