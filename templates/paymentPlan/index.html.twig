@@ -30,7 +30,7 @@
                                     {% for room in rooms %}
                                         <tr class="row">
                                             <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
-                                            <td  class="text-center col-1 roomTBody" scope="row">{{ room.name }}</td>
+                                            <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
                                             {%  if(room.apc) %}
                                                 <td  class="text-center col-1" scope="row"><input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
                                                 <td  class="text-center col-1" scope="row"><input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
@@ -87,9 +87,11 @@
             for(let i=sliceSize; i>=1 ; i--) {
                   $(`  <th  class=\"text-center col-2 inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead);
                   $(".roomTBody").each(function() {
-                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name=\"tranche_class\"/></td>
-                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name=\"deadline_class\"/></td>
+                        let roomId = $(this).closest("tr").find(".roomTBody").data("room");
+                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name="tranche_class_${i}_${roomId}" /></td>
+                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name="deadline_class_ ${i}_${roomId}"/></td>
                                  `).insertAfter($(this));
+                      
                   });
                   
             } 

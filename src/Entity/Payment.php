@@ -7,7 +7,7 @@ use App\Entity\SchoolYear;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
-
+use App\Entity\Traits\Amount;
 /**
  * Payment
  *
@@ -18,6 +18,7 @@ class Payment
 {
 
     use TimeStampable;
+    use Amount;
 
     /**
      * @var int
@@ -29,12 +30,6 @@ class Payment
     private $id;
 
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="amount", type="integer")
-     */
-    private $amount;
 
 
     /**
@@ -65,63 +60,11 @@ class Payment
 
 
 
-    /**
-     * Set instant
-     *
-     * @param \DateTime $instant
-     *
-     * @return Payment
-     * /
-    public function setInstant($instant)
-    {
-        if (is_string($instant)) {
-            $this->instant = \DateTime($instant);
-        } else {
-            $this->instant = $instant;
-        }
-
-        return $this;
-    }
-
-
-
-    /**
-     * Get instant
-     *
-     * @return \DateTime
-     * /
-    public function getInstant()
-    {
-        return $this->instant;
-    }
+  
 
    
 
-    /**
-     * Set amount
-     *
-     * @param integer $amount
-     *
-     * @return Payment
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
 
-        return $this;
-    }
-
-
-
-    /**
-     * Get amount
-     *
-     * @return int
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
 
 
 

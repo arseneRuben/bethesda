@@ -8,7 +8,6 @@ use App\Repository\PaymentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\TimeStampable;
 
 /**
  * PaymentPlan
@@ -18,7 +17,7 @@ use App\Entity\Traits\TimeStampable;
  */
 class PaymentPlan
 {
-    use TimeStampable;
+  
 
     /**
      * @var int
@@ -47,10 +46,16 @@ class PaymentPlan
      * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="paymentPlan")
      */
     private $payments;
+     /**
+     * @ORM\OneToMany(targetEntity=Installment::class, mappedBy="paymentPlan")
+     */
+    private $installments;
+   
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->installments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,6 +111,36 @@ class PaymentPlan
             // set the owning side to null (unless already changed)
             if ($payment->getPaymentPlan() === $this) {
                 $payment->setPaymentPlan(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Installment>
+     */
+    public function getInstallments(): Collection
+    {
+        return $this->installments;
+    }
+
+    public function addInstallment(Installment $installment): static
+    {
+        if (!$this->installments->contains($installment)) {
+            $this->installments->add($installment);
+            $installment->setPaymentPlan($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInstallment(Installment $installment): static
+    {
+        if ($this->installments->removeElement($installment)) {
+            // set the owning side to null (unless already changed)
+            if ($installment->getPaymentPlan() === $this) {
+                $installment->setPaymentPlan(null);
             }
         }
 

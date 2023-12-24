@@ -52,7 +52,6 @@ class PaymentPlanController extends AbstractController
         return $this->render('paymentPlan/index.html.twig', [
             'paymentPlans' => $paymentPlans,
             'year' => $year,
-         
             'rooms' => $rooms
         ]);
     }
@@ -64,8 +63,26 @@ class PaymentPlanController extends AbstractController
     {
         // Créez une nouvelle instance de PaymentPlan
         $paymentPlan = new PaymentPlan();
-        dd($request->request->all());
-
+        
+        foreach ($request->request->all() as $key => $value) {
+         
+            $segments = explode("_", $key);
+            $nbSegments = count($segments);
+           
+            if ($nbSegments >= 2) {
+                $roomId = $segments[$nbSegments - 1];
+                $tranche = $segments[$nbSegments - 2];
+                $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
+              
+            }    
+          /*  if ($key != "submit") {
+                $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $key)));
+                $paymentPlan->setSchoolYear($this->scRepo->findOneBy(array('activated' => true)));
+                $paymentPlan->setAmount($value);
+                $this->em->persist($paymentPlan);
+                $this->em->flush();
+            }*/
+        }
        
 
             $entityManager = $this->getDoctrine()->getManager();
