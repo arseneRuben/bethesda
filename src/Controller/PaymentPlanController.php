@@ -16,6 +16,11 @@ use App\Repository\PaymentRepository;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * ClassRoom controller.
+ *
+ * @Route("/admin/paymentPlans")
+ */
 class PaymentPlanController extends AbstractController
 {
     private $em;
@@ -35,7 +40,7 @@ class PaymentPlanController extends AbstractController
         $this->clRepo = $clRepo;
     }
     /**
-     * @Route("/admin/paymentPlans", name="admin_paymentPlans")
+     * @Route("/", name="admin_paymentPlans")
      */
     public function index(PaymentPlanRepository $paymentPlanRepository): Response
     {
@@ -43,9 +48,11 @@ class PaymentPlanController extends AbstractController
         $paymentPlans = $paymentPlanRepository->findAll();
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
+      
         return $this->render('paymentPlan/index.html.twig', [
             'paymentPlans' => $paymentPlans,
             'year' => $year,
+         
             'rooms' => $rooms
         ]);
     }
@@ -57,16 +64,9 @@ class PaymentPlanController extends AbstractController
     {
         // Créez une nouvelle instance de PaymentPlan
         $paymentPlan = new PaymentPlan();
+        dd($request->request->all());
 
-        // Créez le formulaire en utilisant PaymentPlanType et l'instance de PaymentPlan
-        $form = $this->createForm(PaymentPlanType::class, $paymentPlan);
-
-        // Gérez la soumission du formulaire
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Le formulaire a été soumis et les données sont valides
-            // Vous pouvez enregistrer l'entité PaymentPlan en base de données ici
+       
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($paymentPlan);
@@ -74,11 +74,8 @@ class PaymentPlanController extends AbstractController
 
             // Redirigez l'utilisateur vers une autre page, affichez un message de confirmation, etc.
             return $this->redirectToRoute('admin_paymentPlans');
-        }
+        
 
-        // Affichez le formulaire dans votre vue
-        return $this->render('paymentPlan/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+       
     }
 }

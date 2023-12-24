@@ -272,10 +272,6 @@ class EvaluationController extends AbstractController
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $notes  = array();
         $year = $this->scRepo->findOneBy(array("activated" => true));
-
-        
-     
-        
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
 
         foreach ($studentsEnrolledInClass as $std) {

@@ -2,47 +2,47 @@
 
 
 {% block content %}
-  
-         <form>
+        
+         <form action={{path("admin_paymentPlans_new")}} method="POST">
+         
             <div class="row mt-4">
-            
                 <div class="col-12 jumbotron" >
-                <div class="m-1 box-shadow">
-                        <div class="card-header row">
-                                            <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
-                                            {% if(year.paymentPlans|length > 0) %}
+                    <div class="m-1 box-shadow">
+                            <div class="card-header row">
+                                                <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
+                                                {% if(year.paymentPlans|length > 0) %}
 
+                                                {% else %}
+                                                <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
+                                                <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">
+                                                {% endif %}
+                            </div>
+                            <table  width="100%" class="table table-striped">
+                                <thead>
+                                    <tr class="row">
+                                        <th class="text-center col-1" scope="col">Niveau</th>
+                                        <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
+                                        <th  class="text-center col-2" scope="col" colspan="2">Frais Examen</th>                            
+                                        <th  class="text-center col-1" scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for room in rooms %}
+                                        <tr class="row">
+                                            <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                            <td  class="text-center col-1 roomTBody" scope="row">{{ room.name }}</td>
+                                            {%  if(room.apc) %}
+                                                <td  class="text-center col-1" scope="row"><input type="number" value="0" class="form-control input-sm" name="tranche_class"/></td>
+                                                <td  class="text-center col-1" scope="row"><input type="date"  class="form-control input-sm" name="deadline_class"/></td>
                                             {% else %}
-                                            <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
-                                            <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">
+                                                <td  class="text-center col-2" colspan="2" scope="row"></td>
                                             {% endif %}
-                        </div>
-                    <table  width="100%" class="table table-striped">
-                        <thead>
-                            <tr class="row">
-                                <th class="text-center col-1" scope="col">Niveau</th>
-                                <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
-                                <th  class="text-center col-2" scope="col" colspan="2">Frais Examen</th>                            
-                                <th  class="text-center col-1" scope="col">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for room in rooms %}
-                                <tr class="row">
-                                    <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
-                                    <td  class="text-center col-1 roomTBody" scope="row">{{ room.name }}</td>
-                                    {%  if(room.apc) %}
-                                        <td  class="text-center col-1" scope="row"><input type="number" class="form-control input-sm" name="tranche_class"/></td>
-                                        <td  class="text-center col-1" scope="row"><input type="date" class="form-control input-sm" name="deadline_class"/></td>
-                                    {% else %}
-                                        <td  class="text-center col-2" colspan="2" scope="row"></td>
-                                    {% endif %}
-                                    <td  class="text-center col-1 sum" scope="row"></th>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                            <td  class="text-center col-1 sum" scope="row"></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
                 </div>
             </div>
             <div class="row mt-2 mx-auto">
@@ -72,6 +72,8 @@
 	{{parent()}}
     <script type="text/javascript">
         const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
+        const sumTd = $(".sum");
+        var trancheClass = $("input[name='tranche_class']"), deadlineClass = $("input[name='deadline_class']");
         sliceSize = slice.val();
         for(let i=sliceSize; i>=1 ; i--) {
                  $(`<th style=\"width:16%;\" class=\"text-center  inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead); 
@@ -85,16 +87,21 @@
             for(let i=sliceSize; i>=1 ; i--) {
                   $(`  <th  class=\"text-center col-2 inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead);
                   $(".roomTBody").each(function() {
-                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\" class=\"form-control input-sm\" name=\"tranche_class\"/></td>
+                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name=\"tranche_class\"/></td>
                             <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name=\"deadline_class\"/></td>
                                  `).insertAfter($(this));
                   });
                   
-             }          
-         })
-      
-    
-        
-
+            } 
+            trancheClass = $("input[name='tranche_class']");
+            trancheClass.change(function(e){
+                let sum = 0;
+                let tranches = $(e.target).closest("tr").find("input[name='tranche_class']");
+                tranches.each(function(){
+                    sum += parseInt($(this).val());
+                });
+                $(this).closest("tr").find(".sum").text(sum);
+            });
+         });
     </script>
 {% endblock javascripts %}
