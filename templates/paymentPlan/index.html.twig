@@ -32,8 +32,8 @@
                                             <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
                                             <td  class="text-center col-1 roomTBody" scope="row">{{ room.name }}</td>
                                             {%  if(room.apc) %}
-                                                <td  class="text-center col-1" scope="row"><input type="number" value="0" class="form-control input-sm" name="tranche_class"/></td>
-                                                <td  class="text-center col-1" scope="row"><input type="date"  class="form-control input-sm" name="deadline_class"/></td>
+                                                <td  class="text-center col-1" scope="row"><input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
+                                                <td  class="text-center col-1" scope="row"><input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
                                             {% else %}
                                                 <td  class="text-center col-2" colspan="2" scope="row"></td>
                                             {% endif %}
@@ -73,7 +73,7 @@
     <script type="text/javascript">
         const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
         const sumTd = $(".sum");
-        var trancheClass = $("input[name='tranche_class']"), deadlineClass = $("input[name='deadline_class']");
+        var trancheClass = $("input[name*='tranche_class']"), deadlineClass = $("input[name*='deadline_class']");
         sliceSize = slice.val();
         for(let i=sliceSize; i>=1 ; i--) {
                  $(`<th style=\"width:16%;\" class=\"text-center  inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}</th>`).insertAfter(roomTHead); 
@@ -93,10 +93,10 @@
                   });
                   
             } 
-            trancheClass = $("input[name='tranche_class']");
+            trancheClass = $("input[name*='tranche_class']");
             trancheClass.change(function(e){
                 let sum = 0;
-                let tranches = $(e.target).closest("tr").find("input[name='tranche_class']");
+                let tranches = $(e.target).closest("tr").find("input[name*='tranche_class']");
                 tranches.each(function(){
                     sum += parseInt($(this).val());
                 });
