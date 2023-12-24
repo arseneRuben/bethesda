@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\InstallmentRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Amount;
 use App\Entity\Traits\TimeStampable;
@@ -16,7 +17,7 @@ use App\Entity\Traits\TimeStampable;
 class Installment
 {
     use Amount;
-    use TimeStampable;
+  
 
     /**
      * @ORM\ManyToOne(targetEntity=PaymentPlan::class)
@@ -32,8 +33,18 @@ class Installment
      */
     private $id;
 
-
-
+     /**
+     * @var int
+     *
+     * @ORM\Column(name="order", type="integer")
+     */
+    private $order;
+      /**
+     * @var \Date
+     *
+     * @ORM\Column(name="deadline", type="date", nullable=true)
+     */
+    protected $deadline;
    
 
     public function getId(): ?int
@@ -49,6 +60,30 @@ class Installment
     public function setPaymentPlan(?PaymentPlan $paymentPlan): static
     {
         $this->paymentPlan = $paymentPlan;
+
+        return $this;
+    }
+
+    public function getOrder(): ?int
+    {
+        return $this->order;
+    }
+
+    public function setOrder(int $order): static
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    public function getDeadline(): ?\DateTimeInterfaces
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(?\DateTimeInterface $deadline): static
+    {
+        $this->deadline = $deadline;
 
         return $this;
     }

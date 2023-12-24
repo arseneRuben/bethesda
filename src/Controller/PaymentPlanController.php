@@ -5,6 +5,7 @@
 namespace App\Controller;
 
 use App\Entity\PaymentPlan;
+use App\Entity\Installment;
 use App\Form\PaymentPlanType;
 use App\Repository\ClassRoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,36 +64,32 @@ class PaymentPlanController extends AbstractController
     {
         // Créez une nouvelle instance de PaymentPlan
         $paymentPlan = new PaymentPlan();
-        
+        $paymentPlan->setSchoolYear($this->scRepo->findOneBy(array('activated' => true)));
         foreach ($request->request->all() as $key => $value) {
-         
-            $segments = explode("_", $key);
-            $nbSegments = count($segments);
-           
-            if ($nbSegments >= 2) {
-                $roomId = $segments[$nbSegments - 1];
-                $tranche = $segments[$nbSegments - 2];
-                $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
-              
-            }    
-          /*  if ($key != "submit") {
-                $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $key)));
-                $paymentPlan->setSchoolYear($this->scRepo->findOneBy(array('activated' => true)));
-                $paymentPlan->setAmount($value);
-                $this->em->persist($paymentPlan);
-                $this->em->flush();
-            }*/
+            $installment = new Installment();
+            if(strstr($key, 'tranche_class')){
+                $segments = explode("_", $key);
+                $nbSegments = count($segments);
+                if ($nbSegments >= 2) {
+                    $roomId = $segments[$nbSegments - 1];
+                    $tranche = $segments[$nbSegments - 2];
+                    $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
+                    $installment->setOrder($tranche);
+                    $installment->setAmount(intval($request->request->get($key)));
+                    $this->em->persist($installment);
+                   
+                }  
+            } else {
+                $installment->setDeadline(new \DateTime($value));
+            } 
+            $installment->setPaymentPlan($paymentPlan);
+            $paymentPlan->addInstallment($installment);
         }
-       
+        $this->em->persist($paymentPlan);
+        $this->em->flush();
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($paymentPlan);
-            $entityManager->flush();
-
-            // Redirigez l'utilisateur vers une autre page, affichez un message de confirmation, etc.
-            return $this->redirectToRoute('admin_paymentPlans');
-        
-
+         // Redirigez l'utilisateur vers une autre page, affichez un message de confirmation, etc.
+         return $this->redirectToRoute('admin_paymentPlans');
        
     }
 }
