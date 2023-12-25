@@ -25,7 +25,7 @@
                                         <th class="text-center col-1" scope="col">Niveau</th>
                                         <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
                                        
-                                        {% for tranche in year.paymentPlan.installments|reduce((unique, item)=>item.rank in unique ? unique : unique|merge([item.rank]), []) %}
+                                        {% for tranche in year.paymentPlan.installments|reduce((unique, item)=>item.rank in unique ? unique : unique|merge([item.rank]), [])|reverse %}
                                             <th  class="text-center col-1" id="roomTHead" scope="col">Tranche {{ tranche }}</th>
                                         {% endfor %}
                                         <th  class="text-center col-2" scope="col" colspan="2">Frais Examen</th>                            

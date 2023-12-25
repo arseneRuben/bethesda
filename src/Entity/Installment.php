@@ -24,6 +24,11 @@ class Installment
      * @ORM\JoinColumn(name="payment_plan_id", referencedColumnName="id", nullable=true)
      */
     private $paymentPlan;
+     /**
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class) 
+     * @ORM\JoinColumn(name="classRoom_id", referencedColumnName="id", nullable=true)
+     */
+    private $classRoom;
     /**
      * @var int
      *
@@ -86,6 +91,18 @@ class Installment
     public function setDeadline(?\DateTimeInterface $deadline): static
     {
         $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function getClassRoom(): ?ClassRoom
+    {
+        return $this->classRoom;
+    }
+
+    public function setClassRoom(?ClassRoom $classRoom): static
+    {
+        $this->classRoom = $classRoom;
 
         return $this;
     }

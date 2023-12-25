@@ -72,7 +72,7 @@ class PaymentPlanController extends AbstractController
                     $nbSegments = count($segments);
                     $roomId = $segments[$nbSegments - 1];
                     $order = $segments[$nbSegments - 2];
-                    $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
+                    $installment->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
                     $installment->setRank($order);
                     $installment->setAmount(intval($request->request->get($key)));
                     $installment->setPaymentPlan($paymentPlan);

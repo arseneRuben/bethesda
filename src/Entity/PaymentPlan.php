@@ -36,11 +36,7 @@ class PaymentPlan
     private $schoolYear;
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ClassRoom::class) 
-     * @ORM\JoinColumn(name="classRoom_id", referencedColumnName="id", nullable=true)
-     */
-    private $classRoom;
+   
 
     /**
      * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="paymentPlan")
