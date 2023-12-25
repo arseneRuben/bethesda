@@ -78,7 +78,7 @@ class Installment
         return $this;
     }
 
-    public function getDeadline(): ?\DateTimeInterfaces
+    public function getDeadline(): ?\DateTimeInterface
     {
         return $this->deadline;
     }

@@ -45,12 +45,12 @@ class PaymentPlanController extends AbstractController
     public function index(PaymentPlanRepository $paymentPlanRepository): Response
     {
         // Utilisez le PaymentRepository pour récupérer tous les paiements
-        $paymentPlans = $paymentPlanRepository->findAll();
+       
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
       
         return $this->render('paymentPlan/index.html.twig', [
-            'paymentPlans' => $paymentPlans,
+           
             'year' => $year,
             'rooms' => $rooms
         ]);
