@@ -4,13 +4,15 @@
 {% block content %}
         
          <form action={{path("admin_paymentPlans_new")}} method="POST">
-         
+        
+
             <div class="row mt-4">
                 <div class="col-12 jumbotron" >
                     <div class="m-1 box-shadow">
                             <div class="card-header row">
                                                 <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
                                                 {% if(year.paymentPlans|length > 0) %}
+                                                     
 
                                                 {% else %}
                                                 <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
@@ -27,24 +29,44 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for room in rooms %}
-                                        <tr class="row">
-                                            <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
-                                            <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
-                                            {%  if(room.apc) %}
-                                                <td  class="text-center col-1" scope="row"><input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
-                                                <td  class="text-center col-1" scope="row"><input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
-                                            {% else %}
-                                                <td  class="text-center col-2" colspan="2" scope="row"></td>
-                                            {% endif %}
-                                            <td  class="text-center col-1 sum" scope="row"></td>
-                                        </tr>
-                                    {% endfor %}
+                                    {% if(year.paymentPlans|length > 0) %}
+                                        {% for room in rooms %}
+                                            <tr class="row">
+                                                <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                                <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
+                                                {% for paymentPlan in year.paymentPlans %}
+                                                    {% if(paymentPlan.room.id == room.id) %}
+                                                        {% for tranche in paymentPlan.tranches %}
+                                                            <td  class="text-center col-1" scope="row">{{ tranche.amount }}</td>
+                                                            <td  class="text-center col-1" scope="row">{{ tranche.deadline|date("d-m-Y") }}</td>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <td  class="text-center col-1 sum" scope="row"></td>
+                                            </tr>
+                                        {% endfor %}                
+
+                                    {% else %}
+                                        {% for room in rooms %}
+                                            <tr class="row">
+                                                <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                                <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
+                                                {%  if(room.apc) %}
+                                                    <td  class="text-center col-1" scope="row">  <input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
+                                                    <td  class="text-center col-1" scope="row">   <input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
+                                                {% else %}
+                                                    <td  class="text-center col-2" colspan="2" scope="row"></td>
+                                                {% endif %}
+                                                <td  class="text-center col-1 sum" scope="row"></td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
                                 </tbody>
                             </table>
                     </div>
                 </div>
             </div>
+            {% if(year.paymentPlans|length <= 0) %}
             <div class="row mt-2 mx-auto">
                                 <div class=" col-3">
                                 </div>
@@ -64,6 +86,7 @@
                                 <div class=" col-3">
                                 </div>
             </div>
+            {% endif %}
         </form>
    
 
@@ -89,7 +112,7 @@
                   $(".roomTBody").each(function() {
                         let roomId = $(this).closest("tr").find(".roomTBody").data("room");
                         $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name="tranche_class_${i}_${roomId}" /></td>
-                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name="deadline_class_ ${i}_${roomId}"/></td>
+                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name="deadline_class_${i}_${roomId}"/></td>
                                  `).insertAfter($(this));
                       
                   });

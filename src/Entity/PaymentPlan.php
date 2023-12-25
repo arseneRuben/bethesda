@@ -30,7 +30,7 @@ class PaymentPlan
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=SchoolYear::class)
+     * @ORM\OneToOne(targetEntity=SchoolYear::class)
      * @ORM\JoinColumn(name="school_year_id", referencedColumnName="id", nullable=true)
      */
     private $schoolYear;
@@ -128,8 +128,7 @@ class PaymentPlan
     public function addInstallment(Installment $installment): static
     {
         if (!$this->installments->contains($installment)) {
-            $this->installments->add($installment);
-            $installment->setPaymentPlan($this);
+            $this->installments->add($installment);      
         }
 
         return $this;
@@ -137,13 +136,7 @@ class PaymentPlan
 
     public function removeInstallment(Installment $installment): static
     {
-        if ($this->installments->removeElement($installment)) {
-            // set the owning side to null (unless already changed)
-            if ($installment->getPaymentPlan() === $this) {
-                $installment->setPaymentPlan(null);
-            }
-        }
-
+        $this->installments->removeElement($installment);
         return $this;
     }
 }

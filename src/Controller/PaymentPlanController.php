@@ -33,7 +33,6 @@ class PaymentPlanController extends AbstractController
         PaymentPlanRepository $repo,
         SchoolYearRepository $scRepo,
         ClassRoomRepository $clRepo,
-
     ) {
         $this->em = $em;
         $this->repo = $repo;
@@ -65,31 +64,36 @@ class PaymentPlanController extends AbstractController
         // Créez une nouvelle instance de PaymentPlan
         $paymentPlan = new PaymentPlan();
         $paymentPlan->setSchoolYear($this->scRepo->findOneBy(array('activated' => true)));
+        $installment=null;
         foreach ($request->request->all() as $key => $value) {
-            $installment = new Installment();
             if(strstr($key, 'tranche_class')){
-                $segments = explode("_", $key);
-                $nbSegments = count($segments);
-                if ($nbSegments >= 2) {
+                    $installment = new Installment();
+                    $segments = explode("_", $key);
+                    $nbSegments = count($segments);
                     $roomId = $segments[$nbSegments - 1];
-                    $tranche = $segments[$nbSegments - 2];
+                    $order = $segments[$nbSegments - 2];
                     $paymentPlan->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
-                    $installment->setOrder($tranche);
+                    $installment->setRank($order);
                     $installment->setAmount(intval($request->request->get($key)));
+                    $installment->setPaymentPlan($paymentPlan);
                     $this->em->persist($installment);
-                   
-                }  
-            } else {
-                $installment->setDeadline(new \DateTime($value));
-            } 
-            $installment->setPaymentPlan($paymentPlan);
-            $paymentPlan->addInstallment($installment);
+            } else if(strstr($key, 'deadline_class')) {
+                    if($installment!=null)  {
+                        $installment->setDeadline(new \DateTime($request->request->get($key)));
+                        $paymentPlan->addInstallment($installment);
+                        $this->em->persist($installment);
+                    } else {
+                        continue;
+                    }
+             }
+           
+            
         }
+       // dd($paymentPlan);
         $this->em->persist($paymentPlan);
         $this->em->flush();
-
          // Redirigez l'utilisateur vers une autre page, affichez un message de confirmation, etc.
-         return $this->redirectToRoute('admin_paymentPlans');
+        return $this->redirectToRoute('admin_paymentPlans');
        
     }
 }

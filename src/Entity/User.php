@@ -6,8 +6,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
 use App\Repository\UserRepository;
-
-//use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\Traits\HasUploadableField;
 use App\Repository\AttributionRepository;
 use Doctrine\Common\Collections\Collection;

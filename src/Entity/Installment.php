@@ -33,16 +33,16 @@ class Installment
      */
     private $id;
 
-     /**
+      /**
      * @var int
      *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="rank", type="integer")
      */
-    private $order;
+    private $rank;
       /**
-     * @var \Date
+     * @var \Datetime
      *
-     * @ORM\Column(name="deadline", type="date", nullable=true)
+     * @ORM\Column(name="deadline", type="datetime", nullable=false)
      */
     protected $deadline;
    
@@ -50,6 +50,20 @@ class Installment
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+   
+
+    public function getRank(): ?int
+    {
+        return $this->rank;
+    }
+
+    public function setRank(int $order): static
+    {
+        $this->rank = $order;
+
+        return $this;
     }
 
     public function getPaymentPlan(): ?PaymentPlan
@@ -60,18 +74,6 @@ class Installment
     public function setPaymentPlan(?PaymentPlan $paymentPlan): static
     {
         $this->paymentPlan = $paymentPlan;
-
-        return $this;
-    }
-
-    public function getOrder(): ?int
-    {
-        return $this->order;
-    }
-
-    public function setOrder(int $order): static
-    {
-        $this->order = $order;
 
         return $this;
     }

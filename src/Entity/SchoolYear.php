@@ -76,9 +76,9 @@ class SchoolYear
      */
     private $subscriptions;
     /**
-     * @ORM\OneToMany(targetEntity=PaymentPlan::class, mappedBy="schoolYear")
+     * @ORM\OneToOne(targetEntity=PaymentPlan::class, mappedBy="schoolYear")
      */
-    private $paymentPlans;
+    private $paymentPlan;
 
 
 
@@ -182,33 +182,28 @@ class SchoolYear
         return $this;
     }
 
-    /**
-     * @return Collection<int, PaymentPlan>
-     */
-    public function getPaymentPlans(): Collection
+    public function getPaymentPlan(): ?PaymentPlan
     {
-        return $this->paymentPlans;
+        return $this->paymentPlan;
     }
 
-    public function addPaymentPlan(PaymentPlan $paymentPlan): static
+    public function setPaymentPlan(?PaymentPlan $paymentPlan): static
     {
-        if (!$this->paymentPlans->contains($paymentPlan)) {
-            $this->paymentPlans->add($paymentPlan);
+        // unset the owning side of the relation if necessary
+        if ($paymentPlan === null && $this->paymentPlan !== null) {
+            $this->paymentPlan->setSchoolYear(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($paymentPlan !== null && $paymentPlan->getSchoolYear() !== $this) {
             $paymentPlan->setSchoolYear($this);
         }
 
-        return $this;
-    }
-
-    public function removePaymentPlan(PaymentPlan $paymentPlan): static
-    {
-        if ($this->paymentPlans->removeElement($paymentPlan)) {
-            // set the owning side to null (unless already changed)
-            if ($paymentPlan->getSchoolYear() === $this) {
-                $paymentPlan->setSchoolYear(null);
-            }
-        }
+        $this->paymentPlan = $paymentPlan;
 
         return $this;
     }
+    
+
+
 }
