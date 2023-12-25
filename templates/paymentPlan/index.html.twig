@@ -24,10 +24,11 @@
                                     <tr class="row">
                                         <th class="text-center col-1" scope="col">Niveau</th>
                                         <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
-                                       
-                                        {% for tranche in year.paymentPlan.installments|reduce((unique, item)=>item.rank in unique ? unique : unique|merge([item.rank]), [])|reverse %}
-                                            <th  class="text-center col-1" id="roomTHead" scope="col">Tranche {{ tranche }}</th>
-                                        {% endfor %}
+                                        {% if(year.paymentPlan) %}
+                                            {% for tranche in year.paymentPlan.installments|reduce((unique, item)=>item.rank in unique ? unique : unique|merge([item.rank]), [])|reverse %}
+                                                <th  class="text-center col-1" id="roomTHead" scope="col">Tranche {{ tranche }}</th>
+                                            {% endfor %}
+                                        {% endif %}
                                         <th  class="text-center col-2" scope="col" colspan="2">Frais Examen</th>                            
                                         <th  class="text-center col-1" scope="col">Total</th>
                                     </tr>
@@ -39,12 +40,14 @@
                                                 <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
                                                 <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
                                                
-                                                    {% if(year.paymentPlan.classRoom.id == room.id) %}
+                                                    
                                                         {% for tranche in year.paymentPlan.installments %}
-                                                            <td  class="text-center col-1" scope="row">{{ tranche.amount }}</td>
-                                                            <td  class="text-center col-1" scope="row">{{ tranche.deadline|date("d-m-Y") }}</td>
+                                                            {% if(tranche.classRoom.id == room.id) %}
+                                                                <td  class="text-center col-1" scope="row">{{ tranche.amount }}</td>
+                                                                <td  class="text-center col-1" scope="row">{{ tranche.deadline|date("d-m-Y") }}</td>
+                                                            {% endif %}
                                                         {% endfor %}
-                                                    {% endif %}
+                                                    
                                                 
                                                 <td  class="text-center col-1 sum" scope="row"></td>
                                             </tr>
