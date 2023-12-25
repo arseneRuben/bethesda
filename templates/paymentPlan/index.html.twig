@@ -100,6 +100,12 @@
         const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
         const sumTd = $(".sum");
         var trancheClass = $("input[name*='tranche_class']"), deadlineClass = $("input[name*='deadline_class']");
+        $('form').on('keypress keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                return false;
+            }
+        });
         
         sliceSize = slice.val();
         for(let i=sliceSize; i>=1 ; i--) {
@@ -122,8 +128,7 @@
                   });
                   
             } 
-            trancheClass = $("input[name*='tranche_class']");
-            trancheClass.change(function(e){
+             $("input[name*='tranche_class']").change(function(e){
                 let sum = 0;
                 let tranches = $(e.target).closest("tr").find("input[name*='tranche_class']");
                 tranches.each(function(){
@@ -136,17 +141,14 @@
               
                 if($("#checkbox_"+tranche).is(":checked")){
                     $(`input[name*="tranche_class_${tranche}_"]`).val(e.target.value);
-                    e.stopPropagation()
                 }
             });
-            deadLineClass = $("input[name*='deadline_class']");
-            deadLineClass.change(function(e){
+            $("input[name*='deadline_class']").change(function(e){
                 const parts = $(this).attr( "name" ).split("_");
                 const tranche = parts[2];
                 const room = parts[3];
                 if($("#checkbox_"+tranche).is(":checked")){
                     $(`input[name*="deadline_class_${tranche}_"]`).val(e.target.value);
-                    e.stopPropagation()
                 }
             });
             
