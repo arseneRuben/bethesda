@@ -4,8 +4,6 @@
 {% block content %}
         
          <form action={{path("admin_paymentPlans_new")}} method="POST">
-        
-
             <div class="row mt-4">
                 <div class="col-12 jumbotron" >
                     <div class="m-1 box-shadow">
@@ -75,13 +73,12 @@
                 </div>
             </div>
             {% if(year.paymentPlan|length <= 0) %}
-            <div class="row mt-2 mx-auto">
+                <div class="row mt-2 mx-auto">
                                 <div class=" col-3">
                                 </div>
                                 <div class=" col-3 mx-auto btn-group d-inline-flex p-2 bd-highlight">
                                     <button class="btn btn-danger" type="submit">
-                                        <b>
-                                            <i class="fa fa-balance-scale"></i>submit</b>
+                                        <b><i class="fa fa-balance-scale"></i>submit</b>
                                     </button>
                                 </div>
                                 <div class="  col-3 mx-auto btn-group d-inline-flex p-2 bd-highligh">
@@ -89,15 +86,13 @@
                                         <i class="fa fa-list"></i>
                                         {{ 'Back to the list'|trans({}, 'admin') }}
                                     </a>
-                                    
                                 </div>
                                 <div class=" col-3">
                                 </div>
-            </div>
+                 </div>
             {% endif %}
         </form>
    
-
 {% endblock %}
 {% block javascripts %}
 	{{parent()}}
@@ -138,10 +133,20 @@
                 const parts = $(this).attr( "name" ).split("_");
                 const tranche = parts[2];
                 const room = parts[3];
-                const checkbox = $("#checkbox_"+tranche);
-                if(checkbox.is(":checked")){
+              
+                if($("#checkbox_"+tranche).is(":checked")){
                     $(`input[name*="tranche_class_${tranche}_"]`).val(e.target.value);
-                   
+                    e.stopPropagation()
+                }
+            });
+            deadLineClass = $("input[name*='deadline_class']");
+            deadLineClass.change(function(e){
+                const parts = $(this).attr( "name" ).split("_");
+                const tranche = parts[2];
+                const room = parts[3];
+                if($("#checkbox_"+tranche).is(":checked")){
+                    $(`input[name*="deadline_class_${tranche}_"]`).val(e.target.value);
+                    e.stopPropagation()
                 }
             });
             
