@@ -212,6 +212,7 @@ class StudentController extends AbstractController
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
@@ -251,7 +252,7 @@ class StudentController extends AbstractController
        
         
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
-
+        //dd($dataQuater);    
         $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
             'year' => $year,
             'quater' => $quater,
@@ -284,7 +285,7 @@ class StudentController extends AbstractController
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findSequenceThisYear($year);
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
-
+        
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
@@ -342,7 +343,7 @@ class StudentController extends AbstractController
             ORDER BY seq1.crs"
         );
         $statement->execute();
-
+       // dd($dataYear);
         // CAS DES NOTES ANNUELLES
 
         $statement = $connection->prepare(
@@ -370,7 +371,7 @@ class StudentController extends AbstractController
         $statement->execute();
 
         $dataYear = $connection->executeQuery("SELECT *  FROM ANNUAL_DATA ")->fetchAll();
-
+        
         $html = $this->renderView('student/reportcardYearApc.html.twig', array(
             'year' => $year,
             'data' => $dataYear,

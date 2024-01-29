@@ -166,7 +166,10 @@ class EvaluationController extends AbstractController
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
-
+            if($sequence == null)
+            {
+                $sequence = $this->seqRepo->findOneBy(array("activated" => true));
+            }
             $evaluation->setCourse($course);
             $evaluation->setClassRoom($classRoom);
             $evaluation->setSequence($sequence);
@@ -176,7 +179,6 @@ class EvaluationController extends AbstractController
                 $mark = new Mark();
                 $matricule = $record["matricule"];
                 $note = $record["note"];
-
                 $poids = $record["weight"];
                 $appreciation = $record["appreciation"];
                 $student = $this->stdRepo->findOneByMatricule($matricule);
@@ -269,6 +271,10 @@ class EvaluationController extends AbstractController
         $competence = $request->request->get('competence');
         $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
         $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
+        if($sequence == null)
+        {
+                $sequence = $this->seqRepo->findOneBy(array("activated" => true));
+        }
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $notes  = array();
         $year = $this->scRepo->findOneBy(array("activated" => true));
