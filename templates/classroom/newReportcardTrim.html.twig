@@ -2050,7 +2050,11 @@
                                                                                                             
                                                                         
                                     </td>
-                                    <td border="0.5" style="text-align:center;" width="45">{{ abscences[std.id] }} </td>
+                                    <td border="0.5" style="text-align:center;" width="45">
+                                      {% if std.id in abscences|keys %}
+                                        {{ abscences[std.id] }} 
+                                      {% endif %}
+                                    </td>
                                     <td border="0.5" style="text-align:center;">
                                         FAIBLE
                                                                                                                                                                                             

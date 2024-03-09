@@ -909,6 +909,7 @@ class ClassRoomController extends AbstractController
         /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES  DE LA CLASSE, AINSI QUE DE LA VIEW DES ABSCENCES**************/
         /*******************************************************************************************************************/
         $i = 1;
+        
         foreach ($sequences as $seq) {
            
            
@@ -925,8 +926,8 @@ class ClassRoomController extends AbstractController
                 JOIN  user  teach        ON  att.teacher_id  =   teach.id
                 JOIN  module     modu    ON  modu.id       =   crs.module_id
                 JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
-                JOIN  abscence_sheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
-                JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
+                LEFT JOIN  abscence_sheet   sheet     ON  seq.id     =   sheet.sequence_id AND sheet.class_room_id = room.id
+                LEFT JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
                 JOIN  quater   quat      ON  seq.quater_id     =   quat.id
                 WHERE    room.id = ? AND eval.sequence_id =? 
                 ORDER BY room.id,modu.id ,  std; "
@@ -942,8 +943,8 @@ class ClassRoomController extends AbstractController
                 "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $i . " AS
                 SELECT DISTINCT  room.id as room, abs.student_id as std, sum( abs.weight) as total_hours
                 FROM   class_room room  
-                JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
-                JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
+                LEFT JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
+                LEFT JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
                 WHERE  room.id = ? 
                 GROUP BY  std
                 ORDER BY room.id, std; "
@@ -954,7 +955,7 @@ class ClassRoomController extends AbstractController
 
             $i++;
         }
-
+        // dd($sequences);
         // CAS DES NOTES TRIMESTRIELLES
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER AS
@@ -989,12 +990,13 @@ class ClassRoomController extends AbstractController
         $sumAvg = 0;
         $rank = 0;
         $rankArray = [];
+       
         foreach ($quaterAvg as $avg) {
-
             $quaterAvgArray[$avg['std']] = $avg['moyenne'];
             $rankArray[$avg['std']] = ++$rank;
             $sumAvg += $avg['moyenne'];
         }
+        
         // Traitement des abscences
         $absences = $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_QUATER ")->fetchAll();
         $absencesArray = [];
