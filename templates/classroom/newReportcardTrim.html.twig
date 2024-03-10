@@ -39,14 +39,22 @@
             {% endif %}
             {{ room.name }}
         </title>
+        <style>
+            page[size="A4"] {
+                background: white;
+                min-height: 34.25cm;
+                display: block;
+                
+                border-style: double; 
+                
+            }
+        </style>
     </head>
 
     <body style="font-family:  times, serif;">
+        
         {% for std in students %}
-            <div style=" height:1272px;  border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  0px 0px 0px 0px ; padding:  44px 0px 0px 0px ;  ">
-
-                <section style=" margin:auto;">
-
+        <page size="A4" >
                     <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 1em; ">
                         <tr>
                             <td style=" width: 35%;">
@@ -2237,17 +2245,10 @@
                                         <br/>
                                     </td>
                                 </tr>
-                            
-                        
-                    
-
                     </table>
-                            <hr style="margin-left:0px; width: 100%;">
-                </section>
-
-            </div>
-
+         </page>
         {% endfor %}
+       
         <script type="text/javascript" src="{{ absolute_url(asset('assets/js/jquery-3.1.1.js')) }}"></script>
         <script type="text/javascript" src="{{ absolute_url(asset('assets/js/repportCardApc.js')) }}"></script>
     </body>
