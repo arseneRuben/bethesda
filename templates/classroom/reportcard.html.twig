@@ -138,14 +138,14 @@
                         <table style=" width: 100%; text-align:center; font-size: 80%; ">
                             <tr>
                                 <td style=" width: 30%;">
-                                    {% if std.profileImagePath is null %}
-                                        <img
-                                    src="{{ pathToWeb }}/img/student/ondasblue.jpeg" />
+                                        {% if std.gender %}
+                                            <img
+                                        style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
 
-                                        {% else %}
-                                        <img src="{{ pathToWeb }}/img/student/{{ std.profileImagePath }}" {# src="{{ asset('img/student/'~std.profileImagePath)}}" #} height="140em" width="170em" />
-
-                                    {% endif %}
+                                            {% else %}
+                                            <img style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
+                                        {% endif %}
+                                 
                                 </td>
                                 <td style=" width: 30%;">
                                     <h3>
@@ -331,68 +331,7 @@
                                 {# Total partiel des Note * coefficient du module #}
                                 {% for course in module.courses %}
                                     {% set break = false %}
-                                    {% for mark in datas %}
-                                        {% if std.matricule == mark.matricule %}
-                                            {% if module.name == mark.module %}
-                                                {% if mark.wording == course.wording  and not break %}
-                                                    <tr HEIGHT="6px" border="0.5" style="text-align:center;">
-                                                        <td border="0.5" style="text-align:center;" width="90">
-
-                                                            {{ course.wording }}
-
-                                                        </td>
-                                                        <td border="0.5" style="text-align:center;" cellspacing="1"></td>
-
-                                                        <td border="0.5" style="text-align:center;" width="15">
-                                                            {% if mark.weight == 1 %}
-                                                                {{ mark.valeur }}
-                                                            {% else %}
-                                                                /
-                                                                                                                        
-                                                            {% endif %}
-                                                        </td>
-                                                        <td border="0.5" style="text-align:center;" width="25">
-                                                            {{ course.coefficient }}
-                                                        </td>
-
-                                                        <td border="0.5" style="text-align:center;" width="40">
-                                                            {% if mark.weight == 1 %}
-                                                                {{ mark.valeur * course.coefficient }}
-                                                            {% else %}
-                                                                /
-                                                                                                                        
-                                                            {% endif %}
-                                                        </td>
-
-                                                        <td border="0.5" style="text-align:center;">
-                                                            {% if mark.weight == 1 %}
-                                                                {{ mark.rank }}
-                                                            {% else %}
-                                                                /
-                                                                                                                        
-                                                            {% endif %}
-                                                        </td>
-
-                                                        <td border="0.5" style="text-align:center;" cellspacing="1">
-                                                            {% if mark.weight == 1 %}
-                                                                {{ mark.appreciation }}
-                                                            {% else %}
-                                                                /
-                                                                                                                        
-                                                            {% endif %}
-                                                        </td>
-
-                                                        <td border="0.5" style="text-align:center;" width="155"></td>
-                                                    </tr>
-                                                    {% set break = true %}
-                                                    {% if mark.weight == 1 %}
-                                                        {% set totalCoefModule = totalCoefModule + course.coefficient %}
-                                                        {% set NCoef = NCoef +  mark.valeur * course.coefficient %}
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
+                                 
 
                                 {% endfor %}
                                 {% set totalNCoefModule = totalNCoefModule + NCoef %}
