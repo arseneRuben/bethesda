@@ -992,6 +992,7 @@ class ClassRoomController extends AbstractController
             $rankArray[$avg['std']] = ++$rank;
             $sumAvg += $avg['moyenne'];
         }
+        
         // Traitement des abscences
         $absences = $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_QUATER ")->fetchAll();
         $absencesArray = [];
