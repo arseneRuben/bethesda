@@ -198,7 +198,7 @@
                                         </a>
                                     </li>
 
-                                    <li class="{% if app.request.attributes.get('_route') == "admin_payments" %}active{% endif %}">
+                                    {# <li class="{% if app.request.attributes.get('_route') == "admin_payments" %}active{% endif %}">
                                         <a href="{{ path('admin_payments') }}">
                                             <i class="fa fa-money" aria-hidden="true"></i>
 
@@ -210,7 +210,7 @@
                                                                                                                                             
                                                                                     
                                         </a>
-                                    </li>
+                                    </li>#}
 
                                     <li class="{% if app.request.attributes.get('_route') == "admin_paymentPlans" %}active{% endif %}">
                                         <a href="{{ path('admin_paymentPlans') }}">
