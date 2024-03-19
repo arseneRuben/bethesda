@@ -64,10 +64,15 @@ class AbscenceSheetController extends AbstractController
         $search = new AbscenceSearch();
         $searchForm =  $this->createForm(AbscenceSheetSearchType::class, $search);
         $searchForm->handleRequest($request);
+        
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+          
             $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
+           
             $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
-            $entities = $this->repo->findAll(array("sequence" => $sequence, "classRoom" => $room));
+           
+            $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room));
+          
         } else {
             $entities = $this->repo->findAll();
         }

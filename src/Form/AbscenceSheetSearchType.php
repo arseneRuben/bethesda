@@ -27,7 +27,6 @@ class AbscenceSheetSearchType extends AbstractType
                 'class' => Sequence::class,
                 'required' => false,
                 'label' => false,
-
                 'placeholder' => 'Filtrer Selon la sequence',
                 'query_builder' => function (SequenceRepository $repository) {
                     return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc')->where('sc.activated = :rep')->setParameter('rep', true)->add('orderBy', 's.id');
