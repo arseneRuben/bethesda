@@ -71,21 +71,28 @@ class AbscenceSheetController extends AbstractController
            
             $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
             if($room != null  && $sequence != null){
-                 $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room));
+                 $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room),   array('id' => 'DESC'));
             } else {
                 if($room != null)
                 {
-                    $entities = $this->repo->findBy(array( "classRoom" => $room));
+                    $entities = $this->repo->findBy(array( "classRoom" => $room),   array('id' => 'DESC'));
                 }
                 if($sequence != null)
                 {
-                    $entities = $this->repo->findBy(array( "sequence" => $sequence));
+                    $entities = $this->repo->findBy(array( "sequence" => $sequence),   array('id' => 'DESC'));
                 }
             }
           
         } else {
-            $entities = $this->repo->findAll();
+            $entities = $this->repo->findAll(array(),   array('id' => 'DESC'));
         }
+
+        uasort($entities, function($a, $b){
+            if ($a->getUpdatedAt() == $b->getUpdatedAt()) {
+                return 0;
+            }
+            return ($a->getUpdatedAt()< $b->getUpdatedAt()) ? 1 : -1;
+        });
 
         $sheets = $paginator->paginate($entities, $request->query->get('page', 1), AbscenceSheet::NUM_ITEMS_PER_PAGE);
         $sheets->setCustomParameters([
