@@ -926,6 +926,7 @@ class ClassRoomController extends AbstractController
         $statement->bindValue(1, $seq->getId());
         $statement->bindValue(2, $room->getId());
         $statement->execute();
+       
     }
 
     /**
@@ -949,7 +950,9 @@ class ClassRoomController extends AbstractController
         $i = 1;
         foreach ($sequences as $seq) {
             // CAS DES NOTES et ABSCENCES SEQUENTIELLES
+            
             $this->getViewSeqData($room, $seq, $i);
+            
             $i++;
         }
         // CAS DES NOTES TRIMESTRIELLES
@@ -966,7 +969,7 @@ class ClassRoomController extends AbstractController
             "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_QUATER AS
             SELECT DISTINCT   seq1.std as std , seq1.total_hours + seq2.total_hours as abscences
             FROM V_STUDENT_ABSCENCE_SEQ1 seq1
-            JOIN  V_STUDENT_ABSCENCE_SEQ2 seq2  ON  (seq1.std    =   seq2.std  )
+             JOIN  V_STUDENT_ABSCENCE_SEQ2 seq2  ON  (seq1.std    =   seq2.std  )
             ORDER BY std "
         );
         $statement->execute();

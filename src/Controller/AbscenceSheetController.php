@@ -70,8 +70,18 @@ class AbscenceSheetController extends AbstractController
             $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
            
             $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
-           
-            $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room));
+            if($room != null  && $sequence != null){
+                 $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room));
+            } else {
+                if($room != null)
+                {
+                    $entities = $this->repo->findBy(array( "classRoom" => $room));
+                }
+                if($sequence != null)
+                {
+                    $entities = $this->repo->findBy(array( "sequence" => $sequence));
+                }
+            }
           
         } else {
             $entities = $this->repo->findAll();
@@ -274,7 +284,9 @@ class AbscenceSheetController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
+       
         if ($this->isCsrfTokenValid('abscence_sheet_deletion' . $abscenceSheet->getId(), $request->request->get('csrf_token'))) {
+            
             foreach ($abscenceSheet->getAbscences() as $abs) {
                 $this->em->remove($abs);
             }
