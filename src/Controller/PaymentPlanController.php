@@ -48,9 +48,9 @@ class PaymentPlanController extends AbstractController
        
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
-      
+        
         return $this->render('paymentPlan/index.html.twig', [
-           
+          
             'year' => $year,
             'rooms' => $rooms
         ]);
@@ -86,8 +86,6 @@ class PaymentPlanController extends AbstractController
                         continue;
                     }
              }
-           
-            
         }
        // dd($paymentPlan);
         $this->em->persist($paymentPlan);
