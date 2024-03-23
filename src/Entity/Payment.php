@@ -58,16 +58,6 @@ class Payment
         return $this->id;
     }
 
-
-
-  
-
-   
-
-
-
-
-
     /**
      * Set schoolYear
      *
@@ -81,8 +71,6 @@ class Payment
 
         return $this;
     }
-
-
 
      /**
      *  Get schoolYear

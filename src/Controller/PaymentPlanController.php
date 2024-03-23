@@ -51,7 +51,6 @@ class PaymentPlanController extends AbstractController
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         
         return $this->render('paymentPlan/index.html.twig', [
-          
             'year' => $year,
             'rooms' => $rooms
         ]);
@@ -95,22 +94,25 @@ class PaymentPlanController extends AbstractController
        
     }
 
-       /**
+    /**
      * Displays a form to edit an existing Programme entity.
      *
-     * @Route("/{id}/edit", name="admin_paymentPlans_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
+     * @Route("/{id}/edit", name="admin_paymentPlans_edit", requirements={"id"="\d+"}, methods={"GET"})
      * @Template()
      */
-    public function edit(Request $request, PaymentPlan $paymentPlan): Response
+    public function edit(Request $request): Response
     {
-        dd($paymentPlan);
+        
+        $paymentPlan = $this->repo->findOneBy(array("id" => $request->attributes->get('id')));
+        $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         $form = $this->createForm(PaymentPlanType::class, $paymentPlan, [
             'method' => 'PUT'
         ]);
 
         $form->handleRequest($request);
-        return $this->render('program/edit.html.twig', [
+        return $this->render('paymentPlan/edit.html.twig', [
             'paymentPlan' => $paymentPlan,
+            'rooms' => $rooms,
             'form' => $form->createView()
         ]);
     }

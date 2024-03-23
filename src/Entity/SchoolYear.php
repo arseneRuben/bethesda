@@ -87,7 +87,6 @@ class SchoolYear
         $this->quaters = new ArrayCollection();
         $this->activated = true;
         $this->subscriptions = new ArrayCollection();
-        $this->paymentPlants = new ArrayCollection();
         $this->paymentPlans = new ArrayCollection();
     }
 
@@ -151,6 +150,16 @@ class SchoolYear
         return $this;
     }
 
+     /**
+     * Get amountofTuition
+     *
+     * @param ClassRoom $room
+     *
+     * @return integer
+     */
+    public function amountofTuition(ClassRoom $room) {
+        
+    }
 
     /**
      * @return Collection|Subscription[]

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\SchoolYear;
-use App\Entity\ClassRoom;
 use App\Repository\PaymentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -71,18 +70,7 @@ class PaymentPlan
         return $this;
     }
 
-    public function getClassRoom(): ?ClassRoom
-    {
-        return $this->classRoom;
-    }
-
-    public function setClassRoom(?ClassRoom $classRoom): static
-    {
-        $this->classRoom = $classRoom;
-
-        return $this;
-    }
-
+ 
     /**
      * @return Collection<int, Payment>
      */

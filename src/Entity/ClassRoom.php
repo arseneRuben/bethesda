@@ -9,7 +9,6 @@ use App\Repository\ClassRoomRepository;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\Collection;
-
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -195,6 +194,7 @@ class ClassRoom
 
         return $this;
     }
+
 
     public function isApc(): ?bool
     {
