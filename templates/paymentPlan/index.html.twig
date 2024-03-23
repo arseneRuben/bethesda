@@ -10,8 +10,9 @@
                             <div class="card-header row">
                                                 <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
                                                 {% if(year.paymentPlan) %}
-                                                     
-
+                                                     <a style="width:3%;" class="btn btn-warning " href="{{ path('admin_paymentPlans_edit', {id: year.paymentPlan.id}) }}">
+                                                            <i class="fa fa-edit"  aria-hidden="true"></i> 
+                                                    </a>
                                                 {% else %}
                                                     <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
                                                     <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">
@@ -39,40 +40,35 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if(year.paymentPlan) %}
-                                        {% for room in rooms %}
-                                            <tr class="row">
-                                                <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
-                                                <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
-                                               
-                                                    
-                                                        {% for tranche in year.paymentPlan.installments %}
-                                                            {% if(tranche.classRoom.id == room.id) %}
-                                                                <td  class="text-center col-1" scope="row">{{ tranche.amount }}</td>
-                                                                <td  class="text-center col-1" scope="row">{{ tranche.deadline|date("d-m-Y") }}</td>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    
-                                                
-                                                <td  class="text-center col-1 sum" scope="row"></td>
-                                            </tr>
-                                        {% endfor %}                
+                                    {% for room in rooms %}
+                                         <tr class="row">
+                                            <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                            <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
+                                             {% if(year.paymentPlan) %} {# If there is already a tuition payment schedule... #}
+                                                {% for tranche in year.paymentPlan.installments %}
+                                                    {% if(tranche.classRoom.id == room.id) %}
+                                                        <td  class="text-center col-1" scope="row">{{ tranche.amount }}</td>
+                                                        <td  class="text-center col-1" scope="row">{{ tranche.deadline|date("d-m-Y") }}</td>
+                                                    {% endif %}
+                                                   
+                                                {% endfor %}
 
-                                    {% else %}
-                                        {% for room in rooms %}
-                                            <tr class="row">
-                                                <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
-                                                <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
-                                                {%  if(room.apc) %}
+                                                {%  if(room.apc) %}{# If the class passes the official exams? #}
+                                                {% else %}
+                                                        <td  class="text-center col-1" scope="row"></td>
+                                                        <td  class="text-center col-1" scope="row"></td>
+                                                {% endif %}
+                                             {% else %} {# If there is not yet a tuition payment schedule #}
+                                                {%  if(room.apc) %} {# If the class passes the official exams? #}
                                                     <td  class="text-center col-1" scope="row">  <input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
                                                     <td  class="text-center col-1" scope="row">   <input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
                                                 {% else %}
                                                     <td  class="text-center col-2" colspan="2" scope="row"></td>
                                                 {% endif %}
-                                                <td  class="text-center col-1 sum" scope="row"></td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endif %}
+                                            {% endif %}
+                                            <td  class="text-center col-1 sum" scope="row"></td>
+                                        </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                     </div>

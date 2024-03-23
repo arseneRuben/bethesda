@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Repository\PaymentPlanRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\SchoolYearRepository;
@@ -87,11 +88,30 @@ class PaymentPlanController extends AbstractController
                     }
              }
         }
-       // dd($paymentPlan);
+        $this->addFlash('info', 'Payment plan succesfully created');
         $this->em->persist($paymentPlan);
         $this->em->flush();
-         // Redirigez l'utilisateur vers une autre page, affichez un message de confirmation, etc.
         return $this->redirectToRoute('admin_paymentPlans');
        
+    }
+
+       /**
+     * Displays a form to edit an existing Programme entity.
+     *
+     * @Route("/{id}/edit", name="admin_paymentPlans_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
+     * @Template()
+     */
+    public function edit(Request $request, PaymentPlan $paymentPlan): Response
+    {
+        dd($paymentPlan);
+        $form = $this->createForm(PaymentPlanType::class, $paymentPlan, [
+            'method' => 'PUT'
+        ]);
+
+        $form->handleRequest($request);
+        return $this->render('program/edit.html.twig', [
+            'paymentPlan' => $paymentPlan,
+            'form' => $form->createView()
+        ]);
     }
 }
