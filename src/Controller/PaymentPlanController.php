@@ -72,10 +72,11 @@ class PaymentPlanController extends AbstractController
                     $nbSegments = count($segments);
                     $roomId = $segments[$nbSegments - 1];
                     $order = $segments[$nbSegments - 2];
+                    $installment->setPaymentPlan($paymentPlan);
                     $installment->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
                     $installment->setRank($order);
                     $installment->setAmount(intval($request->request->get($key)));
-                    $installment->setPaymentPlan($paymentPlan);
+                    
                     $this->em->persist($installment);
             } else if(strstr($key, 'deadline_class')) {
                     if($installment!=null)  {
@@ -86,6 +87,8 @@ class PaymentPlanController extends AbstractController
                         continue;
                     }
              }
+             $paymentPlan->addInstallment($installment);
+             
         }
         $this->addFlash('info', 'Payment plan succesfully created');
         $this->em->persist($paymentPlan);

@@ -45,12 +45,19 @@ class PaymentPlan
      * @ORM\OneToMany(targetEntity=Installment::class, mappedBy="paymentPlan")
      */
     private $installments;
+  
+     /**
+     * @ORM\Column(type="integer", options={"default" = 0})
+     *  
+     */
+    private $weight;
    
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
         $this->installments = new ArrayCollection();
+        $this->weight = 1;
     }
 
     public function getId(): ?int
@@ -121,6 +128,18 @@ class PaymentPlan
     public function removeInstallment(Installment $installment): static
     {
         $this->installments->removeElement($installment);
+        return $this;
+    }
+
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
+
         return $this;
     }
 }

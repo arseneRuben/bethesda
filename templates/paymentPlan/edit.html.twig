@@ -15,14 +15,11 @@
                                         <tr class="row">
                                             <th class="text-center col-1" scope="col">Niveau</th>
                                             <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
-                                            
-                                                
                                                 {% for tranche in paymentPlan.installments|reduce((unique, item)=>item.rank in unique ? unique : unique|merge([item.rank]), [])|sort %}
                                                     {% if(tranche > 0) %}
                                                         <th  class="text-center col-2" id="roomTHead" colspan="2" scope="col">Tranche {{ tranche }}</th>
                                                     {% endif %}
                                                 {% endfor %}
-                                          
                                             <th  class="text-center col-2" scope="col" colspan="2">Frais Examen 
                                            
                                                 <input class="form-check-input" type="checkbox" id="checkbox_0"  checked>

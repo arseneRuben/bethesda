@@ -67,7 +67,9 @@ class Installment
     public function setRank(int $order): static
     {
         $this->rank = $order;
-
+        if($this->getPaymentPlan()->getWeight() < $order){
+            $this->getPaymentPlan()->setWeight($order) ;
+        }
         return $this;
     }
 
