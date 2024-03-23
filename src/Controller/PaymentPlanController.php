@@ -108,6 +108,12 @@ class PaymentPlanController extends AbstractController
         
         $paymentPlan = $this->repo->findOneBy(array("id" => $request->attributes->get('id')));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
+        $installments = array(); 
+        foreach ($paymentPlan->getInstallments() as $installment) {
+            $installments[$installment->getClassRoom()->getId()][$installment->getRank()]=$installment;
+        }
+       
+       
         $form = $this->createForm(PaymentPlanType::class, $paymentPlan, [
             'method' => 'PUT'
         ]);
@@ -116,6 +122,7 @@ class PaymentPlanController extends AbstractController
         return $this->render('paymentPlan/edit.html.twig', [
             'paymentPlan' => $paymentPlan,
             'rooms' => $rooms,
+            'installments' => $installments,
             'form' => $form->createView()
         ]);
     }
