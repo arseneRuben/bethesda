@@ -9,7 +9,7 @@ use App\Repository\SchoolYearRepository;
 use App\Repository\UserRepository;
 
 
-class StatistiquesServices
+class StatistiquesService
 {
     private SubscriptionRepository $subRepo;
     private SchoolYearRepository $scRepo;
@@ -32,17 +32,17 @@ class StatistiquesServices
 
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $qb = $this->em->createQueryBuilder();
-
-        $qb->select('u')
+        $users = $this->userRepo->findAllOfCurrentYear($year);
+        /*$qb->select('u')
             ->from('App\Entity\User', 'u')
             ->leftJoin(
                 'App\Entity\Attribution',
                 'a',
                 \Doctrine\ORM\Query\Expr\Join::WITH,
-                $qb->expr()->eq('a.teacher_id', 'u.id')
+                $qb->expr()->eq('a.teacher', 'u.id')
             )
             ->groupBy('u.id')
-            ->where($qb->expr()->eq('a.year_id', $year->getId()))
+            ->where($qb->expr()->eq('a.schoolYear', $year->getId()))
             ->andWhere($qb->expr()->gte('count(a.id)', 1));
 
         $userIds =  $qb->getQuery()->getResult();
@@ -51,7 +51,7 @@ class StatistiquesServices
             ->from('App\Entity\User', 'u')
             ->where($qb->expr()->in('u.id', ':userIds'))
             ->setParameter('userIds', $userIds);
-        $users = $qb->getQuery()->getResult();
+        $users = $qb->getQuery()->getResult();*/
         return count($users);
     }
 
