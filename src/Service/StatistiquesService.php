@@ -19,7 +19,6 @@ class StatistiquesService
 
     public function __construct(EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo)
     {
-
         $this->em = $em;
         $this->userRepo = $userRepo;
         $this->scRepo = $scRepo;
@@ -29,34 +28,18 @@ class StatistiquesService
 
     public function teachers()
     {
-
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $qb = $this->em->createQueryBuilder();
         $users = $this->userRepo->findAllOfCurrentYear($year);
-        /*$qb->select('u')
-            ->from('App\Entity\User', 'u')
-            ->leftJoin(
-                'App\Entity\Attribution',
-                'a',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
-                $qb->expr()->eq('a.teacher', 'u.id')
-            )
-            ->groupBy('u.id')
-            ->where($qb->expr()->eq('a.schoolYear', $year->getId()))
-            ->andWhere($qb->expr()->gte('count(a.id)', 1));
-
-        $userIds =  $qb->getQuery()->getResult();
-
-        $qb->select('u')
-            ->from('App\Entity\User', 'u')
-            ->where($qb->expr()->in('u.id', ':userIds'))
-            ->setParameter('userIds', $userIds);
-        $users = $qb->getQuery()->getResult();*/
         return count($users);
     }
 
     public function students()
     {
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $qb = $this->em->createQueryBuilder();
+        $students = $this->subRepo->findBy(array("schoolYear" => $year));
+        return count($students);
     }
 
     public function rooms()

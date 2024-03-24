@@ -46,7 +46,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('sc.id=:year')
             ->orderBy('u.fullName')
             ->setParameter('year', $year->getId());
-
+        
         return $qb->getQuery()->getResult();
     }
 

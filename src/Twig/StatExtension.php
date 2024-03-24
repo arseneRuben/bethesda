@@ -18,12 +18,17 @@ class StatExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('teachers_function', [$this, 'teachers']),
+            new TwigFunction('teachers_count', [$this, 'teachers']),
+            new TwigFunction('students_count', [$this, 'students']),
         ];
     }
 
     public function teachers()
     {
         return $this->statService->teachers();
+    }
+    public function students()
+    {
+        return $this->statService->students();
     }
 }
