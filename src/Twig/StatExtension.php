@@ -20,6 +20,7 @@ class StatExtension extends AbstractExtension
         return [
             new TwigFunction('teachers_count', [$this, 'teachers']),
             new TwigFunction('students_count', [$this, 'students']),
+            new TwigFunction('rooms_count', [$this, 'rooms']),
         ];
     }
 
@@ -30,5 +31,9 @@ class StatExtension extends AbstractExtension
     public function students()
     {
         return $this->statService->students();
+    }
+    public function rooms()
+    {
+        return $this->statService->rooms();
     }
 }

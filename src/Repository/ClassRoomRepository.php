@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repository;
-
+use App\Entity\SchoolYear;
 use App\Entity\ClassRoom;
 use App\Entity\Subscription;
 use App\Entity\Student;
@@ -20,7 +20,18 @@ class ClassRoomRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ClassRoom::class);
     }
-
+    // Nombre de salles de classe ayant au moin un eleve inscrit
+    public function countEnabledClassRoom(SchoolYear $year){
+        $queryBuilder = $this->createQueryBuilder('cl')
+        ->select('COUNT(cl.id) AS effectif, cl.id')
+        ->join('cl.subscriptions', 's')
+        ->andWhere('s.schoolYear = :year')
+        ->groupBy('cl.id')
+        ->setParameter('year', $year->getId());
+         
+         $results = $queryBuilder->getQuery()->getResult();
+        return $results;
+    }
 
     public function countSuccessfulStudentsForClass(ClassRoom $classRoom)
     {

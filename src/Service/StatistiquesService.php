@@ -29,7 +29,6 @@ class StatistiquesService
     public function teachers()
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $qb = $this->em->createQueryBuilder();
         $users = $this->userRepo->findAllOfCurrentYear($year);
         return count($users);
     }
@@ -37,12 +36,16 @@ class StatistiquesService
     public function students()
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
-        $qb = $this->em->createQueryBuilder();
         $students = $this->subRepo->findBy(array("schoolYear" => $year));
         return count($students);
     }
 
     public function rooms()
     {
+        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $roomsEnabled = $this->roomRepo->countEnabledClassRoom($year);
+        
+        return count($roomsEnabled);
+
     }
 }
