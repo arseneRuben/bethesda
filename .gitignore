@@ -25,3 +25,9 @@
 
 ### Image of students ###
 /public/assets/images/student/
+
+# fichier composer
+composer.lock
+
+# others
+package-lock.json
