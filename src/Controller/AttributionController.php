@@ -43,7 +43,7 @@ class AttributionController extends AbstractController
     public function indexAction(SessionInterface $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
@@ -57,7 +57,7 @@ class AttributionController extends AbstractController
     public function setAttributionAction( SessionInterface $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             if ($attribution->getCourse()->getAttributions()->contains($attribution)) {
@@ -94,7 +94,7 @@ class AttributionController extends AbstractController
     public function undoAction(SessionInterface $session)
     {
 
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             $attribution->getCourse()->setAttributed(FALSE);
@@ -110,7 +110,7 @@ class AttributionController extends AbstractController
      * @Route("/create", name="admin_attributions_new")
      * @Method("POST")
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request, SessionInterface $session)
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
@@ -121,7 +121,7 @@ class AttributionController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $year = $this->scRepo->findOneBy(array("activated" => true));
+            $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
             $attribution->setSchoolYear($year);
             $attribution->getCourse()->setAttributed(true);
             $attribution->getTeacher()->addAttribution($attribution);

@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Knp\Snappy\Pdf;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ClassRoomRepository;
@@ -45,8 +46,9 @@ class ClassRoomController extends AbstractController
     private $qtRepo;
     private $markRepo;
     private  $snappy;
+    private $session;
 
-    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy)
+    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
 
         $this->em = $em;
@@ -59,6 +61,7 @@ class ClassRoomController extends AbstractController
         $this->subRepo = $subRepo;
         $this->markRepo = $markRepo;
         $this->snappy = $snappy;
+        $this->session = $session;
     }
 
     /**
@@ -72,7 +75,7 @@ class ClassRoomController extends AbstractController
     {
 
         $classrooms = $this->repo->findAll();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
 
         return $this->render('classroom/index.html.twig', array(
@@ -94,7 +97,7 @@ class ClassRoomController extends AbstractController
     public function showAction(ClassRoom $classroom, StudentRepository $stdRepo)
     {
         // Année scolaire et seuquence en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         // Elèves inscrits
         $attributions = null;
@@ -232,7 +235,7 @@ class ClassRoomController extends AbstractController
 
         set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         $statement = $connection->prepare(
@@ -353,7 +356,7 @@ class ClassRoomController extends AbstractController
     {
         set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $sequences  = $this->seqRepo->findSequenceThisYear($year);
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
@@ -511,7 +514,7 @@ class ClassRoomController extends AbstractController
     public function recapitulatifAction(ClassRoom $room, Sequence $seq, \Knp\Snappy\Pdf $snappy)
     {
         // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/recapitulatifseqvierge.html.twig', array(
             'room' => $room,
@@ -546,7 +549,7 @@ class ClassRoomController extends AbstractController
     {
         // set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
 
@@ -599,7 +602,7 @@ class ClassRoomController extends AbstractController
     public function currentFullfilledEvalAction(ClassRoom $classroom)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         // Liste des séquences de l'année scolaire en cours
         $sequences = $em->getRepository('AppBundle:Sequence')->findSequencesBySchoolYear($year);
         // Liste des matières
@@ -688,7 +691,7 @@ class ClassRoomController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         //  dd($this->getParameter('kernel.project_dir'));
@@ -730,7 +733,7 @@ class ClassRoomController extends AbstractController
     public function presentationAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
     {
         // Année scolaire en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         $html = $this->renderView('classroom/list.html.twig', array(
@@ -806,7 +809,7 @@ class ClassRoomController extends AbstractController
      */
     public function annualSummaryAction(ClassRoom $room, \Knp\Snappy\Pdf $snappy)
     {
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/blankAnnualForm.html.twig', array(
             'room' => $room,
@@ -854,7 +857,7 @@ class ClassRoomController extends AbstractController
         $totalNtCoef = 0;
         $totalCoef = 0;
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
         $evaluations = $this->evalRepo->findSequantialExamsOfRoom($classroom->getId(), $sequence->getId());
 
@@ -890,7 +893,7 @@ class ClassRoomController extends AbstractController
     }
     public function getViewSeqData(ClassRoom $room,Sequence $seq, int $i){
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
          // CAS DES NOTES SEQUENTIELLES
          $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
@@ -940,7 +943,7 @@ class ClassRoomController extends AbstractController
     {
        // set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
@@ -1038,7 +1041,7 @@ class ClassRoomController extends AbstractController
     {
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYear($room, $year->getId());

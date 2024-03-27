@@ -109,7 +109,7 @@ class EvaluationController extends AbstractController
      */
     public function showAction(Evaluation $evaluation, SessionInterface $session)
     {
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         return $this->render('evaluation/show.html.twig', ['studentEnrolled' => $studentsEnrolledInClass, 'evaluation' => $evaluation]);
     }
@@ -278,7 +278,7 @@ class EvaluationController extends AbstractController
         }
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $notes  = array();
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
 
         foreach ($studentsEnrolledInClass as $std) {
@@ -312,7 +312,7 @@ class EvaluationController extends AbstractController
      */
     public function editMark(Request $request, Evaluation $evaluation, String $matricule, SessionInterface $session)
     {
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $note = $_POST[$matricule."note"];
@@ -366,7 +366,7 @@ class EvaluationController extends AbstractController
      */
     public function updateAction(Evaluation $evaluation, Request $request, SessionInterface $session)
     {
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
       
         if ($content = $request->getContent()) {
