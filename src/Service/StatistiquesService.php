@@ -16,7 +16,7 @@ class StatistiquesService
     private SchoolYearRepository $scRepo;
     private ClassRoomRepository $roomRepo;
     private UserRepository $userRepo;
-    private $session;
+    private SessionInterface $session;
     private $em;
 
     public function __construct(EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo, SessionInterface $session)
