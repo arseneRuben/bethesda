@@ -139,7 +139,7 @@ class EvaluationController extends AbstractController
      * @Method({"POST"})
      * @Template()
      */
-    public function create(Request $request)
+    public function create(Request $request, SessionInterface $session)
     {
 
         if (!$this->getUser()) {
@@ -163,7 +163,7 @@ class EvaluationController extends AbstractController
             $idcourse = $request->request->get('idcourse');
             $idsequence = $request->request->get('idsequence');
             $competence = $request->request->get('competence');
-            $year = $this->scRepo->findOneBy(array("activated" => true));
+            $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
@@ -245,7 +245,7 @@ class EvaluationController extends AbstractController
      * @Route("/{id}/edit", name="admin_evaluations_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
-    public function edit(Request $request, Evaluation $evaluation): Response
+    public function edit(Request $request, Evaluation $evaluation, SessionInterface $session): Response
     {
         /* if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
@@ -471,7 +471,7 @@ class EvaluationController extends AbstractController
         if ($_POST["idclassroom"]) {
             $idclassroom = $_POST["idclassroom"];
             if ($idclassroom != null) {
-                $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+                $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
                 $classRoom = $this->clRepo->findOneById($idclassroom);
                 $courses = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
