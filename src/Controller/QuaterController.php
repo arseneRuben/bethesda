@@ -9,7 +9,7 @@ use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -27,12 +27,14 @@ class QuaterController extends AbstractController
     private $em;
     private $scRepo;
     private $repo;
+    private $session;
 
-    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo, QuaterRepository $repo)
+    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo, QuaterRepository $repo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->session = $session;
     }
 
 
@@ -47,7 +49,7 @@ class QuaterController extends AbstractController
     public function indexAction()
     {
 
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $quaters = $this->repo->findQuaterThisYear($year);
 
         return $this->render('quater/index.html.twig', compact("quaters"));
