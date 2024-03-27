@@ -90,6 +90,7 @@ class UserController extends AbstractController
      */
     public function showAction(User $user)
     {
+        
         return $this->render('account/show.html.twig', compact("user"));
     }
 

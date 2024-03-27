@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Attribution controller.
@@ -39,10 +40,10 @@ class AttributionController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(SessionInterface $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
@@ -53,10 +54,10 @@ class AttributionController extends AbstractController
     }
 
 
-    public function setAttributionAction()
+    public function setAttributionAction( SessionInterface $session)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             if ($attribution->getCourse()->getAttributions()->contains($attribution)) {
@@ -90,10 +91,10 @@ class AttributionController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function undoAction()
+    public function undoAction(SessionInterface $session)
     {
 
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             $attribution->getCourse()->setAttributed(FALSE);

@@ -50,7 +50,7 @@ class SchoolController extends AbstractController
         $year_before = $this->scRepo->findOneBy(array("activated" => true));
         $year = $this->scRepo->findOneBy(array("id" => $year_before->getId()));
         $results = [];
-
+       
         foreach ($rooms as $room) {
 
             $officialExamResults = $this->subRepo->countByMention($year, $room);
@@ -189,5 +189,18 @@ class SchoolController extends AbstractController
         $users = $qb->getQuery()->getResult();
         //$users = $this->userRepo->findByRoles("ROLE_ADMIN");
         return $this->render('school/staff.html.twig', compact("users"));
+    }
+
+      /**
+     * @Route("/update_school_year", name="update_school_year", methods={"POST"})
+     */
+    public function updateSessionValue(Request $request)
+    {
+        $selectedSchoolYear = $request->request->get('selectedSchoolYear');
+        // Update session with the selected value
+        $session = $request->getSession();
+        $yearEnabled = $this->scRepo->findOneBy(array("id" => $selectedSchoolYear));
+        $session->set('session_school_year', $yearEnabled);
+        return new Response('Session updated', 200);
     }
 }

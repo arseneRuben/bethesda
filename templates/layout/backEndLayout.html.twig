@@ -50,54 +50,31 @@
                         {% block menu %}
                             <div class="main-menu">
                                 <ul id="side-main-menu" class="side-menu list-unstyled">
+                                   
                                     <li class="{% if app.request.attributes.get('_route') == "admin_school_years" %}active{% endif %}">
                                         <a href="{{ path('admin_school_years') }}">
                                             <i class="fa fa-calendar" aria-hidden="true"></i>
-                                            Années scolaires
-                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                        
-                                                                                                                                                                            
-                                                                                                                                
-                                                                                    
+                                            Années scolaires                                                                                                        
                                         </a>
                                     </li>
                                     <li class="{% if app.request.attributes.get('_route') == "admin_quaters" %}active{% endif %}">
                                         <a href="{{ path('admin_quaters') }}">
                                             <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
-                                            Trimestres
-                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                        
-                                                                                                                                                                            
-                                                                                                                                
-                                                                                    
+                                            Trimestres                                      
                                         </a>
                                     </li>
                                     <li class="{% if app.request.attributes.get('_route') == "admin_sequences" %}active{% endif %}">
                                         <a href="{{ path('admin_sequences') }}">
                                             <i class="fa fa-calendar-minus-o" aria-hidden="true"></i>
                                             Séquences
-                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                        
-                                                                                                                                                                            
-                                                                                                                                
-                                                                                    
-                                        </a>
+                                         </a>
                                     </li>
 
                                     <li class="{% if app.request.attributes.get('_route') == "admin_programs" %}active{% endif %}">
                                         <a href="{{ path('admin_programs') }}">
                                             <i class="fa fa-table" aria-hidden="true"></i>
                                             Programmes
-                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                    
-                                                                                                                                                                                    
-                                                                                                                                    
-                                                                                    
-                                        </a>
+                                          </a>
                                     </li>
                                     <li class="{% if app.request.attributes.get('_route') == "admin_sections" %}active{% endif %}">
                                         <a href="{{ path('admin_sections') }}">
@@ -384,6 +361,7 @@
                                             </form>
                                         {% endif %}
                                     </div>
+                                    
 
                                 </div>
                             </div>
@@ -438,57 +416,31 @@
                                         <div class="icon">
                                             <i class="icon-check"></i>
                                         </div>
-                                        <div class="name">
-                                            <strong class="text-uppercase">
-                                                Insolvables primaire
-                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                    
-                                                                                                                                                        
-                                                                                            
-                                            </strong>
-                                            <span>
-                                                Année scolaire
-                                                                                                                                                                                                                                                                                                                                                                                                            														
-                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                        
-                                                                                                                                                            
-                                                                                                
-                                                {% block annee1 %}{% endblock annee1 %}
-                                            </span>
-
-                                        </div>
+                                       
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-md-4 col-6">
                                     <div class="wrapper count-title d-flex">
-                                        <div class="icon">
-                                            <i class="icon-bill"></i>
+                                        
+
+                                        <div class="form-group">
+                                            <select class="custom-select form-select form-control" id="select_year">
+                                             {% if app.session.has('session_school_year') and app.session.get('session_school_year') != null %}
+                                                    {% for year in years()|reverse %}
+                                                    
+                                                        <option selected= {{app.session.get('session_school_year').id == year.id}}  value={{year.id}}>{{year.wording}}</option>
+                                                    
+                                                    {% endfor %}
+                                                {% else %}
+                                                     {% for year in years()|reverse %}
+                                                    
+                                                        <option  value={{year.id}}>{{year.wording}}</option>
+                                                    
+                                                    {% endfor %}
+                                              {% endif %}
+                                            </select>
                                         </div>
-                                        <div class="name">
-                                            <strong class="text-uppercase">
-                                                Insolvables secondaire
-                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                    
-                                                                                                                                                        
-                                                                                            
-                                            </strong>
-                                            <span>
-                                                Last 2 days
-                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                    
-                                                                                                                                                        
-                                                                                            
-                                            </span>
-                                            <div class="count-number"></div>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-md-4 col-6">
@@ -534,7 +486,6 @@
                                                                                                                                                         
                                                                                             
                                             </strong>
-                                        {#	<span>	{{service_stats.classNumber()}}</span> #}
 
                                         </div>
                                     </div>
@@ -563,9 +514,34 @@
         {{ parent() }}
         
        <script type="text/javascript" src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+       <script type="text/javascript" src="{{ asset('assets/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
+       <script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
+       <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+       <script type="text/javascript">
+            document.getElementById('select_year').addEventListener('change', function() {
+            postData = {
+				"selectedSchoolYear":  this.value
+			};
+            $.ajax({
+			type: "POST",
+			url: "{{ path('update_school_year') }}",
+			data: postData,
+			datatype: "json",
+			success: function (data) {
+				console.log("Changement  d'annee.");
+                location.reload();
+			},
+			error: function (e) {
+				console.log(e.message);
+				alert("Echec.");
+			}
+			});
+
+            });
+
+            
+           
+       </script>
         
     {% endblock javascripts %}
     

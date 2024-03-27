@@ -44,7 +44,6 @@ class StatistiquesService
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
         $roomsEnabled = $this->roomRepo->countEnabledClassRoom($year);
-        
         return count($roomsEnabled);
 
     }

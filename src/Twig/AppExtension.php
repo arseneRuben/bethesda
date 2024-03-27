@@ -5,13 +5,20 @@ namespace App\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use App\Service\SchoolYearService;
 
 class AppExtension extends AbstractExtension
 {
+    private $schoolYearService;
+
+    public function __construct(SchoolYearService $service)
+    {
+        $this->schoolYearService = $service;
+    }
+
     public function getFilters(): array
     {
         return [
-            
             new TwigFilter('filter_name', [$this, 'pluralize']),
         ];
     }
@@ -21,6 +28,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('pluralize', [$this, 'pluralize']),
             new TwigFunction('get_env', [$this, 'getEnvironmentVariable']),
+            new TwigFunction('years', [$this, 'years']),
         ];
     }
 
@@ -29,6 +37,15 @@ class AppExtension extends AbstractExtension
         $plu ??= $sing . 's' ;
         return $count == 1 ? "$count $sing"  :  "$count $plu" ;
     }
+
+  
+
+    public function years()
+    {
+        return $this->schoolYearService->years();
+    }
+
+
 
    
     
