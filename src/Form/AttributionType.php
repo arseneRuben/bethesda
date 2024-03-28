@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class AttributionType extends AbstractType
 {
@@ -42,13 +43,12 @@ class AttributionType extends AbstractType
                 'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function (CourseRepository $repository) {
                     return $repository->findNotAttributedCoursesAtActivatedYear();
                 }
-
-
-
             ))
+
             ->add('teacher', EntityType::class, array('class' => User::class,  'placeholder' => 'Choisir l\'enseignant ', 'label' => 'Enseignant', 'required' =>  true,  'query_builder' => function (UserRepository $repository) {
                 return $repository->createQueryBuilder('u')->add('orderBy', 'u.fullName');
-            }));
+            }))
+            ;
     }
 
     /**

@@ -22,8 +22,8 @@ class MainTeacher
      */
     private ?int $id = null;
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="teacher_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="mainTeachers")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $teacher;
     /**
