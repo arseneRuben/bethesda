@@ -1,0 +1,25 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+
+
+
+
+
+{% block content %}
+        {% form_theme form 'bootstrap_4_layout.html.twig' %}
+       
+          <div class="row mt-4">
+                    <div class="col-10 jumbotron  mx-auto">
+                        <div class="col-md-6 mx-auto">
+                            <article class="text-center">
+                                <br/>
+                                 <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">  Nouvel eleve</h4>
+                                  </div>
+                                {{include('layout/partials/_form.html.twig',{'submitButtonText':'Create student', 'returnRoute':'admin_students'})}}
+                            </article>
+                        </div>
+                    </div>
+            </div>
+   
+    
+{% endblock %}

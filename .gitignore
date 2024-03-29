@@ -31,3 +31,6 @@ composer.lock
 
 # others
 package-lock.json
+
+#To not save Node Modules
+node_modules/
