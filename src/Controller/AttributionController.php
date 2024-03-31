@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\SchoolYearService;
 
 /**
  * Attribution controller.
@@ -26,12 +27,18 @@ class AttributionController extends AbstractController
     private $em;
     private $repo;
     private $scRepo;
+    private SessionInterface $session;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo)
+
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
+
     }
     /**
      * Lists all Attribution entities.
@@ -40,12 +47,10 @@ class AttributionController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(SessionInterface $session)
+    public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearByCode();
         $entities = $this->repo->findAllThisYear($year);
-        //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
             'entities' => $entities,
             'year' => $year,
@@ -54,10 +59,10 @@ class AttributionController extends AbstractController
     }
 
 
-    public function setAttributionAction( SessionInterface $session)
+    public function setAttributionAction( )
     {
         $em = $this->getDoctrine()->getManager();
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearByCode();
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             if ($attribution->getCourse()->getAttributions()->contains($attribution)) {
@@ -91,11 +96,9 @@ class AttributionController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function undoAction(SessionInterface $session)
+    public function undoAction()
     {
-
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
-        $entities = $this->repo->findAllThisYear($year);
+        $entities = $this->repo->findAllThisYear( $this->schoolYearService->sessionYearByCode());
         foreach ($entities as $attribution) {
             $attribution->getCourse()->setAttributed(FALSE);
             $this->em->remove($attribution);
@@ -110,7 +113,7 @@ class AttributionController extends AbstractController
      * @Route("/create", name="admin_attributions_new")
      * @Method("POST")
      */
-    public function createAction(Request $request, SessionInterface $session)
+    public function createAction(Request $request)
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
@@ -121,9 +124,9 @@ class AttributionController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
-            $attribution->setSchoolYear($year);
-            $attribution->getCourse()->setAttributed(true);
+        
+            $attribution->setSchoolYear($this->schoolYearService->sessionYearByCode());
+           // dd( $year);
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
             $this->em->persist($attribution);

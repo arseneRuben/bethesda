@@ -199,8 +199,7 @@ class SchoolController extends AbstractController
         $selectedSchoolYear = $request->request->get('selectedSchoolYear');
         // Update session with the selected value
         $session = $request->getSession();
-        $yearEnabled = $this->scRepo->findOneBy(array("id" => $selectedSchoolYear));
-        $session->set('session_school_year', $yearEnabled);
+        $session->set('session_school_year', $selectedSchoolYear);
         return new Response('Session updated', 200);
     }
 }

@@ -7,6 +7,8 @@ use App\Repository\SubscriptionRepository;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
 use App\Repository\UserRepository;
+use App\Service\SchoolYearService;
+
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
@@ -17,9 +19,10 @@ class StatistiquesService
     private ClassRoomRepository $roomRepo;
     private UserRepository $userRepo;
     private SessionInterface $session;
-    private $em;
+    private SchoolYearService $schoolYearService;
+    private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo, SessionInterface $session)
+    public function __construct( SchoolYearService $schoolYearService, EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->userRepo = $userRepo;
@@ -27,26 +30,26 @@ class StatistiquesService
         $this->roomRepo = $rmRepo;
         $this->subRepo = $subRepo;
         $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
     }
 
     public function teachers()
     {
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
-        $users = $this->userRepo->findAllOfCurrentYear($year);
+        
+        
+        $users = $this->userRepo->findAllOfCurrentYear($this->schoolYearService->sessionYearByCode());
         return count($users);
     }
 
     public function students()
     {
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
-        $students = $this->subRepo->findBy(array("schoolYear" => $year));
+        $students = $this->subRepo->findBy(array("schoolYear" => $this->schoolYearService->sessionYearByCode()));
         return count($students);
     }
 
     public function rooms()
     {
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
-        $roomsEnabled = $this->roomRepo->countEnabledClassRoom($year);
+        $roomsEnabled = $this->roomRepo->countEnabledClassRoom($this->schoolYearService->sessionYearByCode());
         return count($roomsEnabled);
 
     }

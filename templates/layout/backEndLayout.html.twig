@@ -378,11 +378,7 @@
                                             <strong class="text-uppercase">
                                                 
                                                 &nbsp; {{ students_count() }} &nbsp; eleves                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                    
-                                                                                                                                                        
-                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                    
                                             </strong>
                                            
                                         </div>
@@ -405,9 +401,7 @@
                                             </strong>
                                             
 
-                                            <div class="count-number">
-                                                {% block statistics_effectif %}{% endblock statistics_effectif %}
-                                            </div>
+                                          
                                         </div>
                                     </div>
                                 </div>
@@ -425,22 +419,16 @@
 
                                         <div class="form-group">
                                             <select class="custom-select form-select form-control" id="select_year">
-                                             {% if app.session.has('session_school_year') and app.session.get('session_school_year') != null %}
                                                     {% for year in years()|reverse %}
-                                                    
-                                                        <option selected= {{app.session.get('session_school_year').id == year.id}}  value={{year.id}}>{{year.wording}}</option>
-                                                    
+                                                         {% if app.session.has('session_school_year')  %}
+                                                                   
+                                                                    <option selected= {{app.session.get('session_school_year')== year.id}}  value={{year.id}}>{{year.code}}</option>
+                                                         {% else %}
+                                                                    <option  value={{year.id}}>{{year.code}}</option>
+                                                        {% endif %}
                                                     {% endfor %}
-                                                {% else %}
-                                                     {% for year in years()|reverse %}
-                                                    
-                                                        <option  value={{year.id}}>{{year.wording}}</option>
-                                                    
-                                                    {% endfor %}
-                                              {% endif %}
                                             </select>
                                         </div>
-                                       
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-md-4 col-6">
@@ -518,9 +506,9 @@
        <script type="text/javascript" src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
        <script type="text/javascript" src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
        <script type="text/javascript">
-            document.getElementById('select_year').addEventListener('change', function() {
+            $('#select_year').on('change', function() {
             postData = {
-				"selectedSchoolYear":  this.value
+				"selectedSchoolYear":  $(this).val()
 			};
             $.ajax({
 			type: "POST",

@@ -29,6 +29,10 @@ class AppExtension extends AbstractExtension
             new TwigFunction('pluralize', [$this, 'pluralize']),
             new TwigFunction('get_env', [$this, 'getEnvironmentVariable']),
             new TwigFunction('years', [$this, 'years']),
+            new TwigFunction('enabledYear', [$this, 'enabledYear']),
+            new TwigFunction('sessionYearByCode', [$this, 'sessionYearByCode']),
+            new TwigFunction('sessionYearById', [$this, 'sessionYearById']),
+
         ];
     }
 
@@ -43,6 +47,21 @@ class AppExtension extends AbstractExtension
     public function years()
     {
         return $this->schoolYearService->years();
+    }
+
+    public function enabledYear($id)
+    {
+        return $this->schoolYearService->enabledYear($id);
+    }
+
+    public function sessionYearById()
+    {
+        return $this->schoolYearService->sessionYearById();
+    }
+
+    public function sessionYearByCode()
+    {
+        return $this->schoolYearService->sessionYearByCode();
     }
 
 
