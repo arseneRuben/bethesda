@@ -20,7 +20,7 @@ use App\Repository\QuaterRepository;
 use App\Repository\SequenceRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\StudentRepository;
-
+use App\Repository\MainTeacherRepository;
 use App\Repository\MarkRepository;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
@@ -28,6 +28,8 @@ use App\Form\ClassRoomType;
 use App\Entity\Sequence;
 use App\Entity\Quater;
 use App\Repository\SubscriptionRepository;
+use App\Service\SchoolYearService;
+
 
 /**
  * ClassRoom controller.
@@ -47,8 +49,10 @@ class ClassRoomController extends AbstractController
     private $markRepo;
     private  $snappy;
     private $session;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
+
+    public function __construct(MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
 
         $this->em = $em;
@@ -56,12 +60,15 @@ class ClassRoomController extends AbstractController
         $this->scRepo = $scRepo;
         $this->seqRepo = $seqRepo;
         $this->evalRepo = $evalRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
         $this->stdRepo = $stdRepo;
         $this->qtRepo = $qtRepo;
         $this->subRepo = $subRepo;
         $this->markRepo = $markRepo;
         $this->snappy = $snappy;
-        $this->session = $session;
+        $this->session = $session;        
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -71,14 +78,18 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(SequenceRepository $seqRepo)
+    public function indexAction()
     {
-
         $classrooms = $this->repo->findAll();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
-
+        $mainTeachers =  $this->mainTeacherRepo->findBy(array("schoolYear" => $year));
+        $mainTeachersMap = array();
+        foreach($mainTeachers as $mt){
+            $mainTeachersMap[$mt->getClassRoom()->getId()] = $mt->getTeacher();
+        }
         return $this->render('classroom/index.html.twig', array(
+            'mainTeachers' => $mainTeachersMap,
             'classrooms' => $classrooms,
             'year' => $year,
             'seq' => $seq->getId(),

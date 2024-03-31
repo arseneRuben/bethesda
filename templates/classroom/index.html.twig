@@ -45,7 +45,11 @@
                                         {{ room.name }}
                                     </a>
                                 </td>
-                                <td>{#<a href="{{ path('admin_users_edit', {id: room.fullTeacher.id}) }}">#}{{ room.fullTeacher }}
+                                <td>
+                                    {% if room.id in mainTeachers|keys %}
+                                       {{  mainTeachers[room.id].fullName}}
+                                    {% endif %}
+
                                 </td>
                                 <td>
                                     <div class="btn-group">

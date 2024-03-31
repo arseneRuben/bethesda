@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\MainTeacher;
 use App\Entity\Attribution;
 use App\Form\AttributionType;
 use App\Repository\SchoolYearRepository;
@@ -124,10 +124,18 @@ class AttributionController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-        
-            $attribution->setSchoolYear($this->schoolYearService->sessionYearById());
+            $year = $this->schoolYearService->sessionYearById();
+            $attribution->setSchoolYear($year);
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
+            if($attribution->isHeadTeacher()){
+                $mainTeacher = new MainTeacher();
+                $mainTeacher->setTeacher($attribution->getTeacher());
+                $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
+                $mainTeacher->setSchoolYear($year);
+                $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
+                $this->em->persist($mainTeacher);
+            }
             $this->em->persist($attribution);
             $this->em->flush();
             return $this->redirect($this->generateUrl('admin_attributions'));
