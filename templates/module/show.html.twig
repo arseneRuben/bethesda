@@ -43,7 +43,7 @@
                                            
                                             <td><a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.wording }}</a></td>
                                              <td>{{course.coefficient }}</td>
-                                             <td>{#{course.attribution.user }#}</td>
+                                             <td>{{attributions[course.id].teacher.fullName }}</td>
                                         
                                             
                                         </tr>

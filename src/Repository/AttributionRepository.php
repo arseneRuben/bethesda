@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Module;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use App\Entity\Attribution;
@@ -61,6 +62,20 @@ class AttributionRepository extends ServiceEntityRepository
                 ->where('sc.id=:year')
                 ->andWhere('r.id=:room')
                 ->setParameter('room', $room->getId())
+                ->setParameter('year', $year->getId());
+              
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByYearAndByModule(SchoolYear $year,Module $module) {
+      
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.schoolYear', 'sc')
+            ->leftJoin('a.course', 'c')
+            ->leftJoin('c.module', 'm')
+                ->where('sc.id=:year')
+                ->andWhere('m.id=:module')
+                ->setParameter('module', $module->getId())
                 ->setParameter('year', $year->getId());
               
         return $qb->getQuery()->getResult();

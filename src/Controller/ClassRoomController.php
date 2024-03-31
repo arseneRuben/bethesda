@@ -51,6 +51,7 @@ class ClassRoomController extends AbstractController
     private $session;
     private SchoolYearService $schoolYearService;
     private MainTeacherRepository $mainTeacherRepo;
+    private AttributionRepository $attRepo;
 
     public function __construct( AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
