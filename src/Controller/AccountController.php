@@ -47,11 +47,12 @@ class AccountController extends AbstractController
                 return $this->redirectToRoute('app_home');
             } else {
                 $mainTeacher = $this->mainTeacherRepo->findOneBy(array("teacher"=> $this->getUser(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
+                $attributions = $this->attRepo->findBy(array("teacher"=> $this->getUser(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
                 $hasAccess = $this->isGranted('ROLE_ADMIN');
                 if (!$hasAccess) {
                     return $this->redirectToRoute('app_home');
                 } else {
-                    return $this->render('account/profile.html.twig', compact("mainTeacher"));
+                    return $this->render('account/profile.html.twig', compact("mainTeacher", "attributions"));
                 }
             }
         }
