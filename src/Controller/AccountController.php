@@ -9,14 +9,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Service\SchoolYearService;
+use App\Repository\AttributionRepository;
+use App\Repository\MainTeacherRepository;
 
 class AccountController extends AbstractController
 {
     private $em;
+    private SchoolYearService $schoolYearService;
+    private AttributionRepository $attRepo;
+    private MainTeacherRepository $mainTeacherRepo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(MainTeacherRepository $mainTeacherRepo,AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->schoolYearService = $schoolYearService;
+        $this->attRepo = $attRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
+
     }
 
     /**
@@ -36,12 +46,12 @@ class AccountController extends AbstractController
                 $this->addFlash('warning', 'You need to have a verified account');
                 return $this->redirectToRoute('app_home');
             } else {
-
+                $mainTeacher = $this->mainTeacherRepo->findOneBy(array("teacher"=> $this->getUser(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
                 $hasAccess = $this->isGranted('ROLE_ADMIN');
                 if (!$hasAccess) {
                     return $this->redirectToRoute('app_home');
                 } else {
-                    return $this->render('account/profile.html.twig');
+                    return $this->render('account/profile.html.twig', compact("mainTeacher"));
                 }
             }
         }

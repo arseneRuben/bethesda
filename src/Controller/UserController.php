@@ -14,6 +14,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use App\Service\SchoolYearService;
+use App\Repository\AttributionRepository;
+use App\Repository\MainTeacherRepository;
+
 
 /**
  * User controller.
@@ -24,11 +28,18 @@ class UserController extends AbstractController
 {
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private SchoolYearService $schoolYearService;
+    private AttributionRepository $attRepo;
+    private MainTeacherRepository $mainTeacherRepo;
+
+    public function __construct(MainTeacherRepository $mainTeacherRepo,AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
-    }
+        $this->schoolYearService = $schoolYearService;
+        $this->attRepo = $attRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
 
+    }
     /**
      * Lists all Programme entities.
      *
@@ -38,7 +49,6 @@ class UserController extends AbstractController
      */
     public function indexAction(UserRepository $repo)
     {
-
         $users = $repo->findAll();
 
         return $this->render('user/list.html.twig', compact("users"));
@@ -90,8 +100,8 @@ class UserController extends AbstractController
      */
     public function showAction(User $user)
     {
-        
-        return $this->render('account/show.html.twig', compact("user"));
+        $mainTeacher = $this->mainTeacherRepo->findOneBy(array("teacher"=> $user, "schoolYear"=> $this->schoolYearService->sessionYearById()));
+        return $this->render('account/show.html.twig', compact("user", "mainTeacher"));
     }
 
 

@@ -13,6 +13,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\DomainRepository;
 use App\Entity\Domain;
 use App\Form\DomainType;
+use App\Service\SchoolYearService;
+use App\Repository\AttributionRepository;
 
 /**
  * SchoolYear controller.
@@ -22,10 +24,14 @@ use App\Form\DomainType;
 class DomainController extends AbstractController
 {
     private $em;
+    private SchoolYearService $schoolYearService;
+    private AttributionRepository $attRepo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->schoolYearService = $schoolYearService;
+        $this->attRepo = $attRepo;
     }
 
     /**
@@ -85,7 +91,14 @@ class DomainController extends AbstractController
     public function showAction(Domain $domain)
     {
 
-        return $this->render('domain/show.html.twig', compact("domain"));
+        $year = $this->schoolYearService->sessionYearById();
+        $attributions = $this->attRepo->findByYearAndByDomain($year, $domain);
+        $attributionsMapCourses = null;
+        foreach($attributions as $att){
+              $attributionsMapCourses[$att->getCourse()->getId()] = $att;
+        }
+        $attributions = $attributionsMapCourses;
+        return $this->render('domain/show.html.twig', compact("domain", "attributions"));
     }
 
     /**
