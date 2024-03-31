@@ -120,8 +120,9 @@ class ClassRoomController extends AbstractController
         }
           // Attributions de cours durant l'annee
         $attributions = $this->attRepo->findByYearAndByRoom($year,$classroom);
+        $attributionsMapCourses = null;
         foreach($attributions as $att){
-              $attributionsMapCourses[$att->getCourse()->getId()] = $att->getTeacher();
+              $attributionsMapCourses[$att->getCourse()->getId()] = $att;
         }
         // Liste des resulats au examens officiels
         $officialExamResults = $this->subRepo->countByMention($year, $classroom);
@@ -660,7 +661,8 @@ class ClassRoomController extends AbstractController
     public function edit(Request $request, ClassRoom $room): Response
     {
         $form = $this->createForm(ClassRoomType::class, $room, [
-            'method' => 'PUT'
+            'method' => 'PUT',
+            'edit'  => true
         ]);
         
         $form->handleRequest($request);

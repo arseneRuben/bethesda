@@ -407,7 +407,9 @@
                                         <td>
 
                                             {% if attributions[course.id] is defined %}
-                                                {{attributions[course.id]}}
+                                            <a href="{{ path('admin_attributions_edit', {id: attributions[course.id].id}) }}">
+                                                {{attributions[course.id].teacher.fullName}}
+                                            </a>
                                             {% else %}
                                                 Pas encore attribue
                                             {% endif %}

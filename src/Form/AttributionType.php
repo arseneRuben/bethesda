@@ -55,8 +55,10 @@ class AttributionType extends AbstractType
                 'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function () use ( $excludedIds) {
                     $qb = $this->crsRepo->createQueryBuilder('c');
                     if (!empty($excludedIds)) {
-                        $qb->andWhere($qb->expr()->notIn('c.id', ':excludedIds'))
-                        ->setParameter('excludedIds', $excludedIds);
+                        if($options['method']=!'PUT'){
+                            $qb->andWhere($qb->expr()->notIn('c.id', ':excludedIds'))
+                            ->setParameter('excludedIds', $excludedIds);
+                        }
                     }
                     return $qb ;
                 }

@@ -7,9 +7,11 @@ use App\Entity\SchoolYear;
 use App\Repository\MainTeacherRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=MainTeacherRepository::class)
+ * @UniqueEntity(fields={"classRoom", "schoolYear"}, message= "There is already a MainTeacher in this class at this year")
  */
 class MainTeacher
 {
