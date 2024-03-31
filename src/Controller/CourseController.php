@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Course;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
+use App\Repository\MainTeacherRepository;
+use App\Service\SchoolYearService;
 use App\Repository\ClassRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Course controller.
@@ -24,12 +27,18 @@ class CourseController extends AbstractController
     private $em;
     private $repo;
     private $clRepo;
+    private MainTeacherRepository $mainTeacherRepo;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, CourseRepository $repo, ClassRoomRepository $clRepo)
+
+    public function __construct( MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService, EntityManagerInterface $em, CourseRepository $repo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->clRepo = $clRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
     /**
      * Lists all Course entities.
@@ -152,5 +161,17 @@ class CourseController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_courses');
+    }
+
+    /**
+     *      Check if the classroom with this course already has a main teacher 
+     * @Route("/check_main_teacher", name="check_main_teacher", methods={"POST"})
+     */
+    public function checkMainTeacher(Request $request)
+    {
+        $courseId = $request->request->get('course_id');
+        $course = $this->repo->findOneBy(array("id"=> $courseId));
+        $mainTeacher = $this->mainTeacherRepo->findOneBy(array("classRoom"=> $course->getModule()->getRoom(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
+        return new JsonResponse(['checking' => $mainTeacher===null ]);
     }
 }

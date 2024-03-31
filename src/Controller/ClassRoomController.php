@@ -50,7 +50,7 @@ class ClassRoomController extends AbstractController
     private  $snappy;
     private $session;
     private SchoolYearService $schoolYearService;
-
+    private MainTeacherRepository $mainTeacherRepo;
 
     public function __construct(MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
@@ -1143,4 +1143,6 @@ class ClassRoomController extends AbstractController
             'mentionStatistics' => $mentionStatistics,
         ]);
     }
+
+ 
 }

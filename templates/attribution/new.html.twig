@@ -27,4 +27,35 @@
         </div>
 
     {% endblock %}
-    
+    {% block javascripts %}
+	{{parent()}}
+     <script type="text/javascript">
+            $('#attribution_course').on('change', function() {
+            postData = {
+				"course_id":  $(this).val()
+			};
+            $.ajax({
+			type: "POST",
+			url: "{{ path('check_main_teacher') }}",
+			data: postData,
+			datatype: "json",
+			success: function (data) {
+                if(data.checking){
+                        $('#attribution_headTeacher').next().html("Enseignant principal ? <b>(Pas encore de titulaire)</b>");
+
+                }else {
+                        $('#attribution_headTeacher').next().html("Enseignant principal ? <b>(Deja un  titulaire)</b>");
+
+                }
+			},
+			error: function (e) {
+				console.log(e.message);
+			}
+			});
+
+            });
+
+            
+           
+       </script>
+    {% endblock %}
