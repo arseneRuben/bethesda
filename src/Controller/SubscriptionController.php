@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\SchoolYearService;
 
 /**
  * Subscription controller.
@@ -30,14 +31,17 @@ class SubscriptionController extends AbstractController
     private $repo;
     private $scRepo;
     private SessionInterface $session;
+    private SchoolYearService $schoolYearService;
 
 
-    public function __construct(EntityManagerInterface $em, SubscriptionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -49,7 +53,7 @@ class SubscriptionController extends AbstractController
      */
     public function indexAction()
     {
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $subscriptions = $this->repo->findEnrollementThisYear($year);
         return $this->render('subscription/index.html.twig', compact("subscriptions"));
     }
