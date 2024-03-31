@@ -7,6 +7,7 @@ use App\Form\AttributionType;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AttributionRepository;
+use App\Repository\MainTeacherRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,15 +30,17 @@ class AttributionController extends AbstractController
     private $scRepo;
     private SessionInterface $session;
     private SchoolYearService $schoolYearService;
+    private MainTeacherRepository $mainTeacherRepo;
 
 
-    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
+    public function __construct(MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->session = $session;
         $this->schoolYearService = $schoolYearService;
+        $this->mainTeacherRepo = $mainTeacherRepo;
 
     }
     /**
@@ -129,11 +132,14 @@ class AttributionController extends AbstractController
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
             if($attribution->isHeadTeacher()){
-                $mainTeacher = new MainTeacher();
+                $mainTeacher=$this->mainTeacherRepo->findOneBy(array("classRoom"=> $attribution->getCourse()->getModule()->getRoom(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
+                if($mainTeacher===null){ // If there is not yet a full teacher
+                    $mainTeacher = new MainTeacher();
+                    $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
+                    $mainTeacher->setSchoolYear($year);
+                    $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
+                } 
                 $mainTeacher->setTeacher($attribution->getTeacher());
-                $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
-                $mainTeacher->setSchoolYear($year);
-                $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
                 $this->em->persist($mainTeacher);
             }
             $this->em->persist($attribution);
