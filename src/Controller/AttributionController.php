@@ -49,7 +49,7 @@ class AttributionController extends AbstractController
      */
     public function indexAction()
     {
-        $year = $this->schoolYearService->sessionYearByCode();
+        $year = $this->schoolYearService->sessionYearById();
         $entities = $this->repo->findAllThisYear($year);
         return $this->render('attribution/index.html.twig', array(
             'entities' => $entities,
@@ -125,8 +125,7 @@ class AttributionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
         
-            $attribution->setSchoolYear($this->schoolYearService->sessionYearByCode());
-           // dd( $year);
+            $attribution->setSchoolYear($this->schoolYearService->sessionYearById());
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
             $this->em->persist($attribution);

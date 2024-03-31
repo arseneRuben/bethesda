@@ -45,7 +45,7 @@ class AttributionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $excludedIdsQb = $this->repo->createQueryBuilder('a')->andWhere('a.schoolYear=:year')->setParameter('year', $this->schoolYearService->sessionYearByCode()->getId());
+        $excludedIdsQb = $this->repo->createQueryBuilder('a')->andWhere('a.schoolYear=:year')->setParameter('year', $this->schoolYearService->sessionYearById()->getId());
         $excludedIds = array();
         foreach($excludedIdsQb->getQuery()->getResult() as $result){
             $excludedIds[] =  $result->getCourse()->getId();

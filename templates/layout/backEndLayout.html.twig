@@ -416,13 +416,13 @@
                                 <div class="col-xl-2 col-md-4 col-6">
                                     <div class="wrapper count-title d-flex">
                                         
-
+                                        
                                         <div class="form-group">
                                             <select class="custom-select form-select form-control" id="select_year">
                                                     {% for year in years()|reverse %}
                                                          {% if app.session.has('session_school_year')  %}
                                                                    
-                                                                    <option selected= {{app.session.get('session_school_year')== year.id}}  value={{year.id}}>{{year.code}}</option>
+                                                                    <option  {% if app.session.get('session_school_year')== year.id %}selected{% endif %}   value={{year.id}}>{{year.code}}</option>
                                                          {% else %}
                                                                     <option  value={{year.id}}>{{year.code}}</option>
                                                         {% endif %}

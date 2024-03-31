@@ -37,19 +37,19 @@ class StatistiquesService
     {
         
         
-        $users = $this->userRepo->findAllOfCurrentYear($this->schoolYearService->sessionYearByCode());
+        $users = $this->userRepo->findAllOfCurrentYear($this->schoolYearService->sessionYearById());
         return count($users);
     }
 
     public function students()
     {
-        $students = $this->subRepo->findBy(array("schoolYear" => $this->schoolYearService->sessionYearByCode()));
+        $students = $this->subRepo->findBy(array("schoolYear" => $this->schoolYearService->sessionYearById()));
         return count($students);
     }
 
     public function rooms()
     {
-        $roomsEnabled = $this->roomRepo->countEnabledClassRoom($this->schoolYearService->sessionYearByCode());
+        $roomsEnabled = $this->roomRepo->countEnabledClassRoom($this->schoolYearService->sessionYearById());
         return count($roomsEnabled);
 
     }

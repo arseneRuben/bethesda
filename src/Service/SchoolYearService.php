@@ -21,7 +21,8 @@ class SchoolYearService
         return $this->scRepo->findAll(array('id' => 'ASC'));
     }
     public function sessionYearByCode()
-    {
+    {   
+       
         return ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->scRepo->findOneBy(array("code" => $this->session->get('session_school_year')))  : $this->scRepo->findOneBy(array("activated" => true));
     }
     public function sessionYearById()
