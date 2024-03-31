@@ -411,7 +411,10 @@
                                                 {{attributions[course.id].teacher.fullName}}
                                             </a>
                                             {% else %}
+                                            <a href="{{ path('admin_attributions_new') }}">
+
                                                 Pas encore attribue
+                                            </a>
                                             {% endif %}
 
                                         </td>

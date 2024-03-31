@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Service\SchoolYearService;
 
 
 /**
@@ -24,17 +25,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class QuaterController extends AbstractController
 {
-    private $em;
-    private $scRepo;
-    private $repo;
-    private $session;
+    private EntityManagerInterface $em;
+    private SchoolYearRepository $scRepo;
+    private QuaterRepository $repo;
+    private SessionInterface $session;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo, QuaterRepository $repo, SessionInterface $session)
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, SchoolYearRepository $scRepo, QuaterRepository $repo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
 
@@ -49,7 +53,7 @@ class QuaterController extends AbstractController
     public function indexAction()
     {
 
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $quaters = $this->repo->findQuaterThisYear($year);
 
         return $this->render('quater/index.html.twig', compact("quaters"));
