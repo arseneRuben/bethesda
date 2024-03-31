@@ -16,6 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\SchoolYearService;
 
 
 class AttributionType extends AbstractType
@@ -25,15 +26,17 @@ class AttributionType extends AbstractType
     private $repo;
     private $scRepo;
     private $session;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(  EntityManagerInterface $em,AttributionRepository $repo, SessionInterface $session, SchoolYearRepository $scRepo, CourseRepository $crsRepo)
+
+    public function __construct(SchoolYearService $schoolYearService,  EntityManagerInterface $em,AttributionRepository $repo, SessionInterface $session, SchoolYearRepository $scRepo, CourseRepository $crsRepo)
     {
         $this->em = $em;
         $this->repo    = $repo;
         $this->scRepo  = $scRepo;
         $this->crsRepo = $crsRepo;
         $this->session = $session;
-        $this->year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $this->schoolYearService = $schoolYearService;
     }
 
     /**
@@ -42,7 +45,7 @@ class AttributionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $excludedIdsQb = $this->repo->createQueryBuilder('a')->andWhere('a.schoolYear=:year')->setParameter('year', $this->year->getId());
+        $excludedIdsQb = $this->repo->createQueryBuilder('a')->andWhere('a.schoolYear=:year')->setParameter('year', $this->schoolYearService->sessionYearByCode()->getId());
         $excludedIds = array();
         foreach($excludedIdsQb->getQuery()->getResult() as $result){
             $excludedIds[] =  $result->getCourse()->getId();
