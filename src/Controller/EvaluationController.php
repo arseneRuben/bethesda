@@ -25,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\SchoolYearService;
 
 
 /**
@@ -35,17 +36,20 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class EvaluationController extends AbstractController
 {
     private $em;
-    private $repo;
+    private EvaluationRepository $repo;
     private $scRepo;
-    private $stdRepo;
+    private StudentRepository $stdRepo;
     private $clRepo;
-    private $crsRepo;
+    private CourseRepository $crsRepo;
     private $seqRepo;
-    private $attrRepo;
+    private AttributionRepository $attrRepo;
     private  $notes ; 
-    private $markRepo;
+    private MarkRepository $markRepo;
+    private SchoolYearService $schoolYearService;
+
 
     public function __construct(
+        SchoolYearService $schoolYearService,
         EntityManagerInterface $em,
         EvaluationRepository $repo,
         StudentRepository $stdRepo,
@@ -64,6 +68,7 @@ class EvaluationController extends AbstractController
         $this->clRepo = $clRepo;
         $this->crsRepo = $crsRepo;
         $this->seqRepo = $seqRepo;
+        $this->schoolYearService = $schoolYearService;
         $this->markRepo = $markRepo;
     }
 
@@ -80,7 +85,7 @@ class EvaluationController extends AbstractController
     {
         $search = new PropertySearch();
         $searchForm =  $this->createForm(PropertySearchType::class, $search);
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));

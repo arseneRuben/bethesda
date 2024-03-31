@@ -142,7 +142,7 @@ class SubscriptionController extends AbstractController
     public function situation(Student $std, ClassRoom $room)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $payments = $em->getRepository('AppBundle:Payment')->findAnnualPaymentsOfStudent($std, $year);
 
         $total = 0;
