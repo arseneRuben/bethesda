@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-
+use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use App\Entity\Attribution;
 use Doctrine\Persistence\ManagerRegistry;
@@ -50,5 +50,21 @@ class AttributionRepository extends ServiceEntityRepository
               
         return $qb->getQuery()->getResult();
     }
+
+    public function findByYearAndByRoom(SchoolYear $year, ClassRoom $room) {
+      
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.schoolYear', 'sc')
+            ->leftJoin('a.course', 'c')
+            ->leftJoin('c.module', 'm')
+            ->leftJoin('m.room', 'r')
+                ->where('sc.id=:year')
+                ->andWhere('r.id=:room')
+                ->setParameter('room', $room->getId())
+                ->setParameter('year', $year->getId());
+              
+        return $qb->getQuery()->getResult();
+    }
+
 
 }

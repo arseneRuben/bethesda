@@ -124,7 +124,6 @@ class AttributionController extends AbstractController
         }
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $year = $this->schoolYearService->sessionYearById();
@@ -146,7 +145,6 @@ class AttributionController extends AbstractController
             $this->em->flush();
             return $this->redirect($this->generateUrl('admin_attributions'));
         }
-
         return $this->render(
             'attribution/new.html.twig',
             ['form' => $form->createView()]

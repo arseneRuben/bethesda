@@ -64,13 +64,17 @@
                                                             
                             </th>
                             <td>
-                                {{ classroom.fullTeacher }}
+                                {% if mainteacher is null %}
+                                    
+                                    {% else %}
+                                      {{mainteacher.fullName}}
+                                {% endif %}
+                             
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                Apc
-                                                                                                                                                                                                                                                            
+                                Classe d'examen                                                                                                                                                                                                                                                             
                                                                                                                                                                                                                             
                                                                                                                                                                                             
                                                                                                                                                             
@@ -402,18 +406,10 @@
                                         </td>
                                         <td>
 
-                                            {% if course.attributed %}
-                                                {{ course.currentTeacher }}
+                                            {% if attributions[course.id] is defined %}
+                                                {{attributions[course.id]}}
                                             {% else %}
-                                                Pas encore attribuee
-                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                            
-                                                                                                                                                                                            
-                                                                                                                                            
-                                                                                            
+                                                Pas encore attribue
                                             {% endif %}
 
                                         </td>

@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Knp\Snappy\Pdf;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use App\Repository\AttributionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
@@ -52,12 +52,13 @@ class ClassRoomController extends AbstractController
     private SchoolYearService $schoolYearService;
     private MainTeacherRepository $mainTeacherRepo;
 
-    public function __construct(MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
+    public function __construct( AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
 
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->attRepo = $attRepo;
         $this->seqRepo = $seqRepo;
         $this->evalRepo = $evalRepo;
         $this->mainTeacherRepo = $mainTeacherRepo;
@@ -108,15 +109,19 @@ class ClassRoomController extends AbstractController
     public function showAction(ClassRoom $classroom, StudentRepository $stdRepo)
     {
         // Année scolaire et seuquence en cours
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         // Elèves inscrits
-        $attributions = null;
         $studentEnrolled = $stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $fileExists = [];
         foreach ($studentEnrolled as $std) {
             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
             $fileExists[] = file_exists($filename);
+        }
+          // Attributions de cours durant l'annee
+        $attributions = $this->attRepo->findByYearAndByRoom($year,$classroom);
+        foreach($attributions as $att){
+              $attributionsMapCourses[$att->getCourse()->getId()] = $att->getTeacher();
         }
         // Liste des resulats au examens officiels
         $officialExamResults = $this->subRepo->countByMention($year, $classroom);
@@ -193,16 +198,17 @@ class ClassRoomController extends AbstractController
 
 
 
-        foreach ($classroom->getModules() as $module) {
-            foreach ($module->getCourses() as $course) {
-                // dd($course->getAttributions());
-                if ($course->getAttributions()[$year->getId() - 1]) {
-                    $attributions[$course->getId()] = $course->getAttributions()[$year->getId() - 1]->getTeacher()->getFullName();
+        // Recherche de l'enseignant titulaire
+        $mainTeacher = null;
+        foreach($classroom->getMainTeachers() as $mainT){
+                if($mainT->getSchoolYear()->getId() == $year->getId()){
+                    $mainTeacher = $mainT->getTeacher();
                 }
-            }
         }
+    
+        $results['mainteacher'] = $mainTeacher;
         $results['classroom'] = $classroom;
-        $results['attributions'] = $attributions;
+        $results['attributions'] = $attributionsMapCourses;
         $results['modules'] = $classroom->getModules();
         $results['studentEnrolled'] = $studentEnrolled;
         $results['cours'] = json_encode($courses);
