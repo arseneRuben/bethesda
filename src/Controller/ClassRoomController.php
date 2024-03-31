@@ -645,6 +645,7 @@ class ClassRoomController extends AbstractController
         $form = $this->createForm(ClassRoomType::class, $room, [
             'method' => 'PUT'
         ]);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

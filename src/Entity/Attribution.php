@@ -42,9 +42,29 @@ class Attribution {
      * @ORM\JoinColumn(name="year_id", referencedColumnName="id", nullable=false)
      */
     private $schoolYear;
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="head_teacher", type="boolean", options={"default":false})
+     */
+    private $headTeacher = false;
 
     
+    public function setHeadTeacher($headTeacher)
+    {
+        $this->headTeacher = $headTeacher;
+        return $this;
+    }
 
+    /**
+     * Get enrolled
+     *
+     * @return boolean
+     */
+    public function getHeadTeacher()
+    {
+        return $this->headTeacher;
+    }
    
     public function setTeacher(User $teacher)
     {
@@ -94,5 +114,10 @@ class Attribution {
     public function getCourse()
     {
         return $this->course;
+    }
+
+    public function isHeadTeacher(): ?bool
+    {
+        return $this->headTeacher;
     }
 }
