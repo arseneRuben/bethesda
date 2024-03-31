@@ -114,7 +114,7 @@ class EvaluationController extends AbstractController
      */
     public function showAction(Evaluation $evaluation, SessionInterface $session)
     {
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         return $this->render('evaluation/show.html.twig', ['studentEnrolled' => $studentsEnrolledInClass, 'evaluation' => $evaluation]);
     }
@@ -127,7 +127,7 @@ class EvaluationController extends AbstractController
     public function new(Request $request, SessionInterface $session): Response
     {
         $evaluation = new Evaluation();
-        $year = $session->has('session_school_year') ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $form = $this->createForm(EvaluationType::class, $evaluation);
 
         return $this->render('evaluation/new.html.twig', array(
@@ -168,7 +168,7 @@ class EvaluationController extends AbstractController
             $idcourse = $request->request->get('idcourse');
             $idsequence = $request->request->get('idsequence');
             $competence = $request->request->get('competence');
-            $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+            $year = $this->schoolYearService->sessionYearById();
             $classRoom = $this->clRepo->findOneBy(array("id" => $room));
             $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
             $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
@@ -283,7 +283,7 @@ class EvaluationController extends AbstractController
         }
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $notes  = array();
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
 
         foreach ($studentsEnrolledInClass as $std) {
@@ -317,7 +317,7 @@ class EvaluationController extends AbstractController
      */
     public function editMark(Request $request, Evaluation $evaluation, String $matricule, SessionInterface $session)
     {
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $note = $_POST[$matricule."note"];
@@ -371,7 +371,7 @@ class EvaluationController extends AbstractController
      */
     public function updateAction(Evaluation $evaluation, Request $request, SessionInterface $session)
     {
-        $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
       
         if ($content = $request->getContent()) {
@@ -476,7 +476,7 @@ class EvaluationController extends AbstractController
         if ($_POST["idclassroom"]) {
             $idclassroom = $_POST["idclassroom"];
             if ($idclassroom != null) {
-                $year = ($session->has('session_school_year') && ($session->get('session_school_year')!= null)) ? $session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+                $year = $this->schoolYearService->sessionYearById();
                 $classRoom = $this->clRepo->findOneById($idclassroom);
                 $courses = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
