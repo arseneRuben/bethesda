@@ -242,6 +242,7 @@ class ClassRoomController extends AbstractController
     }
 
 
+
     /**
      * Finds and displays a ClassRoom entity.
      *
@@ -364,6 +365,29 @@ class ClassRoomController extends AbstractController
         );
     }
 
+    public function viewSeq(int $i){
+        $connection = $this->em->getConnection();
+        $statement = $connection->prepare(
+            " CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+            SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+            FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  class_room room    ON  eval.class_room_id     =   room.id
+            JOIN  course      crs    ON  eval.course_id      =   crs.id
+            JOIN  attribution att    ON  att.course_id      =   crs.id  
+            JOIN  user      teach    ON  att.teacher_id  =   teach.id
+            JOIN  module     modu    ON  modu.id       =   crs.module_id
+            JOIN  sequence    seq    ON  seq.id     =   eval.sequence_id
+            JOIN  quater     quat    ON  seq.quater_id     =   quat.id
+            JOIN  school_year   year ON  quat.school_year_id     =   year.id
+            WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
+            ORDER BY room.id,modu.id ,  std;    "
+        );
+        $statement->bindValue(1, $year->getId());
+        $statement->bindValue(2, $classroom->getId());
+        $statement->bindValue(3, $seq->getId());
+        $statement->execute();
+    }
     /**
      * Finds and displays a ClassRoom entity.
      *
@@ -378,13 +402,13 @@ class ClassRoomController extends AbstractController
         $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
         $sequences  = $this->seqRepo->findSequenceThisYear($year);
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
             /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
             /*******************************************************************************************************************/
             // CAS DES NOTES SEQUENTIELLES
+            $this->viewSeq($i);
             $statement = $connection->prepare(
                 "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
                 SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
@@ -401,11 +425,9 @@ class ClassRoomController extends AbstractController
                 WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
                 ORDER BY room.id,modu.id ,  std; "
             );
-
             $statement->bindValue(1, $year->getId());
             $statement->bindValue(2, $classroom->getId());
             $statement->bindValue(3, $seq->getId());
-
             $statement->execute();
             $i++;
         }
@@ -867,28 +889,31 @@ class ClassRoomController extends AbstractController
     /**
      * Finds and displays a ClassRoom entity.
      *
-     * @Route("/{id}/reportCards", name="admin_classrooms_reportcards", requirements={"id"="\d+"})
+     * @Route("/{id}/reportCardSeq", name="admin_classrooms_reportcards_seq", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function reportCardsAction(ClassRoom $classroom)
     {
         set_time_limit(600);
-        $connection = $this->em->getConnection();
         $totalNtCoef = 0;
         $totalCoef = 0;
         $em = $this->getDoctrine()->getManager();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year =$this->schoolYearService->sessionYearById();
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $evaluations = $this->evalRepo->findSequantialExamsOfRoom($classroom->getId(), $sequence->getId());
 
         foreach ($evaluations as $ev) {
             $totalNtCoef += $ev->getMoyenne() * $ev->getCourse()->getCoefficient();
             $totalCoef += $ev->getCourse()->getCoefficient();
         }
+       
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         $this->getViewSeqData($classroom, $sequence, 0);
+        $connection = $this->em->getConnection();
+
         $datas = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_SEQ0 marks  ")->fetchAll();
         $html = $this->renderView('classroom/reportcard.html.twig', array(
             'year' => $year,
@@ -902,7 +927,7 @@ class ClassRoomController extends AbstractController
         ));
 
         return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            $this->snappy->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type' => 'application/pdf',
@@ -914,7 +939,7 @@ class ClassRoomController extends AbstractController
     }
     public function getViewSeqData(ClassRoom $room,Sequence $seq, int $i){
         $connection = $this->em->getConnection();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
          // CAS DES NOTES SEQUENTIELLES
          $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS

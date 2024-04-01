@@ -31,12 +31,12 @@
                                                 <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
                                                     {% for tranche in 1..paymentPlan.weight %}
                                                         <td  class="text-center col-1" scope="row">  <input type="number" value={{ installments[room.id][tranche].amount }} class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
-                                                        <td  class="text-center col-1" scope="row">   <input type="date"  value="{{installments[room.id][tranche].deadline|date("Y-m-d") }}"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
+                                                        <td  class="text-center col-1" scope="row">   <input type="date"  value={{installments[room.id][tranche].deadline|date("Y-m-d") }}  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
                                                    
                                                     {% endfor %}
                                                     {%  if(room.apc) %} {# If the class passes the official exams? #}
-                                                        <td  class="text-center col-1" scope="row">  <input type="number" value="0" class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
-                                                        <td  class="text-center col-1" scope="row">   <input type="date"  class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
+                                                        <td  class="text-center col-1" scope="row">  <input type="number" value={{ installments[room.id][0].amount }} class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
+                                                        <td  class="text-center col-1" scope="row">   <input type="date"  value={{installments[room.id][0].deadline|date("Y-m-d") }} class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
                                                     {% else %}
                                                         <td  class="text-center col-2" colspan="2" scope="row"></td>
                                                     {% endif %}

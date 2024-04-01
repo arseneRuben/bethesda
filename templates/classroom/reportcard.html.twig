@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="{{ pathToWeb }}/assets/css/repportcard.css" rel="stylesheet" type="text/css" media="print" />
-        <link href="{{ pathToWeb }}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="print" />
-        {# <link  href="{{ asset('assets/css/repportcard.css')}}"        rel="stylesheet" type="text/css" media="print" /> 
-                 <link  href="{{ asset('assets/css/bootstrap.min.css')}}"        rel="stylesheet" type="text/css" media="print" /> #}
+        <link rel="icon" type="image/ico" href="{{ absolute_url(asset('favicon.jpg')) }}" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>
             Bulletins de la classe 
             {{ room.name }}
@@ -64,7 +62,7 @@
                                 </td>
                             </td>
                             <td style=" width: 30%; ">
-                                <img style="border-radius:5%;" src="{{ pathToWeb }}/img/favicon.jpg" {# src="{{ asset('img/favicon.jpg')}}"#} height="20%" />
+                                <img style="border-radius:5%;" src="{{ absolute_url(asset('favicon.jpg')) }}" height="20%" />
                                 <div style="font-size: 1em;">
                                     <b>
                                         <h6>
@@ -134,7 +132,6 @@
                     </table>
                     <hr style="margin-left:0px; width: 100%;">
                     <br/>
-                    <table cellspacing="0" style="line-height:8px; width: 100%; font-size: 1em;">
                         <table style=" width: 100%; text-align:center; font-size: 80%; ">
                             <tr>
                                 <td style=" width: 30%;">
@@ -589,10 +586,11 @@
                             </tr>
 
                         </table>
-                    </section>
+                </section>
                 </div>
-                <div></div>
-            {% endfor %}
+                <div>
+          </div>
+        {% endfor %}
         </body>
     </body>
 </html>

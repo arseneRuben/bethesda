@@ -17,6 +17,7 @@ use App\Repository\PaymentPlanRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\SchoolYearService;
 
 /**
  * ClassRoom controller.
@@ -29,16 +30,21 @@ class PaymentPlanController extends AbstractController
     private $clRepo;
     private $scRepo;
     private $repo;
+    private SchoolYearService $schoolYearService;
+
     public function __construct(
         EntityManagerInterface $em,
         PaymentPlanRepository $repo,
         SchoolYearRepository $scRepo,
         ClassRoomRepository $clRepo,
+        SchoolYearService $schoolYearService
     ) {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->clRepo = $clRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
     /**
      * @Route("/", name="admin_paymentPlans")
@@ -47,7 +53,7 @@ class PaymentPlanController extends AbstractController
     {
         // Utilisez le PaymentRepository pour récupérer tous les paiements
        
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         
         return $this->render('paymentPlan/index.html.twig', [
@@ -76,7 +82,6 @@ class PaymentPlanController extends AbstractController
                     $installment->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
                     $installment->setRank($order);
                     $installment->setAmount(intval($request->request->get($key)));
-                    
                     $this->em->persist($installment);
             } else if(strstr($key, 'deadline_class')) {
                     if($installment!=null)  {
@@ -109,6 +114,7 @@ class PaymentPlanController extends AbstractController
         $paymentPlan = $this->repo->findOneBy(array("id" => $request->attributes->get('id')));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         $installments = array(); 
+        //dd($paymentPlan->getInstallments()[83]);
         foreach ($paymentPlan->getInstallments() as $installment) {
             $installments[$installment->getClassRoom()->getId()][$installment->getRank()]=$installment;
         }
