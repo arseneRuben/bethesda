@@ -101,24 +101,27 @@
                         $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name="tranche_class_${i}_${roomId}" /></td>
                             <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name="deadline_class_${i}_${roomId}"/></td>
                                  `).insertAfter($(this));
-                      
                   });
-                  
             } 
-             $("input[name*='tranche_class']").change(function(e){
-                let sum = 0;
+         });
+         $(".sum").each(function(index, value) {
+                var prevSiblings = $(this).prevAll(), sum=0;
+                var inputNumberType = prevSiblings.find('input[type="number"]');
+                inputNumberType.each(function(index, value) {
+                    sum += parseInt($(this).val(), 10);
+                });
+                $(this).text(sum);
+            });
+         $("input[name*='tranche_class']").change(function(e){
+                var sum=0;
                 let tranches = $(e.target).closest("tr").find("input[name*='tranche_class']");
                 tranches.each(function(){
                     sum += parseInt($(this).val());
                 });
+                
                 $(this).closest("tr").find(".sum").text(sum);
                 const parts = $(this).attr( "name" ).split("_");
-                const tranche = parts[2];
-                const room = parts[3];
-              
-                if($("#checkbox_"+tranche).is(":checked")){
-                    $(`input[name*="tranche_class_${tranche}_"]`).val(e.target.value);
-                }
+               
             });
             $("input[name*='deadline_class']").change(function(e){
                 const parts = $(this).attr( "name" ).split("_");
@@ -128,19 +131,8 @@
                     $(`input[name*="deadline_class_${tranche}_"]`).val(e.target.value);
                 }
             });
-            
-         });
-    
 
-        $(".sum").each(function(index, value) {
-            var prevSiblings = $(this).prevAll(), sum=0;
-            var inputNumberType = prevSiblings.find('input[type="number"]');
-            inputNumberType.each(function(index, value) {
-                sum += parseInt($(this).val(), 10);
-            });
-            $(this).text(sum);
-               
-        });
+       
         
     </script>
 {% endblock javascripts %}
