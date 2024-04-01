@@ -17,17 +17,6 @@ class PaymentPlanType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-          
-            ->add('schoolYear', EntityType::class, [
-                'class' => SchoolYear::class,
-                'placeholder' => 'Choisir l\'année scolaire',
-                'required' => true,
-            ])
-          
-            ->add('submit', SubmitType::class, [
-                'label' => 'Enregistrer',
-            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

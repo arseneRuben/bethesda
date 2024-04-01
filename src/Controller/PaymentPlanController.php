@@ -105,26 +105,44 @@ class PaymentPlanController extends AbstractController
     /**
      * Displays a form to edit an existing Programme entity.
      *
-     * @Route("/{id}/edit", name="admin_paymentPlans_edit", requirements={"id"="\d+"}, methods={"GET"})
+     * @Route("/{id}/edit", name="admin_paymentPlans_edit", requirements={"id"="\d+"}, methods={"GET", "PUT"})
      * @Template()
      */
     public function edit(Request $request): Response
     {
-        
         $paymentPlan = $this->repo->findOneBy(array("id" => $request->attributes->get('id')));
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         $installments = array(); 
-        //dd($paymentPlan->getInstallments()[83]);
         foreach ($paymentPlan->getInstallments() as $installment) {
             $installments[$installment->getClassRoom()->getId()][$installment->getRank()]=$installment;
         }
-       
-       
         $form = $this->createForm(PaymentPlanType::class, $paymentPlan, [
             'method' => 'PUT'
         ]);
-
         $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($request->request->all() as $key => $value) {
+                if(strstr($key, 'tranche_class')){
+                        $segments = explode("_", $key);
+                        $nbSegments = count($segments);
+                        $roomId = $segments[$nbSegments - 1];
+                        $order = $segments[$nbSegments - 2];
+                        $installments[$roomId][$order]->setAmount(intval($request->request->get($key)));
+                        $this->em->persist($installment);
+                } else if(strstr($key, 'deadline_class')) {
+                        if($installment!=null)  {
+                            $installments[$roomId][$order]->setDeadline(new \DateTime($request->request->get($key)));
+                        } else {
+                            continue;
+                        }
+                 }
+                 $this->em->persist($installment);
+                 
+            }
+            $this->addFlash('success', 'Payment plan succesfully updated');
+            $this->em->flush();
+            return $this->redirect($this->generateUrl('admin_paymentPlans'));
+        }
         return $this->render('paymentPlan/edit.html.twig', [
             'paymentPlan' => $paymentPlan,
             'rooms' => $rooms,
