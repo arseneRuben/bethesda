@@ -130,11 +130,7 @@ class PaymentPlanController extends AbstractController
                         $installments[$roomId][$order]->setAmount(intval($request->request->get($key)));
                         $this->em->persist($installment);
                 } else if(strstr($key, 'deadline_class')) {
-                        if($installment!=null)  {
-                            $installments[$roomId][$order]->setDeadline(new \DateTime($request->request->get($key)));
-                        } else {
-                            continue;
-                        }
+                        $installments[$roomId][$order]->setDeadline(new \DateTime($request->request->get($key)));
                  }
                  $this->em->persist($installment);
                  
