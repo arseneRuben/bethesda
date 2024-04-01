@@ -1,16 +1,16 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 {% block content %}
-    <div class=" mt-4">
-
-        <div class="col-12 jumbotron">
-            <div class="m-1 box-shadow">
-                <div class="card-header d-inline-flex">
+        <div class="row  mt-4">
+            <div class="col-1">
                     <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
-                        <i class="fa fa-plus"></i>
-                        &emsp; 
-                                                 
+                        <i class="fa fa-plus"></i>                                                 
                     </a>
+             </div>
+            <div class="col-11 jumbotron">
+
+                <div class="card-header d-inline-flex">
+
                     <h4 class="my-0 font-weight-normal text-center   text-uppercase">
                         &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  Liste des salles de classe 
                     </h4>
@@ -91,9 +91,7 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
-    </div>
 {% endblock %}
 {% block footer %}
     {{ parent() }}
