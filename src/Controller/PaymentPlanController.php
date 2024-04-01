@@ -69,7 +69,7 @@ class PaymentPlanController extends AbstractController
     {
         // Créez une nouvelle instance de PaymentPlan
         $paymentPlan = new PaymentPlan();
-        $paymentPlan->setSchoolYear($this->scRepo->findOneBy(array('activated' => true)));
+        $paymentPlan->setSchoolYear($this->schoolYearService->sessionYearById());
         $installment=null;
         foreach ($request->request->all() as $key => $value) {
             if(strstr($key, 'tranche_class')){

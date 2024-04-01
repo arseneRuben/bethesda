@@ -76,7 +76,6 @@
 	{{parent()}}
     <script type="text/javascript">
         const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
-        const sumTd = $(".sum");
         var trancheClass = $("input[name*='tranche_class']"), deadlineClass = $("input[name*='deadline_class']");
         $('form').on('keypress keydown', function(event) {
             if (event.key === 'Enter') {
@@ -131,7 +130,17 @@
             });
             
          });
+    
 
+        $(".sum").each(function(index, value) {
+            var prevSiblings = $(this).prevAll(), sum=0;
+            var inputNumberType = prevSiblings.find('input[type="number"]');
+            inputNumberType.each(function(index, value) {
+                sum += parseInt($(this).val(), 10);
+            });
+            $(this).text(sum);
+               
+        });
         
     </script>
 {% endblock javascripts %}
