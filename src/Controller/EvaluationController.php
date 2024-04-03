@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Mark;
 use App\Entity\Evaluation;
-use App\Filter\PropertySearch;
+use App\Filter\EvaluationSearch;
 use App\Form\EvaluationType;
-use App\Form\PropertySearchType;
+use App\Form\Filter\EvaluationSearchType;
 use App\Repository\CourseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\AttributionRepository;
@@ -83,8 +83,8 @@ class EvaluationController extends AbstractController
      */
     public function indexAction(PaginatorInterface $paginator, Request $request, SessionInterface $session)
     {
-        $search = new PropertySearch();
-        $searchForm =  $this->createForm(PropertySearchType::class, $search);
+        $search = new EvaluationSearch();
+        $searchForm =  $this->createForm(EvaluationSearchType::class, $search);
         $year = $this->schoolYearService->sessionYearById();
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {

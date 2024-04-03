@@ -7,7 +7,7 @@ use App\Entity\Sequence;
 use App\Entity\Abscence;
 use App\Entity\AbscenceSheet;
 use App\Filter\AbscenceSearch;
-use App\Form\AbscenceSheetSearchType;
+use App\Form\Filter\AbscenceSheetSearchType;
 use App\Form\AbscenceSheetType;
 use App\Repository\AbscenceSheetRepository;
 use App\Repository\AbscenceRepository;

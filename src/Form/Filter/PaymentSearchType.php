@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,13 +8,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Repository\SequenceRepository;
-
-use App\Entity\Course;
 use App\Entity\Sequence;
 use App\Entity\ClassRoom;
-use App\Filter\PropertySearch;
+use App\Filter\PaymentSearch;
 
-class PropertySearchType extends AbstractType
+class PaymentSearchType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -23,15 +21,6 @@ class PropertySearchType extends AbstractType
     {
         $builder
 
-            ->add('course', EntityType::class, [
-                'class' => Course::class,
-                'required' => false,
-                'label' => false,
-                'placeholder' => 'Filtrer le cours',
-                'attr' => [
-                    'placeholder' => 'Matiere'
-                ]
-            ])
             ->add('sequence', EntityType::class, [
                 'class' => Sequence::class,
                 'required' => false,
@@ -56,7 +45,7 @@ class PropertySearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => PropertySearch::class,
+            'data_class' => PaymentSearch::class,
             'method' => 'get',
             'csrf_protection' => false
 
@@ -68,7 +57,7 @@ class PropertySearchType extends AbstractType
      */
     public function getName()
     {
-        return 'evaluation_filter';
+        return 'payment_filter';
     }
 
     public function getBlockPrefix()
