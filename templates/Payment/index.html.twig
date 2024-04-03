@@ -12,29 +12,37 @@
             <div class="col-11 jumbotron" >
             <div class="m-1 box-shadow">
                     <div class="card-header">
-                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des payements effectuees </h4>
+                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des payements effectues </h4>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>CreatedAt</th>
-                                <th>UpdatedAt</th>
-                                <th>Amount</th>
-                                <th>actions</th>
+                                <th style="width:15%;">CreatedAt</th>
+                                <th style="width:55%;">Eleve</th>
+
+                                <th style="width:15%;">Amount</th>
+                                <th style="width:15%;">actions</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for payment in payments %}
                             <tr>
-                                <td>{{ payment.id }}</td>
-                                <td>{{ payment.createdAt ? payment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                                <td>{{ payment.updatedAt ? payment.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                                <td>{{ payment.amount }}</td>
-                                <td>
-                                    <a href="{{ path('app_payment_show', {'id': payment.id}) }}">show</a>
-                                    <a href="{{ path('app_payment_edit', {'id': payment.id}) }}">edit</a>
-                                </td>
+                                <td style="width:15%;">{{ payment.createdAt ? payment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                                <td style="width:55%;">{{ payment.student }}</td>
+                                <td style="width:15%;">{{ payment.amount }}</td>
+                                  <td style="width:15%;" class="text-center">
+                                        <div class="btn-group">
+                                            
+                                               <a class="btn btn-outline-info" href="{{ path('app_payment_show', {id: payment.id}) }}">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i> 
+                                        </a>
+                                        <a class="btn btn-outline-warning" href="{{path('app_payment_edit', {id: payment.id})}}"> 
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </a>
+                                            
+                                        
+                                        </div>
+                                    </td>
                             </tr>
                         {% else %}
                             <tr>

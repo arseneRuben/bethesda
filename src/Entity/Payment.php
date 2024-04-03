@@ -19,6 +19,7 @@ class Payment
 
     use TimeStampable;
     use Amount;
+    public const NUM_ITEMS_PER_PAGE = 20;
 
     /**
      * @var int
@@ -46,6 +47,13 @@ class Payment
     private $student;
 
 
+    public function __construct()
+    {
+  
+        $this->createdAt= new \DateTime();
+        $this->updatedAt= new \DateTime();
+       
+    }
 
 
     /**

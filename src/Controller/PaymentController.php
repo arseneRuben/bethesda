@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\SchoolYearService;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 /**
  * Course controller.
@@ -34,10 +36,12 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/', name: 'app_payment_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(PaginatorInterface $paginator,Request $request): Response
     {
         $year = $this->schoolYearService->sessionYearById();
-        $payments = $this->repo->findOneBy(array( "schoolYear"=> $year));
+        $entities = $this->repo->findBy(array( "schoolYear"=> $year), array('updatedAt' => 'ASC'));
+        $payments = $paginator->paginate($entities, $request->query->get('page', 1), Payment::NUM_ITEMS_PER_PAGE);
+
         return $this->render('payment/index.html.twig', [
             'payments' => $payments,
         ]);
@@ -49,8 +53,9 @@ class PaymentController extends AbstractController
         $payment = new Payment();
         $form = $this->createForm(PaymentType::class, $payment);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            $payment->setSchoolYear($this->schoolYearService->sessionYearById());
             $entityManager->persist($payment);
             $entityManager->flush();
             return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);

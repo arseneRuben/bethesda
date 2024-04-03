@@ -8,6 +8,8 @@ use App\Entity\SchoolYear;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Service\SchoolYearService;
+
 
 /**
  * @method Student|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,10 +20,14 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 class StudentRepository extends ServiceEntityRepository
 {
     private $scRepo;
-    public function __construct(ManagerRegistry $registry, SchoolYearRepository $scRepo)
+    private SchoolYearService      $schoolYearService;
+
+    public function __construct(ManagerRegistry $registry, SchoolYearRepository $scRepo,  SchoolYearService $schoolYearService)
     {
         parent::__construct($registry, Student::class);
         $this->scRepo = $scRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     public function findStudentsByClass($classId)
@@ -161,8 +167,7 @@ class StudentRepository extends ServiceEntityRepository
 
     public function findEnrolledStudentsThisYear2()
     {
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-
+        $year = $this->schoolYearService->sessionYearById();
         $query = $this->getEntityManager()
             ->createQuery(
                 " SELECT st 

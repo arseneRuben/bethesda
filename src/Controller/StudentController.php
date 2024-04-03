@@ -12,7 +12,11 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use App\Repository\SchoolYearRepository;
 use App\Repository\SubscriptionRepository;
+use App\Repository\PaymentRepository;
 use App\Repository\QuaterRepository;
+use App\Repository\InstallmentRepository;
+use App\Repository\PaymentPlanRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\SchoolYearService;
 
 
 /**
@@ -29,27 +34,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class StudentController extends AbstractController
 {
-    private $em;
+    private EntityManagerInterface $em;
     private $repo;
     private $scRepo;
     private $seqRepo;
-    private $subRepo;
+    private SubscriptionRepository $subRepo;
     private $markRepo;
     private $evalRepo;
     private $qtRepo;
     private  $snappy;
+    private SchoolYearService      $schoolYearService;
+    private PaymentPlanRepository $ppRepo;
+    private InstallmentRepository $instRepo;
 
-    public function __construct(EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
+    public function __construct( InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
     {
-        $this->em = $em;
-        $this->repo = $repo;
-        $this->scRepo = $scRepo;
+        $this->em       = $em;
+        $this->repo     = $repo;
+        $this->scRepo   = $scRepo;
         $this->markRepo = $markRepo;
-        $this->seqRepo = $seqRepo;
+        $this->seqRepo  = $seqRepo;
         $this->evalRepo = $evalRepo;
-        $this->subRepo = $subRepo;
-        $this->qtRepo = $qtRepo;
-        $this->snappy = $snappy;
+        $this->subRepo  = $subRepo;
+        $this->qtRepo   = $qtRepo;
+        $this->snappy   = $snappy;
+        $this->ppRepo   = $ppRepo;
+        $this->instRepo = $instRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -77,7 +89,7 @@ class StudentController extends AbstractController
     public function showAction(Student $student)
     {
         // Année scolaire, seuquence, inscrption de l'eleve pour l'annee en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
         $results['student'] = $student;
@@ -91,6 +103,10 @@ class StudentController extends AbstractController
 
         $evals = [];
         $evalSeqs = [];
+        $payments = $this->repo->findBy(array( "schoolYear"=> $year, "student"=> $student), array('updatedAt' => 'ASC'));
+        $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
+        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()), array('updatedAt' => 'ASC'));
+        dd($installments);
         $seqs = $this->seqRepo->findSequenceThisYear($year);
         if ($sub != null) {
             //  dd($seqs);
