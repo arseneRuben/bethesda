@@ -80,7 +80,7 @@ class PaymentPlanController extends AbstractController
                     $order = $segments[$nbSegments - 2];
                     $installment->setPaymentPlan($paymentPlan);
                     $installment->setClassRoom($this->clRepo->findOneBy(array('id' => $roomId)));
-                    $installment->setRank($order);
+                    $installment->setRanking($order);
                     $installment->setAmount(intval($request->request->get($key)));
                     $this->em->persist($installment);
             } else if(strstr($key, 'deadline_class')) {
@@ -114,7 +114,7 @@ class PaymentPlanController extends AbstractController
         $rooms = $this->clRepo->findAll(array('id' => 'ASC'));
         $installments = array(); 
         foreach ($paymentPlan->getInstallments() as $installment) {
-            $installments[$installment->getClassRoom()->getId()][$installment->getRank()]=$installment;
+            $installments[$installment->getClassRoom()->getId()][$installment->getRanking()]=$installment;
         }
         $form = $this->createForm(PaymentPlanType::class, $paymentPlan, [
             'method' => 'PUT'
@@ -145,5 +145,21 @@ class PaymentPlanController extends AbstractController
             'installments' => $installments,
             'form' => $form->createView()
         ]);
+    }
+
+    
+    #[Route('/{id}', name: 'admin_paymentPlans_delete', methods: ['POST'])]
+    public function delete(Request $request, PaymentPlan $pp, EntityManagerInterface $entityManager): Response
+    {
+        dd($pp);
+        if ($this->isCsrfTokenValid('delete'.$pp->getId(), $request->request->get('_token'))) {
+            foreach($pp->getInstallments() as $p){
+                $entityManager->remove($p);
+            }
+            $entityManager->remove($payment);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
     }
 }
