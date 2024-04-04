@@ -1,4 +1,5 @@
 {% extends 'layout/backEndLayout.html.twig' %}
+{% form_theme searchForm 'bootstrap_4_layout.html.twig' %}
 
 
 {% block content %}
@@ -9,8 +10,36 @@
                     <i class="fa fa-plus"></i> 
                 </a>
             </div>
-            <div class="col-11 jumbotron" >
-            <div class="m-1 box-shadow">
+            <div class="col-11 jumbotron " >
+            <div class="row mb-4">
+                <div class="col-12 jumbotron" >
+                    {{form_start(searchForm)}}
+                    <div class="form-row row">
+                        <div class="col-md-2">
+                            {{form_row(searchForm.room)}}
+                        </div>
+                        <div class="col-md-2">
+                            {{form_row(searchForm.quater)}}
+                        </div>
+                         <div class="col-md-2">
+                            {{form_row(searchForm.startDate)}}
+                        </div>
+                         <div class="col-md-2">
+                            {{form_row(searchForm.endDate)}}
+                        </div>
+                        <div class="col-md-2">
+                            {{form_row(searchForm.student)}}
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" type="submit">
+                                        <b>Rechercher</b>
+                            </button>
+                        </div>
+                    </div>
+                    {{form_end(searchForm)}}
+                </div>
+            </div>
+            <div class=" row m-1 box-shadow">
                     <div class="card-header">
                          <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des payements effectues </h4>
                     </div>

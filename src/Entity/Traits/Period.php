@@ -16,12 +16,12 @@ trait Period  {
 
 
       /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $startDate;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $endDate;
 
@@ -61,7 +61,7 @@ trait Period  {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): self
+    public function setStartDate(\DateTimeInterface $startDate=null): self
     {
         $this->startDate = $startDate;
 
@@ -73,7 +73,7 @@ trait Period  {
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $endDate): self
+    public function setEndDate(\DateTimeInterface $endDate=null): self
     {
         $this->endDate = $endDate;
 

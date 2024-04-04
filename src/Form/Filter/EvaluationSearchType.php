@@ -11,11 +11,11 @@ use App\Repository\SequenceRepository;
 use App\Entity\Course;
 use App\Entity\Sequence;
 use App\Entity\ClassRoom;
-use App\Filter\PropertySearch;
+use App\Filter\EvaluationSearch;
 use App\Service\SchoolYearService;
 
 
-class PropertySearchType extends AbstractType
+class EvaluationSearchType extends AbstractType
 {
     private SchoolYearService $schoolYearService;
 
@@ -23,7 +23,7 @@ class PropertySearchType extends AbstractType
     {
         $this->schoolYearService = $schoolYearService;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -47,7 +47,7 @@ class PropertySearchType extends AbstractType
 
                 'placeholder' => 'Filtrer Selon la sequence',
                 'query_builder' => function (SequenceRepository $repository) {
-                    return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc')->where('sc.activated = :rep')->setParameter('rep', true)->add('orderBy', 's.id');
+                    return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc')->where('sc.id = :id')->setParameter('id', $this->schoolYearService->sessionYearById()->getId())->add('orderBy', 's.id');
                 }
             ])
             ->add('room', EntityType::class, [
@@ -64,7 +64,7 @@ class PropertySearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => PropertySearch::class,
+            'data_class' => EvaluationSearch::class,
             'method' => 'get',
             'csrf_protection' => false
 

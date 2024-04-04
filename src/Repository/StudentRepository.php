@@ -5,10 +5,11 @@ namespace App\Repository;
 use App\Entity\Student;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
+use App\Service\SchoolYearService;
+
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use App\Service\SchoolYearService;
 
 
 /**
@@ -172,7 +173,7 @@ class StudentRepository extends ServiceEntityRepository
             ->createQuery(
                 " SELECT st 
                                FROM   App\Entity\Student  st
-                               WHERE st.matricule not in 
+                               WHERE st.matricule  in 
                                (SELECT std.matricule
                                 FROM App\Entity\Student  std, App\Entity\Subscription sub, App\Entity\SchoolYear yr 
                               WHERE  sub.student  =  std.id AND sub.schoolYear   =  yr.id AND sub.schoolYear = :year)   

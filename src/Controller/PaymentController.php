@@ -6,6 +6,8 @@ use App\Entity\Payment;
 use App\Form\PaymentType;
 use App\Repository\PaymentRepository;
 use App\Repository\ClassRoomRepository;
+use App\Repository\QuaterRepository;
+use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\SchoolYearService;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Filter\PaymentSearch;
+use App\Form\Filter\PaymentSearchType;
 
 
 /**
@@ -26,24 +30,54 @@ class PaymentController extends AbstractController
     private EntityManagerInterface $em;
     private PaymentRepository      $repo;
     private ClassRoomRepository    $clRepo;
+    private QuaterRepository    $qtRepo;
+    private StudentRepository    $stdRepo;
 
-    public function __construct(PaymentRepository $repo, SchoolYearService $schoolYearService, EntityManagerInterface $em,  ClassRoomRepository $clRepo)
+
+
+    public function __construct(StudentRepository    $stdRepo,QuaterRepository $qtRepo, PaymentRepository $repo, SchoolYearService $schoolYearService, EntityManagerInterface $em,  ClassRoomRepository $clRepo)
     {
         $this->em                = $em;
         $this->repo              = $repo;
+        $this->qtRepo              = $qtRepo;
         $this->clRepo            = $clRepo;
+        $this->stdRepo            = $stdRepo;
         $this->schoolYearService = $schoolYearService;
     }
 
     #[Route('/', name: 'app_payment_index', methods: ['GET'])]
     public function index(PaginatorInterface $paginator,Request $request): Response
     {
+        $search = new PaymentSearch();
+        $searchForm =  $this->createForm(PaymentSearchType::class, $search);
+        $searchForm->handleRequest($request);
         $year = $this->schoolYearService->sessionYearById();
-        $entities = $this->repo->findBy(array( "schoolYear"=> $year), array('updatedAt' => 'ASC'));
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $room =  intval($_GET['room']);
+            $quater = intval( $_GET['quater']);
+            $student =  intval($_GET['student']);
+            $startDate = \DateTime::createFromFormat('Y-m-d', $_GET['startDate']); 
+            $endDate = \DateTime::createFromFormat('Y-m-d', $_GET['endDate']); 
+
+         
+           if($startDate && $endDate){
+             $entities = $this->repo->findPayments($year, $room, $quater, $student,$startDate,$endDate  );
+           } else {
+              $entities = $this->repo->findPayments($year, $room, $quater, $student );
+           }
+
+
+        } else {
+           
+            $entities = $this->repo->findBy(array( "schoolYear"=> $year), array('updatedAt' => 'ASC'));
+        }
+
         $payments = $paginator->paginate($entities, $request->query->get('page', 1), Payment::NUM_ITEMS_PER_PAGE);
 
         return $this->render('payment/index.html.twig', [
             'payments' => $payments,
+            'searchForm' => $searchForm->createView()
         ]);
     }
 
