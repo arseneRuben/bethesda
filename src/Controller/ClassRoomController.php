@@ -678,15 +678,14 @@ class ClassRoomController extends AbstractController
     /**
      * Displays a form to edit an existing ClassRoomme entity.
      *
-     * @Route("/{id}/edt", name="admin_classrooms_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
+     * @Route("/{id}/edit", name="admin_classrooms_edit", requirements={"id"="\d+"}, methods={"GET","PUT"})
      * @Template()
      */
     public function edit(Request $request, ClassRoom $room): Response
     {
         $form = $this->createForm(ClassRoomType::class, $room, [
-            'method' => 'PUT',
-            'edit'  => true
-        ]);
+            'method' => 'PUT'
+                ]);
         
         $form->handleRequest($request);
 
