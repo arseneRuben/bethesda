@@ -730,27 +730,14 @@ class ClassRoomController extends AbstractController
      */
     public function fichesiplmeAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
     {
-        $em = $this->getDoctrine()->getManager();
-
         // Année scolaire en cours
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-
-        //  dd($this->getParameter('kernel.project_dir'));
-
-        $html = $this->renderView('classroom/fichesimple.html.twig', array(
+        $html = $this->renderView('classroom/fiche_repport_notes.html.twig', array(
             'year' => $year,
             'room' => $classroom,
             'students' => $studentEnrolled,
         ));
-        /* return new Response(
-          $this->get('knp_snappy.pdf')->getOutputFromHtml($html), 200, array(
-          'orientation' => 'Landscape',
-          'default-header' => true,
-          'Content-Type' => 'application/pdf',
-          'Content-Disposition' => 'attachment; filename="'.$classroom->getName().'.pdf"',
-          )
-      );*/
         return new Response(
             $snappy->getOutputFromHtml($html, array(
                 'default-header' => false
@@ -775,15 +762,13 @@ class ClassRoomController extends AbstractController
     public function presentationAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
     {
         // Année scolaire en cours
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-
-        $html = $this->renderView('classroom/list.html.twig', array(
+        $html = $this->renderView('classroom/student_list.html.twig', array(
             'year' => $year,
             'room' => $classroom,
             'students' => $studentEnrolled,
         ));
-
         return new Response(
             $snappy->getOutputFromHtml($html, array(
                 'default-header' => false
@@ -794,8 +779,6 @@ class ClassRoomController extends AbstractController
                 'Content-Disposition' => 'attachment; filename="std_list_' . $classroom->getName() . '.pdf"',
             )
         );
-
-        //return new Response($html);
     }
 
     /**
