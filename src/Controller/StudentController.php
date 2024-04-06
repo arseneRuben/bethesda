@@ -46,8 +46,10 @@ class StudentController extends AbstractController
     private SchoolYearService      $schoolYearService;
     private PaymentPlanRepository $ppRepo;
     private InstallmentRepository $instRepo;
+    private PaymentRepository $pRepo;
 
-    public function __construct( InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
+
+    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
     {
         $this->em       = $em;
         $this->repo     = $repo;
@@ -59,6 +61,7 @@ class StudentController extends AbstractController
         $this->qtRepo   = $qtRepo;
         $this->snappy   = $snappy;
         $this->ppRepo   = $ppRepo;
+        $this->pRepo   = $pRepo;
         $this->instRepo = $instRepo;
         $this->schoolYearService = $schoolYearService;
 
@@ -103,10 +106,9 @@ class StudentController extends AbstractController
 
         $evals = [];
         $evalSeqs = [];
-        $payments = $this->repo->findBy(array( "schoolYear"=> $year, "student"=> $student), array('updatedAt' => 'ASC'));
+        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $student), array('updatedAt' => 'ASC'));
         $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
-        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()), array('updatedAt' => 'ASC'));
-        dd($installments);
+        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
         $seqs = $this->seqRepo->findSequenceThisYear($year);
         if ($sub != null) {
             //  dd($seqs);
@@ -136,7 +138,11 @@ class StudentController extends AbstractController
 
             $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
             $file_exists = file_exists($filename);
+            $results['payments'] = $payments;
+            $results['payment_plan'] = $paymentPlan;
+            $results['installments'] = $installments;
             $results['file_exists'] = $file_exists;
+
             $results['cours'] = json_encode($courses);
 
             foreach ($seqs as $seq) {

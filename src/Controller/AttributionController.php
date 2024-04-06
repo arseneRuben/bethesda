@@ -92,23 +92,7 @@ class AttributionController extends AbstractController
         ));
     }
 
-    /**
-     * Displays a form to create a new Attribution entity.
-     *
-     * @Route("/undo", name="admin_attributions_undo")
-     * @Method("GET")
-     * @Template()
-     */
-    public function undoAction()
-    {
-        $entities = $this->repo->findAllThisYear( $this->schoolYearService->sessionYearByCode());
-        foreach ($entities as $attribution) {
-            $attribution->getCourse()->setAttributed(FALSE);
-            $this->em->remove($attribution);
-        }
-        $this->em->flush();
-        return $this->redirect($this->generateUrl('admin_attributions'));
-    }
+   
 
     /**
      * Creates a new Section entity.
@@ -130,17 +114,7 @@ class AttributionController extends AbstractController
             $attribution->setSchoolYear($year);
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
-            if($attribution->isHeadTeacher()){
-                $mainTeacher=$this->mainTeacherRepo->findOneBy(array("classRoom"=> $attribution->getCourse()->getModule()->getRoom(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
-                if($mainTeacher===null){ // If there is not yet a full teacher
-                    $mainTeacher = new MainTeacher();
-                    $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
-                    $mainTeacher->setSchoolYear($year);
-                    $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
-                } 
-                $mainTeacher->setTeacher($attribution->getTeacher());
-                $this->em->persist($mainTeacher);
-            }
+            $this->setMainTeacher($attribution);
             $this->em->persist($attribution);
             $this->em->flush();
             return $this->redirect($this->generateUrl('admin_attributions'));
@@ -152,7 +126,20 @@ class AttributionController extends AbstractController
     }
 
 
-
+    public function setMainTeacher(Attribution $attribution){
+        $year = $this->schoolYearService->sessionYearById();
+        if($attribution->isHeadTeacher()){
+            $mainTeacher=$this->mainTeacherRepo->findOneBy(array("classRoom"=> $attribution->getCourse()->getModule()->getRoom(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
+            if($mainTeacher===null){ // If there is not yet a full teacher
+                $mainTeacher = new MainTeacher();
+                $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
+                $mainTeacher->setSchoolYear($year);
+                $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
+            } 
+            $mainTeacher->setTeacher($attribution->getTeacher());
+            $this->em->persist($mainTeacher);
+        }
+    }
 
     /**
      * Displays a form to edit an existing Programme entity.
@@ -171,26 +158,22 @@ class AttributionController extends AbstractController
         ]);
         $old_attribution =  $attribution;
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             if ($old_attribution->getTeacher()->getId() !== $attribution->getTeacher()->getId()) {
                 $old_attribution->getTeacher()->removeAttribution($old_attribution);
                 $attribution->getTeacher()->addAttribution($attribution);
                 $this->em->persist($attribution->getTeacher());
             }
+            $this->setMainTeacher($attribution);
+
             if ($old_attribution->getCourse()->getId() !== $attribution->getCourse()->getId()) {
                 $old_attribution->getCourse()->setAttributed(false);
                 $attribution->getCourse()->setAttributed(true);
                 $this->em->persist($attribution->getCourse());
             }
-
-
             $this->em->persist($attribution);
-
-
             $this->em->flush();
             $this->addFlash('success', 'Attribution succesfully updated');
-
             return $this->redirectToRoute('admin_attributions');
         }
         return $this->render('attribution/edit.html.twig', [

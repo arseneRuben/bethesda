@@ -8,6 +8,12 @@
         
     {{ parent() }}
 {% endblock %}
+{% set totalP =0 %}
+{% if(payments) %}
+    {% for p in payments %}
+        {% set totalP = totalP + p.amount %}
+    {% endfor %}                    
+{% endif %}
 {% block content %}
     <div class="row mt-3">
         <div class="col-2">
@@ -277,7 +283,7 @@
                     </div>
                 </div>
                 <div class="row jumbotron">
-                    <div class="col">
+                    <div class="col-6">
                         <br/>
                         <br/>
                         <div class="text-center">
@@ -312,13 +318,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if(student.payments) %}
+                                {% if(payments) %}
                                     {% set total =0 %}
-                                    {% for p in student.payments %}
+                                    {% for p in payments %}
                                         <tr>
                                             <td>
-                                                {% if p.instant %}
-                                                    {{ p.instant|date('Y-m-d') }}
+                                                {% if p.updatedAt %}
+                                                    {{ p.updatedAt|date('Y-m-d') }}
                                                 {% endif %}
                                             </td>
                                             <td>
@@ -336,6 +342,95 @@
                                                                                                                                             
                                                                                             
                                             </b>
+                                        </td>
+                                        <td>
+                                            {{ total }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                      <div class="col-6">
+                        <br/>
+                        <br/>
+                        <div class="text-center">
+                            <h2>
+                                Scolarité-Versements éffectués pour l'élève
+                                                                                                                                                                				
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </h2>
+                        </div>
+                        <table class="table table-striped table-hover table-bordered records_list center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Rang
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Delaie
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Montant prevu
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Montant verse
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                            
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if(installments) %}
+                                    {% set total =0 %}
+                                    {% for p in installments %}
+                                        {% set total = total + p.amount %}
+
+                                        <tr>
+                                            <td>
+                                                    {{ p.ranking }}
+                                            </td>
+                                            <td>
+                                                        {{ p.deadline|date('Y-m-d') }}
+                                            </td>
+                                            <td>
+                                                    {{ p.amount }}
+                                            </td>
+                                             <td>
+                                                    {% if( totalP >= total )%} 
+                                                        {{ p.amount }}
+                                                        {% set totalP = totalP - p.amount %}
+                                                    {% else %}
+                                                         {{totalP}}
+                                                    {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td class="center">
+                                            <b>
+                                                Total                                                                                                                                                                                                    
+                                         </b>
                                         </td>
                                         <td>
                                             {{ total }}

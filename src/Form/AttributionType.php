@@ -50,12 +50,14 @@ class AttributionType extends AbstractType
         foreach($excludedIdsQb->getQuery()->getResult() as $result){
             $excludedIds[] =  $result->getCourse()->getId();
         }
+
         $builder
             ->add('course',  EntityType::class, array(
-                'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function () use ($excludedIds) {
+                'class' => Course::class,   'placeholder' => 'Choisir la matière', 'query_builder' => function () use ($excludedIds, $options) {
                     $qb = $this->crsRepo->createQueryBuilder('c');
+                    
                     if (!empty($excludedIds)) {
-                        if($options['method']=!'PUT'){
+                        if(strcmp($options['method'],"POST")===0){
                             $qb->andWhere($qb->expr()->notIn('c.id', ':excludedIds'))
                             ->setParameter('excludedIds', $excludedIds);
                         }

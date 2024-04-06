@@ -28,9 +28,10 @@
                                         <div class="col-lg-4 col-md-6 col-12">
                                                     <div class="course-item">
                                                             <div class="image-blog">
-                                                                {% if  room.fullTeacher %}
-                                                                <img
-                                                                    src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
+                                                                    {% if room.id in mainTeachersMap %}
+                                                                 <img
+                                                                    src="{{  mainTeachersMap[room.id].avatar(75) }}" alt="" class="img-fluid"/>
+                                                               
                                                                 {% else %}
                                                                 <img src="{{ asset('assets/images/teacher_default.png') }}" alt="" class="img-fluid">
                                                                 {% endif %}
