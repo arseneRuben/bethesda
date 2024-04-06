@@ -28,7 +28,7 @@
                                         <div class="col-lg-4 col-md-6 col-12">
                                                     <div class="course-item">
                                                             <div class="image-blog">
-                                                                    {% if room.id in mainTeachersMap %}
+                                                                    {% if room.id in mainTeachersMap|keys %}
                                                                  <img
                                                                     src="{{  mainTeachersMap[room.id].avatar(75) }}" alt="" class="img-fluid"/>
                                                                
