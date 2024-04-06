@@ -552,7 +552,7 @@ class ClassRoomController extends AbstractController
      * @Template()
      * @return Response
      */
-    public function recapitulatifAction(ClassRoom $room, Sequence $seq, \Knp\Snappy\Pdf $snappy)
+    public function recapitulatifAction(ClassRoom $room, Sequence $seq, Pdf $snappy)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -564,16 +564,12 @@ class ClassRoomController extends AbstractController
             'year' => $year,
         ));
 
-
         return new Response(
-            $snappy->getOutputFromHtml($html, array(
-                'default-header' => false,
-                'orientation' => 'landscape'
-            )),
+            $snappy->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $room->getName() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="fiche_recep_' . $room->getName() . '.pdf"'
             )
         );
     }
@@ -725,7 +721,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function fichesiplmeAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
+    public function fichesiplmeAction(ClassRoom $classroom,  Pdf $pdf)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -736,13 +732,11 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $snappy->getOutputFromHtml($html, array(
-                'default-header' => false
-            )),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="fich_pv_' . $classroom->getName() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="fiche_pv_' . $classroom->getName() . '.pdf"'
             )
         );
     }
@@ -754,7 +748,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function ficheDisciplineAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
+    public function ficheDisciplineAction(ClassRoom $classroom, Pdf $pdf)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -765,13 +759,11 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $snappy->getOutputFromHtml($html, array(
-                'default-header' => false
-            )),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="fich_disc_' . $classroom->getName() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="fich_disc_' . $classroom->getName() . '.pdf"'
             )
         );
     }
@@ -783,7 +775,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function presentationAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
+    public function presentationAction(ClassRoom $classroom, Pdf $pdf)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -794,13 +786,11 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $snappy->getOutputFromHtml($html, array(
-                'default-header' => false
-            )),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="std_list_' . $classroom->getName() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="std_list_' . $classroom->getName() . '.pdf"'
             )
         );
     }
@@ -865,8 +855,6 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
             'year' => $year,
         ));
-
-
         return new Response(
             $snappy->getOutputFromHtml($html, array(
                 'default-header' => false
@@ -983,7 +971,7 @@ class ClassRoomController extends AbstractController
     {
        // set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
