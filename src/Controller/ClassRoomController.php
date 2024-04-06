@@ -255,7 +255,7 @@ class ClassRoomController extends AbstractController
 
         set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
 
         $statement = $connection->prepare(
@@ -399,7 +399,7 @@ class ClassRoomController extends AbstractController
     {
         set_time_limit(600);
         $connection = $this->em->getConnection();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sequences  = $this->seqRepo->findSequenceThisYear($year);
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $i = 1;
@@ -555,7 +555,7 @@ class ClassRoomController extends AbstractController
     public function recapitulatifAction(ClassRoom $room, Sequence $seq, \Knp\Snappy\Pdf $snappy)
     {
         // Année scolaire en cours
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $html = $this->renderView('classroom/recapitulatifseqvierge.html.twig', array(
             'room' => $room,
@@ -590,13 +590,10 @@ class ClassRoomController extends AbstractController
     {
         // set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-
-
         $datas = $this->markRepo->findMarksBySequenceAndClassOrderByStd($seq, $room);
-
         $html = $this->renderView('classroom/recapitulatifseq.html.twig', array(
             'room' => $room,
             'datas' => $datas,
@@ -733,7 +730,7 @@ class ClassRoomController extends AbstractController
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-        $html = $this->renderView('classroom/fiche_repport_notes.html.twig', array(
+        $html = $this->renderView('classroom/templating/fiche_repport_notes.html.twig', array(
             'year' => $year,
             'room' => $classroom,
             'students' => $studentEnrolled,
@@ -748,8 +745,35 @@ class ClassRoomController extends AbstractController
                 'Content-Disposition' => 'attachment; filename="fich_pv_' . $classroom->getName() . '.pdf"',
             )
         );
+    }
 
-        //   return new Response($html);
+     /**
+     * Finds and displays a ClassRoom entity.
+     *
+     * @Route("/{id}/disciplinary_record", name="admin_classrooms_disciplinary_record", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function ficheDisciplineAction(ClassRoom $classroom, \Knp\Snappy\Pdf $snappy)
+    {
+        // Année scolaire en cours
+        $year = $this->schoolYearService->sessionYearById();
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+        $html = $this->renderView('classroom/templating/fiche_repport_disc.html.twig', array(
+            'year' => $year,
+            'room' => $classroom,
+            'students' => $studentEnrolled,
+        ));
+        return new Response(
+            $snappy->getOutputFromHtml($html, array(
+                'default-header' => false
+            )),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="fich_disc_' . $classroom->getName() . '.pdf"',
+            )
+        );
     }
 
     /**
@@ -764,7 +788,7 @@ class ClassRoomController extends AbstractController
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-        $html = $this->renderView('classroom/student_list.html.twig', array(
+        $html = $this->renderView('classroom/templating/student_list.html.twig', array(
             'year' => $year,
             'room' => $classroom,
             'students' => $studentEnrolled,
@@ -834,9 +858,9 @@ class ClassRoomController extends AbstractController
      */
     public function annualSummaryAction(ClassRoom $room, \Knp\Snappy\Pdf $snappy)
     {
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-        $html = $this->renderView('classroom/blankAnnualForm.html.twig', array(
+        $html = $this->renderView('classroom/templating/blankAnnualForm.html.twig', array(
             'room' => $room,
             'students' => $studentEnrolled,
             'year' => $year,
@@ -853,18 +877,6 @@ class ClassRoomController extends AbstractController
                 'Content-Disposition' => 'attachment; filename="recap_empty_' . $room->getName() . '.pdf"',
             )
         );
-
-        /* return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            array(
-            'Content-Type' => 'application/pdf',
-            'orientation'=>'Landscape',
-                                         'default-header'=>true,
-            'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $room->getName() . '.pdf"',
-                )
-            );*/
-        // return new Response($html);
 
     }
 

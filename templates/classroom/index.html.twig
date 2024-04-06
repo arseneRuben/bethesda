@@ -18,9 +18,7 @@
                 <table width="120%" class="table table-striped table-sm">
                     <thead>
                         <tr>
-                            <th style="width:2%;" class="text-center" scope="col">
-                                #
-                            </th>
+                           
                             <th style="width:18%;" class="text-center" scope="col">
                                 Nom
                             </th>
@@ -37,9 +35,7 @@
                     <tbody>
                         {% for room in classrooms %}
                             <tr>
-                                <td style="width:15%;" class="text-center" scope="row">
-                                    {{ loop.index }}
-                                </th>
+                               
                                 <td>
                                     <a href="{{ path('admin_classrooms_show', {id: room.id }) }}">
                                         {{ room.name }}
@@ -66,21 +62,23 @@
                                             </i>
                                         </a>
                                         <a class="btn btn-outline-info " target="_blank" href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
-
                                             <i class="fa fa-users" aria-hidden="true">
                                                 &nbsp; 
                                             </i>
-
                                         </a>
                                         <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">
                                             <i class="fa fa-file" aria-hidden="true">
                                                 &nbsp;Fiche recap. vierge
                                             </i>
                                         </a>
-
                                         <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
                                             <i class="fa fa-th-list" aria-hidden="true">
                                                 &nbsp;Fiche annu.
+                                            </i>
+                                        </a>
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_disciplinary_record', {id: room.id}) }}">
+                                            <i class="fa fa-th-list" aria-hidden="true">
+                                                &nbsp;Fiche discipl.
                                             </i>
                                         </a>
 
