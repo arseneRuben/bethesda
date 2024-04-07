@@ -304,7 +304,7 @@ class StudentController extends AbstractController
     public function reporCardYear(Student $std)
     {
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sequences = $this->seqRepo->findSequenceThisYear($year);
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         
