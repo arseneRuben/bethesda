@@ -928,7 +928,7 @@ class ClassRoomController extends AbstractController
          foreach ($absences as $abs) {
              $absencesArray[$abs['std']] = $abs['abscences'];
          }
-        $html = $this->renderView('classroom/reportcardSeq.html.twig', array(
+        $html = $this->renderView('classroom/reportcard/sequential.html.twig', array(
             'year' => $year,
             'datas' => $datas,
             'students' => $studentEnrolled,
@@ -1070,7 +1070,7 @@ class ClassRoomController extends AbstractController
             $absencesArray[$abs['std']] = $abs['abscences'];
         }
         $pdf->setTimeout(600);
-        $html = $this->renderView('classroom/newReportcardTrim.html.twig', array(
+        $html = $this->renderView('classroom/reportcard/quaterly.html.twig', array(
             'year' => $year,
             'data' => $dataQuater,
             'ranks' => $rankArray,
