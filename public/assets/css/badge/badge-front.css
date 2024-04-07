@@ -1,0 +1,151 @@
+.student-badge-front{
+  width: 2080px;
+  background-color: rgb(255, 255, 255);
+  padding: 150px;
+  display: flex;
+  border-radius: 50px;
+}
+
+
+.student-badge-front::before { 
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 67.65%;
+  height: 33.33%;
+  background-color: #f8f2f2;
+  border-radius: 50px 50px 80% 20%;
+  transform:translate(9px,8px);
+  z-index: 4;
+}
+
+.student-badge-front::after {
+  content: "";
+  position: absolute;
+  top: 33.33%;
+  left: 0;
+  width: 67.65%;
+  height: 50.33%;
+  background-color: #2c29ac;
+  transform: translate(9px,-225px);
+  z-index: 1;
+}
+
+.student-badge-front .additional-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 67.65%;
+  height: 27%;
+  background-color: #e5ebe8;
+  border-radius: 90% 10% 50px 50px;
+  transform: translate(9px, 333px);
+  z-index: 3;
+}
+
+.student-badge-front .additional-element-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 67.65%;
+  height: 30%;
+  background-color: rgba(184, 132, 0, 0.842);
+  border-radius: 200% 30% 50px 50px;
+  transform: translate(9px, 290px);
+  z-index: 2;
+}
+
+.student-badge-front > div {
+  position: relative;
+  z-index: 5;
+}
+
+.middle-cont{
+  width: 225px;
+  height: 225px;
+  background-color: rgba(184, 132, 0, 0.842);
+  border-radius: 50%;
+  position: relative;
+  transform: translate(-357px,21px);
+}
+
+.inner-middle{
+  background-color: white;
+  height: 55%;
+  width: 88%;
+  border-radius: 50% / 0 0 100% 100%;
+  transform: translate(7%,73%)
+}
+.core-cont{
+  width: 178px;
+  height: 200px;
+  border-radius: 100%;
+  overflow: hidden;
+  margin-right: 20px;
+  margin-left: 20px;
+  transform: translate(-10px,-78px);
+}
+
+.outer-cont{
+  height: 270px;
+  width: 270px;
+  background-color: gray;
+  opacity: 0.2;
+  border-radius: 100%;
+  transform: translate(-110px,0px);
+}
+
+.Title1{
+  font-size: large;
+  line-height: 150%;
+  transform: translate(-540px,-77px);
+  z-index: 8;
+}
+
+#font-I, #info11, #info21, #info31{
+  font-style: italic;
+}
+
+#Carte{
+  font-weight: bold;
+}
+
+.name{
+  line-height: 250%;
+  font-size: x-large;
+  transform: translate(-350px,-70px);
+}
+
+#name1, #info12, #info22, #info32, #info41{
+  font-weight: bold;
+}
+
+.info1{
+  transform: translate(-590px,200px);
+  font-size: x-large;
+  line-height: 150%;
+}
+
+.info2{
+  transform: translate(-770px,280px);
+  line-height: 150%;
+  font-size: x-large;
+}
+
+.info3{
+  transform: translate(-600px,210px);
+  font-size: x-large;
+  line-height: 150%;
+}
+
+.info4{
+  transform:translate(-715px,287px);
+  line-height: 150%;
+  font-size: x-large;
+}
+
+.info5{
+  transform: translate(-1300px,-115px);
+  border-width: 2px;
+}

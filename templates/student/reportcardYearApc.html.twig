@@ -171,13 +171,16 @@
                         </td>
                         <td style="padding-left:9em;padding-right:10em;">
                            
-                                {% if std.gender %}
-                                    <img
-                                style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
-
-                                    {% else %}
-                                    <img style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
-                                {% endif %}
+                                        {% if(fileExist)%}
+                                              {% set imagePath = absolute_url(asset('assets/images/student/'~ std.imageName )) %}
+                                        {% else %}
+                                                {% if std.gender %}
+                                                            {% set imagePath = absolute_url(asset('assets/images/student/female-default-avatar.jpg')) %}
+                                                    {% else %}
+                                                           {% set imagePath = absolute_url(asset('assets/images/student/male-default-avatar.jpg')) %}
+                                                {% endif %}
+                                        {% endif %}
+                                         <img  style="height:150px;width:150px;"  src={{ imagePath }} />
                           
                         </td>
 

@@ -240,6 +240,30 @@ class StudentController extends AbstractController
         );
     }
 
+    /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/badge", name="admin_student_badge", requirements={"id"="\d+"})
+     */
+    public function schoolBadge(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $html = $this->renderView('student/badge.html.twig', array(
+            'year' => $year,
+            'std'  => $std,
+            'sub' => $sub
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="certif_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
 
 
     /**
@@ -252,10 +276,12 @@ class StudentController extends AbstractController
     public function reporCardTrimAction(Pdf $pdf, Student $std)
     {
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
         
         $i = 1;
         foreach ($sequences as $seq) {
@@ -302,7 +328,8 @@ class StudentController extends AbstractController
             'data' => $dataQuater,
             'sequences' => $sequences,
             'std'  => $std,
-            'room' => $sub->getClassRoom()
+            'room' => $sub->getClassRoom(),
+            'fileExist' => $fileExist
         ));
         return new Response(
             $pdf->getOutputFromHtml($html),
@@ -327,7 +354,8 @@ class StudentController extends AbstractController
         $year = $this->schoolYearService->sessionYearById();
         $sequences = $this->seqRepo->findSequenceThisYear($year);
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
-        
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
@@ -418,7 +446,9 @@ class StudentController extends AbstractController
             'year' => $year,
             'data' => $dataYear,
             'std'  => $std,
-            'room' => $sub->getClassRoom()
+            'room' => $sub->getClassRoom(),
+            'fileExist' => $fileExist
+
         ));
 
         return new Response(

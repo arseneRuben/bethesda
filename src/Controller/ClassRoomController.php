@@ -117,8 +117,9 @@ class ClassRoomController extends AbstractController
         $fileExists = [];
         foreach ($studentEnrolled as $std) {
             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
-            $fileExists[] = file_exists($filename);
+            $fileExists[$std->getId()] = file_exists($filename);
         }
+        
           // Attributions de cours durant l'annee
         $attributions = $this->attRepo->findByYearAndByRoom($year,$classroom);
         $attributionsMapCourses = null;
