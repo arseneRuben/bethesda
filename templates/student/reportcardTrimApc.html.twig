@@ -232,6 +232,11 @@
                                                     {{ quater.wording|slice(0, 7)|upper }}
                                                 </b>
                                             </td>
+                                             <td border="0.5" style="text-align:center;">
+                                                <b>
+                                                    APPREC.
+                                            </b>
+                                            </td>
                                             <td border="0.5" style="text-align:center;">
                                                 <b>
                                                     Coef
@@ -242,11 +247,7 @@
                                                     Note x Coef
                                                 </b>
                                             </td>
-                                            <td border="0.5" style="text-align:center;">
-                                                <b>
-                                                    APPREC.
-                                            </b>
-                                            </td>
+                                           
                                             <td border="0.5" style="text-align:center;">
                                                 <b>
                                                     RANG
@@ -319,13 +320,14 @@
                                                                             /
                                                                         {% endif %}
                                                                     </td>
-                                                                    <td class="appreciation"  cellspacing="1" border="0.5" style="text-align:center;">
+                                                                    <td class="appreciation notetrim"  cellspacing="1" border="0.5" style="text-align:center;">
                                                                         {% if mark.weight!=0 %}
                                                                             {{ mark.value |round(2,'floor') }}
                                                                         {% else %}
                                                                             /
                                                                         {% endif %}
                                                                     </td>
+                                                                    <td border="0.5" style="text-align:center;"></td>
                                                                     <td cellspacing="1" border="0.5" style="text-align:center;">
                                                                             {{ course.coefficient}}
                                                                     </td>
@@ -336,7 +338,7 @@
                                                                             /
                                                                         {% endif %}
                                                                     </td>                  
-                                                                    <td border="0.5" style="text-align:center;"></td>
+                                                                    
                                                                     <td border="0.5" style="text-align:center;" cellspacing="1"></td>
                                                                     <td border="0.5" style="text-align:center;">
                                                                         {{ mark.teacher }}

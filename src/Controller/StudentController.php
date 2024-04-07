@@ -227,7 +227,7 @@ class StudentController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reporCardTrimAction(Student $std)
+    public function reporCardTrimAction(Pdf $pdf, Student $std)
     {
         $connection = $this->em->getConnection();
         $year = $this->scRepo->findOneBy(array("activated" => true));
@@ -284,12 +284,14 @@ class StudentController extends AbstractController
             'room' => $sub->getClassRoom()
         ));
 
+      
+
         return new Response(
-            $this->snappy->getOutputFromHtml($html),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $quater->getId().'_'.$std->getMatricule() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="bull_' .  $quater->getId().'_'.$std->getMatricule()  . '.pdf"'
             )
         );
     }
