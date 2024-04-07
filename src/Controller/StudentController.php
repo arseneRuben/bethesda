@@ -211,13 +211,35 @@ class StudentController extends AbstractController
     {
         if ($this->isCsrfTokenValid('students_deletion' . $student->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($student);
-
             $this->em->flush();
             $this->addFlash('info', 'Student succesfully deleted');
         }
-
         return $this->redirectToRoute('admin_students');
     }
+    /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/certificate", name="admin_student_certificate", requirements={"id"="\d+"})
+     */
+    public function schoolCertificate(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $html = $this->renderView('student/school_certificate.html.twig', array(
+            'year' => $year,
+            'std'  => $std,
+            'sub' => $sub
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="certif_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
 
 
     /**
@@ -274,7 +296,6 @@ class StudentController extends AbstractController
        
         
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
-        //dd($dataQuater);    
         $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
             'year' => $year,
             'quater' => $quater,
@@ -283,9 +304,6 @@ class StudentController extends AbstractController
             'std'  => $std,
             'room' => $sub->getClassRoom()
         ));
-
-      
-
         return new Response(
             $pdf->getOutputFromHtml($html),
             200,

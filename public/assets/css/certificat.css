@@ -1,0 +1,134 @@
+@page {
+    size: A4;
+    margin: 4cm;
+  }
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+.header1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 130px;
+    padding: 0 20px;
+  }
+.school-informations{
+    font-size: 10px;
+    font-weight: lighter;
+    text-align: center;
+}
+.school-name{
+    font-weight: 700;
+    font-size:13px;
+}
+.school-place{
+    margin-bottom: 9px;
+}
+.header2{
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:12px;
+    width: 40%;
+    text-align: center;
+    margin: auto;
+}
+.logo{
+    margin-top: -50px;
+    background-color:black;
+}
+.logo img {
+    height: 50px;
+    width: 50px;
+    border-radius: 60px;
+}
+@media screen and (max-width: 636px) {
+    .logo{
+        margin-top: 0;
+    }
+}
+.document-title{
+    padding: 13px 25px;
+    font-weight: 700;
+    font-size:13px;
+    letter-spacing: 1px;
+    background-color: rgba(211, 211, 211, 0.548);
+}
+.declaration{
+    text-align: center;
+    font-size: 13px;
+    padding:90px 0 50px 0;
+}
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:20px;
+}
+main hr{ 
+    margin: auto;
+    width: 40%;
+    border-style: solid;
+    border-width: 0.5px;
+    font-weight: 100;
+    
+}
+.table-info{
+    width: 60%;
+    margin: auto;
+    padding: 20px 0px;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+.table-info td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.align-left{
+    font-weight: 700;
+}
+.align-left em{
+    font-weight:lighter;
+}
+.align-right{
+    text-align: right;
+    font-weight: 700;
+}
+.confirmation-inscrip{
+    font-size: 13px;
+    text-align: center;
+    width:80%;
+}
+.place-date{
+    font-size: 13px;
+    text-align: center;
+    padding: 200px 0;
+}
+footer hr{
+    width: 25%;
+    margin: auto;
+    height: 3px;
+    background-color: rgb(211, 211, 211);
+}
+.principal{
+    margin: 20px 0;
+    text-align: center;
+    font-size: 13px;
+}
+.color-footer{
+    background:linear-gradient(to bottom, rgba(255, 255, 0, 0.793), darkblue);
+    padding: 50px;
+    position: relative;
+    top:100px;
+}
+
+
+
