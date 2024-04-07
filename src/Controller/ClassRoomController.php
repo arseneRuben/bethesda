@@ -557,7 +557,7 @@ class ClassRoomController extends AbstractController
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-        $html = $this->renderView('classroom/recapitulatifseqvierge.html.twig', array(
+        $html = $this->renderView('classroom/templating/recapitulatifseqvierge.html.twig', array(
             'room' => $room,
             'seq' => $seq,
             'students' => $studentEnrolled,
@@ -875,7 +875,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsAction(ClassRoom $classroom)
+    public function reportCardSeqAction(ClassRoom $classroom, Pdf $pdf)
     {
         set_time_limit(600);
         $totalNtCoef = 0;
@@ -885,40 +885,77 @@ class ClassRoomController extends AbstractController
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $evaluations = $this->evalRepo->findSequantialExamsOfRoom($classroom->getId(), $sequence->getId());
-
         foreach ($evaluations as $ev) {
             $totalNtCoef += $ev->getMoyenne() * $ev->getCourse()->getCoefficient();
             $totalCoef += $ev->getCourse()->getCoefficient();
         }
-       
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
-
         $this->getViewSeqData($classroom, $sequence, 0);
         $connection = $this->em->getConnection();
+        $datas = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_SEQ0  ")->fetchAll();
+         // For calculating ranks
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+                SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
+                FROM V_STUDENT_MARK_SEQ0 
+                GROUP BY std
+                ORDER BY SUM(value*weight*coef) DESC"
+        );
+        $statement->execute();
+        $seqAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+        $seqAvgArray = [];
+        $sumAvg = 0;
+        $rank = 0;
+        $rankArray = [];
+       
+        foreach ($seqAvg as $avg) {
+            $seqAvgArray[$avg['std']] = $avg['moyenne'];
+            $rankArray[$avg['std']] = ++$rank;
+            $sumAvg += $avg['moyenne'];
+        }
+        // CAS DES ABSCENCES SEQUENTIELLES
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ AS
+            SELECT DISTINCT   seq.std as std , seq.total_hours  as abscences
+            FROM V_STUDENT_ABSCENCE_SEQ0 seq
+            ORDER BY std "
+        );
+        $statement->execute();
 
-        $datas = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_SEQ0 marks  ")->fetchAll();
-        $html = $this->renderView('classroom/reportcard.html.twig', array(
+         // Traitement des abscences
+         $absences = $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_SEQ ")->fetchAll();
+         $absencesArray = [];
+         foreach ($absences as $abs) {
+             $absencesArray[$abs['std']] = $abs['abscences'];
+         }
+        $html = $this->renderView('classroom/reportcardSeq.html.twig', array(
             'year' => $year,
             'datas' => $datas,
             'students' => $studentEnrolled,
             'sequence' => $sequence,
             'quater' => $sequence->getQuater(),
-            'moyenneGen' => ($totalNtCoef / $totalCoef),
             'room' => $classroom,
             'students' => $studentEnrolled,
+            'ranks' => $rankArray,
+            'means' => $seqAvgArray,
+            'abscences' => $absencesArray,
+            'genMean' => $sumAvg / sizeof($seqAvgArray),
+
+
         ));
 
         return new Response(
-            $this->snappy->getOutputFromHtml($html),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $classroom->getName() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="bull_seq_' . $classroom->getName() . '.pdf"'
             )
         );
 
-        //return new Response($html);
+        
     }
+
     public function getViewSeqData(ClassRoom $room,Sequence $seq, int $i){
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1005,7 +1042,6 @@ class ClassRoomController extends AbstractController
         );
         $statement->execute();
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks  ")->fetchAll();
-        // $this->snappy->setTimeout(600);
         // For calculating ranks
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
