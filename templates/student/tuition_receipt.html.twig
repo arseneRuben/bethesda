@@ -46,22 +46,20 @@
                     <thead>
                         <th colspan="2">DÉTAIL DE PAYMENT / PAYMENT DETAIL</th> 
                     </thead>
+                    {% set lastPayment = payments|last %}
 
                     <tbody>
                         <tr>
                             <td>Date & Heure / <span>Date & Time</span></td>
-                            <td>06/01/2023 at 16:51</td>
+                            <td>{{lastPayment.updatedAt|date('Y-m-d h:i:s') }}</td>
                         </tr>
     
                         <tr>
                             <td>Montant payé / <span>Amount paid</span></td>
-                            <td>30 000.00 F CFA</td>
+                            <td>{{lastPayment.amount}}F CFA</td>
                         </tr>
     
-                        <tr>
-                            <td>Reduction / <span>Discount</span></td>
-                            <td>0.00</td>
-                        </tr>
+                       
     
                         <tr>
                             <td>Methode de paiement / <span>Payment type</span></td>
@@ -75,13 +73,10 @@
                         
                         <tr>
                             <td>Reçu par / <span>Received by</span></td>
-                            <td>Collegebilinguelapiete</td>
+                            <td> {{get_env("FRENCH_SCHOOL_NAME")|raw }}</td>
                         </tr>
     
-                        <tr>
-                            <td>Date de l'opération / <span>Date of operation</span></td>
-                            <td>30/12/2022 16:51:53</td>
-                        </tr>    
+                       
                     </tbody>
                     
                 </table>
@@ -98,7 +93,6 @@
                     <thead>
                         <th>VERSMENT <span>INSTALMENT</span></th>
                         <th>A PAYER <span>TO PAY(FCFA)</span></th>
-                        <th>REDUCTION <span>DISCOUNT</span></th>
                         <th>PAYÉ <span>PAID(FCFA)</span></th>
                         <th>RESTE <span>BALANCE(FCFA)</span></th>
                         <th>DATE <span>LIMITE DEADLINE</span></th>
@@ -108,21 +102,18 @@
                          <tr>
                             <td>Inscription 6ème</td>
                             <td>26 000.00</td>
-                            <td>0.0</td>
                             <td>26 000.00</td>
                             <td>0.00</td>
                             <td>05/09/2022</td>
                         </tr>
                          {% set total =0 %}
                         {% if(installments) %}
-                                   
                                     {% for p in installments %}
                                         {% set total = total + p.amount %}
                        
                                         <tr>
                                             <td>{{ p.ranking }}</td>
                                             <td>{{ p.amount }}</td>
-                                            <td>0.0</td>
                                             <td>
                                                 {% set paye =0 %}
                                                  {% if( totalP >= total )%} 
@@ -143,10 +134,9 @@
                     <tfoot>
                         <tr>
                             <td>TOTAL</td>
-                            <td>151 000.00</td>
-                            <td>0.0</td>
-                            <td>56 000.00</td>
-                            <td>95 000.00</td>
+                            <td> {{total}}</td>
+                            <td> {{totalP}}</td>
+                            <td> {{total - totalP}}</td>
                             <td>23/12/2022</td>
                         </tr>
                     </tfoot>
