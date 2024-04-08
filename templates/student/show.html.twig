@@ -18,13 +18,12 @@
     <div class="row mt-3">
         <div class="col-2">
             <div class="btn-group record_actions  m-2">
-                <a class="btn btn-info" href="{{ path('admin_students') }}">
+                <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
                     <i class="fa fa-list"></i>
                 </a>
             </div>
             <div class="card" > 
                 <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
-              
             </div>
             <div class="col-10 card">
                 <article class="p-3">

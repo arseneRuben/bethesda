@@ -367,6 +367,7 @@ class ClassRoomController extends AbstractController
     }
 
     public function viewSeq(int $i){
+        $year = $this->schoolYearService->sessionYearById();
         $connection = $this->em->getConnection();
         $statement = $connection->prepare(
             " CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
@@ -885,6 +886,12 @@ class ClassRoomController extends AbstractController
         $year =$this->schoolYearService->sessionYearById();
         $sequence = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+        // Existance des photos d'eleves
+        $fileExists = [];
+        foreach ($studentEnrolled as $std) {
+            $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+            $fileExists[$std->getId()] = file_exists($filename);
+        }
         $evaluations = $this->evalRepo->findSequantialExamsOfRoom($classroom->getId(), $sequence->getId());
         foreach ($evaluations as $ev) {
             $totalNtCoef += $ev->getMoyenne() * $ev->getCourse()->getCoefficient();
@@ -941,7 +948,7 @@ class ClassRoomController extends AbstractController
             'means' => $seqAvgArray,
             'abscences' => $absencesArray,
             'genMean' => $sumAvg / sizeof($seqAvgArray),
-
+            'fileExists'=> $fileExists
 
         ));
 
@@ -1007,12 +1014,17 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrimAction(ClassRoom $room, Pdf $pdf,  Request $request)
     {
-       // set_time_limit(600);
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
+         // Existance des photos d'eleves
+         $fileExists = [];
+         foreach ($studentEnrolled as $std) {
+             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+             $fileExists[$std->getId()] = file_exists($filename);
+         }
         /*******************************************************************************************************************/
         /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES  DE LA CLASSE, AINSI QUE DE LA VIEW DES ABSCENCES**************/
         /*******************************************************************************************************************/
@@ -1082,6 +1094,7 @@ class ClassRoomController extends AbstractController
             'quater' => $quater,
             'sequences' => $sequences,
             'students' => $studentEnrolled,
+            'fileExists'=> $fileExists
 
         ));
         return new Response(

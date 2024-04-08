@@ -141,10 +141,10 @@ class StudentController extends AbstractController
             $results['payments'] = $payments;
             $results['payment_plan'] = $paymentPlan;
             $results['installments'] = $installments;
+            $results['sub'] = $sub;
             $results['file_exists'] = $file_exists;
-
             $results['cours'] = json_encode($courses);
-
+            
             foreach ($seqs as $seq) {
                 $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
             }
