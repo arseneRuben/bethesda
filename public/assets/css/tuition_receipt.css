@@ -1,0 +1,126 @@
+*{
+    margin: 5px;
+    padding: 3px;
+    box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.schoolName{
+    font-weight: bolder;
+}
+
+.intitule{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.intitule p:nth-child(1){
+    background-color:aliceblue;
+    padding: 20px;
+    text-align: center;
+}
+
+.subContainer1 th{
+    background-color:rgb(229, 239, 248);
+    margin: 0;
+    padding: 0;
+    color: gray;
+}
+
+.subContainer1 td{
+    background-color:rgb(240, 248, 255);
+}
+
+.subContainer1 table *{
+    padding: 10px;
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.subContainer1 table td{
+    text-align: center;
+}
+
+.subContainer2 table th{
+    border-bottom-style: double;
+}
+
+.subContainer2 table td{
+    font-weight: bolder;
+}
+
+.subContainer2 table span{
+    font-weight: lighter;
+}
+
+.subContainer2 table tr{
+    border-bottom: 2px dashed rgb(192, 192, 192);
+}
+
+.subContainer2 table tr td:nth-child(2){
+    text-align: end;
+}
+
+.subContainer3 p{
+    text-align: center;
+}
+.subContainer3 table th,table td{
+    font-weight: bolder;
+}
+
+.subContainer3 table th{
+    border-top: 2px solid black;
+    border-bottom-style: double;
+}
+
+.subContainer3 table th:first-child {
+    text-align: left;
+}
+
+.subContainer3 table th:last-child {
+    text-align: right;
+}
+
+.subContainer3 table th span{
+    font-style: italic;
+}
+
+.subContainer3 table td{
+    text-align: center;
+}
+
+.subContainer3 tr{
+    border-bottom: 2px dashed rgb(192, 192, 192);
+}
+
+.subContainer3 tfoot{
+    background-color:aliceblue;
+}
+
+.end{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.subContainer3 p:last-child{
+    margin-top: 150px;
+    border-top: 2px solid black;
+    width: 400px;
+    padding-top:20px;
+    font-weight: bolder;
+}
+
+.subContainer1,.subContainer2,.subContainer3{
+    margin-top: 40px;
+}

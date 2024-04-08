@@ -240,6 +240,37 @@ class StudentController extends AbstractController
         );
     }
 
+     /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/receipt", name="admin_student_receipt", requirements={"id"="\d+"})
+     */
+    public function tuitionReceiptAction(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $std), array('updatedAt' => 'ASC'));
+        $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
+        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
+
+        $html = $this->renderView('student/tuition_receipt.html.twig', array(
+            'year' => $year,
+            'std'  => $std,
+            'sub' => $sub,
+            'payments' => $payments,
+            'payment_plan' => $paymentPlan,
+            'installments' => $installments
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="recu_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
     /**
      * Build student's school certificate
      *

@@ -216,7 +216,16 @@
                                 </tbody>
                             </table>
                             <div class=" ">
-                                 <a class="btn btn-outline-file" href="{{ path('admin_student_badge', {id: student.id}) }}">
+                                <a class="btn btn-outline-primary" href="{{ path('admin_student_receipt', {id: student.id}) }}">
+                                    <i class="fa fa-money"></i>
+                                    Recu de scolarite
+                                                                                                                                                                                    							
+                                                                                                                                                                                
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                </a>
+                                 <a class="btn btn-outline-secondary" href="{{ path('admin_student_badge', {id: student.id}) }}">
                                     <i class="fa fa-id-badge"></i>
                                     Badge
                                                                                                                                                                                     							
@@ -225,7 +234,7 @@
                                                                                                         
                                                                     
                                 </a>
-                                 <a class="btn btn-outline-file" href="{{ path('admin_student_certificate', {id: student.id}) }}">
+                                 <a class="btn btn-outline-info" href="{{ path('admin_student_certificate', {id: student.id}) }}">
                                     <i class="fa fa-file"></i>
                                     Certificat scolairite
                                                                                                                                                                                     							
@@ -422,17 +431,10 @@
                                     {% set total =0 %}
                                     {% for p in installments %}
                                         {% set total = total + p.amount %}
-
                                         <tr>
-                                            <td>
-                                                    {{ p.ranking }}
-                                            </td>
-                                            <td>
-                                                        {{ p.deadline|date('Y-m-d') }}
-                                            </td>
-                                            <td>
-                                                    {{ p.amount }}
-                                            </td>
+                                            <td>{{ p.ranking }}</td>
+                                            <td>{{ p.deadline|date('Y-m-d') }}</td>
+                                            <td>{{ p.amount }}</td>
                                              <td>
                                                     {% if( totalP >= total )%} 
                                                         {{ p.amount }}

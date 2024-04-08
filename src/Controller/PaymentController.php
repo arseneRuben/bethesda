@@ -92,7 +92,9 @@ class PaymentController extends AbstractController
             $payment->setSchoolYear($this->schoolYearService->sessionYearById());
             $entityManager->persist($payment);
             $entityManager->flush();
-            return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
+           // return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
+           return $this->redirectToRoute('admin_student_receipt', ['id' => $payment->getStudent()->getId()]);
+
         }
 
         return $this->renderForm('payment/new.html.twig', [
