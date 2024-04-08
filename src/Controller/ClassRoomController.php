@@ -1119,7 +1119,8 @@ class ClassRoomController extends AbstractController
     {
         set_time_limit(600);
         $em = $this->getDoctrine()->getManager();
-        $year = ($this->session->has('session_school_year') && ($this->session->get('session_school_year')!= null)) ? $this->session->get('session_school_year') : $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
+
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYear($room, $year->getId());
