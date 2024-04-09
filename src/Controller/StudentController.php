@@ -280,17 +280,19 @@ class StudentController extends AbstractController
     {
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
         $html = $this->renderView('student/badge.html.twig', array(
-            'year' => $year,
-            'std'  => $std,
-            'sub' => $sub
+            'sub' => $sub,
+            'fileExist' => $fileExist
+
         ));
         return new Response(
             $pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="certif_'.$std->getMatricule()  . '.pdf"'
+                'Content-Disposition'   => 'inline; filename="badge_'.$std->getMatricule()  . '.pdf"'
             )
         );
     }
