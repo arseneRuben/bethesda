@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use Knp\Snappy\Pdf;
 use App\Form\UserFormType;
 use App\Repository\UserRepository;
 use App\Form\Type\RegistrationType;
@@ -31,14 +32,15 @@ class UserController extends AbstractController
     private SchoolYearService $schoolYearService;
     private AttributionRepository $attRepo;
     private MainTeacherRepository $mainTeacherRepo;
+    private UserRepository $repo;
 
-    public function __construct(MainTeacherRepository $mainTeacherRepo,AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
+    public function __construct( UserRepository $repo,MainTeacherRepository $mainTeacherRepo,AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->schoolYearService = $schoolYearService;
         $this->attRepo = $attRepo;
         $this->mainTeacherRepo = $mainTeacherRepo;
-
+        $this->repo = $repo;
     }
     /**
      * Lists all Programme entities.
@@ -47,11 +49,36 @@ class UserController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(UserRepository $repo)
+    public function indexAction()
     {
-        $users = $repo->findAll();
+        $users = $this->repo->findAll();
 
         return $this->render('user/list.html.twig', compact("users"));
+    }
+    /**
+     * Lists all Programme entities.
+     *
+     * @Route("/print/", name="admin_teacher_list")
+     * @Method("GET")
+     * @Template()
+     */
+    public function listAction(Pdf $pdf)
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $users = $this->repo->findAllOfCurrentYear($year);
+
+        $html = $this->renderView('user/teachers.html.twig', array(
+            'year' => $year,
+            'users' => $users,
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="teacher_list.pdf"'
+            )
+        );
     }
 
 
