@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\AbscenceSheet;
+use App\Entity\Quater;
+use App\Entity\Sequence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,13 +38,19 @@ class AbscenceSheetRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?AbscenceSheet
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+     /**
+     * @return AbscenceSheet[] Returns an array of AbscenceSheet objects
+     */
+    public function findByQuater(Quater $qt): ?array
+    {
+       return $this->createQueryBuilder('a')
+            ->leftJoin('a.sequence', 's')
+            ->leftJoin('s.quater', 'q')
+            ->where('q.id=:q_id')
+            ->orderBy('a.updatedAt')
+            ->setParameter('q_id', $qt->getId())
+            ->getQuery()
+            ->getResult();
+        ;
+    }
 }

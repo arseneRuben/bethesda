@@ -15,6 +15,7 @@ use App\Repository\ClassRoomRepository;
 use App\Repository\SchoolYearRepository;
 use App\Repository\StudentRepository;
 use App\Repository\SequenceRepository;
+use App\Repository\QuaterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,14 +40,15 @@ class AbscenceSheetController extends AbstractController
     private $yearRepo;
     private $clRepo;
     private $stdRepo;
+    private $qtRepo;
 
-
-    public function __construct(EntityManagerInterface $em, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
+    public function __construct(EntityManagerInterface $em, QuaterRepository $qtRepo, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->absRepo = $absRepo;
         $this->seqRepo = $seqRepo;
+        $this->qtRepo = $qtRepo;
         $this->stdRepo = $stdRepo;
         $this->yearRepo = $yearRepo;
         $this->clRepo = $clRepo;
@@ -68,7 +70,7 @@ class AbscenceSheetController extends AbstractController
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
           
             $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
-           
+            $quater = $this->qtRepo->findOneBy(array("id" => $_GET['quater']));
             $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
             if($room != null  && $sequence != null){
                  $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room),   array('id' => 'DESC'));
@@ -80,6 +82,10 @@ class AbscenceSheetController extends AbstractController
                 if($sequence != null)
                 {
                     $entities = $this->repo->findBy(array( "sequence" => $sequence),   array('id' => 'DESC'));
+                }
+                if($quater != null)
+                {
+                    $entities = $this->repo->findByQuater($quater);
                 }
             }
           

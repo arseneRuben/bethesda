@@ -7,7 +7,13 @@
   
     
         <div class="row mt-2">
-            <div class="col-12 jumbotron mb-2" >
+			<div class="col-1 jumbotron mb-2" >
+			  <a class="btn btn-info" href="{{ path('admin_evaluations_new') }}">
+					<i class="fa fa-plus"></i>
+
+			  </a>  
+			</div>  
+            <div class="col-11 jumbotron mb-2" >
 				{{form_start(searchForm)}}
 				<div class="form-row row">
 					<div class="col-md-3">
@@ -30,10 +36,7 @@
             <div class="col-12 jumbotron" >
                 <div class="m-1 box-shadow">
 						<div class=" d-inline-flex">
-                                  <a class="btn btn-info" href="{{ path('admin_evaluations_new') }}">
-									<i class="fa fa-plus"></i>
-
-								</a>    
+                                
 								<h4 class="my-0 card-header font-weight-normal text-center text-justify text-uppercase">  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Liste des {{ pagination.getTotalItemCount }} évaluations   </h4>
   
 						</div>

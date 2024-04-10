@@ -36,7 +36,13 @@
             <div class="Title1"><p><span id="Carte">CARTE SCOLAIRE</span><br><span id="font-I">SCHOOL ID CARD</span><br><span id="font-S">{{sub.schoolyear.wording}}</span></p></div>
             <div class="name"><p><span id="name1">{{sub.student.lastname}}</span><br>{{sub.student.firstname}} <br>{{sub.classroom.name}}</p></div>
             <div class="info1"><p>Né(e) le / <span id="info11">Born</span><br><span id="info12">{{sub.student.birthday|date('Y-m-d')}}</span></p></div>
-            <div class="info2"><p>Sexe / <span id="info21">Sex</span><br><span id="info22">M</span></p></div>
+            <div class="info2"><p>Sexe / <span id="info21">Sex</span><br><span id="info22">
+                 {% if sub.student.gender %}
+                        F              
+                     {% else %}
+                        M                       
+                {% endif %}
+            </span></p></div>
             <div class="info3"><p>A / <span id="info31">At</span><br><span id="info32">{{sub.student.birthplace}}</span></p></div>
             <div class="info4"><p>Matricule<br><span id="info41">{{sub.student.matricule}}</span></p></div>
             <div class="info5"><p> {{get_env("FRENCH_SCHOOL_NAME")|raw|title }} / <span id="info51"> {{get_env("ENGLISH_SCHOOL_NAME")|raw|title }}</span></p></div>

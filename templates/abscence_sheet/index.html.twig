@@ -10,17 +10,20 @@
               
             </a>
         </div>
-         <div class="col-12 jumbotron" >
+         <div class="col-11 jumbotron" >
 				{{form_start(searchForm)}}
 				<div class="form-row row">
-					<div class="col-md-4">
+					<div class="col-md-3">
 						{{form_row(searchForm.room)}}
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-3">
 						{{form_row(searchForm.sequence)}}
 					</div>
+                    <div class="col-md-3">
+						{{form_row(searchForm.quater)}}
+					</div>
 					
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<button class="btn btn-primary" type="submit">
 									<b>Rechercher</b>
 						</button>
