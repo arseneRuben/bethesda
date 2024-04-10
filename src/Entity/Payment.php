@@ -30,8 +30,11 @@ class Payment
      */
     private $id;
 
-
-
+    
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     */
+    private $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=SchoolYear::class)
@@ -64,6 +67,18 @@ class Payment
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
     }
 
     /**

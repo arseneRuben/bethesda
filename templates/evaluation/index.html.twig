@@ -75,16 +75,16 @@
 								<td>{{ evaluation.moyenne |round(2,'floor') }}</td>
 								<td>
 									<div class="btn-group">
-										<a class="btn btn-outline-info" href="{{ path('admin_evaluations_pdf', {id: evaluation.id}) }}">
+										<a target="_blank" class="btn btn-outline-info" href="{{ path('admin_evaluations_pdf', {id: evaluation.id}) }}">
 											<i class="fa fa-cloud-download">
 												</i>
 										</a>
-										<a class="btn btn-outline-warning" href="{{ path('admin_evaluations_edit', {id: evaluation.id|default('1')}) }}">
+										<a target="_blank" class="btn btn-outline-warning" href="{{ path('admin_evaluations_edit', {id: evaluation.id|default('1')}) }}">
 											<i class="fa fa-edit">
 											</i>
 										</a>
 										 	
-									<a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> </a>
+									<a  class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-evaluation-delete-form-{{evaluation.id}}').submit();"> <i class="fa fa-trash"></i> </a>
 										<form id="js-evaluation-delete-form-{{evaluation.id}}" action="{{path('admin_evaluations_delete', {id: evaluation.id})}}" method="post" style="display: none;">
 											<input type="hidden" name="csrf_token" value="{{ csrf_token('evaluations_deletion' ~ evaluation.id ) }}" id="">
 											<input type="hidden" name="_method" value="DELETE">

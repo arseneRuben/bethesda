@@ -90,10 +90,10 @@ class PaymentController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $payment->setSchoolYear($this->schoolYearService->sessionYearById());
+            $payment->setCode($this->schoolYearService->sessionYearById()->getCode().'_'.$payment->getStudent()->getId().'_'.date("m_d_h_i_s"));
             $entityManager->persist($payment);
             $entityManager->flush();
-           // return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
-           return $this->redirectToRoute('admin_student_receipt', ['id' => $payment->getStudent()->getId()]);
+            return $this->redirectToRoute('admin_student_receipt', ['id' => $payment->getStudent()->getId()]);
 
         }
 

@@ -46,8 +46,8 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th style="width:15%;">CreatedAt</th>
-                                <th style="width:55%;">Eleve</th>
+                                <th style="width:20%;">Code</th>
+                                <th style="width:50%;">Eleve</th>
 
                                 <th style="width:15%;">Amount</th>
                                 <th style="width:15%;">actions</th>
@@ -56,7 +56,7 @@
                         <tbody>
                         {% for payment in payments %}
                             <tr>
-                                <td style="width:15%;">{{ payment.createdAt ? payment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                                <td style="width:15%;">{{ payment.code ? payment.code : '' }}</td>
                                 <td style="width:55%;">{{ payment.student }}</td>
                                 <td style="width:15%;">{{ payment.amount }}</td>
                                   <td style="width:15%;" class="text-center">

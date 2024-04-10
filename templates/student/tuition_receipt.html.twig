@@ -11,11 +11,13 @@
         <div class="container">
                    {{ include('classroom/partials/header.html.twig') }}
 
-
+              {% set lastPayment = payments|last %}
             <div class="subContainer1">
                 <div class="intitule">
                     <p>RECU DE SCOLARITE <br> TUITION RECEIPT</p>
-                    <p>No 004770</p>
+                     {% if not(lastPayment is empty) %}
+                              <p>No {{ lastPayment.code }}</p>
+                     {% endif %}
                 </div>
 
                 <table>
@@ -46,7 +48,7 @@
                     <thead>
                         <th colspan="2">DÉTAIL DE PAYMENT / PAYMENT DETAIL</th> 
                     </thead>
-                    {% set lastPayment = payments|last %}
+                  
 
                     <tbody>
                         {% if not(lastPayment is empty) %}
