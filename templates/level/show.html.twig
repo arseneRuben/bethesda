@@ -38,7 +38,11 @@
                                                 <a href="{{ path('admin_classrooms_show', {id: room.id}) }}">{{ room.name}}</a>
                                             </td>
                                            
-                                            <td>{{ room.fullTeacher }}</td>
+                                            <td>
+                                                  {% if room.id in mainTeachersMap|keys %}
+                                                    {{  mainTeachersMap[room.id].fullName}}
+                                                {% endif %}
+                                            </td>
                                         
                                             
                                         </tr>

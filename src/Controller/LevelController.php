@@ -10,8 +10,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\LevelRepository;
+use App\Repository\MainTeacherRepository;
 use App\Entity\Level;
 use App\Form\LevelType;
+use App\Service\SchoolYearService;
 
 /**
  * Level controller.
@@ -21,10 +23,15 @@ use App\Form\LevelType;
 class LevelController extends AbstractController
 {
     private $em;
+    private SchoolYearService $schoolYearService;
+    private MainTeacherRepository $mainTeacherRepo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct( MainTeacherRepository $mainTeacherRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->schoolYearService = $schoolYearService;
+        $this->mainTeacherRepo = $mainTeacherRepo;
+
     }
 
     /**
@@ -76,7 +83,13 @@ class LevelController extends AbstractController
     public function showAction(Level $level)
     {
 
-        return $this->render('level/show.html.twig', compact("level"));
+        $year = $this->schoolYearService->sessionYearById();
+        $mainTeachers =  $this->mainTeacherRepo->findBy(array("schoolYear" => $year));
+        $mainTeachersMap = array();
+        foreach($mainTeachers as $mt){
+            $mainTeachersMap[$mt->getClassRoom()->getId()] = $mt->getTeacher();
+        }
+        return $this->render('level/show.html.twig', compact("level", "mainTeachersMap"));
     }
 
     /**
