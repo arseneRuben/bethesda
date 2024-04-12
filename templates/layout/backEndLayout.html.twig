@@ -260,10 +260,19 @@
                                                                                     
                                         </a>
                                     </li>
+
                                      <li class="{% if app.request.attributes.get('_route') == "admin_abscences_sheet_index" %}active{% endif %}">
                                         <a href="{{ path('admin_abscences_sheet_index') }}">
                                             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                             Discipline
+                                                                                                                                                                                                                                                                                                                                                                            
+                                       </a>
+                                    </li>
+                                    <li class="{% if app.request.attributes.get('_route') == "admin_statistiques" %}active{% endif %}">
+                                        <a href="{{ path('admin_statistiques') }}">
+                                            <i class="fa fa-area-chart" aria-hidden="true"></i>
+
+                                            Statistiques
                                                                                                                                                                                                                                                                                                                                                                             
                                        </a>
                                     </li>

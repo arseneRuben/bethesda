@@ -97,7 +97,6 @@ class ClassRoomController extends AbstractController
             'seq' => $seq->getId(),
         ));
 
-        return $this->render('classroom/index.html.twig', compact("classrooms"));
     }
 
     /** 
@@ -237,8 +236,6 @@ class ClassRoomController extends AbstractController
      */
     public function statAction(ClassRoom $classroom)
     {
-
-
         return $this->render('classroom/show.html.twig', array());
     }
 
