@@ -12,12 +12,12 @@
 <div class="row flex-nowrap justify-content-between align-items-center">
     <div class="col pt-1">
 
-        <canvas id="canvas">
+        <canvas id="canvas_gender">
         </canvas>
     </div>
     <div class="col pt-1">
 
-        <canvas id="canvas2">
+        <canvas id="canvas_age_group">
         </canvas>
     </div>
 
@@ -28,7 +28,8 @@
   {{ parent() }}
 
     <script>
-      let canvas = document.querySelector("canvas");
+      let canvas_gender =$("#canvas_gender"), canvas_age_group =$("#canvas_age_group");
+
        const datasets = [];
 
        const randomRgbColor = () => {
@@ -55,7 +56,7 @@
             } )
            {% endif %}
 
-       let graph = new Chart(canvas, {
+       let graph_gender = new Chart(canvas_gender, {
                             type:"bar",
                             data : {
                                 labels: {{ roomNames|raw }},
@@ -68,7 +69,7 @@
                                         text: ' Repartition des sexes par classe ',
                                         font: {
                                             size: 24,
-                                            style: 'bold',
+                                          
                                             family: 'Helvetica Neue',
                                         },
                                         position: 'bottom',
@@ -93,7 +94,36 @@
                   console.log(e.message);
                 }
           });
+        });
+        
+              console.log( {{ ageGroupsLabel|raw }}, {{ ageGroupsWeight|raw }})
 
+         let graph_age_group = new Chart(canvas_age_group, {
+                            type:"pie",
+                            data : {
+                                labels: {{ ageGroupsLabel|raw }},
+                                datasets: [{ 
+                                  label : ' Repartition des ages par classe ',
+                                  data : {{ ageGroupsWeight|raw }},
+                                }]
+                            }
+                        });
+       $('#select_room').on('change', function() {
+            postData = {
+              "id":  $(this).val()
+            };
+            $.ajax({
+                type: "GET",
+                url: "{{ path('admin_graph_update')}}",
+                data: postData,
+                datatype: "json",
+                success: function (response) {
+                        window.location.href = response.url;
+                },
+                error: function (e) {
+                  console.log(e.message);
+                }
+          });
         });
 
     </script>

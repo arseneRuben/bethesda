@@ -73,12 +73,15 @@ class StatisticsController extends AbstractController
             $this->viewAgeGroup($id);
         }  
         $gender_datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
+        $age_group_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_ROOM ")->fetchAll();
+       
          // Traitements de donnees pour les graphes de repartition de sexe par classe
         foreach ($rooms as $room) {
             $roomNames[] = $room->getName();
         }
         $masculin = [];
         $feminin = [];
+       
         foreach ($roomNames as $name) {
             foreach($gender_datas as $data){
                 if(strcmp($data["room"], $name)==0  && strcmp($data["gender"], "0")==0){
@@ -90,12 +93,29 @@ class StatisticsController extends AbstractController
                 continue;
             }
         }
+        // Traitement des donnees du graphes des groupes d'ages
+        $age_groups_weight= [];
+        $age_groups_label= [];
+        foreach ($age_group_datas as $group) {
+            array_push($age_groups_weight , $group["effectif"]);
+            array_push($age_groups_label , "".$group["tranche_age"]);
+        }
+       // dd($age_group_datas,$age_groups_weight,$age_groups_label );
+        // Encodage Json
         $roomNames = json_encode($roomNames);
         if($id > 0){
             $roomNames = json_encode($this->repo->findOneById($id)->getName());
         }
+        $ageGroupsWeight = json_encode($age_groups_weight);
+        $ageGroupsLabel = json_encode($age_groups_label);
         return $this->render('statistics/dashboard.html.twig', [
-            "rooms"=>$rooms, "feminin"=>json_encode($feminin),"masculin"=> json_encode($masculin), "roomNames"=>$roomNames
+            "rooms"=>$rooms, 
+            "feminin"=>json_encode($feminin),
+            "masculin"=> json_encode($masculin), 
+            "roomNames"=>$roomNames,
+            "ageGroupsLabel"=>$ageGroupsLabel,
+            "ageGroupsWeight"=>$ageGroupsWeight,
+
         ]);
     }
 
