@@ -64,25 +64,13 @@ class StatisticsController extends AbstractController
     {
         $rooms = $this->repo->findAll();
         $connection = $this->em->getConnection();
-        $labels=[];
-       
         // Extration des donnees de la BD
-            if($id == 0){
-               
-                    $this->viewGender();
-                    // Prendre le label de toutes les classes
-                    foreach ($rooms as $room) {
-                        $labels[] = $room->getName();
-                    }
-                
-            } else {
-                $this->viewGender($id);
-                // Prendre le label de la classe
-                $labels[] = $this->repo->findOneById($id)->getName();
-            }  
-        
+        if($id == 0){
+            $this->viewGender();
+        } else {
+            $this->viewGender($id);
+        }  
         $datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
-
          // Traitements de donnees pour les graphes de repartition de sexe par classe
         foreach ($rooms as $room) {
             $roomNames[] = $room->getName();
