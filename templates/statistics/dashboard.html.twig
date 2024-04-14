@@ -3,17 +3,14 @@
 {% block content %}
 
 
-<select class="form-select" aria-label="Default select example">
-  <option selected>Associees a toutes les classes</option>
+<select class="form-select" id="select_room" aria-label="Default select example">
+  <option    value="0" >Associees a toutes les classes</option>
    {% for room in rooms %}
-        <option value={{room.id}}>{{room.name}}</option>
+        <option {% if app.request.get('id') == room.id %}selected{% endif %}  value={{room.id}}>{{room.name}}</option>
      {% endfor %}
 </select>
 <div class="row flex-nowrap justify-content-between align-items-center">
-  <div class="col-10 pt-1">
-    <canvas id="canvas">
-    </canvas>
-  </div>
+    {% include "statistics/graphics.html.twig" %}
 
 </div>
 {% endblock %}
@@ -71,6 +68,25 @@
                                 }
                             }
                         });
+       $('#select_room').on('change', function() {
+            postData = {
+              "id":  $(this).val()
+            };
+            $.ajax({
+                type: "GET",
+                url: "{{ path('admin_graph_update')}}",
+                data: postData,
+                datatype: "json",
+                success: function (response) {
+                        window.location.href = response.url;
+                },
+                error: function (e) {
+                  console.log(e.message);
+                }
+          });
+
+        });
+
     </script>
 {% endblock %}
  

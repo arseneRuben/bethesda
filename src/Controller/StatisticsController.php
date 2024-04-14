@@ -15,6 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 /**
  * Sequence controller.
@@ -37,32 +39,51 @@ class StatisticsController extends AbstractController
 
     }
 
- /**
-     * Lists all Sequenceme entities.
+      /**
+     * Displays a graph updated.
      *
-     * @Route("/{id}", name="admin_statistiques", defaults={"id"=null})
+     * @Route("/update", name="admin_graph_update",  options = { "expose" = true })
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(int $id=0 )
+    public function updateGraphs(Request $request): JsonResponse
+    {
+          // URL de redirection et paramètres
+        $url = $this->generateUrl('admin_statistics', ['id' => intval($request->query->get('id'))]);
+        return new JsonResponse(['url' => $url]);
+    }
+
+    /**
+     * Lists all Sequenceme entities.
+     *
+     * @Route("/{id}", name="admin_statistics", defaults={"id"=null})
+     * @Method("GET")
+     * @Template()
+     */
+    public function indexAction(Request $request,int $id=0 )
     {
         $rooms = $this->repo->findAll();
         $connection = $this->em->getConnection();
-        if($id == 0){
-            $this->viewGender();
-            // Prendre le label de toutes les classes
-            foreach ($rooms as $room) {
-                $labels[] = $room->getName();
-            }
-        } else {
-            $this->viewGender($id);
-             // Prendre le label de la classe
-             $labels[] = $this->repo->findById($id);
-        }   
+        $labels=[];
+       
+        // Extration des donnees de la BD
+            if($id == 0){
+               
+                    $this->viewGender();
+                    // Prendre le label de toutes les classes
+                    foreach ($rooms as $room) {
+                        $labels[] = $room->getName();
+                    }
+                
+            } else {
+                $this->viewGender($id);
+                // Prendre le label de la classe
+                $labels[] = $this->repo->findOneById($id)->getName();
+            }  
+        
         $datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
 
          // Traitements de donnees pour les graphes de repartition de sexe par classe
-       
         foreach ($rooms as $room) {
             $roomNames[] = $room->getName();
         }
@@ -79,15 +100,12 @@ class StatisticsController extends AbstractController
                 continue;
             }
         }
-       
         $roomNames = json_encode($roomNames);
         if($id > 0){
             $roomNames = json_encode($this->repo->findOneById($id)->getName());
         }
-        $masculin= json_encode($masculin);
-        $feminin= json_encode($feminin);
         return $this->render('statistics/dashboard.html.twig', [
-            "rooms"=>$rooms, "feminin"=>$feminin,"masculin"=>$masculin, "roomNames"=>$roomNames
+            "rooms"=>$rooms, "feminin"=>json_encode($feminin),"masculin"=> json_encode($masculin), "roomNames"=>$roomNames
         ]);
     }
 
