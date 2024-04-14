@@ -96,9 +96,15 @@ class StatisticsController extends AbstractController
         // Traitement des donnees du graphes des groupes d'ages
         $age_groups_weight= [];
         $age_groups_label= [];
-        foreach ($age_group_datas as $group) {
+        $previousKey = null;
+        foreach ($age_group_datas as $key=>$group) {
             array_push($age_groups_weight , $group["effectif"]);
-            array_push($age_groups_label , "".$group["tranche_age"]);
+            if ($previousKey == null) {
+                array_push($age_groups_label , "0_".$group["tranche_age"]);
+            } else {
+                array_push($age_groups_label , $age_group_datas[$previousKey]["tranche_age"]."_".$group["tranche_age"]);
+            }
+            $previousKey = $key;
         }
        // dd($age_group_datas,$age_groups_weight,$age_groups_label );
         // Encodage Json
