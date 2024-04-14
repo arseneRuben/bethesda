@@ -20,7 +20,11 @@
         <canvas id="canvas_age_group">
         </canvas>
     </div>
+</div>
+<div class="row flex-nowrap justify-content-between align-items-center">
+     <canvas id="canvas_age_group_gender">
 
+     </canvas>
 </div>
 {% endblock %}
 
@@ -28,8 +32,11 @@
   {{ parent() }}
 
     <script>
-      let canvas_gender =$("#canvas_gender"), canvas_age_group =$("#canvas_age_group");
-     
+      let canvas_gender =$("#canvas_gender"), 
+      canvas_age_group =$("#canvas_age_group"),
+      canvas_age_group_gender =$("#canvas_age_group_gender"),
+      scatterData = {{ scatterData | raw }};
+        console.log(scatterData);
 
        const datasets = [];
        const randomRgbColor = () => {
@@ -120,17 +127,70 @@
                                         text: ' Repartition des tranches d\'ages par classe ',
                                         font: {
                                             size: 24,
-                                          
                                             family: 'Helvetica Neue',
                                         },
                                         position: 'bottom',
-                                        
                                     }
                                 }
                             }
                         });
+        
+        let graph_age_group_gender = new Chart(canvas_age_group_gender, {
+                           
+                    type: 'bubble',
+                    data: {
+                         datasets: [{
+                                label: 'Homme',
+                                data: ({{scatterData|raw}}).filter(item => item.sexe === 'homme').map(item => ({
+                                    x: item.age,
+                                    y: item.sexe === 'homme' ? 1 : 0,
+                                    r: item.poids
+                                })),
+                                backgroundColor: 'blue'
+                            }, {
+                                label: 'Femme',
+                                data: ({{scatterData|raw}}).filter(item => item.sexe === 'femme').map(item => ({
+                                    x: item.age,
+                                    y: item.sexe === 'femme' ? 1 : 0,
+                                    r: item.poids
+                                })),
+                                backgroundColor: 'pink'
+                        }]
+                    },
+                    options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Tranche d\'âge'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Sexe'
+                            }
+                        }
+                    }},
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var data = context.dataset.data[context.dataIndex];
+                                    var label = 'Age: ' + data.age + ', Sexe: ' + (data.sexe === 1 ? 'Homme' : 'Femme') + ', Poids: ' + data.poids;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                    
+                    }
+                        );
 
         
+       
        $('#select_room').on('change', function() {
             postData = {
               "id":  $(this).val()

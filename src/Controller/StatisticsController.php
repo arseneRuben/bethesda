@@ -106,7 +106,6 @@ class StatisticsController extends AbstractController
             }
             $previousKey = $key;
         }
-       // dd($age_group_datas,$age_groups_weight,$age_groups_label );
         // Encodage Json
         $roomNames = json_encode($roomNames);
         if($id > 0){
@@ -114,6 +113,17 @@ class StatisticsController extends AbstractController
         }
         $ageGroupsWeight = json_encode($age_groups_weight);
         $ageGroupsLabel = json_encode($age_groups_label);
+
+        $scatterData = [
+            ['age' => 20, 'sexe' => 'homme', 'poids' => 5],
+            ['age' => 25, 'sexe' => 'femme', 'poids' => 8],
+            ['age' => 10, 'sexe' => 'homme', 'poids' => 24],
+            ['age' => 15, 'sexe' => 'femme', 'poids' => 4],
+
+            // Ajoutez d'autres données ici
+        ];
+
+        
         return $this->render('statistics/dashboard.html.twig', [
             "rooms"=>$rooms, 
             "feminin"=>json_encode($feminin),
@@ -121,6 +131,7 @@ class StatisticsController extends AbstractController
             "roomNames"=>$roomNames,
             "ageGroupsLabel"=>$ageGroupsLabel,
             "ageGroupsWeight"=>$ageGroupsWeight,
+            'scatterData' => json_encode($scatterData), 
 
         ]);
     }
