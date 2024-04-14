@@ -10,7 +10,16 @@
      {% endfor %}
 </select>
 <div class="row flex-nowrap justify-content-between align-items-center">
-    {% include "statistics/graphics.html.twig" %}
+    <div class="col pt-1">
+
+        <canvas id="canvas">
+        </canvas>
+    </div>
+    <div class="col pt-1">
+
+        <canvas id="canvas2">
+        </canvas>
+    </div>
 
 </div>
 {% endblock %}

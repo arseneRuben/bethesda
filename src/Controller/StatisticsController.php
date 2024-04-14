@@ -67,8 +67,10 @@ class StatisticsController extends AbstractController
         // Extration des donnees de la BD
         if($id == 0){
             $this->viewGender();
+            $this->viewAgeGroup();
         } else {
             $this->viewGender($id);
+            $this->viewAgeGroup($id);
         }  
         $datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
          // Traitements de donnees pour les graphes de repartition de sexe par classe
@@ -97,6 +99,50 @@ class StatisticsController extends AbstractController
         ]);
     }
 
+    // Cette fonction genere les vue d'effectif par tranche d'age par classe
+    public function viewAgeGroup(int $room=0){
+        $year = $this->schoolYearService->sessionYearById();
+        $connection = $this->em->getConnection();
+        if($room>0){
+            $statement = $connection->prepare(
+                " CREATE OR REPLACE VIEW V_AGE_GROUP_ROOM  AS
+                    SELECT
+                        FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS tranche_age,
+                        COUNT(*) AS effectif
+                    FROM  student    std  
+                    JOIN  subscription sub    ON  sub.student_id      =   std.id     
+                    JOIN  class_room room    ON  sub.class_room_id     =   room.id
+                    WHERE sub.school_year_id =? AND  room.id = ?
+                    GROUP BY
+                        FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                    ORDER BY
+                        tranche_age;
+                "
+            );
+            $statement->bindValue(2, $room);
+        } else {
+            $statement = $connection->prepare(
+                " CREATE OR REPLACE VIEW V_AGE_GROUP_ROOM  AS
+                SELECT
+                    FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS tranche_age,
+                    COUNT(*) AS effectif
+                FROM  student    std  
+                JOIN  subscription sub    ON  sub.student_id      =   std.id     
+                JOIN  class_room room    ON  sub.class_room_id     =   room.id
+                WHERE sub.school_year_id =? 
+                GROUP BY
+                    FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                ORDER BY
+                    tranche_age;
+                "
+            );
+        }
+        $statement->bindValue(1, $year->getId());
+        $statement->execute();
+    
+    }
+
+    // Cette fonction genere les vues d'effectif par sexe par classe
     public function viewGender(int $room=0){
         $year = $this->schoolYearService->sessionYearById();
         $connection = $this->em->getConnection();
