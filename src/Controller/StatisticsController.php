@@ -72,7 +72,7 @@ class StatisticsController extends AbstractController
             $this->viewGender($id);
             $this->viewAgeGroup($id);
         }  
-        $datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
+        $gender_datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
          // Traitements de donnees pour les graphes de repartition de sexe par classe
         foreach ($rooms as $room) {
             $roomNames[] = $room->getName();
@@ -80,7 +80,7 @@ class StatisticsController extends AbstractController
         $masculin = [];
         $feminin = [];
         foreach ($roomNames as $name) {
-            foreach($datas as $data){
+            foreach($gender_datas as $data){
                 if(strcmp($data["room"], $name)==0  && strcmp($data["gender"], "0")==0){
                     array_push($masculin , $data["workforce"]);
                 }
