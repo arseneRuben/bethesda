@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Snappy\Pdf;
 
 
 /**
@@ -39,7 +40,7 @@ class StatisticsController extends AbstractController
 
     }
 
-      /**
+       /**
      * Displays a graph updated.
      *
      * @Route("/update", name="admin_graph_update",  options = { "expose" = true })
@@ -53,10 +54,47 @@ class StatisticsController extends AbstractController
         return new JsonResponse(['url' => $url]);
     }
 
+      /**
+     * Displays a graph updated.
+     *
+     * @Route("printgr/{id}", name="admin_stat_print_gender_room", defaults={"id"=0}  )
+     * @Method("GET")
+     * @Template()
+     */
+    public function genderRoomPdf( Pdf $pdf, int $id=0): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $rooms = $this->repo->findAll();
+        if($id > 0){
+            $rooms = $this->repo->findBy(array("id" => $id));
+            $this->viewGender($id);
+        } else {
+            $this->viewGender();
+        }
+        $connection = $this->em->getConnection();
+        $gender_datas = $connection->executeQuery("SELECT *  FROM V_GENDER_ROOM ")->fetchAll();
+
+        $html = $this->render('statistics/pdf/gender_room.html.twig', [
+            "rooms"=>$rooms, 
+            'year' => $year,
+            "gender_datas"=>$gender_datas, 
+        ]);
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="stat_gender_room' .( count($rooms)==1 ?  $rooms[0]->getName():"") . '.pdf"'
+            )
+        );
+
+       
+    }
+
     /**
      * Lists all Sequenceme entities.
      *
-     * @Route("/{id}", name="admin_statistics", defaults={"id"=null})
+     * @Route("/{id}", name="admin_statistics", defaults={"id"=0})
      * @Method("GET")
      * @Template()
      */
@@ -132,7 +170,6 @@ class StatisticsController extends AbstractController
             "ageGroupsLabel"=>$ageGroupsLabel,
             "ageGroupsWeight"=>$ageGroupsWeight,
             'scatterData' => json_encode($scatterData), 
-
         ]);
     }
 
