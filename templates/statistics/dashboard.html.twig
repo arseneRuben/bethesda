@@ -10,12 +10,12 @@
      {% endfor %}
 </select>
 <div class="row flex-nowrap justify-content-between align-items-center">
-    <div class="col pt-1">
+    <div class="col-8 pt-1">
 
         <canvas id="canvas_gender">
         </canvas>
     </div>
-    <div class="col pt-1">
+    <div class="col-4 pt-1">
 
         <canvas id="canvas_age_group">
         </canvas>
@@ -29,15 +29,21 @@
 
     <script>
       let canvas_gender =$("#canvas_gender"), canvas_age_group =$("#canvas_age_group");
+     
 
        const datasets = [];
-
        const randomRgbColor = () => {
           let r = Math.floor(Math.random() * 256); // Random between 0-255
           let g = Math.floor(Math.random() * 256); // Random between 0-255
           let b = Math.floor(Math.random() * 256); // Random between 0-255
           return 'rgb(' + r + ',' + g + ',' + b + ')';
       };
+       let colors_age_group =[];
+      ({{ageGroupsLabel|raw}}).forEach(function(label) {
+          colors_age_group.push(randomRgbColor());
+      });
+           
+      
 
            {% if masculin is defined %}
               datasets.push( {
@@ -96,18 +102,35 @@
           });
         });
         
-              console.log( {{ ageGroupsLabel|raw }}, {{ ageGroupsWeight|raw }})
+        
 
          let graph_age_group = new Chart(canvas_age_group, {
                             type:"pie",
                             data : {
                                 labels: {{ ageGroupsLabel|raw }},
                                 datasets: [{ 
-                                  label : ' Repartition des ages par classe ',
                                   data : {{ ageGroupsWeight|raw }},
+                                  backgroundColor: colors_age_group
                                 }]
+                            }, 
+                             options: {
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: ' Repartition des tranches d\'ages par classe ',
+                                        font: {
+                                            size: 24,
+                                          
+                                            family: 'Helvetica Neue',
+                                        },
+                                        position: 'bottom',
+                                        
+                                    }
+                                }
                             }
                         });
+
+        
        $('#select_room').on('change', function() {
             postData = {
               "id":  $(this).val()
