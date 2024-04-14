@@ -141,22 +141,23 @@
                     data: {
                          datasets: [{
                                 label: 'Homme',
-                                data: ({{scatterData|raw}}).filter(item => item.sexe === 'homme').map(item => ({
+                                data: ({{scatterData|raw}}).filter(item => item.sexe === '0').map(item => ({
                                     x: item.age,
-                                    y: item.sexe === 'homme' ? 1 : 0,
+                                    y: item.sexe === '0' ? 1 : 0,
                                     r: item.poids
                                 })),
-                                backgroundColor: 'blue'
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)'
                             }, {
                                 label: 'Femme',
-                                data: ({{scatterData|raw}}).filter(item => item.sexe === 'femme').map(item => ({
+                                data: ({{scatterData|raw}}).filter(item => item.sexe === '1').map(item => ({
                                     x: item.age,
-                                    y: item.sexe === 'femme' ? 1 : 0,
+                                    y: item.sexe === '1' ? 1 : 0,
                                     r: item.poids
                                 })),
-                                backgroundColor: 'pink'
+                                backgroundColor: 'rgba(155, 199, 132, 0.5)'
                         }]
                     },
+                     
                     options: {
                     scales: {
                         x: {
@@ -179,7 +180,7 @@
                             callbacks: {
                                 label: function(context) {
                                     var data = context.dataset.data[context.dataIndex];
-                                    var label = 'Age: ' + data.age + ', Sexe: ' + (data.sexe === 1 ? 'Homme' : 'Femme') + ', Poids: ' + data.poids;
+                                    var label = 'Age: ' + data.age + ', Sexe: ' + (data.sexe === 0 ? 'Homme' : 'Femme') + ', Poids: ' + data.poids;
                                     return label;
                                 }
                             }
