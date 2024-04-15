@@ -55,7 +55,7 @@ class StatisticsController extends AbstractController
     }
 
       /**
-     * Displays a graph updated.
+     * Displays a pdf of students grouping by gender.
      *
      * @Route("printgr/{id}", name="admin_stat_print_gender_room", defaults={"id"=0}  )
      * @Method("GET")
@@ -91,6 +91,46 @@ class StatisticsController extends AbstractController
        
     }
 
+        /**
+     * Displays a pdf of students grouping by gender.
+     *
+     * @Route("printagr/{id}", name="admin_stat_print_age_room", defaults={"id"=0}  )
+     * @Method("GET")
+     * @Template()
+     */
+    public function ageGroupRoomPdf( Pdf $pdf, int $id=0): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $rooms = $this->repo->findAll();
+        if($id > 0){
+            $rooms = $this->repo->findBy(array("id" => $id));
+            $this->viewAgeGroup($id);
+        } else {
+            $this->viewAgeGroup();
+        }
+        $connection = $this->em->getConnection();
+        $age_group_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_ROOM ")->fetchAll();
+        foreach($age_group_datas as $key=>$data){
+            if($data["tranche_age"]>50){
+                unset($age_group_datas[$key]); // Remove data noise
+            }
+        }
+        $html = $this->render('statistics/pdf/age_group_room.html.twig', [
+            "rooms"=>$rooms, 
+            'year' => $year,
+            "age_group_datas"=>$age_group_datas, 
+        ]);
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="stat_gender_room' .( count($rooms)==1 ?  $rooms[0]->getName():"") . '.pdf"'
+            )
+        );
+
+       
+    }
     /**
      * Lists all Sequenceme entities.
      *
@@ -156,7 +196,12 @@ class StatisticsController extends AbstractController
 
         foreach($age_group_gender_datas as $key=>$data){
             if($data["age"]>50){
-                unset($age_group_gender_datas[$key]); // Removes the element at index 2
+                unset($age_group_gender_datas[$key]); // Remove data noise
+            }
+        }
+        foreach($age_group_datas as $key=>$data){
+            if($data["tranche_age"]>50){
+                unset($age_group_datas[$key]); // Remove data noise
             }
         }
         $scatterData = $age_group_gender_datas;
