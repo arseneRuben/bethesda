@@ -98,11 +98,11 @@
 
                     <tbody>
                          <tr>
-                            <td>Inscription 6ème</td>
-                            <td>26 000.00</td>
-                            <td>26 000.00</td>
+                            <td>Inscription {{year.code}}</td>
+                            <td>{{year.rate}}</td>
+                            <td>{{year.rate}}</td>
                             <td>0.00</td>
-                            <td>05/09/2022</td>
+                            <td>{{ sub.createdAt|date("Y/m/d") }}</td>
                         </tr>
                          {% set total =0 %}
                         {% if(installments) %}
