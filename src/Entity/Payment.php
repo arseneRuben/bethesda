@@ -49,6 +49,13 @@ class Payment
      */
     private $student;
 
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="subscription", type="boolean", options={"default":false})
+     */
+    private $subscription = false;
+
 
     public function __construct()
     {
@@ -131,6 +138,18 @@ class Payment
     public function getStudent()
     {
         return $this->student;
+    }
+
+    public function isSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    public function setSubscription(bool $subscription): static
+    {
+        $this->subscription = $subscription;
+
+        return $this;
     }
 
 

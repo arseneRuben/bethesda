@@ -6,6 +6,7 @@ use App\Entity\Student;
 use App\Entity\Payment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Repository\StudentRepository;
@@ -30,7 +31,7 @@ class PaymentType extends AbstractType
         $year = $this->schoolYearService->sessionYearById();
 
         $builder
-         
+            ->add('subscription', CheckboxType::class, array('label' => 'Inscription ?', 'data' => false))
             ->add('amount')
             ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'choices' => $this->stdRepo->findEnrolledStudentsThisYear2()))
         ;
