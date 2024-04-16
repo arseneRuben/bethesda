@@ -84,8 +84,8 @@
                 {% for p in payments %}
                     {% set totalPaid = totalPaid + p.amount %}
                 {% endfor %}  
-                {#  l'inscription a deja ete regle #} 
-                {% set totalPaid = totalPaid - sub.amount %}
+                {#  si l'inscription a deja ete regle #} 
+                
             {% endif %}
             <div class="subContainer3">
                 <p>HISTORIQUE DE PAIEMENT / PAYMENT HISTORY</p>
@@ -106,7 +106,7 @@
                             <td>0.00</td>
                             <td>{{ sub.createdAt|date("Y/m/d") }}</td>
                         </tr>
-                         {% set tranche =0 %}
+                         {% set totalToPay =0 %}
                         {% if(installments) %}
                                     {% for installToPay in installments %}
                                         {% set totalToPay = totalToPay  + installToPay.amount %}
@@ -115,16 +115,16 @@
                                             <td>{{ installToPay.amount }}</td>
                                             <td>
                                                 {% set paye =0 %}
-                                                 {% if( totalToPay >= installToPay )%} 
+                                                 {% if( totalToPay >= totalPaid )%} 
                                                         {% set paye = installToPay.amount %}
-                                                        {% set totalP = totalP - p.amount %}
+                                                        {% set totalPaid = totalPaid - installToPay.amount %}
                                                     {% else %}
-                                                         {% set paye = totalP %}
+                                                         {% set paye = totalPaid %}
                                                 {% endif %}
                                                 {{paye}}
                                             </td>
-                                            <td>{{ p.amount - paye }}</td>
-                                            <td>{{ p.deadline|date('Y-m-d') }}</td>
+                                            <td>{{ installToPay.amount - paye }}</td>
+                                            <td>{{ installToPay.deadline|date('Y-m-d') }}</td>
                                         </tr>
                                     {% endfor %}
                           {% endif %}
@@ -134,9 +134,9 @@
                         <tr>
                             <td>TOTAL</td>
                             <td> {{totalToPay}}</td>
-                            <td> {{totalP}}</td>
-                            <td> {{total - totalP}}</td>
-                            <td>23/12/2022</td>
+                            <td> {{totalPaid}}</td>
+                            <td> {{totalToPay - totalPaid}}</td>
+                            <td>{{(installments|last).deadline|date('Y-m-d') }}</td>
                         </tr>
                     </tfoot>
                 </table>

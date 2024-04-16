@@ -32,7 +32,7 @@ class Payment
 
     
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string", length=25, nullable=true, unique=true)
      */
     private $code;
 

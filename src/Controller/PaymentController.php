@@ -95,7 +95,19 @@ class PaymentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $sub = $this->subRepo->findOneBy(array("student" => $payment->getStudent(), "schoolYear" => $year));
             if($sub != null){
-                
+                if($payment->isSubscription() ){
+                    if( $payment->getAmount() > $year->getRate()) {
+                        $subscriptionPayment = new Payment();
+                        $subscriptionPayment->setAmount($year->getRate());
+                        $subscriptionPayment->setStudent($payment->getStudent());
+                        $subscriptionPayment->setSchoolYear($this->schoolYearService->sessionYearById());
+                        $subscriptionPayment->setCode($this->schoolYearService->sessionYearById()->getCode().'_sub_'.$payment->getStudent()->getId());
+                        $entityManager->persist($subscriptionPayment);
+                        $payment->setAmount($payment->getAmount()-$year->getRate());
+                    } else {
+                        $this->addFlash('warning', 'The amount indicated is not enough to cover the registration');
+                    }
+                } 
                 $payment->setSchoolYear($this->schoolYearService->sessionYearById());
                 $payment->setCode($this->schoolYearService->sessionYearById()->getCode().'_'.$payment->getStudent()->getId().'_'.date("m_d_h_i_s"));
                 $entityManager->persist($payment);
