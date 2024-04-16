@@ -52,29 +52,22 @@
 
                     <tbody>
                         {% if not(lastPayment is empty) %}
-
                             <tr>
                                 <td>Date & Heure / <span>Date & Time</span></td>
                                 <td>{{lastPayment.updatedAt|date('Y-m-d h:i:s') }}</td>
                             </tr>
-        
                             <tr>
                                 <td>Montant payé / <span>Amount paid</span></td>
                                 <td>{{lastPayment.amount}}F CFA</td>
                             </tr>
-        
-                        
-        
                             <tr>
                                 <td>Methode de paiement / <span>Payment type</span></td>
                                 <td>CASH</td>
                             </tr>
-        
                             <tr>
                                 <td>Payé par / <span>Paid by</span></td>
                                 <td>AKONO ABINA FRANCOIS OLIVER</td>
                             </tr>
-                            
                             <tr>
                                 <td>Reçu par / <span>Received by</span></td>
                                 <td> {{get_env("FRENCH_SCHOOL_NAME")|raw }}</td>
@@ -115,7 +108,6 @@
                         {% if(installments) %}
                                     {% for p in installments %}
                                         {% set total = total + p.amount %}
-                       
                                         <tr>
                                             <td>{{ p.ranking }}</td>
                                             <td>{{ p.amount }}</td>

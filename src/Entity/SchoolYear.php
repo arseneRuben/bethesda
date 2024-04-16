@@ -31,9 +31,9 @@ class SchoolYear
     /**
      * @var int
      *
-     * @ORM\Column(name="reductionRrime", type="integer")
+     * @ORM\Column(name="rate", type="integer")
      */
-    private $reductionPrime;
+    private $rate;
 
 
 
@@ -97,27 +97,27 @@ class SchoolYear
 
 
     /**
-     * Set reductionPrime
+     * Set rate
      *
      * @param integer $reductionPrime
      *
      * @return SchoolYear
      */
-    public function setReductionPrime($reductionPrime)
+    public function setRate($reductionPrime)
     {
-        $this->reductionPrime = $reductionPrime;
+        $this->rate = $reductionPrime;
 
         return $this;
     }
 
     /**
-     * Get reductionPrime
+     * Get rate
      *
      * @return integer
      */
-    public function getReductionPrime()
+    public function getRate()
     {
-        return $this->reductionPrime;
+        return $this->rate;
     }
 
     /**

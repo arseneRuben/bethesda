@@ -111,15 +111,12 @@
                                     {% set total = total + data["poids"] %}
                                 </b>
                             </td>
-                          
                         </tr>
                         {% set prev = prev + 1 %}
-                        
-
                     {% endfor %}
                     <tr>
-                            <td colspan="2"> TOTAL </td> <td> {{total}}</td>
-                        </tr>
+                        <td colspan="2"> TOTAL </td> <td> {{total}}</td>
+                    </tr>
                 </tbody>
             </table>
         </main>
