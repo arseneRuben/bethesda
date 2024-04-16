@@ -149,12 +149,12 @@ class StatisticsController extends AbstractController
         }
         $connection = $this->em->getConnection();
         $age_group_gender_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_GENDER_ROOM ")->fetchAll();
-        dd($age_group_gender_datas);
         foreach($age_group_gender_datas as $key=>$data){
             if($data["age"]>50){
                 unset($age_group_gender_datas[$key]); // Remove data noise
             }
         }
+        //dd( $age_group_gender_datas);
         $html = $this->render('statistics/pdf/age_group_gender_room.html.twig', [
             "rooms"=>$rooms, 
             'year' => $year,

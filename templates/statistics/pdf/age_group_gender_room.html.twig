@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>
-           Repartition de classes selon les tranches d'ages
+           Repartition de classes selon les tranches d'ages et leur sexe
                     
         </title>
         <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
@@ -16,10 +16,10 @@
             <h1 style=" text-align:center; ">
                 <b>
                 {% if  (rooms|length > 1) %}
-                    Repartition des eleves de l'etablissement selon les tranches d'ages
+                    Repartition des eleves de l'etablissement selon les tranches d'ages et leur sexe
                     {% else %}
                         {% if(rooms[0].level.cycle.section.name=="Francophone") %}
-                            Repartition des eleves de {{rooms[0].name}} selon les tranches d'ages           
+                            Repartition des eleves de {{rooms[0].name}} selon les tranches d'ages et leur sexe         
                         {% else %}
                             Distribution of students according to their gender                                                                                   
                         {% endif %}
@@ -64,6 +64,15 @@
                                     </span>
                                 </h6>
                         </th>
+                         <th style="text-align:center;">
+                            <h6>
+                                    <span>
+                                        <b>
+                                            SEXE
+                                        </b>
+                                    </span>
+                            </h6>
+                        </th>
                         <th style="text-align:center;">
                             <h6>
                                     <span>
@@ -77,20 +86,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for data in age_group_datas %}
+                    {% set prev = -1  %}
+                    {% set total = 0 %}
+                    {% for index, data in age_group_gender_datas %}
                         <tr>
                              
                             <td class="qty">
-                                {{data["tranche_age"]}}
+                                {% if ( prev < 0 ) %}
+                                  {{data["age"]}}
+                                {% else %}
+                                     {{age_group_gender_datas[prev]["age"] ~ "-" ~ data["age"]}}
+                                {% endif %}
+                            </td>
+                             <td class="qty">
+                                {% if(data["sexe"]=="1")%}
+                                    FEMININ
+                                {% else %}
+                                    MASCULIN
+                                {% endif %}
                             </td>
                             <td class="desc">
                                 <b>
-                                    {{data["effectif"] }}
+                                    {{data["poids"] }}
+                                    {% set total = total + data["poids"] %}
                                 </b>
                             </td>
                           
                         </tr>
+                        {% set prev = prev + 1 %}
+                        
+
                     {% endfor %}
+                    <tr>
+                            <td colspan="2"> TOTAL </td> <td> {{total}}</td>
+                        </tr>
                 </tbody>
             </table>
         </main>
