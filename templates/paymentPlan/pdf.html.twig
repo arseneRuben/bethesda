@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recu de scolarite</title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/tuition_receipt.css')) }}" />
+
+</head>
+<body>
+        <div class="container">
+                   {{ include('classroom/partials/header.html.twig') }}
+
+            <div class="subContainer1">
+                <div class="intitule">
+                    <p> Delais de reglement des frais de scolarite / Deadlines for payment of tuition fees</p>
+                    Année / Year  :  {{plan.schoolYear.code}}
+                     {% if  (rooms|length > 1) %}
+                    {% else %}
+                        {{rooms[0].name}}
+                    {% endif %}
+                </div>
+
+            </div>
+             <div class="subContainer3">
+                <p>ECHEANCIER / TIMELINE</p>
+                <table>
+                    <thead>
+                        <th> CLASSE / CLASSROOM </th>
+                        <th> POSITION </th>
+                        <th>A PAYER <span>TO PAY(FCFA)</span></th>
+                        <th>DATE <span>LIMITE DEADLINE</span></th>
+                    </thead>
+
+                    <tbody>
+                         <tr>
+                            
+                            <td colspan="2">Inscription {{plan.schoolYear.code}}</td>
+                            <td>{{plan.schoolYear.rate}}</td>
+                            <td>{{plan.schoolYear.startDate|date_modify('+1 week')|date("Y-m-d")}}</td>
+                        </tr>
+                        {% set subTotal = 0 %}
+                        {% set currentClass = (installments|first).classroom.name %}
+
+                        {% for installToPay in installments %}
+                           
+                            {% if( installToPay.classroom.name != currentClass )%}
+                                 <tr>
+                                    <td>{{ currentClass }}</td>
+                                    <td>TOTAL</td>
+                                    <td colspan="2">{{ subTotal }}</td>
+                                </tr>
+                                {% set subTotal = 0 %}
+                                {% set currentClass = installToPay.classroom.name %}
+
+                            {% endif %}
+                            <tr>
+                                    <td>{{ installToPay.classroom.name }}</td>
+                                    <td>{{ installToPay.ranking }}</td>
+                                    <td>{{ installToPay.amount }}</td>
+                                    <td>{{ installToPay.deadline|date('Y-m-d') }}</td>
+                            </tr>                                  
+                            {% set subTotal = subTotal +  installToPay.amount  %}
+      
+                        {% endfor %}
+                    
+                    </tbody>
+
+                    
+                </table>
+                <div class="end">
+                    <p>Cachier / Le Caissier</p>
+                </div>
+            </div>

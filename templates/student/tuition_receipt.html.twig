@@ -79,11 +79,13 @@
                     
                 </table>
             </div>
-            {% set totalP =0 %}
+            {% set totalPaid =0 %}
             {% if(payments) %}
                 {% for p in payments %}
-                    {% set totalP = totalP + p.amount %}
-                {% endfor %}                    
+                    {% set totalPaid = totalPaid + p.amount %}
+                {% endfor %}  
+                {#  l'inscription a deja ete regle #} 
+                {% set totalPaid = totalPaid - sub.amount %}
             {% endif %}
             <div class="subContainer3">
                 <p>HISTORIQUE DE PAIEMENT / PAYMENT HISTORY</p>
@@ -104,17 +106,17 @@
                             <td>0.00</td>
                             <td>{{ sub.createdAt|date("Y/m/d") }}</td>
                         </tr>
-                         {% set total =0 %}
+                         {% set tranche =0 %}
                         {% if(installments) %}
-                                    {% for p in installments %}
-                                        {% set total = total + p.amount %}
+                                    {% for installToPay in installments %}
+                                        {% set totalToPay = totalToPay  + installToPay.amount %}
                                         <tr>
-                                            <td>{{ p.ranking }}</td>
-                                            <td>{{ p.amount }}</td>
+                                            <td>{{ installToPay.ranking }}</td>
+                                            <td>{{ installToPay.amount }}</td>
                                             <td>
                                                 {% set paye =0 %}
-                                                 {% if( totalP >= total )%} 
-                                                        {% set paye = p.amount %}
+                                                 {% if( totalToPay >= installToPay )%} 
+                                                        {% set paye = installToPay.amount %}
                                                         {% set totalP = totalP - p.amount %}
                                                     {% else %}
                                                          {% set paye = totalP %}
@@ -131,7 +133,7 @@
                     <tfoot>
                         <tr>
                             <td>TOTAL</td>
-                            <td> {{total}}</td>
+                            <td> {{totalToPay}}</td>
                             <td> {{totalP}}</td>
                             <td> {{total - totalP}}</td>
                             <td>23/12/2022</td>

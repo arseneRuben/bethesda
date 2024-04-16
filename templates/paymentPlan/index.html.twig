@@ -13,6 +13,10 @@
                                                         <a style="width:3%;" class="btn btn-warning " href="{{ path('admin_paymentPlans_edit', {id: year.paymentPlan.id}) }}">
                                                                 <i class="fa fa-edit"  aria-hidden="true"></i> 
                                                         </a>
+                                                        &nbsp;&nbsp;&nbsp;
+                                                        <a style="width:3%;" class="btn btn-primary " target="_blank" href="{{ path('admin_payment_plan_print', {id: 0}) }}">
+                                                                <i class="fa fa-file"  aria-hidden="true"></i> 
+                                                        </a>
                                                     {% else %}
                                                         <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
                                                         <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">

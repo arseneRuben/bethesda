@@ -29,9 +29,8 @@ class PaymentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $year = $this->schoolYearService->sessionYearById();
-
         $builder
-            ->add('subscription', CheckboxType::class, array('label' => 'Inscription ?', 'data' => false))
+            ->add('subscription', CheckboxType::class, array('label' => 'Ce payement inclut-il l\'inscription ?', 'data' => false))
             ->add('amount')
             ->add('student', EntityType::class, array('class' => Student::class,  'placeholder' => 'Eleve', 'required' => true,  'choices' => $this->stdRepo->findEnrolledStudentsThisYear2()))
         ;

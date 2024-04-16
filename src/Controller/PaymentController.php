@@ -17,6 +17,7 @@ use App\Service\SchoolYearService;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Filter\PaymentSearch;
 use App\Form\Filter\PaymentSearchType;
+use App\Repository\SubscriptionRepository;
 
 
 /**
@@ -32,16 +33,18 @@ class PaymentController extends AbstractController
     private ClassRoomRepository    $clRepo;
     private QuaterRepository    $qtRepo;
     private StudentRepository    $stdRepo;
+    private SubscriptionRepository $subRepo;
 
 
 
-    public function __construct(StudentRepository    $stdRepo,QuaterRepository $qtRepo, PaymentRepository $repo, SchoolYearService $schoolYearService, EntityManagerInterface $em,  ClassRoomRepository $clRepo)
+    public function __construct(SubscriptionRepository    $subRepo,StudentRepository    $stdRepo,QuaterRepository $qtRepo, PaymentRepository $repo, SchoolYearService $schoolYearService, EntityManagerInterface $em,  ClassRoomRepository $clRepo)
     {
         $this->em                = $em;
         $this->repo              = $repo;
         $this->qtRepo              = $qtRepo;
         $this->clRepo            = $clRepo;
         $this->stdRepo            = $stdRepo;
+        $this->subRepo            = $subRepo;
         $this->schoolYearService = $schoolYearService;
     }
 
@@ -87,14 +90,20 @@ class PaymentController extends AbstractController
         $payment = new Payment();
         $form = $this->createForm(PaymentType::class, $payment);
         $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $payment->setSchoolYear($this->schoolYearService->sessionYearById());
-            $payment->setCode($this->schoolYearService->sessionYearById()->getCode().'_'.$payment->getStudent()->getId().'_'.date("m_d_h_i_s"));
-            $entityManager->persist($payment);
-            $entityManager->flush();
-            return $this->redirectToRoute('admin_student_receipt', ['id' => $payment->getStudent()->getId()]);
+        $year = $this->schoolYearService->sessionYearById();
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sub = $this->subRepo->findOneBy(array("student" => $payment->getStudent(), "schoolYear" => $year));
+            if($sub != null){
+                
+                $payment->setSchoolYear($this->schoolYearService->sessionYearById());
+                $payment->setCode($this->schoolYearService->sessionYearById()->getCode().'_'.$payment->getStudent()->getId().'_'.date("m_d_h_i_s"));
+                $entityManager->persist($payment);
+                $entityManager->flush();
+                return $this->redirectToRoute('admin_student_receipt', ['id' => $payment->getStudent()->getId()]);
+            } else {
+                $this->addFlash('warning', 'This student is not yet registered. Please first assign him to a class ');
+            }
         }
 
         return $this->renderForm('payment/new.html.twig', [

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\PaymentPlan;
 use App\Entity\Installment;
+use App\Entity\ClassRoom;
 use App\Form\PaymentPlanType;
 use App\Repository\ClassRoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,11 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Repository\PaymentPlanRepository;
 use App\Repository\PaymentRepository;
+use App\Repository\InstallmentRepository;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\SchoolYearService;
+use Knp\Snappy\Pdf;
 
 /**
  * ClassRoom controller.
@@ -37,12 +41,14 @@ class PaymentPlanController extends AbstractController
         PaymentPlanRepository $repo,
         SchoolYearRepository $scRepo,
         ClassRoomRepository $clRepo,
+        InstallmentRepository $instRepo,
         SchoolYearService $schoolYearService
     ) {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->clRepo = $clRepo;
+        $this->instRepo = $instRepo;
         $this->schoolYearService = $schoolYearService;
 
     }
@@ -161,5 +167,38 @@ class PaymentPlanController extends AbstractController
         }
 
         return $this->redirectToRoute('app_payment_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+     /**
+     * Displays a pdf of schedule of payment of a class or all the scholl.
+     *
+     * @Route("print/{id}", name="admin_payment_plan_print", defaults={"id"=0}  )
+     * @Method("GET")
+     * @Template()
+     */
+    public function print(Pdf $pdf, int $id=0): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $rooms = $this->clRepo->findAll();
+        if($id > 0){
+            $rooms = $this->clRepo->findBy(array("id" => $id));
+            $installments = $this->instRepo->findBy(array("paymentPlan" => $year->getPaymentPlan(), "classRoom"=>$rooms[0]));
+        } else {
+            $installments = $this->instRepo->findBy(array("paymentPlan" => $year->getPaymentPlan()), array( "classRoom"=>"ASC"));
+        }
+        $html = $this->renderView('paymentPlan/pdf.html.twig', array(
+            'plan' => $year->getPaymentPlan(),
+            "rooms"=>$rooms, 
+            "installments" => $installments
+        ));
+
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="plan_scolarite_'.$year->getCode() . "_". ( count($rooms)==1 ?  $rooms[0]->getName():"") . '.pdf"'
+            )
+        );
     }
 }

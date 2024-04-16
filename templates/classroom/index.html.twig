@@ -71,9 +71,14 @@
                                                 &nbsp;Recap. vierge
                                             </i>
                                         </a>
-                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
+                                        {#<a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
                                             <i class="fa fa-th-list" aria-hidden="true">
                                                 &nbsp;Fiche annu.
+                                            </i>
+                                        </a>#}
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_payment_plan_print', {id: room.id}) }}">
+                                            <i class="fa fa-money" aria-hidden="true">
+                                                &nbsp;Echeancier
                                             </i>
                                         </a>
                                         <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_disciplinary_record', {id: room.id}) }}">
