@@ -73,7 +73,9 @@
                                         
                             </td>
                         {% endfor %}
-                        
+                        <td rowspan="2">
+                            EFFECTIF
+                        </td>
                       
                        
                     </tr>
@@ -113,6 +115,7 @@
                         
                     {% for  index,data in age_group_gender_datas %}
                         <tr>
+                            {% set roomTotal = 0 %}
                             <td class="qty">
                                   {{roomNames[index]}}
                             </td>
@@ -139,9 +142,14 @@
                             </td>
                             <td>
                                 {{total}}
+                                 {% set roomTotal = roomTotal + total %}
                             </td>
                             {% endfor %}
-                             
+                           
+
+                            <td>
+                                  {{roomTotal}}
+                            </td>
                         </tr>
                        
                     {% endfor %}

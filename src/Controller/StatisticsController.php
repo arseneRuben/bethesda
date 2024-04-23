@@ -154,6 +154,10 @@ class StatisticsController extends AbstractController
             foreach ($rooms as $room) {
                 $roomNames[$room->getId()] = $room->getName();
             }
+            foreach ($this->numberPerClass() as $line) {
+                
+                $numberPerClass[$line["room"]] = $line["poids"];
+            }
            // dd($age_group_gender_datas);
         }
         
@@ -165,6 +169,7 @@ class StatisticsController extends AbstractController
             'year' => $year,
             "minAge" => $this->findMinMaxAge()[0]["minAge"],
             "maxAge" => $this->findMinMaxAge()[0]["maxAge"],
+            "numberPerClass" => $numberPerClass,
             "age_group_gender_datas"=>$age_group_gender_datas, 
         ]);
         $options = [
@@ -392,7 +397,20 @@ class StatisticsController extends AbstractController
            $statement = $connection->prepare($query);
            $result =  $statement->executeQuery($parameters)->fetchAll();
            return $result;
+        }
 
+        public function numberPerClass(){
+            $connection = $this->em->getConnection();
+            $year = $this->schoolYearService->sessionYearById();
+            $query = " SELECT COUNT(std.id) AS poids , sub.class_room_id AS room
+                FROM student std
+                JOIN  subscription sub    ON  sub.student_id      =   std.id  
+                WHERE sub.school_year_id = :year
+                GROUP BY ( sub.class_room_id)  ";
+           $parameters = ['year' => $year->getId()];
+           $statement = $connection->prepare($query);
+           $result =  $statement->executeQuery($parameters)->fetchAll();
+           return $result;
         }
 
 
