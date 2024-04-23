@@ -170,7 +170,10 @@ class StatisticsController extends AbstractController
         ]);
         $options = [
             'orientation' => 'landscape',
-            // Other options
+            'margin-top' => 0,
+            'margin-right' => 0,
+            'margin-bottom' => 0,
+            'margin-left' => 0,
         ];
         return new Response(
             $pdf->getOutputFromHtml($html, $options),
@@ -383,7 +386,7 @@ class StatisticsController extends AbstractController
             $connection = $this->em->getConnection();
             $year = $this->schoolYearService->sessionYearById();
 
-            $query = " SELECT MIN(YEAR(NOW()) - YEAR(std.birthday)) AS minAge, 
+            $query = " SELECT MIN(YEAR(NOW()) - YEAR(std.birthday)-1) AS minAge, 
                         MAX(YEAR(NOW()) - YEAR(std.birthday)) AS maxAge 
                   FROM student std
                   JOIN  subscription sub    ON  sub.student_id      =   std.id  
