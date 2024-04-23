@@ -154,10 +154,7 @@ class StatisticsController extends AbstractController
             foreach ($rooms as $room) {
                 $roomNames[$room->getId()] = $room->getName();
             }
-            foreach ($this->numberPerClass() as $line) {
-                
-                $numberPerClass[$line["room"]] = $line["poids"];
-            }
+           
            // dd($age_group_gender_datas);
         }
         
@@ -169,7 +166,6 @@ class StatisticsController extends AbstractController
             'year' => $year,
             "minAge" => $this->findMinMaxAge()[0]["minAge"],
             "maxAge" => $this->findMinMaxAge()[0]["maxAge"],
-            "numberPerClass" => $numberPerClass,
             "age_group_gender_datas"=>$age_group_gender_datas, 
         ]);
         $options = [

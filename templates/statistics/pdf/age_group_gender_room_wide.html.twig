@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
         <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
     </head>
-    <body>
+    <body style=" font-size : 0.5em ">
         <header class="clearfix">
             {{ include('classroom/partials/header.html.twig') }}
 
@@ -64,18 +64,24 @@
                                     </span>
                                 </h6>
                         </td>
+                        {% set effectifPerAge = [] %}
+                        {% set effectifMascPerAge = [] %}
+                        {% set effectifFemPerAge = [] %}
                         {% for age in minAge .. maxAge %}
                             <td colspan="3">
-                               
                                             <b>
                                                 {{age ~ "ans"}}
                                             </b>
-                                        
                             </td>
+                            {% set effectifPerAge = effectifPerAge|merge({ (age ~ "ans") : 0 }) %}
+                            {% set effectifMascPerAge = effectifMascPerAge|merge({ (age ~ "ans") : 0 }) %}
+                            {% set effectifFemPerAge = effectifFemPerAge|merge({ (age ~ "ans") : 0 }) %}
+
+
                         {% endfor %}
-                        <td rowspan="2">
+                        {#<td rowspan="2">
                             EFFECTIF
-                        </td>
+                        </td>#}
                       
                        
                     </tr>
@@ -113,7 +119,7 @@
                 </thead>
                 <tbody>
                         
-                    {% for  index,data in age_group_gender_datas %}
+                    {% for  index,roomData in age_group_gender_datas %}
                         <tr>
                             {% set roomTotal = 0 %}
                             <td class="qty">
@@ -122,20 +128,23 @@
                             {% for age in minAge .. maxAge %}
                             {% set total = 0 %}
                             <td >
-                                        {% for line in data %}
-                                            {% if( age == line["age"] and line["sexe"]=="0" ) %}
-                                                {{line["poids"]}}  
-                                                {% set total = total + line["poids"] %}                 
+                                        {% for triplet in roomData %}
+                                            {% if( age == triplet["age"] and triplet["sexe"]=="0" ) %}
+                                                {{triplet["poids"]}}  
+                                                {% set total = total + triplet["poids"] %} 
                                             {% endif %}
+                                           
                                          {% endfor %}
 
                             </td>
+
                             <td >
                                     
-                                         {% for line in data %}
-                                            {% if( age == line["age"] and line["sexe"]=="1" ) %}
-                                                {{line["poids"]}}      
-                                                {% set total = total + line["poids"] %}                 
+                                         {% for triplet in roomData %}
+                                            {% if( age == triplet["age"] and triplet["sexe"]=="1" ) %}
+                                                {{triplet["poids"]}}      
+                                                {% set total = total + triplet["poids"] %} 
+     
                                             {% endif %}
                                          {% endfor %}
                                 
@@ -147,12 +156,43 @@
                             {% endfor %}
                            
 
-                            <td>
+                            {#<td>
                                   {{roomTotal}}
-                            </td>
+                            </td>#}
                         </tr>
-                       
+                        {% for triplet in roomData %}
+                           
+                            {% set effectifPerAge = effectifPerAge|merge({ (triplet["age"] ~ "ans") : (attribute(effectifPerAge,(triplet["age"] ~ "ans")) + triplet["poids"]) }) %}
+                            {% if(  triplet["sexe"]=="1" ) %}
+                                {% set effectifFemPerAge = effectifFemPerAge|merge({ (triplet["age"] ~ "ans") : (attribute(effectifFemPerAge,(triplet["age"] ~ "ans")) + triplet["poids"]) }) %}
+                            {% else %}
+                                {% set effectifMascPerAge = effectifMascPerAge|merge({ (triplet["age"] ~ "ans") : (attribute(effectifMascPerAge,(triplet["age"] ~ "ans")) + triplet["poids"]) }) %}
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
+                    <tr>
+                        <td>
+                            TOTAL
+                        </td>
+                         {% for age in minAge .. maxAge %}
+                            <td>
+                                <b>
+                                 {{attribute(effectifMascPerAge,(age ~ "ans"))}} 
+                                </b>     
+                            </td>
+                            <td>
+                                <b>
+                                 {{attribute(effectifFemPerAge,(age ~ "ans"))}} 
+                                 </b>     
+                            </td>
+                            <td>
+                                <b>
+                                 {{attribute(effectifPerAge,(age ~ "ans"))}} 
+                                </b>     
+                            </td>
+                        {% endfor %}
+
+                    </tr>
                    
                 </tbody>
             </table>
