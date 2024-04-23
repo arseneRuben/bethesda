@@ -49,12 +49,12 @@
             </div>
         </header>
         <main>
-            <table class="table">
+            <table  class="table">
                 <thead>
                     <tr>
                         
                         
-                        <th style="text-align:center;">
+                        <td    rowspan="2">
                                 <h6>
                                     <span>
                                         <b>
@@ -63,58 +63,89 @@
                                         </b>
                                     </span>
                                 </h6>
-                        </th>
+                        </td>
                         {% for age in minAge .. maxAge %}
-                            <th style="text-align:center;">
-                                <h6>
-                                        <span>
+                            <td colspan="3">
+                               
                                             <b>
                                                 {{age ~ "ans"}}
                                             </b>
-                                        </span>
-                                </h6>
-                            </th>
+                                        
+                            </td>
                         {% endfor %}
                         
-                        <th style="text-align:center;">
-                            <h6>
-                                    <span>
-                                        <b>
-                                            EFFECTIF
-                                        </b>
-                                    </span>
-                            </h6>
-                        </th>
+                      
+                       
+                    </tr>
+                    <tr>
+                        
+                        
+                        
+                        {% for age in minAge .. maxAge %}
+                            <td >
+                              
+                                            <b>
+                                               M
+                                            </b>
+                                       
+                            </td>
+                              <td >
+                              
+                                            <b>
+                                                F
+                                            </b>
+                                       
+                            </td>
+                             <td >
+                              
+                                            <b>
+                                                T
+                                            </b>
+                                       
+                            </td>
+                        {% endfor %}
+                        
+                        
                        
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    {% set total = 0 %}
+                        
                     {% for  index,data in age_group_gender_datas %}
                         <tr>
-                             
                             <td class="qty">
-                               
-                                  {{index}}
+                                  {{roomNames[index]}}
+                            </td>
+                            {% for age in minAge .. maxAge %}
+                            {% set total = 0 %}
+                            <td >
+                                        {% for line in data %}
+                                            {% if( age == line["age"] and line["sexe"]=="0" ) %}
+                                                {{line["poids"]}}  
+                                                {% set total = total + line["poids"] %}                 
+                                            {% endif %}
+                                         {% endfor %}
+
+                            </td>
+                            <td >
+                                    
+                                         {% for line in data %}
+                                            {% if( age == line["age"] and line["sexe"]=="1" ) %}
+                                                {{line["poids"]}}      
+                                                {% set total = total + line["poids"] %}                 
+                                            {% endif %}
+                                         {% endfor %}
                                 
                             </td>
-                             {% for line in data %}
-                                <td style="text-align:center;">
-                                    
-                                         {{data[0]["poids"]}}                                        
-                                                                    
-                                         
-                                
-                                </td>
-                             {% endfor %}
+                            <td>
+                                {{total}}
+                            </td>
+                            {% endfor %}
                              
                         </tr>
                        
                     {% endfor %}
-                    <tr>
-                        <td colspan="2"> TOTAL </td> <td> {{total}}</td>
-                    </tr>
+                   
                 </tbody>
             </table>
         </main>

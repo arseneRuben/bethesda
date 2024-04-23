@@ -151,13 +151,17 @@ class StatisticsController extends AbstractController
                 $this->viewGenderAgeGroup($room->getId());
                 $age_group_gender_datas[$room->getId()] = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_GENDER_ROOM ")->fetchAll();
             }
-
+            foreach ($rooms as $room) {
+                $roomNames[$room->getId()] = $room->getName();
+            }
+           // dd($age_group_gender_datas);
         }
         
       
 
         $html = $this->render($id > 0 ? 'statistics/pdf/age_group_gender_room.html.twig' :  'statistics/pdf/age_group_gender_room_wide.html.twig'  , [
             "rooms"=>$rooms, 
+            "roomNames"=>$roomNames,
             'year' => $year,
             "minAge" => $this->findMinMaxAge()[0]["minAge"],
             "maxAge" => $this->findMinMaxAge()[0]["maxAge"],
