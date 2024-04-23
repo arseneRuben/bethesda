@@ -110,11 +110,7 @@ class StatisticsController extends AbstractController
         }
         $connection = $this->em->getConnection();
         $age_group_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_ROOM ")->fetchAll();
-        foreach($age_group_datas as $key=>$data){
-            if($data["tranche_age"]>50){
-                unset($age_group_datas[$key]); // Remove data noise
-            }
-        }
+      
         $html = $this->render('statistics/pdf/age_group_room.html.twig', [
             "rooms"=>$rooms, 
             'year' => $year,
@@ -141,27 +137,38 @@ class StatisticsController extends AbstractController
     {
         $year = $this->schoolYearService->sessionYearById();
         $rooms = $this->repo->findAll();
+        $connection = $this->em->getConnection();
+
         if($id > 0){
             $rooms = $this->repo->findBy(array("id" => $id));
             $this->viewGenderAgeGroup($id);
+            $age_group_gender_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_GENDER_ROOM ")->fetchAll();
+
+        
         } else {
-            $this->viewGenderAgeGroup();
-        }
-        $connection = $this->em->getConnection();
-        $age_group_gender_datas = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_GENDER_ROOM ")->fetchAll();
-        foreach($age_group_gender_datas as $key=>$data){
-            if($data["age"]>50){
-                unset($age_group_gender_datas[$key]); // Remove data noise
+            $rooms = $this->repo->findAll();
+            foreach($rooms as $key=>$room){
+                $this->viewGenderAgeGroup($room->getId());
+                $age_group_gender_datas[$room->getId()] = $connection->executeQuery("SELECT *  FROM V_AGE_GROUP_GENDER_ROOM ")->fetchAll();
             }
+
         }
-        //dd( $age_group_gender_datas);
-        $html = $this->render('statistics/pdf/age_group_gender_room.html.twig', [
+        
+      
+
+        $html = $this->render($id > 0 ? 'statistics/pdf/age_group_gender_room.html.twig' :  'statistics/pdf/age_group_gender_room_wide.html.twig'  , [
             "rooms"=>$rooms, 
             'year' => $year,
+            "minAge" => $this->findMinMaxAge()[0]["minAge"],
+            "maxAge" => $this->findMinMaxAge()[0]["maxAge"],
             "age_group_gender_datas"=>$age_group_gender_datas, 
         ]);
+        $options = [
+            'orientation' => 'landscape',
+            // Other options
+        ];
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $pdf->getOutputFromHtml($html, $options),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -234,16 +241,7 @@ class StatisticsController extends AbstractController
         $ageGroupsWeight = json_encode($age_groups_weight);
         $ageGroupsLabel = json_encode($age_groups_label);
 
-        foreach($age_group_gender_datas as $key=>$data){
-            if($data["age"]>50){
-                unset($age_group_gender_datas[$key]); // Remove data noise
-            }
-        }
-        foreach($age_group_datas as $key=>$data){
-            if($data["tranche_age"]>50){
-                unset($age_group_datas[$key]); // Remove data noise
-            }
-        }
+       
         $scatterData = $age_group_gender_datas;
        
         
@@ -266,14 +264,14 @@ class StatisticsController extends AbstractController
                 $statement = $connection->prepare(
                     " CREATE OR REPLACE VIEW V_AGE_GROUP_ROOM  AS
                         SELECT
-                            FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS tranche_age,
+                            FLOOR(DATEDIFF(NOW(), birthday) / 365)  AS tranche_age,
                             COUNT(*) AS effectif
                         FROM  student    std  
                         JOIN  subscription sub    ON  sub.student_id      =   std.id     
                         JOIN  class_room room    ON  sub.class_room_id     =   room.id
                         WHERE sub.school_year_id =? AND  room.id = ?
                         GROUP BY
-                            FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                             tranche_age
                         ORDER BY
                             tranche_age;
                     "
@@ -283,14 +281,14 @@ class StatisticsController extends AbstractController
                 $statement = $connection->prepare(
                     " CREATE OR REPLACE VIEW V_AGE_GROUP_ROOM  AS
                     SELECT
-                        FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS tranche_age,
+                        FLOOR(DATEDIFF(NOW(), birthday) / 365 )  AS tranche_age,
                         COUNT(*) AS effectif
                     FROM  student    std  
                     JOIN  subscription sub    ON  sub.student_id      =   std.id     
                     JOIN  class_room room    ON  sub.class_room_id     =   room.id
                     WHERE sub.school_year_id =? 
                     GROUP BY
-                        FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                         tranche_age
                     ORDER BY
                         tranche_age;
                     "
@@ -339,14 +337,14 @@ class StatisticsController extends AbstractController
                 $statement = $connection->prepare(
                     " CREATE OR REPLACE VIEW V_AGE_GROUP_GENDER_ROOM  AS
                         SELECT
-                            FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS age, std.gender as sexe,
+                            FLOOR(DATEDIFF(NOW(), birthday) / 365 )  AS age, std.gender as sexe,
                             COUNT(std.id) AS poids
                         FROM  student    std  
                         JOIN  subscription sub    ON  sub.student_id      =   std.id     
                         JOIN  class_room room    ON  sub.class_room_id     =   room.id
                         WHERE sub.school_year_id =? AND  room.id = ?
                         GROUP BY
-                                std.gender, FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                                std.gender, age
                         ORDER BY
                             age;
                     "
@@ -356,14 +354,14 @@ class StatisticsController extends AbstractController
                 $statement = $connection->prepare(
                     " CREATE OR REPLACE VIEW V_AGE_GROUP_GENDER_ROOM  AS
                     SELECT
-                        FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5) * 5 AS age, std.gender as sexe,
+                        FLOOR(DATEDIFF(NOW(), birthday) / 365 )  AS age, std.gender as sexe,
                         COUNT(std.id) AS poids
                     FROM  student    std  
                     JOIN  subscription sub    ON  sub.student_id      =   std.id     
                     JOIN  class_room room    ON  sub.class_room_id     =   room.id
                     WHERE sub.school_year_id =? 
                     GROUP BY
-                         std.gender, FLOOR(DATEDIFF(NOW(), birthday) / 365 / 5)
+                         std.gender, age
                     ORDER BY
                         age;
                     "
@@ -372,5 +370,26 @@ class StatisticsController extends AbstractController
             $statement->bindValue(1, $year->getId());
             $statement->execute();
         }
+
+
+
+        public function findMinMaxAge()
+        {
+            $connection = $this->em->getConnection();
+            $year = $this->schoolYearService->sessionYearById();
+
+            $query = " SELECT MIN(YEAR(NOW()) - YEAR(std.birthday)) AS minAge, 
+                        MAX(YEAR(NOW()) - YEAR(std.birthday)) AS maxAge 
+                  FROM student std
+                  JOIN  subscription sub    ON  sub.student_id      =   std.id  
+                  WHERE sub.school_year_id = :year   
+                ";
+           $parameters = ['year' => $year->getId()];
+           $statement = $connection->prepare($query);
+           $result =  $statement->executeQuery($parameters)->fetchAll();
+           return $result;
+
+        }
+
 
 }

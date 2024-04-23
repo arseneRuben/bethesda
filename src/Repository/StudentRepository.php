@@ -258,4 +258,16 @@ class StudentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findMinMaxAge(): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT DATEDIFF(NOW(), birthday) as minAge, 
+                    DATEDIFF(NOW(), birthday)  ) as maxAge
+             FROM App\Entity\Student s'
+        );
+        return $query->getResult();
+
+    }
 }
