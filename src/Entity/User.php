@@ -150,10 +150,10 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(name="location", type="string", length=255, nullable=true)
      */
     protected $location;
-      /**
-     * @var string
-     *
-     * @ORM\Column(name="region", type="string", length=255, nullable=true)
+    /** @ORM\Column(name="region", nullable=true, unique=false, length=10) 
+     * @Assert\Choice(
+     * choices = { "Adamaoua", "Centre" ,"Est", "Extrême-Nord" ,"Littoral", "Nord", "Nord-Ouest" ,"Ouest", "Sud", "Sud-Ouest"},
+     * message = "précisez votre region d'origine")
      */
     protected $region;
       /**
@@ -891,17 +891,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this->isVerified;
     }
 
-    public function getRegion(): ?string
-    {
-        return $this->region;
-    }
-
-    public function setRegion(?string $region): static
-    {
-        $this->region = $region;
-
-        return $this;
-    }
+ 
 
     public function getDepartment(): ?string
     {
@@ -911,6 +901,18 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function setDepartment(?string $department): static
     {
         $this->department = $department;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): static
+    {
+        $this->region = $region;
 
         return $this;
     }

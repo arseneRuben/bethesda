@@ -42,7 +42,7 @@
                                 
                                     <td>{{ user.fullName }}</td>
                                     <td>{{ user.domain }}</td>
-                                    <td>{% if user.gender==1  %} F {% else %} M {% endif %} </td>
+                                    <td>{% if user.gender == 0  %} M {% else %} F {% endif %}</td>
                                     <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
                                     <td>{{ user.birthplace }}</td>
                                     <td>{{ user.location }}</td>

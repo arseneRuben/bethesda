@@ -25,7 +25,9 @@
                                 <th style="width:10%;" scope="col">Date de naissance</th>
                                 <th style="width:10%;" scope="col">Lieu de naissance</th>
                                 <th style="width:10%;" scope="col">Residence</th>
-                                <th style="width:15%;" scope="col">Contact</th>
+                                <th style="width:10%;" scope="col">Region</th>
+                                <th style="width:10%;" scope="col">Departement</th>
+                                <th style="width:10%;" scope="col">Contact</th>
 
                             </tr>
                         </thead>
@@ -38,6 +40,8 @@
                                     <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
                                     <td>{{ user.birthplace }}</td>
                                     <td>{{ user.location }}</td>
+                                    <td>{{ user.region }}</td>
+                                    <td>{{ user.department }}</td>
                                     <td> {{ user.phoneNumber}} </td>
                                    
                                 </tr>
