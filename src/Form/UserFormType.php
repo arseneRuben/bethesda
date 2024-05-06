@@ -72,6 +72,16 @@ class UserFormType extends AbstractType
                 'required' => true,
                 'constraints' => new Assert\NotBlank(),
                 'trim' => true])
+            ->add('department', TextType::class, [
+                    'label' => 'Departement d\'origine',
+                    'required' => true,
+                    'constraints' => new Assert\NotBlank(),
+                    'trim' => true])
+            ->add('region', TextType::class, [
+                        'label' => 'Region d\'origine',
+                        'required' => true,
+                        'constraints' => new Assert\NotBlank(),
+                        'trim' => true])
             ->add('status', ChoiceType::class, array(
                 'constraints' => new Assert\NotBlank(),
                 'choices' => array(

@@ -150,6 +150,18 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @ORM\Column(name="location", type="string", length=255, nullable=true)
      */
     protected $location;
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="region", type="string", length=255, nullable=true)
+     */
+    protected $region;
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="department", type="string", length=255, nullable=true)
+     */
+    protected $department;
 
     /** @ORM\Column(name="academicLevel", nullable=true, unique=false, length=10) 
      * @Assert\Choice(
@@ -877,6 +889,30 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function isIsVerified(): ?bool
     {
         return $this->isVerified;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): static
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?string
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?string $department): static
+    {
+        $this->department = $department;
+
+        return $this;
     }
 
   
