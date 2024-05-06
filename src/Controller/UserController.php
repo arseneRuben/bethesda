@@ -206,6 +206,24 @@ class UserController extends AbstractController
         ]);
     }
 
+     /**
+     * Displays a form to edit an existing Programme entity.
+     *
+     * @Route("/{id}/toggle", name="admin_users_toggle", requirements={"id"="\d+"}, methods={"GET","PUT"})
+     * @Template()
+     */
+    public function toggleIsVerified(Request $request, User $user)
+    {
+       
+
+       $user->toggleIsVerified();
+       $entityManager = $this->getDoctrine()->getManager();
+       $entityManager->persist($user);
+       $entityManager->flush();
+       return $this->redirectToRoute('admin_users');
+        
+    }
+
     /**
      * Deletes a Programme entity.
      *

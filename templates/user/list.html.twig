@@ -42,7 +42,7 @@
                                 
                                     <td>{{ user.fullName }}</td>
                                     <td>{{ user.domain }}</td>
-                                    <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
+                                    <td>{% if user.gender==1  %} F {% else %} M {% endif %} </td>
                                     <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
                                     <td>{{ user.birthplace }}</td>
                                     <td>{{ user.location }}</td>
@@ -51,6 +51,14 @@
                                         <div class="btn-group">
                                             <a class="btn btn-outline-warning btn-sm" href="{{ path('admin_users_edit', {id: user.id}) }}">
                                                 <i class="fa fa-edit"></i>
+                                            </a>
+                                             <a class="btn btn-outline-primary btn-sm" href="{{ path('admin_users_toggle', {id: user.id}) }}">
+                                             {% if user.isVerified == 0 %}
+                                                 <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> 
+                                             {% else %} 
+                                                 <i class="fa fa-thumbs-up" aria-hidden="true"></i> 
+                                             {% endif %} 
+                                               
                                             </a>
                                         </div>
                                     </td>
