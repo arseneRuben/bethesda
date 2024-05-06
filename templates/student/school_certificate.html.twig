@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/certificat.css')) }}" />
+    <title>Certificat de scolarité</title>
+</head>
+<body>
+    <header>
+        {{ include('classroom/partials/reportcard_header.html.twig') }}
+
+
+        <div class="header2">
+            <div class="document-title">
+                <p>CERTIFICAT DE SCOLARITE</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="declaration">
+            <p>Je soussigné Mr/Mme  {{get_env("PRINCIPAL")|raw }}, Principal(e) de l'  {{get_env("FRENCH_SCHOOL_NAME")|raw }} </p>
+            <p>certifie que :</p>
+        </div>
+        <hr> 
+        <div class="info">
+            <hr style="margin-top: 0.5px;">
+
+            <table class="table-info">
+                <tr>
+                    <td class="align-left">Nom <em>/ Last Name</em></td>
+                    <td class="align-right">{{std.lastname}}</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Prenom <em>/ First name</em></td>
+                    <td class="align-right">{{std.firstname}}</td>
+                </tr>
+
+                <tr>
+                    <td class="align-left">Ne le <em>/ The</em></td>
+                    <td class="align-right">{{std.birthday|date("d/m/Y")}}</td>
+                </tr>
+                <tr>
+                    <td class="align-left">A <em>/ At</em></td>
+                    <td class="align-right">{{std.birthplace}}</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Matricule <em>/ Matricule</em></td>
+                    <td class="align-right">{{std.matricule}}</td>
+                </tr>
+                
+                <tr>
+                    <td class="align-left">Classe <em>/ Class</em></td>
+                    <td class="align-right">{{sub.classroom}}</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Annee academique <em>/ Academic year</em></td>
+                    <td class="align-right">{{sub.schoolyear}}</td>
+                </tr>
+            </table>
+
+            <p class="confirmation-inscrip">est inscrit(e) dans mon etablissement depuis le {{sub.createdAt|date("d/m/Y")}} de facon régulière</p>
+        </div>
+        <p class="place-date">Fait a <em>/ At</em> {{get_env("CITY")|raw }} Le <em>/ Issued : {{ "now"|date("d/m/Y") }} </em> </p>
+    </main>
+
+    <footer>
+        <hr>
+        <p class="Le principal"><strong>principal</strong> <em>/ The school principal</em></p>
+        <div class="color-footer"></div>
+
+    </footer>
+    
+</body>
+</html>

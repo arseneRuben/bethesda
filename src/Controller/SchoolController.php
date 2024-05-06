@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\SchoolYearService;
+use App\Repository\MainTeacherRepository;
 
 
 /**
@@ -32,14 +34,18 @@ class SchoolController extends AbstractController
     private $rmRepo;
     private $scRepo;
     private $subRepo;
+    private SchoolYearService $schoolYearService;
+    private MainTeacherRepository $mainTeacherRepo;
 
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo)
+    public function __construct(MainTeacherRepository $mainTeacherRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, UserRepository $userRepo, SchoolYearRepository $scRepo, ClassRoomRepository $rmRepo, SubscriptionRepository $subRepo)
     {
         $this->em = $em;
         $this->userRepo = $userRepo;
         $this->scRepo = $scRepo;
         $this->rmRepo = $rmRepo;
         $this->subRepo = $subRepo;
+        $this->schoolYearService = $schoolYearService;
+        $this->mainTeacherRepo = $mainTeacherRepo;
     }
     /**
      * @Route("/", name="app_home")
@@ -50,7 +56,7 @@ class SchoolController extends AbstractController
         $year_before = $this->scRepo->findOneBy(array("activated" => true));
         $year = $this->scRepo->findOneBy(array("id" => $year_before->getId()));
         $results = [];
-
+       
         foreach ($rooms as $room) {
 
             $officialExamResults = $this->subRepo->countByMention($year, $room);
@@ -145,9 +151,15 @@ class SchoolController extends AbstractController
      */
     public function roomListAction(PaginatorInterface $paginator,  Request $request)
     {
-        $entities = $this->rmRepo->findAll();
         $year_before = $this->scRepo->findOneBy(array("activated" => true));
         $year = $this->scRepo->findOneBy(array("id" => $year_before->getId() - 1));
+        $mainTeachers =  $this->mainTeacherRepo->findBy(array("schoolYear" => $year));
+        $mainTeachersMap = array();
+        foreach($mainTeachers as $mt){
+            $mainTeachersMap[$mt->getClassRoom()->getId()] = $mt->getTeacher();
+        }
+        $entities = $this->rmRepo->findAll();
+      
         $subscriptions = $this->subRepo->findEnrollementThisYear($year);
         $rooms = $paginator->paginate($entities, $request->query->get('page', 1), ClassRoom::NUM_ITEMS_PER_PAGE);
         $rooms->setCustomParameters([
@@ -155,7 +167,7 @@ class SchoolController extends AbstractController
             'size' => 'large',
             'rounded' => true,
         ]);
-        return $this->render('school/roomList.html.twig', compact("rooms", "year", "subscriptions"));
+        return $this->render('school/roomList.html.twig', compact("rooms", "year", "subscriptions", "mainTeachersMap"));
     }
 
     /**
@@ -189,5 +201,17 @@ class SchoolController extends AbstractController
         $users = $qb->getQuery()->getResult();
         //$users = $this->userRepo->findByRoles("ROLE_ADMIN");
         return $this->render('school/staff.html.twig', compact("users"));
+    }
+
+      /**
+     * @Route("/update_school_year", name="update_school_year", methods={"POST"})
+     */
+    public function updateSessionValue(Request $request)
+    {
+        $selectedSchoolYear = $request->request->get('selectedSchoolYear');
+        // Update session with the selected value
+        $session = $request->getSession();
+        $session->set('session_school_year', $selectedSchoolYear);
+        return new Response('Session updated', 200);
     }
 }

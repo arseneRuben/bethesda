@@ -16,7 +16,7 @@
                     <div class="col-lg-10 jumbotron">
                     <article  class="p-3" >
 
-                            <h1  class="h3  pt-1">   {{module.name}}  </h1> 
+                            <h1  class="h3  pt-1">   {{module.name}}--{{module.room.name}}  </h1> 
 						
 
                             
@@ -43,7 +43,19 @@
                                            
                                             <td><a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.wording }}</a></td>
                                              <td>{{course.coefficient }}</td>
-                                             <td>{#{course.attribution.user }#}</td>
+                                             <td>
+                                                 {% if attributions[course.id] is defined %}
+                                                        <a href="{{ path('admin_attributions_edit', {id: attributions[course.id].id}) }}">
+                                                            {{attributions[course.id].teacher.fullName}}
+                                                        </a> 
+
+                                                {% else %}
+                                                    <a href="{{ path('admin_attributions_new') }}">
+
+                                                        Pas encore attribue
+                                                    </a>
+                                                {% endif %}
+                                             </td>
                                         
                                             
                                         </tr>

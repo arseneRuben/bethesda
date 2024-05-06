@@ -11,12 +11,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Component\Pager\PaginatorInterface;
-
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Service\SchoolYearService;
 
 
 /**
@@ -26,15 +26,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class SequenceController extends AbstractController
 {
-    private $em;
-    private $scRepo;
-    private $repo;
+    private EntityManagerInterface $em;
+    private SchoolYearRepository $scRepo;
+    private SequenceRepository $repo;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, SchoolYearRepository $scRepo, SequenceRepository $repo)
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, SchoolYearRepository $scRepo, SequenceRepository $repo)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -47,7 +50,7 @@ class SequenceController extends AbstractController
     public function indexAction()
     {
 
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sequences = $this->repo->findSequenceThisYear($year);
 
         return $this->render('sequence/index.html.twig', compact("sequences"));

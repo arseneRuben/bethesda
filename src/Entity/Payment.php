@@ -19,6 +19,7 @@ class Payment
 
     use TimeStampable;
     use Amount;
+    public const NUM_ITEMS_PER_PAGE = 20;
 
     /**
      * @var int
@@ -29,8 +30,11 @@ class Payment
      */
     private $id;
 
-
-
+    
+    /**
+     * @ORM\Column(type="string", length=25, nullable=true, unique=true)
+     */
+    private $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=SchoolYear::class)
@@ -45,7 +49,21 @@ class Payment
      */
     private $student;
 
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="subscription", type="boolean", options={"default":false})
+     */
+    private $subscription = false;
 
+
+    public function __construct()
+    {
+  
+        $this->createdAt= new \DateTime();
+        $this->updatedAt= new \DateTime();
+       
+    }
 
 
     /**
@@ -58,15 +76,17 @@ class Payment
         return $this->id;
     }
 
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
 
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
-  
-
-   
-
-
-
-
+        return $this;
+    }
 
     /**
      * Set schoolYear
@@ -81,8 +101,6 @@ class Payment
 
         return $this;
     }
-
-
 
      /**
      *  Get schoolYear
@@ -120,6 +138,18 @@ class Payment
     public function getStudent()
     {
         return $this->student;
+    }
+
+    public function isSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    public function setSubscription(bool $subscription): static
+    {
+        $this->subscription = $subscription;
+
+        return $this;
     }
 
 

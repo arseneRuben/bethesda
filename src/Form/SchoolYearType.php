@@ -51,8 +51,8 @@ class SchoolYearType extends AbstractType
             'trim' => true])
             ->add('activated')
            
-            ->add('reductionPrime', NumberType::class, [
-                'label' => 'Montant de réduction pour les élèves boursiers',
+            ->add('rate', NumberType::class, [
+                'label' => 'Montant du taux d\'inscription',
                 'required' => false,
                 'trim' => true]);
     }

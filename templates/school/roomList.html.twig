@@ -28,9 +28,10 @@
                                         <div class="col-lg-4 col-md-6 col-12">
                                                     <div class="course-item">
                                                             <div class="image-blog">
-                                                                {% if  room.fullTeacher %}
-                                                                <img
-                                                                    src="{{ room.fullTeacher.avatar(75) }}" alt="" class="img-fluid">
+                                                                    {% if room.id in mainTeachersMap|keys %}
+                                                                 <img
+                                                                    src="{{  mainTeachersMap[room.id].avatar(75) }}" alt="" class="img-fluid"/>
+                                                               
                                                                 {% else %}
                                                                 <img src="{{ asset('assets/images/teacher_default.png') }}" alt="" class="img-fluid">
                                                                 {% endif %}
@@ -108,19 +109,19 @@
                                 <div class="navigation  text-center h3 m-5">
                                     {{ knp_pagination_render(rooms) }}
                                 </div>
-                        <!-- end container -->
-                            {% else %}
-                                <p class="mt-5 h1 text-center">
-                                    No classroom yet.   	
-                                                                    
-                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                        <a href="{{ path('admin_classrooms_new') }}">
-                                            Be the first! 
-                                                                                
-                                        </a>
-                                    {% endif %}
-                                </p>
-                            {% endif %}
+                                <!-- end container -->
+                                {% else %}
+                                    <p class="mt-5 h1 text-center">
+                                        No classroom yet.   	
+                                                                        
+                                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                            <a href="{{ path('admin_classrooms_new') }}">
+                                                Be the first! 
+                                                                                    
+                                            </a>
+                                        {% endif %}
+                                    </p>
+                                {% endif %}
 
                  
 

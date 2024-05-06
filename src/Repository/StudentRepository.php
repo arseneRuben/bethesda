@@ -5,9 +5,12 @@ namespace App\Repository;
 use App\Entity\Student;
 use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
+use App\Service\SchoolYearService;
+
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 
 /**
  * @method Student|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,10 +21,14 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 class StudentRepository extends ServiceEntityRepository
 {
     private $scRepo;
-    public function __construct(ManagerRegistry $registry, SchoolYearRepository $scRepo)
+    private SchoolYearService      $schoolYearService;
+
+    public function __construct(ManagerRegistry $registry, SchoolYearRepository $scRepo,  SchoolYearService $schoolYearService)
     {
         parent::__construct($registry, Student::class);
         $this->scRepo = $scRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     public function findStudentsByClass($classId)
@@ -161,13 +168,12 @@ class StudentRepository extends ServiceEntityRepository
 
     public function findEnrolledStudentsThisYear2()
     {
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-
+        $year = $this->schoolYearService->sessionYearById();
         $query = $this->getEntityManager()
             ->createQuery(
                 " SELECT st 
                                FROM   App\Entity\Student  st
-                               WHERE st.matricule not in 
+                               WHERE st.matricule  in 
                                (SELECT std.matricule
                                 FROM App\Entity\Student  std, App\Entity\Subscription sub, App\Entity\SchoolYear yr 
                               WHERE  sub.student  =  std.id AND sub.schoolYear   =  yr.id AND sub.schoolYear = :year)   
@@ -177,10 +183,9 @@ class StudentRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
-    public function findNotEnrolledStudentsThisYear2(SchoolYear $year)
+    public function findNotEnrolledStudentsThisYear2()
     {
         $year = $this->scRepo->findOneBy(array("activated" => true));
-
         $query = $this->getEntityManager()
             ->createQuery(
                 " SELECT st 
@@ -252,5 +257,17 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter('classRoomId', $classRoomId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findMinMaxAge(): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT DATEDIFF(NOW(), birthday) as minAge, 
+                    DATEDIFF(NOW(), birthday)  ) as maxAge
+             FROM App\Entity\Student s'
+        );
+        return $query->getResult();
+
     }
 }

@@ -1,0 +1,147 @@
+.student-badge-back{
+    width: 3500px;
+    height: 250px;
+    background-color: rgb(255, 255, 255); 
+    padding: 150px;
+    display: flex;
+    border-radius: 50px;
+    z-index: 0;
+  }
+  
+
+.student-badge-back::before{
+    content: "";
+    position: absolute;
+    width: 1300px;
+    height: 550px;
+    border-radius: 50px;
+    background-color: #e5ebe8;
+    z-index: 1;
+    transform: translate(-150px,-150px);
+}
+
+.student-badge-back::after{
+    content: "";
+    position: absolute;
+    width: 1300px;
+    height: 400px;
+    border-radius: 250% 750% 415px 415px;
+    background-color: #2c29ac;
+    z-index: 2;
+    transform: translate(-150px,-0px);
+}
+
+.student-badge-back > div {
+    position: relative;
+    z-index: 5;
+}
+
+.rep1{
+    font-size: small;
+transform: translate(-100px,-140px);
+}
+
+.min1{
+    font-size: small;
+    transform: translate(0px,-140px);
+}
+
+.rep2{
+    font-size: small;
+    transform: translate(125px,-140px);
+    font-style: italic;
+}
+
+.rep3{
+    font-size: small;
+    transform: translate(250px,-140px);
+    font-style: italic;
+}
+
+.name1{
+    transform: translate(-920px,-50px);
+    font-size: larger;
+    line-height: 150%;
+    word-spacing: 100%;
+}
+
+#name11{
+    font-weight: bold;
+}
+
+#name12{
+    font-style: italic;
+}
+
+.addr1{
+    transform: translate(-1340px,35px);
+    color: white;
+}
+
+#addr11{
+    font-style: italic;
+}
+
+.em1{
+    transform: translate(-1575px,95px);
+    color: white;
+}
+
+#em11{
+    font-style: italic;
+}
+
+.Tel{
+    transform: translate(-1875px,160px);
+    color: white;
+}
+
+#Tel1{
+    font-style: italic;
+}
+
+.hel1{
+    transform: translate(-1500px,120px);
+    color: white;
+}
+
+.hel2{
+    transform: translate(-1815px,200px);
+    color: white;
+}
+
+.tel{
+    transform: translate(-2175px,310px);
+    color: white;
+    display: flex;
+    height: 10%;
+    width: 5%;
+    font-size: xx-large;
+}
+
+.img2{
+    transform: translate(-2060px,307px);
+    width: 35px;
+    height: 35px;
+}
+
+.img3{
+    width: 135px;
+    height: 135px;
+    transform: translate(-2630px,235px);
+}
+
+.student-badge-back > img {
+    position: relative;
+    z-index: 5;
+}
+
+.student-badge-back .additional-task{
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 60px;
+    background-color: red;
+    border-radius: 50px;
+    transform: translate(415px,295px);
+}

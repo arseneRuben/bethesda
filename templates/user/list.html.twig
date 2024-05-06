@@ -1,7 +1,7 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 
-{% block title %}Liste des enseignants de bethesda
+{% block title %}Liste des enseignants de {{get_env("FRENCH_SCHOOL_NAME")|raw }}   
 {% endblock  title %}
 {% block content %}
   
@@ -10,51 +10,55 @@
            
             <div class="col-11 jumbotron" >
                 <div class="m-1 box-shadow">
-                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des utilisateurs (administrateurs et enseignants) </h4>
+                    <div class="card-header ">
+                                <div class=" d-flex justify-content-between " role="group" >
+                                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase"> Liste des utilisateurs (administrateurs et enseignants)  </h4>
+
+                                        <a class="btn btn-outline-primary " target="_blank" href="{{ path('admin_teacher_list') }}">
+                                            <i class="fa fa-print" aria-hidden="true">
+                                                &nbsp; 
+                                            </i>
+                                        </a>
+                               </div>          
                     </div>
                     <table  width="100%" class="table table-striped">
-                <thead>
-                    <tr>
+                         <thead>
+                            <tr>
                         
-                        <th style="width:25%;" scope="col">Nom complet </th>
-                        <th style="width:10%;" scope="col">Domaine</th>
-                        <th style="width:5%;" scope="col">Sexe</th>
-                        <th style="width:10%;" scope="col">Date de naissance</th>
-                        <th style="width:10%;" scope="col">Lieu de naissance</th>
-                        <th style="width:10%;" scope="col">Résidence</th>
-                        <th style="width:15%;" scope="col">Contact</th>
-                        <th style="width:10%;" scope="col">Action</th>
+                                <th style="width:25%;" scope="col">Nom complet </th>
+                                <th style="width:10%;" scope="col">Domaine</th>
+                                <th style="width:5%;" scope="col">Sexe</th>
+                                <th style="width:10%;" scope="col">Date de naissance</th>
+                                <th style="width:10%;" scope="col">Lieu de naissance</th>
+                                <th style="width:10%;" scope="col">Résidence</th>
+                                <th style="width:15%;" scope="col">Contact</th>
+                                <th style="width:10%;" scope="col">Action</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                        <tr>
-                          
-                            <td>{{ user.fullName }}</td>
-                            <td>{{ user.domain }}</td>
-                            <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
-                            <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
-                            <td>{{ user.birthplace }}</td>
-                            <td>{{ user.location }}</td>
-                            <td> {{ user.phoneNumber}} </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a class="btn btn-outline-warning btn-sm" href="{{ path('admin_users_edit', {id: user.id}) }}">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-
-
-
-        </div>
-    </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                
+                                    <td>{{ user.fullName }}</td>
+                                    <td>{{ user.domain }}</td>
+                                    <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
+                                    <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
+                                    <td>{{ user.birthplace }}</td>
+                                    <td>{{ user.location }}</td>
+                                    <td> {{ user.phoneNumber}} </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-outline-warning btn-sm" href="{{ path('admin_users_edit', {id: user.id}) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 {% endblock %}
 

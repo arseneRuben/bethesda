@@ -8,7 +8,7 @@
         <div class="row mt-4">
             <div class="col-1" >
                 <a class="btn btn-info" href="{{ path('admin_schoolyears_new') }}">
-                    <i class="fa fa-plus"></i> <h1>New </h1>
+                    <i class="fa fa-plus"></i> 
                 </a>
             </div>
             <div class="col-11 jumbotron" >
@@ -24,7 +24,7 @@
                                   <th>code</th>
                                 <th>Debut</th>
                                 <th>Fin</th>
-                                <th>Prime de bourse</th>
+                                <th>Taux d'inscription</th>
                                 <th>Etat</th>
                                 <th>Action</th>
 
@@ -38,7 +38,7 @@
                                     <td>{{  schoolyear.code }} </td>
                                     <td>{% if schoolyear.startDate %}{{ schoolyear.startDate|date('Y-m-d') }}{% endif %}</td>
                                     <td>{% if schoolyear.endDate %}{{ schoolyear.endDate|date('Y-m-d') }}{% endif %}</td>
-                                <td>{% if schoolyear.reductionPrime %}{{ schoolyear.reductionPrime }}{% endif %}</td>
+                                    <td>{% if schoolyear.rate %}{{ schoolyear.rate }}{% endif %}</td>
                                 
                                     <td>{% if schoolyear.activated %}<i class="fa fa-check-square-o"></i>{% else %}<i class="fa fa-square-o"></i>{% endif %}</td>
                                     <td>

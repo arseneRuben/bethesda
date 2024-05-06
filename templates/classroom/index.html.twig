@@ -1,16 +1,16 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 
 {% block content %}
-    <div class=" mt-4">
-
-        <div class="col-12 jumbotron">
-            <div class="m-1 box-shadow">
-                <div class="card-header d-inline-flex">
+        <div class="row  mt-4">
+            <div class="col-1">
                     <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
-                        <i class="fa fa-plus"></i>
-                        &emsp; 
-                                                 
+                        <i class="fa fa-plus"></i>                                                 
                     </a>
+             </div>
+            <div class="col-11 jumbotron">
+
+                <div class="card-header d-inline-flex">
+
                     <h4 class="my-0 font-weight-normal text-center   text-uppercase">
                         &emsp; &emsp; &emsp; &emsp; &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;  Liste des salles de classe 
                     </h4>
@@ -18,9 +18,7 @@
                 <table width="120%" class="table table-striped table-sm">
                     <thead>
                         <tr>
-                            <th style="width:2%;" class="text-center" scope="col">
-                                #
-                            </th>
+                           
                             <th style="width:18%;" class="text-center" scope="col">
                                 Nom
                             </th>
@@ -37,15 +35,17 @@
                     <tbody>
                         {% for room in classrooms %}
                             <tr>
-                                <td style="width:15%;" class="text-center" scope="row">
-                                    {{ loop.index }}
-                                </th>
+                               
                                 <td>
                                     <a href="{{ path('admin_classrooms_show', {id: room.id }) }}">
                                         {{ room.name }}
                                     </a>
                                 </td>
-                                <td>{#<a href="{{ path('admin_users_edit', {id: room.fullTeacher.id}) }}">#}{{ room.fullTeacher }}
+                                <td>
+                                    {% if room.id in mainTeachers|keys %}
+                                       {{  mainTeachers[room.id].fullName}}
+                                    {% endif %}
+
                                 </td>
                                 <td>
                                     <div class="btn-group">
@@ -56,27 +56,34 @@
                                             </i>
                                         </a>
 
-                                        <a class="btn btn-file" href="{{ path('admin_classrooms_fichesimple', {id: room.id}) }}">
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_fichesimple', {id: room.id}) }}">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true">
-                                                &nbsp;Fiche pv
+                                                &nbsp;Repport Notes
                                             </i>
                                         </a>
-                                        <a class="btn btn-outline-info " href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
-
+                                        <a class="btn btn-outline-info " target="_blank" href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
                                             <i class="fa fa-users" aria-hidden="true">
                                                 &nbsp; 
                                             </i>
-
                                         </a>
-                                        <a class="btn btn-file" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">
                                             <i class="fa fa-file" aria-hidden="true">
-                                                &nbsp;Fiche recap. vierge
+                                                &nbsp;Recap. vierge
                                             </i>
                                         </a>
-
-                                        <a class="btn btn-file" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
+                                        {#<a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_blanc_ann', {room: room.id}) }}">
                                             <i class="fa fa-th-list" aria-hidden="true">
                                                 &nbsp;Fiche annu.
+                                            </i>
+                                        </a>#}
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_payment_plan_print', {id: room.id}) }}">
+                                            <i class="fa fa-money" aria-hidden="true">
+                                                &nbsp;Echeancier
+                                            </i>
+                                        </a>
+                                        <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_disciplinary_record', {id: room.id}) }}">
+                                            <i class="fa fa-th-list" aria-hidden="true">
+                                                &nbsp;Fiche discipl.
                                             </i>
                                         </a>
 
@@ -87,9 +94,7 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
-    </div>
 {% endblock %}
 {% block footer %}
     {{ parent() }}

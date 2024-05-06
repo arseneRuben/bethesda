@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recu de scolarite</title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/tuition_receipt.css')) }}" />
+
+</head>
+<body>
+        <div class="container">
+                   {{ include('classroom/partials/header.html.twig') }}
+
+              {% set lastPayment = payments|last %}
+            <div class="subContainer1">
+                <div class="intitule">
+                    <p>RECU DE SCOLARITE <br> TUITION RECEIPT</p>
+                     {% if not(lastPayment is empty) %}
+                              <p>No {{ lastPayment.code }}</p>
+                     {% endif %}
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom de l’enfant / Child’s name</th>
+                            <th>Matricule / Matricule</th>
+                            <th>Classe / Class</th>
+                            <th>Année / Year</th>
+                            <th>Motif de payment / Payment reason</th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                        <tr>
+                            <td>{{std.fullName}}</td>
+                            <td>{{std.matricule}}</td>
+                            <td>{{sub.classroom.name}}</td>
+                            <td>{{sub.schoolyear}}</td>
+                            <td>Scolarité / Tuition</td>
+                        </tr>
+                     </tbody>
+
+                </table>
+            </div>
+            
+            <div class="subContainer2">
+                <table>
+                    <thead>
+                        <th colspan="2">DÉTAIL DE PAYMENT / PAYMENT DETAIL</th> 
+                    </thead>
+                  
+
+                    <tbody>
+                        {% if not(lastPayment is empty) %}
+                            <tr>
+                                <td>Date & Heure / <span>Date & Time</span></td>
+                                <td>{{lastPayment.updatedAt|date('Y-m-d h:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Montant payé / <span>Amount paid</span></td>
+                                <td>{{lastPayment.amount}}F CFA</td>
+                            </tr>
+                            <tr>
+                                <td>Methode de paiement / <span>Payment type</span></td>
+                                <td>CASH</td>
+                            </tr>
+                            <tr>
+                                <td>Payé par / <span>Paid by</span></td>
+                                <td>AKONO ABINA FRANCOIS OLIVER</td>
+                            </tr>
+                            <tr>
+                                <td>Reçu par / <span>Received by</span></td>
+                                <td> {{get_env("FRENCH_SCHOOL_NAME")|raw }}</td>
+                            </tr>
+        
+                        {% endif %}
+
+                    </tbody>
+                    
+                </table>
+            </div>
+            {% set totalPaid =0 %}
+            {% if(payments) %}
+                {% for p in payments %}
+                    {% set totalPaid = totalPaid + p.amount %}
+                {% endfor %}  
+                {#  si l'inscription a deja ete regle #} 
+                
+            {% endif %}
+            <div class="subContainer3">
+                <p>HISTORIQUE DE PAIEMENT / PAYMENT HISTORY</p>
+                <table>
+                    <thead>
+                        <th>VERSMENT <span>INSTALMENT</span></th>
+                        <th>A PAYER <span>TO PAY(FCFA)</span></th>
+                        <th>PAYÉ <span>PAID(FCFA)</span></th>
+                        <th>RESTE <span>BALANCE(FCFA)</span></th>
+                        <th>DATE <span>LIMITE DEADLINE</span></th>
+                    </thead>
+
+                    <tbody>
+                         <tr>
+                            <td>Inscription {{year.code}}</td>
+                            <td>{{year.rate}}</td>
+                            <td>{{year.rate}}</td>
+                            <td>0.00</td>
+                            <td>{{ sub.createdAt|date("Y/m/d") }}</td>
+                        </tr>
+                         {% set totalToPay =0 %}
+                        {% if(installments) %}
+                                    {% for installToPay in installments %}
+                                        {% set totalToPay = totalToPay  + installToPay.amount %}
+                                        <tr>
+                                            <td>{{ installToPay.ranking }}</td>
+                                            <td>{{ installToPay.amount }}</td>
+                                            <td>
+                                                {% set paye =0 %}
+                                                 {% if( totalToPay >= totalPaid )%} 
+                                                        {% set paye = installToPay.amount %}
+                                                        {% set totalPaid = totalPaid - installToPay.amount %}
+                                                    {% else %}
+                                                         {% set paye = totalPaid %}
+                                                {% endif %}
+                                                {{paye}}
+                                            </td>
+                                            <td>{{ installToPay.amount - paye }}</td>
+                                            <td>{{ installToPay.deadline|date('Y-m-d') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                          {% endif %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td>TOTAL</td>
+                            <td> {{totalToPay}}</td>
+                            <td> {{totalPaid}}</td>
+                            <td> {{totalToPay - totalPaid}}</td>
+                            <td>{{(installments|last).deadline|date('Y-m-d') }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="end">
+                    <p>Cachier / Le Caissier</p>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

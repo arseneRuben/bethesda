@@ -15,9 +15,7 @@ class ClassRoomType extends AbstractType
         $builder
             ->add('name')
             ->add('apc', CheckboxType::class, array('label' => 'Classe d\'examen ?'))
-            ->add('level')
-            ->add('fullTeacher');
-    }
+            ->add('level');    }
 
     public function configureOptions(OptionsResolver $resolver)
     {

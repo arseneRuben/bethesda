@@ -26,7 +26,6 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Nom</th>
                                         <th scope="col">Titulaire</th>
-                                        <th scope="col">Effectif</th>
                                         
                                     
                                     </tr>
@@ -39,8 +38,11 @@
                                                 <a href="{{ path('admin_classrooms_show', {id: room.id}) }}">{{ room.name}}</a>
                                             </td>
                                            
-                                            <td>{{ room.fullTeacher }}</td>
-                                             <td>{{ room.currentYearSubscriptions|length }}</td>
+                                            <td>
+                                                  {% if room.id in mainTeachersMap|keys %}
+                                                    {{  mainTeachersMap[room.id].fullName}}
+                                                {% endif %}
+                                            </td>
                                         
                                             
                                         </tr>

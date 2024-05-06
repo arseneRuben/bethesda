@@ -74,9 +74,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     private $yahoo_access_token;
 
 
-    /**
-     * @ORM\Column(type="json")
-     */
+   
     private $roles = [];
 
     /**

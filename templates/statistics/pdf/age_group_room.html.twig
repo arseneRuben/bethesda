@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+           Repartition de classes selon les tranches d'ages
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+    </head>
+    <body>
+        <header class="clearfix">
+            {{ include('classroom/partials/header.html.twig') }}
+
+            <h1 style=" text-align:center; ">
+                <b>
+                {% if  (rooms|length > 1) %}
+                    Repartition des eleves de l'etablissement selon les tranches d'ages
+                    {% else %}
+                        {% if(rooms[0].level.cycle.section.name=="Francophone") %}
+                            Repartition des eleves de {{rooms[0].name}} selon les tranches d'ages           
+                        {% else %}
+                            Distribution of students according to their gender                                                                                   
+                        {% endif %}
+                {% endif %}
+                </b>
+            </h1>
+            
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                        
+                            
+                            {% if ((rooms|length > 1) or (rooms[0].level.cycle.section.name=="Francophone")) %}
+                                ANNEE SCOLAIRE &nbsp;   :
+                                                                
+                                {{ year }}
+                            {% else %}
+                                {{ year }}
+                                &nbsp; SCHOOL YEAR   :
+                                                                                    
+                                                            
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+            </div>
+        </header>
+        <main>
+            <table class="table">
+                <thead>
+                    <tr>
+                        
+                        
+                        <th style="text-align:center;">
+                                <h6>
+                                    <span>
+                                        <b>
+                                          AGES 
+                                                                                    
+                                        </b>
+                                    </span>
+                                </h6>
+                        </th>
+                        <th style="text-align:center;">
+                            <h6>
+                                    <span>
+                                        <b>
+                                            EFFECTIF
+                                        </b>
+                                    </span>
+                            </h6>
+                        </th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in age_group_datas %}
+                        <tr>
+                             
+                            <td class="qty">
+                                {{data["tranche_age"]}}
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{data["effectif"] }}
+                                </b>
+                            </td>
+                          
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+       
+    </body>
+</html>

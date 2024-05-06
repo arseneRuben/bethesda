@@ -23,9 +23,9 @@
                        
 						<p  class="pd-2 pb-2 text-muted lead" >   {{user.email}}</p>
 						  <p  class="pd-2 pb-2 text-muted" > <small><i> &#8986;</i> Account created on  {{user.createdAt|date('d/m/y') }}</small></p>
-                        <span><strong> Full Teacher of:</strong> {{user.email}}</span>
+                        <span><strong> Full Teacher of:</strong> {{ mainTeacher is null ? mainTeacher.teacher.fullName : ""  }}</span>
                         <span><strong>In charge of Domain:</strong>{{user.domain}}</span>
-						<span><strong>Full teacher off:
+						<span><strong>Full teacher off:  {{ mainTeacher is null ? mainTeacher.teacher.fullName : ""  }}
 						<div class="btn-group">
 							   {% for room in user.fullTeacherOf %}
 							   <a href="{{ path('admin_classrooms_show', {id: room.id }) }}" class="btn btn-warning ">{{ room.name }}</a>

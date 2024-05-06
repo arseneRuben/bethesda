@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Fiche de repport de notes
+                                
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+    </head>
+    <body>
+        <header class="clearfix">
+           {{ include('classroom/partials/header.html.twig') }}
+
+            <h1 style=" text-align:center; ">
+                <b>
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                        FICHES DE REPPORT DES NOTES
+                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                    
+                                                                                                                                                                                            
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                                    
+                                                                                            
+                                                                    
+                                            
+                    {% else %}
+                        NOTES POSTING SHEETS
+                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                    
+                                                                                                                                                                                            
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                                    
+                                                                                            
+                                                                    
+                                            
+                    {% endif %}
+                </b>
+            </h1>
+            <div id="companyleft">
+
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                CLASSE
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% else %}
+                                CLASS
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% endif %}
+                        </span>
+                        {{ room.name }}
+                    </b>
+                </h5>
+            </div>
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ANNEE SCOLAIRE &nbsp;
+                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                
+                                                                                                                                
+                                                                                                
+                                                                
+                                {{ year }}
+                            {% else %}
+                                {{ year }}
+                                &nbsp; SCHOOL YEAR
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+
+            </div>
+
+        </header>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+
+                        <th class="desc" style="width:30%;">
+                            <h7>
+                                <b>
+                                    {% if(room.level.cycle.section.name=="Francophone") %}
+                                        NOMS COMPLETS
+                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    {% else %}
+                                        FULL NAME
+                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    {% endif %}
+                                </b>
+                            </h7>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS1
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS2
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                EB1
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                TRIM1
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS3
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS4
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                EB2
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                SESS5
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS6
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                SESS7
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                EB3
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:6%;">
+                            <b>
+                                TRIM3
+                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+
+                            <td>
+                                <b>
+                                    {{ std.lastname }}
+                                </td>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="notices">
+                <div>
+                    NOTICE:
+                                                                                                                                                                                
+                                                                                                                                                            
+                                                                                                                                        
+                                                                                                                    
+                                                                                                
+                                                                            
+                                                        
+                                    
+                </div>
+                <div class="notice">
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                        Chaque enseignant n'a droit qu'à un exemplaire de cette fiche de procès verbal
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                    
+                                                                                                                                                                                            
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                                    
+                                                                                            
+                                                                    
+                                            
+                    {% else %}
+                        Each teacher is entitled to only one copy of this sheet of report
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                    
+                                                                                                                                                                                            
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                                    
+                                                                                            
+                                                                    
+                                            
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+        <footer></footer>
+    </body>
+</html>

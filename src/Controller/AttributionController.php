@@ -1,18 +1,21 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\MainTeacher;
 use App\Entity\Attribution;
 use App\Form\AttributionType;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AttributionRepository;
+use App\Repository\MainTeacherRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\SchoolYearService;
 
 /**
  * Attribution controller.
@@ -25,12 +28,20 @@ class AttributionController extends AbstractController
     private $em;
     private $repo;
     private $scRepo;
+    private SessionInterface $session;
+    private SchoolYearService $schoolYearService;
+    private MainTeacherRepository $mainTeacherRepo;
 
-    public function __construct(EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo)
+
+    public function __construct(MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,EntityManagerInterface $em, AttributionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
+        $this->mainTeacherRepo = $mainTeacherRepo;
+
     }
     /**
      * Lists all Attribution entities.
@@ -41,10 +52,8 @@ class AttributionController extends AbstractController
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $entities = $this->repo->findAllThisYear($year);
-        //$this->setAttributionAction();
         return $this->render('attribution/index.html.twig', array(
             'entities' => $entities,
             'year' => $year,
@@ -53,10 +62,10 @@ class AttributionController extends AbstractController
     }
 
 
-    public function setAttributionAction()
+    public function setAttributionAction( )
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearByCode();
         $entities = $this->repo->findAllThisYear($year);
         foreach ($entities as $attribution) {
             if ($attribution->getCourse()->getAttributions()->contains($attribution)) {
@@ -83,25 +92,7 @@ class AttributionController extends AbstractController
         ));
     }
 
-    /**
-     * Displays a form to create a new Attribution entity.
-     *
-     * @Route("/undo", name="admin_attributions_undo")
-     * @Method("GET")
-     * @Template()
-     */
-    public function undoAction()
-    {
-
-        $year = $this->scRepo->findOneBy(array("activated" => true));
-        $entities = $this->repo->findAllThisYear($year);
-        foreach ($entities as $attribution) {
-            $attribution->getCourse()->setAttributed(FALSE);
-            $this->em->remove($attribution);
-        }
-        $this->em->flush();
-        return $this->redirect($this->generateUrl('admin_attributions'));
-    }
+   
 
     /**
      * Creates a new Section entity.
@@ -117,19 +108,17 @@ class AttributionController extends AbstractController
         }
         $attribution = new Attribution();
         $form = $this->createForm(AttributionType::class, $attribution);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $year = $this->scRepo->findOneBy(array("activated" => true));
+            $year = $this->schoolYearService->sessionYearById();
             $attribution->setSchoolYear($year);
-            $attribution->getCourse()->setAttributed(true);
             $attribution->getTeacher()->addAttribution($attribution);
             $attribution->getCourse()->addAttribution($attribution);
+            $this->setMainTeacher($attribution);
             $this->em->persist($attribution);
             $this->em->flush();
             return $this->redirect($this->generateUrl('admin_attributions'));
         }
-
         return $this->render(
             'attribution/new.html.twig',
             ['form' => $form->createView()]
@@ -137,7 +126,20 @@ class AttributionController extends AbstractController
     }
 
 
-
+    public function setMainTeacher(Attribution $attribution){
+        $year = $this->schoolYearService->sessionYearById();
+        if($attribution->isHeadTeacher()){
+            $mainTeacher=$this->mainTeacherRepo->findOneBy(array("classRoom"=> $attribution->getCourse()->getModule()->getRoom(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
+            if($mainTeacher===null){ // If there is not yet a full teacher
+                $mainTeacher = new MainTeacher();
+                $mainTeacher->setClassRoom($attribution->getCourse()->getModule()->getRoom());
+                $mainTeacher->setSchoolYear($year);
+                $attribution->getCourse()->getModule()->getRoom()->addMainTeacher($mainTeacher);
+            } 
+            $mainTeacher->setTeacher($attribution->getTeacher());
+            $this->em->persist($mainTeacher);
+        }
+    }
 
     /**
      * Displays a form to edit an existing Programme entity.
@@ -156,26 +158,22 @@ class AttributionController extends AbstractController
         ]);
         $old_attribution =  $attribution;
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             if ($old_attribution->getTeacher()->getId() !== $attribution->getTeacher()->getId()) {
                 $old_attribution->getTeacher()->removeAttribution($old_attribution);
                 $attribution->getTeacher()->addAttribution($attribution);
                 $this->em->persist($attribution->getTeacher());
             }
+            $this->setMainTeacher($attribution);
+
             if ($old_attribution->getCourse()->getId() !== $attribution->getCourse()->getId()) {
                 $old_attribution->getCourse()->setAttributed(false);
                 $attribution->getCourse()->setAttributed(true);
                 $this->em->persist($attribution->getCourse());
             }
-
-
             $this->em->persist($attribution);
-
-
             $this->em->flush();
             $this->addFlash('success', 'Attribution succesfully updated');
-
             return $this->redirectToRoute('admin_attributions');
         }
         return $this->render('attribution/edit.html.twig', [

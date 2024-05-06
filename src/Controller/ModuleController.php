@@ -12,6 +12,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ModuleRepository;
 use App\Entity\Module;
 use App\Form\ModuleType;
+use App\Service\SchoolYearService;
+use App\Repository\AttributionRepository;
+
 
 /**
  * Module controller.
@@ -21,10 +24,14 @@ use App\Form\ModuleType;
 class ModuleController extends AbstractController
 {
     private $em;
+    private SchoolYearService $schoolYearService;
+    private AttributionRepository $attRepo;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(AttributionRepository $attRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->schoolYearService = $schoolYearService;
+        $this->attRepo = $attRepo;
     }
 
     /**
@@ -75,8 +82,14 @@ class ModuleController extends AbstractController
      */
     public function showAction(Module $module)
     {
-
-        return $this->render('module/show.html.twig', compact("module"));
+        $year = $this->schoolYearService->sessionYearById();
+        $attributions = $this->attRepo->findByYearAndByModule($year, $module);
+        $attributionsMapCourses = null;
+        foreach($attributions as $att){
+              $attributionsMapCourses[$att->getCourse()->getId()] = $att;
+        }
+        $attributions = $attributionsMapCourses;
+        return $this->render('module/show.html.twig', compact("module", "attributions"));
     }
 
     /**

@@ -12,7 +12,11 @@ use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use App\Repository\SchoolYearRepository;
 use App\Repository\SubscriptionRepository;
+use App\Repository\PaymentRepository;
 use App\Repository\QuaterRepository;
+use App\Repository\InstallmentRepository;
+use App\Repository\PaymentPlanRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\SchoolYearService;
 
 
 /**
@@ -29,27 +34,37 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class StudentController extends AbstractController
 {
-    private $em;
+    private EntityManagerInterface $em;
     private $repo;
     private $scRepo;
     private $seqRepo;
-    private $subRepo;
+    private SubscriptionRepository $subRepo;
     private $markRepo;
     private $evalRepo;
     private $qtRepo;
     private  $snappy;
+    private SchoolYearService      $schoolYearService;
+    private PaymentPlanRepository $ppRepo;
+    private InstallmentRepository $instRepo;
+    private PaymentRepository $pRepo;
 
-    public function __construct(EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
+
+    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
     {
-        $this->em = $em;
-        $this->repo = $repo;
-        $this->scRepo = $scRepo;
+        $this->em       = $em;
+        $this->repo     = $repo;
+        $this->scRepo   = $scRepo;
         $this->markRepo = $markRepo;
-        $this->seqRepo = $seqRepo;
+        $this->seqRepo  = $seqRepo;
         $this->evalRepo = $evalRepo;
-        $this->subRepo = $subRepo;
-        $this->qtRepo = $qtRepo;
-        $this->snappy = $snappy;
+        $this->subRepo  = $subRepo;
+        $this->qtRepo   = $qtRepo;
+        $this->snappy   = $snappy;
+        $this->ppRepo   = $ppRepo;
+        $this->pRepo   = $pRepo;
+        $this->instRepo = $instRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -77,7 +92,7 @@ class StudentController extends AbstractController
     public function showAction(Student $student)
     {
         // Année scolaire, seuquence, inscrption de l'eleve pour l'annee en cours
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
         $results['student'] = $student;
@@ -91,6 +106,9 @@ class StudentController extends AbstractController
 
         $evals = [];
         $evalSeqs = [];
+        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $student), array('updatedAt' => 'ASC'));
+        $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
+        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
         $seqs = $this->seqRepo->findSequenceThisYear($year);
         if ($sub != null) {
             //  dd($seqs);
@@ -120,9 +138,13 @@ class StudentController extends AbstractController
 
             $filename = "assets/images/student/" . $student->getMatricule() . ".jpg";
             $file_exists = file_exists($filename);
+            $results['payments'] = $payments;
+            $results['payment_plan'] = $paymentPlan;
+            $results['installments'] = $installments;
+            $results['sub'] = $sub;
             $results['file_exists'] = $file_exists;
             $results['cours'] = json_encode($courses);
-
+            
             foreach ($seqs as $seq) {
                 $results[strtolower($seq->getWording())] = json_encode($averageSeqs[$seq->getId()]);
             }
@@ -189,13 +211,91 @@ class StudentController extends AbstractController
     {
         if ($this->isCsrfTokenValid('students_deletion' . $student->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($student);
-
             $this->em->flush();
             $this->addFlash('info', 'Student succesfully deleted');
         }
-
         return $this->redirectToRoute('admin_students');
     }
+    /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/certificate", name="admin_student_certificate", requirements={"id"="\d+"})
+     */
+    public function schoolCertificate(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $html = $this->renderView('student/school_certificate.html.twig', array(
+            'year' => $year,
+            'std'  => $std,
+            'sub' => $sub
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="certif_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
+     /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/receipt", name="admin_student_receipt", requirements={"id"="\d+"})
+     */
+    public function tuitionReceiptAction(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $std), array('updatedAt' => 'ASC'));
+        $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
+        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
+        $html = $this->renderView('student/tuition_receipt.html.twig', array(
+            'year' => $year,
+            'std'  => $std,
+            'sub' => $sub,
+            'payments' => $payments,
+            'payment_plan' => $paymentPlan,
+            'installments' => $installments
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="recu_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
+    /**
+     * Build student's school certificate
+     *
+     * @Route("/{id}/badge", name="admin_student_badge", requirements={"id"="\d+"})
+     */
+    public function schoolBadge(Pdf $pdf, Student $std): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
+        $html = $this->renderView('student/badge.html.twig', array(
+            'sub' => $sub,
+            'fileExist' => $fileExist
+
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="badge_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
+
 
 
     /**
@@ -205,13 +305,15 @@ class StudentController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reporCardTrimAction(Student $std)
+    public function reporCardTrimAction(Pdf $pdf, Student $std)
     {
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
         
         $i = 1;
         foreach ($sequences as $seq) {
@@ -252,22 +354,21 @@ class StudentController extends AbstractController
        
         
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER ")->fetchAll();
-        //dd($dataQuater);    
         $html = $this->renderView('student/reportcardTrimApc.html.twig', array(
             'year' => $year,
             'quater' => $quater,
             'data' => $dataQuater,
             'sequences' => $sequences,
             'std'  => $std,
-            'room' => $sub->getClassRoom()
+            'room' => $sub->getClassRoom(),
+            'fileExist' => $fileExist
         ));
-
         return new Response(
-            $this->snappy->getOutputFromHtml($html),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $quater->getId().'_'.$std->getMatricule() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="bull_' .  $quater->getId().'_'.$std->getMatricule()  . '.pdf"'
             )
         );
     }
@@ -282,10 +383,11 @@ class StudentController extends AbstractController
     public function reporCardYear(Student $std)
     {
         $connection = $this->em->getConnection();
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $sequences = $this->seqRepo->findSequenceThisYear($year);
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
-        
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
         $i = 1;
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
@@ -376,7 +478,9 @@ class StudentController extends AbstractController
             'year' => $year,
             'data' => $dataYear,
             'std'  => $std,
-            'room' => $sub->getClassRoom()
+            'room' => $sub->getClassRoom(),
+            'fileExist' => $fileExist
+
         ));
 
         return new Response(

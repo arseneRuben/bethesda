@@ -46,7 +46,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('sc.id=:year')
             ->orderBy('u.fullName')
             ->setParameter('year', $year->getId());
-
+        
         return $qb->getQuery()->getResult();
     }
 
@@ -69,6 +69,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
 
         return $query->getQuery()->getResult();
+    }
+
+    public function findNotYetHeadTeacher(SchoolYear $year)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+                SELECT * FROM User u 
+                WHERE u.id NOT IN
+                (
+                    SELECT teacher_id FROM main_teacher 
+                    WHERE school_year_id != :year
+                )
+            ';
+        $resultSet = $conn->executeQuery($sql, ['year' => $year]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
     }
     // /**
     //  * @return User[] Returns an array of User objects

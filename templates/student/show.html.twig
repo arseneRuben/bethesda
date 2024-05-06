@@ -8,18 +8,22 @@
         
     {{ parent() }}
 {% endblock %}
+{% set totalP =0 %}
+{% if(payments) %}
+    {% for p in payments %}
+        {% set totalP = totalP + p.amount %}
+    {% endfor %}                    
+{% endif %}
 {% block content %}
     <div class="row mt-3">
         <div class="col-2">
             <div class="btn-group record_actions  m-2">
-                <a class="btn btn-info" href="{{ path('admin_students') }}">
+                <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
                     <i class="fa fa-list"></i>
-                    {{ 'Back to the list'|trans({}, 'admin') }}
                 </a>
             </div>
             <div class="card" > 
-             <img src="{{ (student.imageName ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
-              
+                <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
             </div>
             <div class="col-10 card">
                 <article class="p-3">
@@ -212,7 +216,35 @@
                                 </tbody>
                             </table>
                             <div class=" ">
-                                <a class="btn btn-outline-file" href="{{ path('admin_students_reportcards_quat', {id: student.id}) }}">
+                                <a target="_blank" class="btn btn-outline-primary" href="{{ path('admin_student_receipt', {id: student.id}) }}">
+                                    <i class="fa fa-money"></i>
+                                    Recu de scolarite
+                                                                                                                                                                                    							
+                                                                                                                                                                                
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                </a>
+                                 <a target="_blank" class="btn btn-outline-secondary" href="{{ path('admin_student_badge', {id: student.id}) }}">
+                                    <i class="fa fa-id-badge"></i>
+                                    Badge
+                                                                                                                                                                                    							
+                                                                                                                                                                                
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                </a>
+                                 <a target="_blank" class="btn btn-outline-info" href="{{ path('admin_student_certificate', {id: student.id}) }}">
+                                    <i class="fa fa-file"></i>
+                                    Certificat scolairite
+                                                                                                                                                                                    							
+                                                                                                                                                                                
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                </a>
+                                |
+                                <a target="_blank" class="btn btn-outline-file" href="{{ path('admin_students_reportcards_quat', {id: student.id}) }}">
                                     <i class="fa fa-file"></i>
                                     Bull Trim
                                                                                                                                                                                     							
@@ -227,7 +259,7 @@
                                                                                                                                 
                                                                                                 
                                                                 
-                                <a class="btn btn-warning" href="{{ path('admin_students_reportcards_year', {id: student.id}) }}">
+                                <a target="_blank" class="btn btn-warning" href="{{ path('admin_students_reportcards_year', {id: student.id}) }}">
                                     <i class="fa fa-file"></i>
                                     Bull Ann
                                                                                                                                                                                     													
@@ -277,7 +309,7 @@
                     </div>
                 </div>
                 <div class="row jumbotron">
-                    <div class="col">
+                    <div class="col-6">
                         <br/>
                         <br/>
                         <div class="text-center">
@@ -312,13 +344,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if(student.payments) %}
+                                {% if(payments) %}
                                     {% set total =0 %}
-                                    {% for p in student.payments %}
+                                    {% for p in payments %}
                                         <tr>
                                             <td>
-                                                {% if p.instant %}
-                                                    {{ p.instant|date('Y-m-d') }}
+                                                {% if p.updatedAt %}
+                                                    {{ p.updatedAt|date('Y-m-d') }}
                                                 {% endif %}
                                             </td>
                                             <td>
@@ -336,6 +368,88 @@
                                                                                                                                             
                                                                                             
                                             </b>
+                                        </td>
+                                        <td>
+                                            {{ total }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                      <div class="col-6">
+                        <br/>
+                        <br/>
+                        <div class="text-center">
+                            <h2>
+                                Scolarité-Versements éffectués pour l'élève
+                                                                                                                                                                				
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </h2>
+                        </div>
+                        <table class="table table-striped table-hover table-bordered records_list center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Rang
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Delaie
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Montant prevu
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    </th>
+                                    <th scope="col">
+                                        Montant verse
+                                                                                                                                                                                                        						
+                                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                            
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if(installments) %}
+                                    {% set total =0 %}
+                                    {% for p in installments %}
+                                        {% set total = total + p.amount %}
+                                        <tr>
+                                            <td>{{ p.ranking }}</td>
+                                            <td>{{ p.deadline|date('Y-m-d') }}</td>
+                                            <td>{{ p.amount }}</td>
+                                             <td>
+                                                    {% if( totalP >= total )%} 
+                                                        {{ p.amount }}
+                                                        {% set totalP = totalP - p.amount %}
+                                                    {% else %}
+                                                         {{totalP}}
+                                                    {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td class="center">
+                                            <b>
+                                                Total                                                                                                                                                                                                    
+                                         </b>
                                         </td>
                                         <td>
                                             {{ total }}

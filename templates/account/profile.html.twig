@@ -26,11 +26,9 @@
 						  <p  class="pd-2 pb-2 text-muted" > <small><i> &#8986;</i> Account created on  {{app.user.createdAt|date('d/m/y') }}</small></p>
                         <span><strong> Full Teacher of:</strong> {{app.user.email}}</span>
                         <span><strong>In charge of Domain:</strong> Web Designer</span>
-						<span><strong>Full teacher off:
+						<span><strong>Full teacher off:{{ mainTeacher is null ?  "" :  mainTeacher.classRoom.name   }}
 						<div class="btn-group">
-							  {#   {% for room in app.user.fullTeacherOf %}
-							   <a href="{{ path('admin_classrooms_show', {id: room.id }) }}" class="btn btn-warning ">{{ room.name }}</a>
-							   {% endfor %}  #}
+							  
 						</div>
                         <hr>
                         <p>
@@ -41,6 +39,39 @@
                 </div>    
             </div>
     	</div>
+    </div>
+    <div class="row">
+ 	<div class="col-md-6 mx-auto text-center">
+ 		<p>
+			<h2 class="my-5">  Attributions de cours</h2>
+		</p>
+
+	</div>
+</div>
+    <div>
+         <table class="table table-responsive table-borderless">
+        
+            <thead>
+                <tr class="bg-light">
+               
+                <th scope="col" width="20%">Date</th>
+                <th scope="col" width="10%">Classe</th>
+                <th scope="col" width="20%">Unite</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                {% for att in attributions %}
+                <tr>
+                    
+                    <td>{{ att.schoolYear.code}}</td>
+                    <td><i class="fa fa-check-circle-o green"></i><span class="ms-1">{{att.course.module.room.name}}</span></td>
+                    <td>{{att.course.wording}}</td>
+                 
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div> 
 {% endblock %}

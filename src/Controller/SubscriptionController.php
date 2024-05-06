@@ -8,7 +8,7 @@ use App\Entity\Subscription;
 use App\Form\SubscriptionType;
 //use App\Form\Subscription2Type;
 use App\Form\Subscription2Type;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\SchoolYearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SubscriptionRepository;
@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\SchoolYearService;
 
 /**
  * Subscription controller.
@@ -29,12 +30,18 @@ class SubscriptionController extends AbstractController
     private $em;
     private $repo;
     private $scRepo;
+    private SessionInterface $session;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, SubscriptionRepository $repo, SchoolYearRepository $scRepo)
+
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $repo, SchoolYearRepository $scRepo, SessionInterface $session)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
+        $this->session = $session;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
     /**
@@ -46,7 +53,7 @@ class SubscriptionController extends AbstractController
      */
     public function indexAction()
     {
-        $year = $this->scRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $subscriptions = $this->repo->findEnrollementThisYear($year);
         return $this->render('subscription/index.html.twig', compact("subscriptions"));
     }
@@ -135,7 +142,7 @@ class SubscriptionController extends AbstractController
     public function situation(Student $std, ClassRoom $room)
     {
         $em = $this->getDoctrine()->getManager();
-        $year = $em->getRepository('AppBundle:SchoolYear')->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $payments = $em->getRepository('AppBundle:Payment')->findAnnualPaymentsOfStudent($std, $year);
 
         $total = 0;

@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
-
+use App\Entity\Module;
+use App\Entity\Domain;
+use App\Entity\ClassRoom;
 use App\Entity\SchoolYear;
 use App\Entity\Attribution;
 use Doctrine\Persistence\ManagerRegistry;
@@ -50,5 +52,49 @@ class AttributionRepository extends ServiceEntityRepository
               
         return $qb->getQuery()->getResult();
     }
+
+    public function findByYearAndByRoom(SchoolYear $year, ClassRoom $room) {
+      
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.schoolYear', 'sc')
+            ->leftJoin('a.course', 'c')
+            ->leftJoin('c.module', 'm')
+            ->leftJoin('m.room', 'r')
+                ->where('sc.id=:year')
+                ->andWhere('r.id=:room')
+                ->setParameter('room', $room->getId())
+                ->setParameter('year', $year->getId());
+              
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByYearAndByModule(SchoolYear $year,Module $module) {
+      
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.schoolYear', 'sc')
+            ->leftJoin('a.course', 'c')
+            ->leftJoin('c.module', 'm')
+                ->where('sc.id=:year')
+                ->andWhere('m.id=:module')
+                ->setParameter('module', $module->getId())
+                ->setParameter('year', $year->getId());
+              
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByYearAndByDomain(SchoolYear $year,Domain $domain) {
+      
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.schoolYear', 'sc')
+            ->leftJoin('a.course', 'c')
+            ->leftJoin('c.domain', 'd')
+                ->where('sc.id=:year')
+                ->andWhere('d.id=:domain')
+                ->setParameter('domain', $domain->getId())
+                ->setParameter('year', $year->getId());
+              
+        return $qb->getQuery()->getResult();
+    }
+
 
 }

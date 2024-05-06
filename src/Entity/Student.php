@@ -183,6 +183,19 @@ class Student
         return  $lastname . " " . $firstname . " " . $matricule;
     }
 
+    
+    /**
+     *
+     * @return string
+     */
+    public function fullName()
+    {
+        $lastname = (is_null($this->getLastName())) ? "" : $this->getLastName();
+        $firstname = (is_null($this->getFirstName())) ? "" : $this->getFirstName();
+
+        return  $lastname . " " . $firstname ;
+    }
+
     /**
      * Set matricule
      *

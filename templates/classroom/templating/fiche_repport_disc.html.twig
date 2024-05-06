@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Fiche annuelle de notes
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+    </head>
+    <body>
+        <header class="clearfix">
+            {{ include('classroom/partials/header.html.twig') }}
+
+            <h1 style=" text-align:center; ">
+                <b>
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                        FEUILLET D'ABSCENCES 
+                                                                        
+                                            
+                    {% else %}
+                        ABSENCES FORM
+                                                                    
+                                            
+                    {% endif %}
+                </b>
+            </h1>
+            <div id="companyleft">
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                CLASSE :
+                                                                                        
+                                                            
+                            {% else %}
+                                CLASS :
+                                                                                    
+                                                            
+                            {% endif %}
+                        </span>
+                        {{ room.name }}
+                    </b>
+                </h5>
+            </div>
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ANNEE SCOLAIRE &nbsp;   :
+                                                                
+                                {{ year }}
+                            {% else %}
+                                {{ year }}
+                                &nbsp; SCHOOL YEAR   :
+                                                                                    
+                                                            
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+            </div>
+        </header>
+        <main>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div style="text-align:right;">
+                                <h6>
+                                    <span>
+                                        <b>
+                                            N°    
+                                                                                    
+                                        </b>
+                                    </span>
+                                </div>
+                            </h6>
+                        </th>
+                        <th>
+                            <div style="text-align:right;">
+                                <h6>
+                                    <span>
+                                        <b>
+                                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                                NOM(S)
+                                                                                                                        
+                                                                                            
+                                            {% else %}
+                                                SECOND NAME(S)
+                                                                                                                    
+                                                                                            
+                                            {% endif %}
+                                        </b>
+                                    </span>
+                                </div>
+                            </h6>
+                        </th>
+                        <th>
+                            <div style="text-align:right;">
+                                <h6>
+                                    <span>
+                                        <b>
+                                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                                PRENOMS(S)
+                                                                                                                        
+                                                                                            
+                                            {% else %}
+                                                FIRSTNAME(S)
+                                                                                                                    
+                                                                                            
+                                            {% endif %}
+                                        </b>
+                                    </span>
+                                </div>
+                            </h6>
+                        </th>
+                        {% for i in room.level.cycle.section.name=="Francophone" ? ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"] : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]   %}
+                            
+                            <td border="medium" class="qty">
+                                <b>
+                                     
+                                                                        
+                                    {{ i }}
+                                </b>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+                            <td class="qty">
+                                {{ loop.index }}
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.lastname }}
+                                </b>
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.firstname }}
+                                </b>
+                            </td>
+                            {% for i in ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"] %}
+                               
+                                <td border="medium" class="qty"></td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            Feuillet d'abscences 
+        </footer>
+    </body>
+</html>

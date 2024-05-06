@@ -8,7 +8,7 @@
         <div class="row mt-4">
             <div class="col-1" >
                 <a class="btn btn-info" href="{{ path('admin_modules_new') }}">
-                    <i class="fa fa-plus"></i> <h1>New </h1>
+                    <i class="fa fa-plus"></i> 
                 </a>
             </div>
             <div class="col-11 jumbotron" >
@@ -33,7 +33,7 @@
                                     <td style="width:15%;" class="text-center" ><a href="{{ path('admin_modules_show', {id: module.id}) }}"><h3>{{ module.code }}</h3></a></td>
                                 
                                     <td style="width:15%;" class="text-center" ><a href="{{ path('admin_modules_show', {id: module.id}) }}"><h3>{{ module.name }}</h3></a></td>
-                                    <td style="width:15%;" class="text-center" ><a href="{{ path('admin_modules_show', {id: module.id}) }}"><h3>{{ module.room.name }}</h3></a></td>
+                                    <td style="width:15%;" class="text-center" ><a href="{{ path('admin_classrooms_show', {id: module.room.id}) }}"><h3>{{ module.room.name }}</h3></a></td>
                                     
                                     <td style="width:15%;" class="text-center">
                                         <div class="btn-group">

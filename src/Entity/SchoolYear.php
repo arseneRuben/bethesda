@@ -31,9 +31,9 @@ class SchoolYear
     /**
      * @var int
      *
-     * @ORM\Column(name="reductionRrime", type="integer")
+     * @ORM\Column(name="rate", type="integer")
      */
-    private $reductionPrime;
+    private $rate;
 
 
 
@@ -87,7 +87,6 @@ class SchoolYear
         $this->quaters = new ArrayCollection();
         $this->activated = true;
         $this->subscriptions = new ArrayCollection();
-        $this->paymentPlants = new ArrayCollection();
         $this->paymentPlans = new ArrayCollection();
     }
 
@@ -98,27 +97,27 @@ class SchoolYear
 
 
     /**
-     * Set reductionPrime
+     * Set rate
      *
      * @param integer $reductionPrime
      *
      * @return SchoolYear
      */
-    public function setReductionPrime($reductionPrime)
+    public function setRate($reductionPrime)
     {
-        $this->reductionPrime = $reductionPrime;
+        $this->rate = $reductionPrime;
 
         return $this;
     }
 
     /**
-     * Get reductionPrime
+     * Get rate
      *
      * @return integer
      */
-    public function getReductionPrime()
+    public function getRate()
     {
-        return $this->reductionPrime;
+        return $this->rate;
     }
 
     /**
@@ -151,6 +150,16 @@ class SchoolYear
         return $this;
     }
 
+     /**
+     * Get amountofTuition
+     *
+     * @param ClassRoom $room
+     *
+     * @return integer
+     */
+    public function amountofTuition(ClassRoom $room) {
+        
+    }
 
     /**
      * @return Collection|Subscription[]

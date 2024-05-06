@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\User;
 
 use App\Entity\SchoolYear;
 use App\Entity\Subscription;
@@ -9,7 +10,6 @@ use App\Repository\ClassRoomRepository;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\Collection;
-
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -51,11 +51,10 @@ class ClassRoom
      */
     private $level;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="fullTeacherOf")
-     * @ORM\JoinColumn(nullable=true)
+     /**
+     * @ORM\OneToMany(targetEntity=MainTeacher::class, mappedBy="classRoom")
      */
-    private $fullTeacher;
+    private $mainTeachers;
 
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="classRoom")
@@ -71,6 +70,7 @@ class ClassRoom
         $this->modules = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->abscenceSheets = new ArrayCollection();
+        $this->mainTeachers = new ArrayCollection();
     }
 
 
@@ -152,16 +152,7 @@ class ClassRoom
         return $this;
     }
 
-    public function getFullTeacher(): ?User
-    {
-        return $this->fullTeacher;
-    }
 
-    public function setFullTeacher(?User $fullTeacher): self
-    {
-        $this->fullTeacher = $fullTeacher;
-        return $this;
-    }
 
 
 
@@ -196,6 +187,7 @@ class ClassRoom
         return $this;
     }
 
+
     public function isApc(): ?bool
     {
         return $this->apc;
@@ -225,6 +217,71 @@ class ClassRoom
             // set the owning side to null (unless already changed)
             if ($abscenceSheet->getClassRoom() === $this) {
                 $abscenceSheet->setClassRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getMainTeacher(SchoolYear $year): User
+    {
+        foreach($this->mainTeachers as $teacher){
+            if($teacher->getSchoolYear()->getId() == $year->getId()){
+                return $teacher;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return Collection<int, MainTeacher>
+     */
+    public function getMainTeachers(): Collection
+    {
+        return $this->mainTeachers;
+    }
+
+    public function addMainTeacher(MainTeacher $mainTeacher): static
+    {
+        if (!$this->mainTeachers->contains($mainTeacher)) {
+            $this->mainTeachers->add($mainTeacher);
+            $mainTeacher->setClassRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMainTeacher(MainTeacher $mainTeacher): static
+    {
+        if ($this->mainTeachers->removeElement($mainTeacher)) {
+            // set the owning side to null (unless already changed)
+            if ($mainTeacher->getClassRoom() === $this) {
+                $mainTeacher->setClassRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeMainTeacherOfYear(SchoolYear $year): static
+    {
+        foreach($this->mainTeachers as $teacher){
+            if($teacher->getSchoolYear()->getId() == $year->getId()){
+                return $this->removeMainTeacher($teacher);
+            }
+        }
+
+        return $this;
+    }
+
+    public function updateMainTeacherOfYear(SchoolYear $year, User $user): static
+    {
+        foreach($this->mainTeachers as $mainTeacher){
+            if($mainTeacher->getSchoolYear()->getId() == $year->getId()){
+                $mainTeacher->setTeacher($user);
             }
         }
 

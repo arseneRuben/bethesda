@@ -1,0 +1,138 @@
+{% extends 'layout/backEndLayout.html.twig' %}
+{% block title %}Edition de l'echeancier de payement - {{ parent() }}{% endblock %}
+{% block content %}
+                {{form_start(form)}}
+                    <div class="row mt-4">
+                        <div class="col-12 jumbotron" >
+                            <div class="m-1 box-shadow">
+                                    <div class="card-header row">
+                                                <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase col-7"> Grille de tranches de scolarite par classe </h4>
+                                                <label for="slice" class="col-4 text-uppercase"> Modifier le nombre de tranches </label>
+                                                <input class="form-control col-1" type="number" min="0" max="3" value={{ paymentPlan.weight }} id="slice" placeholder="nombre de tranches">
+                                    </div>
+                                    <table  width="100%" class="table table-striped  table-bordered">
+                                        <thead>
+                                            <tr class="row">
+                                                <th class="text-center col-1" scope="col">Niveau</th>
+                                                <th  class="text-center col-1" id="roomTHead" scope="col">Classe</th>
+                                                
+                                                <th  class="text-center col-2" scope="col" colspan="2">Frais Examen 
+                                            
+                                                    <input class="form-check-input" type="checkbox" id="checkbox_0"  checked>
+                                                
+                                                </th>                            
+                                                <th  class="text-center col-1" scope="col">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for room in rooms %}
+                                                <tr class="row">
+                                                    <td  class="text-center col-1" scope="row">{{ room.level.name }}</td>
+                                                    <td  class="text-center col-1 roomTBody" scope="row" data-room={{ room.id }}>{{ room.name }}</td>
+                                                        {% for tranche in 1..paymentPlan.weight %}
+                                                            <td  class="text-center col-1" scope="row">  <input type="number" value={{ installments[room.id][tranche].amount }} class="form-control input-sm" name={{"tranche_class_"~tranche~"_"~room.id}} /></td>
+                                                            <td  class="text-center col-1" scope="row">   <input type="date"  value={{installments[room.id][tranche].deadline|date("Y-m-d") }}  class="form-control input-sm" name={{"deadline_class_"~tranche~"_"~room.id}} /></td>
+                                                    
+                                                        {% endfor %}
+                                                        {%  if(room.apc) %} {# If the class passes the official exams? #}
+                                                            <td  class="text-center col-1" scope="row">  <input type="number" value={{ installments[room.id][0].amount }} class="form-control input-sm" name={{"tranche_class_0_"~room.id}} /></td>
+                                                            <td  class="text-center col-1" scope="row">   <input type="date"  value={{installments[room.id][0].deadline|date("Y-m-d") }} class="form-control input-sm" name={{"deadline_class_0_"~room.id}} /></td>
+                                                        {% else %}
+                                                            <td  class="text-center col-2" colspan="2" scope="row"></td>
+                                                        {% endif %}
+                                                    
+                                                    <td  class="text-center col-1 sum" scope="row"></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2 mx-auto">
+                                    <div class=" col-3">
+                                    </div>
+                                        <div class=" col-3 mx-auto btn-group d-inline-flex p-2 bd-highlight">
+                                            <button class="btn btn-danger" type="submit">
+                                                <b><i class="fa fa-balance-scale"></i>submit</b>
+                                            </button>
+                                        </div>
+                                        <div class="  col-3 mx-auto btn-group d-inline-flex p-2 bd-highligh">
+                                            <a class="btn btn-info" href="{{ path('admin_school_years') }}">
+                                                <i class="fa fa-list"></i>
+                                                {{ 'Change school year'|trans({}, 'admin') }}
+                                            </a>
+                                        </div>
+                                    <div class=" col-3">
+                                    </div>
+                    </div>
+                {{form_end(form)}}
+{% endblock %}
+{% block javascripts %}
+	{{parent()}}
+    <script type="text/javascript">
+        const slice = $("#slice"), roomTHead=$("#roomTHead")  ;
+        var trancheClass = $("input[name*='tranche_class']"), deadlineClass = $("input[name*='deadline_class']");
+        $('form').on('keypress keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                return false;
+            }
+        });
+        
+        sliceSize = slice.val();
+        for(let i=sliceSize; i>=1 ; i--) {
+                  $(`  <th  class=\"text-center col-2 inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}   <input class="form-check-input" type="checkbox" id="checkbox_${i}"  checked></th>`).insertAfter(roomTHead);
+        } 
+     
+        slice.change(function(){
+            $('.inserted').each(function(){
+                    $(this).remove();
+            });
+            sliceSize = slice.val();
+            for(let i=sliceSize; i>=1 ; i--) {
+                  $(`  <th  class=\"text-center col-2 inserted\" scope=\"col\" colspan=\"2\">Tranche ${i}   <input class="form-check-input" type="checkbox" id="checkbox_${i}"  checked></th>`).insertAfter(roomTHead);
+                  $(".roomTBody").each(function() {
+                        let roomId = $(this).closest("tr").find(".roomTBody").data("room");
+                        $(` <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"number\"  value=\"0\" class=\"form-control input-sm\" name="tranche_class_${i}_${roomId}" /></td>
+                            <td  class=\"text-center col-1 inserted\" scope=\"row\"><input type=\"date\"  class=\"form-control  input-sm\" name="deadline_class_${i}_${roomId}"/></td>
+                                 `).insertAfter($(this));
+                  });
+            } 
+         });
+         $(".sum").each(function(index, value) {
+                var prevSiblings = $(this).prevAll(), sum=0;
+                var inputNumberType = prevSiblings.find('input[type="number"]');
+                inputNumberType.each(function(index, value) {
+                    sum += parseInt($(this).val(), 10);
+                });
+                $(this).text(sum);
+            });
+         $("input[name*='tranche_class']").change(function(e){
+                var sum=0;
+                let tranches = $(e.target).closest("tr").find("input[name*='tranche_class']");
+                tranches.each(function(){
+                    sum += parseInt($(this).val());
+                });
+                
+                $(this).closest("tr").find(".sum").text(sum);
+                const parts = $(this).attr( "name" ).split("_");
+                const tranche = parts[2];
+                const room = parts[3];
+                if($("#checkbox_"+tranche).is(":checked")){
+                    $(`input[name*="tranche_class_${tranche}_"]`).val(e.target.value);
+                }
+            });
+            $("input[name*='deadline_class']").change(function(e){
+                const parts = $(this).attr( "name" ).split("_");
+                const tranche = parts[2];
+                const room = parts[3];
+                if($("#checkbox_"+tranche).is(":checked")){
+                    $(`input[name*="deadline_class_${tranche}_"]`).val(e.target.value);
+                }
+            });
+
+       
+        
+    </script>
+{% endblock javascripts %}

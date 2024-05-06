@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>badge</title>
+       
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/badge/badge-front.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/badge/badge-back.css')) }}" />
+
+
+    </head>
+
+    <body>
+        <div class="student-badge-front">
+            <div class="outer-cont"> 
+                
+            </div>
+            <div class="middle-cont">
+                <div class="inner-middle">
+                    <div class="core-cont">
+                            {% if(fileExist)%}
+                                {% set imagePath = absolute_url(asset('assets/images/student/'~ sub.student.imageName )) %}
+                            {% else %}
+                                {% if sub.student.gender %}
+                                     {% set imagePath = absolute_url(asset('assets/images/student/female-default-avatar.jpg')) %}
+                                 {% else %}
+                                    {% set imagePath = absolute_url(asset('assets/images/student/male-default-avatar.jpg')) %}
+                                {% endif %}
+                            {% endif %}
+                        <image  src={{ imagePath }} alt="student image"></image>
+                    </div>
+                </div>
+            </div>
+            <div class="additional-element"></div>
+            <div class="additional-element-2"></div>
+            <div class="Title1"><p><span id="Carte">CARTE SCOLAIRE</span><br><span id="font-I">SCHOOL ID CARD</span><br><span id="font-S">{{sub.schoolyear.wording}}</span></p></div>
+            <div class="name"><p><span id="name1">{{sub.student.lastname}}</span><br>{{sub.student.firstname}} <br>{{sub.classroom.name}}</p></div>
+            <div class="info1"><p>Né(e) le / <span id="info11">Born</span><br><span id="info12">{{sub.student.birthday|date('Y-m-d')}}</span></p></div>
+            <div class="info2"><p>Sexe / <span id="info21">Sex</span><br><span id="info22">
+                 {% if sub.student.gender %}
+                        F              
+                     {% else %}
+                        M                       
+                {% endif %}
+            </span></p></div>
+            <div class="info3"><p>A / <span id="info31">At</span><br><span id="info32">{{sub.student.birthplace}}</span></p></div>
+            <div class="info4"><p>Matricule<br><span id="info41">{{sub.student.matricule}}</span></p></div>
+            <div class="info5"><p> {{get_env("FRENCH_SCHOOL_NAME")|raw|title }} / <span id="info51"> {{get_env("ENGLISH_SCHOOL_NAME")|raw|title }}</span></p></div>
+        </div>
+
+
+        <div class="student-badge-back">
+            <div class="full"></div>
+            <div class="additional-task"></div>
+            <div class="additional-task-1"></div>
+            <div class="rep1"><p>REPUBLIQUE DU CAMEROUN<br>paix-travail-patrie</p></div>
+            <div class="min1"><p>MINISTERE DES ENSEIGNEMENTS<br>SECONDAIRES</p></div>
+            <div class="rep2"><p>REPUBLIC OF CAMEROON<br>Peace-Work-Home</p></div>
+            <div class="rep3"><p>MINISTRY OF EDUCATION<br>SECONDARY</p></div>
+            <div class="name1"><span id="name11"> {{get_env("FRENCH_SCHOOL_NAME")|raw|title }} </span><br><span id="name12">{{get_env("ENGLISH_SCHOOL_NAME")|raw|title }}</span></div>
+            <div class="addr1"><p>Adresse / <span id="addr11">Adress</span><br>{{get_env("CITY")|raw|title }}</p></div>
+            <div class="em1"><p>Email / <span id="em11">Email</span><br>{{get_env("EMAIL")|raw|title }}</p></div>
+            <div class="Tel"><p>Téléphone / <span id="Tel1">Phone</span><br>{{get_env("CONTACT")|raw|title }}</p></div>
+            <div class="hel1"><p>En cas d'urgence,<br>veuillez appeler le numéro ci-dessous :</p></div>
+            <div class="hel2"><p>In case of emergency,<br>please call the number below :</p></div>
+            <img src="" alt="emergency call only" class="img2"></img>
+            <img src="" alt="QR CODE" class="img3"></img>
+            <div class="tel"></image>{{ sub.student.primarycontact }}</div>
+        </div>
+    </body>
+</html>

@@ -5,7 +5,6 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Email;
 use App\Form\EmailType;
@@ -15,12 +14,12 @@ class ContactController extends AbstractController
     /**
      * @Route("/contact", name="app_contact")
      */
-    public function index(Request $request, \Swift_Mailer $mailer): Response
+    public function index(Request $request, \Swift_Mailer $mailer ): Response
     {
+
         $enquiry = new Email();
         $form = $this->createForm(EmailType::class, $enquiry);
         $form->handleRequest($request);
-
 
         //dd($form->getErrors());
         if ($form->isSubmitted() && $form->isValid()) {

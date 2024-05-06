@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Récapitulatif séquentiel
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+    </head>
+    <body>
+        <header class="clearfix">
+
+            <h1 style=" text-align:center; ">
+                <b>
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                        FICHE ANNUELLE DE NOTES 
+                                                
+                        {{ seq.wording }}
+                    {% else %}
+                        {{ seq.wording }}
+                        ANNUAL GRADE SHEET
+                                                                    
+                                            
+                    {% endif %}
+                </b>
+            </h1>
+            <div id="companyleft">
+
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                CLASSE 
+                                                                                        
+                                                            
+                            {% else %}
+                                CLASS
+                                                                                    
+                                                            
+                            {% endif %}
+
+                        </span>
+                        {{ room.name }}
+                    </b>
+                </h5>
+            </div>
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ANNEE SCOLAIRE &nbsp;   
+                                                                
+                                {{ year }}
+                            {% else %}
+                                {{ year }}
+                                &nbsp; SCHOOL YEAR
+                                                                                    
+                                                            
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+
+            </div>
+        </header>
+        <main>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div style="text-align:right;">
+                                <h6>
+                                    <span>
+                                        <b>
+                                            N°    
+                                                                                    
+                                        </b>
+                                    </span>
+                                </div>
+                            </h6>
+                        </th>
+
+                        <th style="width:20%">
+                            <div style="text-align:right; ">
+                                <h6>
+                                    <span>
+                                        <b>
+                                            NOMS    
+                                                                                    
+                                        </b>
+                                    </span>
+                                </div>
+                            </h6>
+                        </th>
+
+                        {% for module in room.modules %}
+                            {% for course in module.courses %}
+
+                                <th class="rotate">
+                                    <div>
+                                        <span>
+                                            <b>
+                                                &nbsp;&nbsp;&nbsp; 
+                                                                                                
+                                                {{ course.wording }}
+                                                &nbsp;&nbsp;&nbsp; 
+                                                                                            
+                                            </b>
+                                        </span>
+                                    </div>
+                                </th>
+
+                            {% endfor %}
+                        {% endfor %}
+
+                    {# <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;TOTAL&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;MOYENNE&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th class="rotate">
+                                                <div>
+                                                    <span>
+                                                        <b>
+                                                            &nbsp;&nbsp;&nbsp;DECISION&nbsp;&nbsp;&nbsp;
+                                                        </b>
+                                                    </span>
+                                                </div>
+                                            </th>#}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+                            <td class="qty">
+                                {{ loop.index }}
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.lastname }}
+                                </b>
+                                ( 
+                                                                
+                                {% if std.gender ==0 %}
+                                    M
+                                                                                                          
+                                                                    
+                                {% else %}
+                                    F
+                                                                                                         
+                                                                    
+                                {% endif %}
+                                )
+                                                                                            
+                                                            
+                            </td>
+
+                            {% for module in room.modules %}
+                                {% for course in module.courses %}
+                                    <td border="medium" class="qty"></td>
+
+                                {% endfor %}
+                            {% endfor %}
+                        {#<td class="total"></td>
+                                                    <td class="total"></td>
+                                                    <td class="total"></td>#}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div id="notices">
+                <div>
+                    NB:
+                                    
+                </div>
+                <div class="notice">
+                    Chaque élève est tenu de vérifier la conformité des informations ci dessus mentionnées et en cas de problème, se rapprocher l'enseignant. 
+                                    
+                </div>
+                <div class="notice">
+                    Délai : Une semaine à compter de la date d'affichage  
+                                    
+                </div>
+            </div>
+        </main>
+        <footer>
+            Fiche de procès verbal
+                                
+                    
+        </footer>
+    </body>
+</html>

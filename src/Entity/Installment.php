@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\ClassRoom;
 use App\Repository\InstallmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,9 +41,9 @@ class Installment
       /**
      * @var int
      *
-     * @ORM\Column(name="rank", type="integer")
+     * @ORM\Column(name="ranking", type="integer")
      */
-    private $rank;
+    private $ranking;
       /**
      * @var \Datetime
      *
@@ -59,15 +59,17 @@ class Installment
 
    
 
-    public function getRank(): ?int
+    public function getRanking(): ?int
     {
-        return $this->rank;
+        return $this->ranking;
     }
 
-    public function setRank(int $order): static
+    public function setRanking(int $order): static
     {
-        $this->rank = $order;
-
+        $this->ranking = $order;
+        if($this->getPaymentPlan()->getWeight() < $order){
+            $this->getPaymentPlan()->setWeight($order) ;
+        }
         return $this;
     }
 

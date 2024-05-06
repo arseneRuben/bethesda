@@ -1,5 +1,5 @@
 {% extends 'layout/backEndLayout.html.twig' %}
-{% block title %}Présentation de la section - {{ parent() }}{% endblock %}
+{% block title %}Présentation du domaine - {{ parent() }}{% endblock %}
 
 {% block content %}
    
@@ -83,9 +83,17 @@ Edit </a> |
                                             <td> <a href="{{ path('admin_courses_show', {id: course.id}) }}">{{ course.code }}</a></td>
                                              <td>{{course.coefficient }}</td>
                                              <td>
-                                                 {% for attribution in course.attributions %}
-                                                    {{attribution.teacher.id }} |
-                                                 {% endfor %}
+                                                 {% if attributions[course.id] is defined %}
+                                                        <a href="{{ path('admin_attributions_edit', {id: attributions[course.id].id}) }}">
+                                                            {{attributions[course.id].teacher.fullName}}
+                                                        </a> 
+
+                                                {% else %}
+                                                    <a href="{{ path('admin_attributions_new') }}">
+
+                                                        Pas encore attribue
+                                                    </a>
+                                                {% endif %}
                                              </td>
                                         
                                             

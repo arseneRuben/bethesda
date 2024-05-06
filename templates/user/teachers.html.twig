@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Fiche de repport de notes
+                                
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+    </head>
+    <body>
+{{ include('classroom/partials/header.html.twig') }}
+
+ <div class="m-1 box-shadow">
+                   
+                    <table  width="90%" class="table table-bordered">
+                         <thead>
+                            <tr>
+                        
+                                <th style="width:25%;" scope="col">Nom complet </th>
+                                <th style="width:5%;" scope="col">Sexe</th>
+                                <th style="width:10%;" scope="col">Date de naissance</th>
+                                <th style="width:10%;" scope="col">Lieu de naissance</th>
+                                <th style="width:10%;" scope="col">Residence</th>
+                                <th style="width:15%;" scope="col">Contact</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                
+                                    <td>{{ user.fullName }}</td>
+                                    <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
+                                    <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
+                                    <td>{{ user.birthplace }}</td>
+                                    <td>{{ user.location }}</td>
+                                    <td> {{ user.phoneNumber}} </td>
+                                   
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+ </body>
