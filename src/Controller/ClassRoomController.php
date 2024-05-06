@@ -989,6 +989,7 @@ class ClassRoomController extends AbstractController
         $sumAvg = 0;
         $rank = 0;
         $rankArray = [];
+         dd($quaterAvg);
         foreach ($quaterAvg as $avg) {
 
             $quaterAvgArray[$avg['std']] = $avg['moyenne'];
