@@ -581,9 +581,11 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function recapSeqAction(ClassRoom $room)
+    public function recapSeqAction(ClassRoom $room, Request $request)
     {
         // set_time_limit(600);
+        $checkboxValues = $request->request->get('selected_courses');
+        dd($checkboxValues);
         $em = $this->getDoctrine()->getManager();
         $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
