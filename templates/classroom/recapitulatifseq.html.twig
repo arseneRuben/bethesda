@@ -158,15 +158,31 @@
                         {% set totalCoef = 0 %}
                         {% for module in room.modules %}
                             {% for course in module.courses %}
-                                {% set totalCoef = totalCoef + course.coefficient %}
-                                <th class="rotate">
-                                    <div>
-                                        <i>
-                                            {{ course.coefficient }}
-                                        </i>
-                                        <span>
-                                            <b>
-                                                &nbsp;&nbsp;&nbsp; 
+                                {% if course.id in checkedValues  %}
+                                    {% set totalCoef = totalCoef + course.coefficient %}
+                                    <th class="rotate">
+                                        <div>
+                                            <i>
+                                                {{ course.coefficient }}
+                                            </i>
+                                            <span>
+                                                <b>
+                                                    &nbsp;&nbsp;&nbsp; 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                    
+                                                                                                                                                
+                                                                                                    
+                                                    <h6>
+                                                        {{ course.wording }}
+                                                    </h6>
+                                                    &nbsp;&nbsp;&nbsp; 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
@@ -176,28 +192,13 @@
                                                                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                 
                                                                                                                                                                                                 
-                                                                                                                                            
+                                                                                                                                                
                                                                                                 
-                                                <h6>
-                                                    {{ course.wording }}
-                                                </h6>
-                                                &nbsp;&nbsp;&nbsp; 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                            
-                                                                                                                                                                                            
-                                                                                                                                            
-                                                                                            
-                                            </b>
-                                        </span>
-                                    </div>
-                                </th>
-
+                                                </b>
+                                            </span>
+                                        </div>
+                                    </th>
+                                {% endif %}
                             {% endfor %}
                         {% endfor %}
 
@@ -277,38 +278,41 @@
 
                             {% for module in room.modules %}
                                 {% for course in module.courses %}
-                                    {% for mark in datas %}
+                                    {% if course.id in checkedValues %}
 
-                                        {% if std.id == mark.student.id %}
-                                            {% if mark.evaluation.course.wording == course.wording %}
-                                                {% set i = i+1 %}
+                                        {% for mark in datas %}
 
-                                                <td class="qty">
-                                                    {% if mark.weight == 1 %}
-                                                        {{ mark.value }}
-                                                        {% set totalCoef = totalCoef + mark.evaluation.course.coefficient %}
-                                                        {% set NCoef = NCoef + mark.value * mark.evaluation.course.coefficient %}
-                                                    {% else %}
-                                                        /
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                            
-                                                                                                                                                                    
-                                                                                                            
-                                                    {% endif %}
-                                                </td>
+                                            {% if std.id == mark.student.id %}
+                                                {% if mark.evaluation.course.wording == course.wording %}
+                                                    {% set i = i+1 %}
 
+                                                    <td class="qty">
+                                                        {% if mark.weight == 1 %}
+                                                            {{ mark.value }}
+                                                            {% set totalCoef = totalCoef + mark.evaluation.course.coefficient %}
+                                                            {% set NCoef = NCoef + mark.value * mark.evaluation.course.coefficient %}
+                                                        {% else %}
+                                                            /
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                
+                                                                                                                                                                        
+                                                                                                                
+                                                        {% endif %}
+                                                    </td>
+
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
 
-                                    {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endfor %}
                             {% endfor %}
                             <td class="total">

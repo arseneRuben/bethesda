@@ -470,7 +470,7 @@
              {% for module in modules %}
                 {% for course in module.courses %}
                 <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" name="selected_courses[]" value={{course.id}} >
+                        <input class="form-check-input me-1" type="checkbox" checked name="selected_courses[]" value={{course.id}} >
                         {{course.wording}}
                 </li>
                 {% endfor %}
