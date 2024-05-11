@@ -76,7 +76,14 @@ class StudentController extends AbstractController
      */
     public function indexAction()
     {
-        // $year = $this->scRepo->findOneBy(array("activated" => true));
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $students = $this->repo->findEnrolledStudentsThisYear2();
 
         return $this->render('student/list.html.twig', compact("students"));
@@ -92,6 +99,14 @@ class StudentController extends AbstractController
     public function showAction(Student $student)
     {
         // Année scolaire, seuquence, inscrption de l'eleve pour l'annee en cours
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
@@ -111,9 +126,7 @@ class StudentController extends AbstractController
         $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
         $seqs = $this->seqRepo->findSequenceThisYear($year);
         if ($sub != null) {
-            //  dd($seqs);
             foreach ($seqs as $seq) {
-
                 $evalSeqs[$seq->getId()] = $this->evalRepo->findBy(array("classRoom" => $sub->getClassRoom(), "sequence" => $seq));
             }
 
@@ -157,6 +170,14 @@ class StudentController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student);
 
@@ -184,6 +205,14 @@ class StudentController extends AbstractController
      */
     public function edit(Request $request, Student $student): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $form = $this->createForm(StudentType::class, $student, [
             'method' => 'PUT'
         ]);
@@ -209,6 +238,14 @@ class StudentController extends AbstractController
      */
     public function delete(Student $student, Request $request): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         if ($this->isCsrfTokenValid('students_deletion' . $student->getId(), $request->request->get('csrf_token'))) {
             $this->em->remove($student);
             $this->em->flush();
@@ -223,6 +260,14 @@ class StudentController extends AbstractController
      */
     public function schoolCertificate(Pdf $pdf, Student $std): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $html = $this->renderView('student/school_certificate.html.twig', array(
@@ -247,6 +292,14 @@ class StudentController extends AbstractController
      */
     public function tuitionReceiptAction(Pdf $pdf, Student $std): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $std), array('updatedAt' => 'ASC'));
@@ -277,6 +330,14 @@ class StudentController extends AbstractController
      */
     public function schoolBadge(Pdf $pdf, Student $std): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
@@ -307,6 +368,14 @@ class StudentController extends AbstractController
      */
     public function reporCardTrimAction(Pdf $pdf, Student $std)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
@@ -382,6 +451,14 @@ class StudentController extends AbstractController
      */
     public function reporCardYear(Student $std)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $sequences = $this->seqRepo->findSequenceThisYear($year);

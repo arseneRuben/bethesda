@@ -8,12 +8,17 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Repository\AttributionRepository;
+use App\Service\SchoolYearService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @ORM\Entity(repositoryClass=CourseRepository::class)
  */
 class Course
 {
+    private $container;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -47,10 +52,7 @@ class Course
      */
     private $code;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $attributed = false;
+   
 
     /**
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="course")
@@ -64,20 +66,14 @@ class Course
      * */
     private $attributions;
 
-    public function currentTeacher()
-    {
+  
 
-        $teacher = null;
-        if (!$this->attributions->isEmpty()) {
-            $teacher = $this->attributions->last()->getTeacher();
-        }
-        return $teacher;
-    }
-
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
         $this->evaluations = new ArrayCollection();
         $this->attributions = new ArrayCollection();
+        $this->container = $container;
+
     }
 
     public function getId(): ?int
@@ -155,16 +151,13 @@ class Course
         return $this;
     }
 
-    public function getAttributed(): ?bool
-    {
-        return $this->attributed;
+ 
+    public function getCurrentTeacher(AttributionRepository $attRepo, SchoolYearService $service) {
+        $attribution = $attRepo->findOneBy(array("course" => $this, "schoolYear"=> $service->sessionYearById()));
+        return $attribution==null ? false : $attribution->getTeacher();
     }
 
-    public function setAttributed(bool $attributed): self
-    {
-        $this->attributed = $attributed;
-        return $this;
-    }
+
 
     /**
      * @return Collection|Evaluation[]
@@ -221,8 +214,5 @@ class Course
         return $this->attributions;
     }
 
-    public function isAttributed(): ?bool
-    {
-        return $this->attributed;
-    }
+  
 }

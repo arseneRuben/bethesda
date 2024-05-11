@@ -3,7 +3,11 @@
 namespace App\Service;
 use App\Repository\SchoolYearRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Service;
 
+/**
+ * @Service("school_year_service")
+ */
 class SchoolYearService
 {
     private SchoolYearRepository $scRepo;

@@ -52,6 +52,14 @@ class AttributionController extends AbstractController
      */
     public function indexAction()
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $entities = $this->repo->findAllThisYear($year);
         return $this->render('attribution/index.html.twig', array(
@@ -64,6 +72,14 @@ class AttributionController extends AbstractController
 
     public function setAttributionAction( )
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $em = $this->getDoctrine()->getManager();
         $year = $this->schoolYearService->sessionYearByCode();
         $entities = $this->repo->findAllThisYear($year);
@@ -84,6 +100,14 @@ class AttributionController extends AbstractController
      */
     public function showAction(Attribution $attribution)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $deleteForm = $this->createDeleteForm($attribution->getId(), 'admin_attributions_delete');
 
         return $this->render('attribution/show.html.twig', array(
@@ -102,6 +126,7 @@ class AttributionController extends AbstractController
      */
     public function createAction(Request $request)
     {
+        
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');

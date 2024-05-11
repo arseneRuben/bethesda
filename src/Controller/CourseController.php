@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
 use App\Repository\MainTeacherRepository;
+use App\Repository\AttributionRepository;
 use App\Service\SchoolYearService;
 use App\Repository\ClassRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,14 +29,16 @@ class CourseController extends AbstractController
     private $repo;
     private $clRepo;
     private MainTeacherRepository $mainTeacherRepo;
+    private AttributionRepository $attRepo;
     private SchoolYearService $schoolYearService;
 
 
-    public function __construct( MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService, EntityManagerInterface $em, CourseRepository $repo, ClassRoomRepository $clRepo)
+    public function __construct(AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService, EntityManagerInterface $em, CourseRepository $repo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
         $this->clRepo = $clRepo;
+        $this->attRepo = $attRepo;
         $this->mainTeacherRepo = $mainTeacherRepo;
         $this->schoolYearService = $schoolYearService;
 
@@ -66,6 +69,9 @@ class CourseController extends AbstractController
     {
         return $this->render('course/show.html.twig', compact("course"));
     }
+
+     
+   
 
 
     /**

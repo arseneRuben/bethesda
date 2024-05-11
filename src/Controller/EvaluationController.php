@@ -83,6 +83,15 @@ class EvaluationController extends AbstractController
      */
     public function indexAction(PaginatorInterface $paginator, Request $request, SessionInterface $session)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+
         $search = new EvaluationSearch();
         $searchForm =  $this->createForm(EvaluationSearchType::class, $search);
         $year = $this->schoolYearService->sessionYearById();
@@ -114,6 +123,14 @@ class EvaluationController extends AbstractController
      */
     public function showAction(Evaluation $evaluation, SessionInterface $session)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         return $this->render('evaluation/show.html.twig', ['studentEnrolled' => $studentsEnrolledInClass, 'evaluation' => $evaluation]);
@@ -126,6 +143,14 @@ class EvaluationController extends AbstractController
      */
     public function new(Request $request, SessionInterface $session): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $evaluation = new Evaluation();
         $year = $this->schoolYearService->sessionYearById();
         $form = $this->createForm(EvaluationType::class, $evaluation);
@@ -252,7 +277,7 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation, SessionInterface $session): Response
     {
-        /* if (!$this->getUser()) {
+         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         }
@@ -317,6 +342,14 @@ class EvaluationController extends AbstractController
      */
     public function editMark(Request $request, Evaluation $evaluation, String $matricule, SessionInterface $session)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
@@ -371,6 +404,14 @@ class EvaluationController extends AbstractController
      */
     public function updateAction(Evaluation $evaluation, Request $request, SessionInterface $session)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
       
@@ -444,6 +485,14 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         /* if($evaluation->getTeacher()!=$this->getUser())
         {
             $this->addFlash('warning', 'Access forbidden!');
@@ -499,6 +548,14 @@ class EvaluationController extends AbstractController
      */
     public function pdfAction(Evaluation $evaluation, \Knp\Snappy\Pdf $snappy)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $html = $this->renderView('evaluation/pdf.html.twig', array(
             'evaluation' => $evaluation,
         ));
