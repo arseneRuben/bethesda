@@ -99,12 +99,26 @@ class SchoolYearController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->uniqueness();
-
-            $this->em->persist($schoolyear);
-            $this->em->flush();
-            $this->addFlash('success', 'SchoolYear succesfully created');
-            return $this->redirectToRoute('admin_school_years');
+            if(($schoolyear->getStartDate() <= $schoolyear->getEndDate()) 
+                && ($schoolyear->getStartDate() <= $schoolyear->getRegistrationDeadline())
+                && ($schoolyear->getRegistrationDeadline() <= $schoolyear->getEndDate()))
+            {
+                $this->uniqueness();
+                $this->em->persist($schoolyear);
+                $this->em->flush();
+                $this->addFlash('success', 'SchoolYear succesfully created');
+                return $this->redirectToRoute('admin_school_years');
+            } else {
+                if($schoolyear->getStartDate() > $schoolyear->getEndDate()){
+                    $this->addFlash('warning', 'The start date is greater than the end date');
+                }
+                if($schoolyear->getRegistrationDeadline() > $schoolyear->getEndDate()){
+                    $this->addFlash('warning', 'The registration deadline occurs after the end date');
+                }
+                if($schoolyear->getRegistrationDeadline() < $schoolyear->getStartDate()){
+                    $this->addFlash('warning', 'The deadline for registrations occurs before the end date');
+                }
+            }
         }
         return $this->render(
             'school_year/new.html.twig',

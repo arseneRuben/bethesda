@@ -23,6 +23,7 @@
                                 <th>Label</th>
                                   <th>code</th>
                                 <th>Debut</th>
+                                <th>Delai d'inscription</th>
                                 <th>Fin</th>
                                 <th>Taux d'inscription</th>
                                 <th>Etat</th>
@@ -37,6 +38,8 @@
                                     <td><a href="{{ path('admin_schoolyears_show', {id: schoolyear.id}) }}">  {{ schoolyear.wording }}<i class="fa fa-eye"></i></a> </td>
                                     <td>{{  schoolyear.code }} </td>
                                     <td>{% if schoolyear.startDate %}{{ schoolyear.startDate|date('Y-m-d') }}{% endif %}</td>
+                                    <td>{% if schoolyear.registrationDeadline %}{{ schoolyear.registrationDeadline|date('Y-m-d') }}{% endif %}</td>
+
                                     <td>{% if schoolyear.endDate %}{{ schoolyear.endDate|date('Y-m-d') }}{% endif %}</td>
                                     <td>{% if schoolyear.rate %}{{ schoolyear.rate }}{% endif %}</td>
                                 

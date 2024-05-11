@@ -49,9 +49,20 @@ class SchoolYearType extends AbstractType
             'constraints' => new Assert\Date(),
             'constraints' => new Assert\NotBlank(),
             'trim' => true])
+        ->add('registrationDeadline', DateType::class, [
+                'label' => 'Delai d\'inscription',
+                'widget' => 'single_text',
+                'required' => true,
+                 'input' => 'datetime',
+                'html5' => true,
+                'attr' => ['class' => 'js-datepicker'],
+                'format' => 'yyyy-MM-dd',
+                'constraints' => new Assert\Date(),
+                'constraints' => new Assert\NotBlank(),
+                'trim' => true])
             ->add('activated')
            
-            ->add('rate', NumberType::class, [
+        ->add('rate', NumberType::class, [
                 'label' => 'Montant du taux d\'inscription',
                 'required' => false,
                 'trim' => true]);

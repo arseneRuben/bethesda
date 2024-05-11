@@ -7,6 +7,7 @@ use App\Entity\PaymentPlan;
 use App\Repository\SchoolYearRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -28,6 +29,10 @@ class SchoolYear
 
 
 
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $registrationDeadline;
     /**
      * @var int
      *
@@ -212,6 +217,20 @@ class SchoolYear
 
         return $this;
     }
+
+    public function getRegistrationDeadline(): ?\DateTimeInterface
+    {
+        return $this->registrationDeadline;
+    }
+
+    public function setRegistrationDeadline(?\DateTimeInterface $registrationDeadline): static
+    {
+        $this->registrationDeadline = $registrationDeadline;
+
+        return $this;
+    }
+
+   
     
 
 

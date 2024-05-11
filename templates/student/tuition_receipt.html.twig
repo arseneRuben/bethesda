@@ -66,11 +66,11 @@
                             </tr>
                             <tr>
                                 <td>Payé par / <span>Paid by</span></td>
-                                <td>AKONO ABINA FRANCOIS OLIVER</td>
+                                <td>{{std.fatherName}}</td>
                             </tr>
                             <tr>
                                 <td>Reçu par / <span>Received by</span></td>
-                                <td> {{get_env("FRENCH_SCHOOL_NAME")|raw }}</td>
+                                <td> {{app.user}}</td>
                             </tr>
         
                         {% endif %}
@@ -79,10 +79,12 @@
                     
                 </table>
             </div>
-            {% set totalPaid =0 %}
+            {% set totalPaid =0  %}
+            {% set totalPaidFixed =0 %}
             {% if(payments) %}
                 {% for p in payments %}
                     {% set totalPaid = totalPaid + p.amount %}
+                    {% set totalPaidFixed = totalPaidFixed + p.amount %}
                 {% endfor %}  
                 {#  si l'inscription a deja ete regle #} 
                 
@@ -102,9 +104,9 @@
                          <tr>
                             <td>Inscription {{year.code}}</td>
                             <td>{{year.rate}}</td>
-                            <td>{{year.rate}}</td>
-                            <td>0.00</td>
                             <td>{{ sub.createdAt|date("Y/m/d") }}</td>
+                            <td>0.00</td>
+                            <td>{% if schoolyear.registrationDeadline %}{{ schoolyear.registrationDeadline|date('Y/m/d') }}{% endif %}</td>
                         </tr>
                          {% set totalToPay =0 %}
                         {% if(installments) %}
@@ -115,11 +117,12 @@
                                             <td>{{ installToPay.amount }}</td>
                                             <td>
                                                 {% set paye =0 %}
-                                                 {% if( totalToPay >= totalPaid )%} 
+                                                 {% if( installToPay.amount >= totalPaid )%} 
+                                                        {% set paye = totalPaid %}
+                                                    {% else %}
                                                         {% set paye = installToPay.amount %}
                                                         {% set totalPaid = totalPaid - installToPay.amount %}
-                                                    {% else %}
-                                                         {% set paye = totalPaid %}
+
                                                 {% endif %}
                                                 {{paye}}
                                             </td>
@@ -134,8 +137,8 @@
                         <tr>
                             <td>TOTAL</td>
                             <td> {{totalToPay}}</td>
-                            <td> {{totalPaid}}</td>
-                            <td> {{totalToPay - totalPaid}}</td>
+                            <td> {{totalPaidFixed}}</td>
+                            <td> {{totalToPay - totalPaidFixed}}</td>
                             <td>{{(installments|last).deadline|date('Y-m-d') }}</td>
                         </tr>
                     </tfoot>
