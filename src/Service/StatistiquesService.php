@@ -53,4 +53,21 @@ class StatistiquesService
         return count($roomsEnabled);
 
     }
+
+    public function insolvents()
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $paymentPlan =  $year->getPaymentPlan();
+        $subscriptions = $this->subRepo->findBy(array("schoolYear" =>  $year));
+        $students = [];
+     
+        foreach($subscriptions as $sub){
+            if($year->paymentThresholdAmount($sub->getClassRoom()) > $sub->getStudent()->getPaymentsSum($year) ){
+                $students[] = $sub->getStudent() ;
+            }
+        }
+
+        return count( $students);
+
+    }
 }

@@ -1301,9 +1301,7 @@ class ClassRoomController extends AbstractController
             $avg = count($ratesByRoom) > 0 ? $sum / count($ratesByRoom) : 0;
             $rates[$room->getName()] = $avg ;
         }
-        
-       
-         $html = $this->render('school_year/templating/recovery_rates_by_room.html.twig', [
+        $html = $this->render('school_year/templating/recovery_rates_by_room.html.twig', [
             
             'rates' => $rates,
             'year' => $year,
