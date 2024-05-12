@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Liste des eleves insolvables
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+    </head>
+    <body>
+        <header class="clearfix">
+            {{ include('classroom/partials/header.html.twig') }}
+
+            <h2 style=" text-align:center; " >
+                <b>
+                  
+                        TAUX DE RECOUVREMENT DE SCOLARITE PAR CLASSE
+                                                                                                                        
+                   
+                </b>
+            </h2>
+          
+            <div  class="d-flex justify-content-around">
+                
+                    <h4 style=" text-align:center; " >
+                        <b>
+                          
+                                En date du {{ "now"|date("d-m-Y") }}                                                                                                   
+                          
+                        </b>
+                    </h4>
+            
+            </div>
+
+        </header>
+        <main>
+            <table style=" width: 100%; text-align:center; font-size: 80%; " class="table tablelist">
+                <thead>
+                    <tr>
+                         <th style="width:5%;">
+                            <b>
+                               No                 
+                            </b>
+                        </th>
+                        <th style="width:25%;">
+                            <b>
+                               CLASSE
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:25%;">
+                            <b>
+                              
+                                   TAUX DE RECOUVREMENT
+                             
+                            </b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, rate in rates %}
+                        <tr>
+                             <td class="qty">
+                                {{ loop.index}}
+                            </td>
+                            <td class="qty">
+                                {{name}}
+                            </td>
+                           
+                            <td class="desc">
+                                <b>
+                                    {{ rate|round(2) }} %
+                                </b>
+
+                            </td>
+                          
+                           
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </main>
+      
+    </body>
+</html>

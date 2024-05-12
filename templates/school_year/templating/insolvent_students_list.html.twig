@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Liste des eleves insolvables     
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+    </head>
+    <body>
+        <header class="clearfix">
+            {{ include('classroom/partials/header.html.twig') }}
+
+            <h2 style=" text-align:center; " >
+                <b>
+                  
+                        LISTE DES ELEVES INSOLVABLES SELON LEUR CLASSE
+                                                                                                                        
+                   
+                </b>
+            </h2>
+          
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                         
+                                En date du {{ "now"|date("d-m-Y") }}
+                                                                                                                                
+                           
+                        </span>
+                    </b>
+                </h5>
+
+            </div>
+
+        </header>
+        <main>
+            <table style=" width: 100%; text-align:center; font-size: 80%; " class="table tablelist">
+                <thead>
+                    <tr>
+                         <th style="width:5%;">
+                            <b>
+                               No                 
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                               CLASSE
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                MATRICULE
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th class="desc" style="width:35%;">
+                            <h7>
+                                <b>
+                                  
+                                        NOMS ET PRENOMS
+                              
+                                </b>
+                            </h7>
+                        </th>
+
+                        <th style="width:5%;">
+                            <b>
+                              
+                                    SEXE
+              
+                            </b>
+                        </th>
+
+                        <th style="width:25%;">
+                            <b>
+                              
+                                    DATE DE NAISSANCE
+                                                                                                                                                                        
+                            </b>
+                        </th>
+                        <th style="width:25%;">
+                            <b>
+                              
+                                    LIEU DE NAISSANCE
+                             
+                            </b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+                             <td class="qty">
+                                {{ loop.index}}
+                            </td>
+                            <td class="qty">
+                                {{ std.classroom.name}}
+                            </td>
+                            <td class="qty">
+                                {{ std.student.matricule }}
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.student.lastname }}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                                                                                                                                                
+                                                                                                            
+                                                                        
+                                    {{ std.student.firstname }}
+                                </b>
+
+                            </td>
+                            <td class="qty">
+                                {% if std.student.gender %}
+                                    F
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% else %}
+                                    M 
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% endif %}
+                            </td>
+                            <td class="qty">
+                                {% if std.student.birthday %}
+                                    {{ std.student.birthday|date('d-m-Y') }}
+                                {% endif %}
+                            </td>
+                            <td class="qty">
+                                {{ std.student.birthplace }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </main>
+      
+    </body>
+</html>

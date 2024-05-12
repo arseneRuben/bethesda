@@ -20,7 +20,7 @@
             <h1 style=" text-align:center; " >
                 <b>
                     {% if(room.level.cycle.section.name=="Francophone") %}
-                        LISTE DES ELEVES INSOLVABLE PAR CLASSE
+                        LISTE DES ELEVES INSOLVABLES PAR CLASSE
                                                                                                                         
                                                                                             
                                                                     
@@ -62,20 +62,7 @@
                 <h5>
                     <b>
                         <span>
-                            {% if(room.level.cycle.section.name=="Francophone") %}
-                                ANNEE SCOLAIRE &nbsp;   
-                                                                                                                                
-                                                                                                
-                                                                
-                                {{ year }}
-                            {% else %}
-                                {{ year }}
-                                &nbsp; SCHOOL YEAR
-                                                                                                                                                    
-                                                                                                                            
-                                                                                            
-                                                            
-                            {% endif %}
+                           En date du {{ "now"|date("d-m-Y") }}
                         </span>
                     </b>
                 </h5>

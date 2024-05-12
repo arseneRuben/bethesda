@@ -17,6 +17,17 @@
                                                         <a style="width:3%;" class="btn btn-primary " target="_blank" href="{{ path('admin_payment_plan_print', {id: 0}) }}">
                                                                 <i class="fa fa-file"  aria-hidden="true"></i> 
                                                         </a>
+                                                         &nbsp;&nbsp;&nbsp;
+                                                        <a style="width:3%;" class="btn btn-outline-dark " target="_blank" href="{{ path('admin_classroom_insolvents') }}">
+                                                            <i class="fa fa-users" aria-hidden="true">
+                                                                
+                                                            </i>
+                                                        </a>
+                                                         &nbsp;&nbsp;&nbsp;
+                                                        <a style="width:3%;" class="btn btn-outline-dark " target="_blank" href="{{ path('admin_classroom_insolvents_percentage') }}">
+                                                           <i class="fa fa-percent" aria-hidden="true"></i>
+
+                                                        </a>
                                                     {% else %}
                                                         <label for="slice" class="col-4 text-uppercase"> Definir le nombre de tranches </label>
                                                         <input class="form-control col-1" type="number" min="0" max="3" value="0" id="slice" placeholder="nombre de tranches">

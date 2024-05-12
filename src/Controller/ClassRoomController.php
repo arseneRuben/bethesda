@@ -50,15 +50,17 @@ class ClassRoomController extends AbstractController
     private $markRepo;
     private  $snappy;
     private $session;
+    private Pdf $pdf;
     private SchoolYearService $schoolYearService;
     private MainTeacherRepository $mainTeacherRepo;
     private AttributionRepository $attRepo;
     private InstallmentRepository $instRepo;
 
-    public function __construct(InstallmentRepository $instRepo, AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
+    public function __construct(Pdf $pdf,InstallmentRepository $instRepo, AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
 
         $this->em = $em;
+        $this->pdf = $pdf;
         $this->repo = $repo;
         $this->scRepo = $scRepo;
         $this->attRepo = $attRepo;
@@ -554,7 +556,7 @@ class ClassRoomController extends AbstractController
      * @Template()
      * @return Response
      */
-    public function recapitulatifAction(ClassRoom $room, Sequence $seq, Pdf $snappy)
+    public function recapitulatifAction(ClassRoom $room, Sequence $seq)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -567,7 +569,7 @@ class ClassRoomController extends AbstractController
         ));
 
         return new Response(
-            $snappy->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -725,7 +727,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function fichesiplmeAction(ClassRoom $classroom,  Pdf $pdf)
+    public function fichesiplmeAction(ClassRoom $classroom)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -736,7 +738,7 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -752,7 +754,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function ficheDisciplineAction(ClassRoom $classroom, Pdf $pdf)
+    public function ficheDisciplineAction(ClassRoom $classroom)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -763,7 +765,7 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -779,7 +781,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function presentationAction(ClassRoom $classroom, Pdf $pdf)
+    public function presentationAction(ClassRoom $classroom)
     {
         // Année scolaire en cours
         $year = $this->schoolYearService->sessionYearById();
@@ -790,7 +792,7 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
         ));
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -850,7 +852,7 @@ class ClassRoomController extends AbstractController
      * @Template()
      * @return Response
      */
-    public function annualSummaryAction(ClassRoom $room, \Knp\Snappy\Pdf $snappy)
+    public function annualSummaryAction(ClassRoom $room)
     {
         $year = $this->schoolYearService->sessionYearById();
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
@@ -860,7 +862,7 @@ class ClassRoomController extends AbstractController
             'year' => $year,
         ));
         return new Response(
-            $snappy->getOutputFromHtml($html, array(
+            $this->pdf->getOutputFromHtml($html, array(
                 'default-header' => false
             )),
             200,
@@ -879,7 +881,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardSeqAction(ClassRoom $classroom, Pdf $pdf)
+    public function reportCardSeqAction(ClassRoom $classroom)
     {
         set_time_limit(600);
         $totalNtCoef = 0;
@@ -955,7 +957,7 @@ class ClassRoomController extends AbstractController
         ));
 
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -1014,7 +1016,7 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCardsTrimAction(ClassRoom $room, Pdf $pdf,  Request $request)
+    public function reportCardsTrimAction(ClassRoom $room, Request $request)
     {
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1100,7 +1102,7 @@ class ClassRoomController extends AbstractController
 
         ));
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -1191,6 +1193,39 @@ class ClassRoomController extends AbstractController
         ]);
     }
 
+        /**
+     * @Route("/classroom/insolvents", name="admin_classroom_insolvents")
+     */
+    public function listInsolventStudents(): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $paymentPlan =  $year->getPaymentPlan();
+        // List of student subscriptions for the class
+        $subscriptions = $this->subRepo->findBy(array("schoolYear" =>  $year), array("classRoom"=>"ASC"));
+        $insolventSub = [];
+     
+        foreach($subscriptions as $sub){
+            if($year->paymentThresholdAmount($sub->getClassRoom()) > $sub->getStudent()->getPaymentsSum($year) ){
+                $insolventSub[]  = $sub;
+            }
+        }
+         $html = $this->render('school_year/templating/insolvent_students_list.html.twig', [
+            
+            'students' => $insolventSub,
+            'year' => $year,
+        ]);
+
+        return new Response(
+            $this->pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="insolvent_student_' . $year->getCode() . '.pdf"'
+            )
+        );
+    }
+
+
     /**
      * @Route("/classroom/{id}", name="class_room_stats")
      */
@@ -1211,7 +1246,7 @@ class ClassRoomController extends AbstractController
       /**
      * @Route("/classroom/{id}/insolvent", name="admin_classroom_insolvent")
      */
-    public function listInsolventStudents(Pdf $pdf,ClassRoom $room): Response
+    public function listInsolventStudentsByRoom(ClassRoom $room): Response
     {
         $year = $this->schoolYearService->sessionYearById();
         $paymentPlan =  $year->getPaymentPlan();
@@ -1224,15 +1259,13 @@ class ClassRoomController extends AbstractController
                 $students[] = $sub->getStudent() ;
             }
         }
-        
-         $html = $this->render('classroom/templating/insolvent_student_list.html.twig', [
+        $html = $this->render('classroom/templating/insolvent_student_list.html.twig', [
             'room' => $room,
             'students' => $students,
             'year' => $year,
         ]);
-
         return new Response(
-            $pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
@@ -1241,5 +1274,51 @@ class ClassRoomController extends AbstractController
         );
     }
 
+     /**
+     * @Route("/insolventspercentage", name="admin_classroom_insolvents_percentage")
+     */
+    public function insolventStudentsRate(): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $paymentPlan =  $year->getPaymentPlan();
+        $rooms = $this->repo->findAll();
+        $rates = [];
+        
+        foreach($rooms as $room){
+            $subscriptions = $this->subRepo->findBy(array("schoolYear" =>  $year, "classRoom" =>  $room));
+            $installments = $this->instRepo->findBy(array("classRoom" =>  $room, "paymentPlan" =>  $paymentPlan));
+            $sum = 0;
+            foreach($installments as $installment){
+                $sum += $installment->getAmount();
+            }
+            $ratesByRoom = [];
+            foreach($subscriptions as $sub){
+                 $ratesByRoom[]  = 100*$sub->getStudent()->getPaymentsSum($year) / $sum;
+            }
+              // Calculer la somme des valeurs entières
+            $sum = array_sum($ratesByRoom);
+            // Calculer la moyenne
+            $avg = count($ratesByRoom) > 0 ? $sum / count($ratesByRoom) : 0;
+            $rates[$room->getName()] = $avg ;
+        }
+        
+       
+         $html = $this->render('school_year/templating/recovery_rates_by_room.html.twig', [
+            
+            'rates' => $rates,
+            'year' => $year,
+        ]);
+
+        return new Response(
+            $this->pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="insolvent_student_' . $year->getCode() . '.pdf"'
+            )
+        );
+    }
+
+   
  
 }
