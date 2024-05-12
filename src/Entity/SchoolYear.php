@@ -229,14 +229,19 @@ class SchoolYear
     // the minimum amount that students in good standing must already have paid
     public function paymentThresholdAmount(ClassRoom $room){
         $sum = 0;
-        $installments =  $this->getPaymentPlan()->getInstallments();
-        $currentDate = date("d F Y");
-        foreach($installments as $installment){
-            if($installment->getClassRoom()==$room){
-                if($installment->getDeadline()>=$currentDate){
-                    $sum += $installment->getAmount();
+            try {
+            $installments =  $this->getPaymentPlan()->getInstallments();
+            $currentDate = date("d F Y");
+            foreach($installments as $installment){
+                if($installment->getClassRoom()==$room){
+                    if($installment->getDeadline()>=$currentDate){
+                        $sum += $installment->getAmount();
+                    }
                 }
             }
+        } catch (\Throwable $e) {
+            // Gérer l'erreur ici
+            $result = null; // Ou toute autre valeur par défaut que vous souhaitez définir
         }
 
         return $sum;
