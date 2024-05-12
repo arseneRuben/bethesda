@@ -63,7 +63,12 @@
                                         </a>
                                         <a class="btn btn-outline-info " target="_blank" href="{{ path('admin_classrooms_presentation', {id: room.id}) }}">
                                             <i class="fa fa-users" aria-hidden="true">
-                                                &nbsp; 
+                                        
+                                            </i>
+                                        </a>
+                                        <a class="btn btn-outline-dark " target="_blank" href="{{ path('admin_classroom_insolvent', {id: room.id}) }}">
+                                            <i class="fa fa-users" aria-hidden="true">
+                                                
                                             </i>
                                         </a>
                                         <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_recapitulatif', {room: room.id, seq : seq}) }}">

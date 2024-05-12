@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\ClassRoom;
 use App\Entity\Traits\Period;
 use App\Entity\PaymentPlan;
 use App\Repository\SchoolYearRepository;
@@ -207,14 +207,11 @@ class SchoolYear
         if ($paymentPlan === null && $this->paymentPlan !== null) {
             $this->paymentPlan->setSchoolYear(null);
         }
-
         // set the owning side of the relation if necessary
         if ($paymentPlan !== null && $paymentPlan->getSchoolYear() !== $this) {
             $paymentPlan->setSchoolYear($this);
         }
-
         $this->paymentPlan = $paymentPlan;
-
         return $this;
     }
 
@@ -226,8 +223,24 @@ class SchoolYear
     public function setRegistrationDeadline(?\DateTimeInterface $registrationDeadline): static
     {
         $this->registrationDeadline = $registrationDeadline;
-
         return $this;
+    }
+
+    // the minimum amount that students in good standing must already have paid
+    public function paymentThresholdAmount(ClassRoom $room){
+        $sum = 0;
+        $installments =  $this->getPaymentPlan()->getInstallments();
+        $currentDate = date("d F Y");
+        foreach($installments as $installment){
+            if($installment->getClassRoom()==$room){
+                if($installment->getDeadline()>=$currentDate){
+                    $sum += $installment->getAmount();
+                }
+            }
+        }
+
+        return $sum;
+
     }
 
    

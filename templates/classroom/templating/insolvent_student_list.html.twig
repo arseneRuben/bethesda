@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Fiche simple
+                                                    
+                                        
+                            
+                    
+        </title>
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/bootstrap.min.css')) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ absolute_url(asset('assets/css/pdf.css')) }}" />
+
+    </head>
+    <body>
+        <header class="clearfix">
+            {{ include('classroom/partials/header.html.twig') }}
+
+            <h1 style=" text-align:center; " >
+                <b>
+                    {% if(room.level.cycle.section.name=="Francophone") %}
+                        LISTE DES ELEVES INSOLVABLE PAR CLASSE
+                                                                                                                        
+                                                                                            
+                                                                    
+                                            
+                    {% else %}
+                        LIST OF STUDENTS 
+                                                                                                                    
+                                                                                            
+                                                                    
+                                            
+                    {% endif %}
+                </b>
+            </h1>
+            <div id="companyleft">
+
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                CLASSE 
+                                                                                                                                                        
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% else %}
+                                CLASS
+                                                                                                                                                    
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% endif %}
+
+                        </span>
+                        {{ room.name }}
+                    </b>
+                </h5>
+            </div>
+            <div id="companyright">
+                <h5>
+                    <b>
+                        <span>
+                            {% if(room.level.cycle.section.name=="Francophone") %}
+                                ANNEE SCOLAIRE &nbsp;   
+                                                                                                                                
+                                                                                                
+                                                                
+                                {{ year }}
+                            {% else %}
+                                {{ year }}
+                                &nbsp; SCHOOL YEAR
+                                                                                                                                                    
+                                                                                                                            
+                                                                                            
+                                                            
+                            {% endif %}
+                        </span>
+                    </b>
+                </h5>
+
+            </div>
+
+        </header>
+        <main>
+            <table style=" width: 100%; text-align:center; font-size: 80%; " class="table tablelist">
+                <thead>
+                    <tr>
+                        <th style="width:5%;">
+                            <b>
+                                N°
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th style="width:5%;">
+                            <b>
+                                MATRICULE
+                                                                                                                            
+                                                                                            
+                                                            
+                            </b>
+                        </th>
+                        <th class="desc" style="width:35%;">
+                            <h7>
+                                <b>
+                                    {% if(room.level.cycle.section.name=="Francophone") %}
+                                        NOMS ET PRENOMS
+                                                                                                                                                                                        
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    {% else %}
+                                        LASTNAMES AND FIRSTNAMES
+                                                                                                                                                                                    
+                                                                                                                                                            
+                                                                                                                    
+                                                                            
+                                    {% endif %}
+                                </b>
+                            </h7>
+                        </th>
+
+                        <th style="width:5%;">
+                            <b>
+                                {% if(room.level.cycle.section.name=="Francophone") %}
+                                    SEXE
+                                                                                                                                                                        
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% else %}
+                                    GENDER
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% endif %}
+                            </b>
+                        </th>
+
+                        <th style="width:25%;">
+                            <b>
+                                {% if(room.level.cycle.section.name=="Francophone") %}
+                                    DATE DE NAISSANCE
+                                                                                                                                                                        
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% else %}
+                                    BIRTH DATE
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% endif %}
+                            </b>
+                        </th>
+                        <th style="width:25%;">
+                            <b>
+                                {% if(room.level.cycle.section.name=="Francophone") %}
+                                    LIEU DE NAISSANCE
+                                                                                                                                                                        
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% else %}
+                                    PLACE OF BIRTH
+                                                                                                                                                                    
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% endif %}
+                            </b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std in students %}
+                        <tr>
+                            <td class="qty">
+                                {{ loop.index }}
+                            </td>
+                            <td class="qty">
+                                {{ std.matricule }}
+                            </td>
+                            <td class="desc">
+                                <b>
+                                    {{ std.lastname }}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                                                                                                                                                
+                                                                                                            
+                                                                        
+                                    {{ std.firstname }}
+                                </b>
+
+                            </td>
+                            <td class="qty">
+                                {% if std.gender %}
+                                    F
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% else %}
+                                    M 
+                                                                                                                                            
+                                                                                                        
+                                                                    
+                                {% endif %}
+                            </td>
+                            <td class="qty">
+                                {% if std.birthday %}
+                                    {{ std.birthday|date('d-m-Y') }}
+                                {% endif %}
+                            </td>
+                            <td class="qty">
+                                {{ std.birthplace }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </main>
+      
+    </body>
+</html>

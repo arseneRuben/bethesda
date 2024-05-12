@@ -457,7 +457,7 @@ class Student
     }
 
     /**
-     * Get classRoom
+     * Class where the student is enrolled in a given school year
      *
      * @return ClassRoom
      */
@@ -465,6 +465,22 @@ class Student
     {
         $subscribtion = $em->getRepository('AppBundle:Subscription')->findBy(array('schoolYear' => $year, 'student' => $std));
         return $subscribtion->getClassRoom();
+    }
+
+     /**
+     * Tuition fees already paid by the student in a given school year
+     *
+     * @return int
+     */
+    public function getPaymentsSum(SchoolYear $year)
+    {
+        $sum = 0;
+        foreach ($this->payments as $p) {
+            if($p->getSchoolYear() == $year){
+                 $sum += $p->getAmount();
+            }
+        }
+        return $sum;
     }
 
     /**

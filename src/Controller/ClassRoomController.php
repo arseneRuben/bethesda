@@ -28,6 +28,7 @@ use App\Form\ClassRoomType;
 use App\Entity\Sequence;
 use App\Entity\Quater;
 use App\Repository\SubscriptionRepository;
+use App\Repository\InstallmentRepository;
 use App\Service\SchoolYearService;
 
 
@@ -52,8 +53,9 @@ class ClassRoomController extends AbstractController
     private SchoolYearService $schoolYearService;
     private MainTeacherRepository $mainTeacherRepo;
     private AttributionRepository $attRepo;
+    private InstallmentRepository $instRepo;
 
-    public function __construct( AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
+    public function __construct(InstallmentRepository $instRepo, AttributionRepository $attRepo, MainTeacherRepository $mainTeacherRepo, SchoolYearService $schoolYearService,MarkRepository $markRepo, QuaterRepository $qtRepo, StudentRepository $stdRepo, EvaluationRepository $evalRepo, SchoolYearRepository $scRepo, SequenceRepository $seqRepo, ClassRoomRepository $repo,  SubscriptionRepository $subRepo,  EntityManagerInterface $em, Pdf $snappy,  SessionInterface $session)
     {
 
         $this->em = $em;
@@ -64,6 +66,7 @@ class ClassRoomController extends AbstractController
         $this->evalRepo = $evalRepo;
         $this->mainTeacherRepo = $mainTeacherRepo;
         $this->stdRepo = $stdRepo;
+        $this->instRepo = $instRepo;
         $this->qtRepo = $qtRepo;
         $this->subRepo = $subRepo;
         $this->markRepo = $markRepo;
@@ -1191,23 +1194,51 @@ class ClassRoomController extends AbstractController
     /**
      * @Route("/classroom/{id}", name="class_room_stats")
      */
-    public function showClassRoomStats(ClassRoomRepository $classRoomRepository, int $id): Response
+    public function showClassRoomStats(ClassRoomRepository $classRoomRepository, ClassRoom $room): Response
     {
         $classRoom = $classRoomRepository->find($id);
-        if (!$classRoom) {
-            throw $this->createNotFoundException('ClassRoom not found');
-        }
-
         $successfulCount = $classRoomRepository->countSuccessfulStudentsForClass($classRoom);
         $unsuccessfulCount = $classRoomRepository->countUnsuccessfulStudentsForClass($classRoom);
         $mentionStatistics = $classRoomRepository->getMentionStatisticsForClass($classRoom);
-
         return $this->render('class_room/stats.html.twig', [
             'classRoom' => $classRoom,
             'successfulCount' => $successfulCount,
             'unsuccessfulCount' => $unsuccessfulCount,
             'mentionStatistics' => $mentionStatistics,
         ]);
+    }
+
+      /**
+     * @Route("/classroom/{id}/insolvent", name="admin_classroom_insolvent")
+     */
+    public function listInsolventStudents(Pdf $pdf,ClassRoom $room): Response
+    {
+        $year = $this->schoolYearService->sessionYearById();
+        $paymentPlan =  $year->getPaymentPlan();
+        // List of student subscriptions for the class
+        $subscriptions = $this->subRepo->findBy(array("schoolYear" =>  $year, "classRoom" => $room));
+        $students = [];
+     
+        foreach($subscriptions as $sub){
+            if($year->paymentThresholdAmount($room) > $sub->getStudent()->getPaymentsSum($year) ){
+                $students[] = $sub->getStudent() ;
+            }
+        }
+        
+         $html = $this->render('classroom/templating/insolvent_student_list.html.twig', [
+            'room' => $room,
+            'students' => $students,
+            'year' => $year,
+        ]);
+
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="insolvent_student_' . $room->getName() . '.pdf"'
+            )
+        );
     }
 
  
