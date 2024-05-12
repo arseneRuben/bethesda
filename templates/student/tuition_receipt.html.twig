@@ -86,8 +86,9 @@
                     {% set totalPaid = totalPaid + p.amount %}
                     {% set totalPaidFixed = totalPaidFixed + p.amount %}
                 {% endfor %}  
-                {#  si l'inscription a deja ete regle #} 
-                
+                {#  si le dernier paiement inclut l'incription #} 
+                {% set totalPaid = totalPaid - sub.schoolyear.rate %}
+                {% set totalPaidFixed = totalPaidFixed  - sub.schoolyear.rate %}
             {% endif %}
             <div class="subContainer3">
                 <p>HISTORIQUE DE PAIEMENT / PAYMENT HISTORY</p>
@@ -104,9 +105,11 @@
                          <tr>
                             <td>Inscription {{year.code}}</td>
                             <td>{{year.rate}}</td>
-                            <td>{{ sub.createdAt|date("Y/m/d") }}</td>
+                             <td>
+                                    {{year.rate}}
+                            </td>
                             <td>0.00</td>
-                            <td>{% if schoolyear.registrationDeadline %}{{ schoolyear.registrationDeadline|date('Y/m/d') }}{% endif %}</td>
+                            <td>{% if sub.schoolyear.registrationDeadline %}{{ sub.schoolyear.registrationDeadline|date('Y/m/d') }}{% endif %}</td>
                         </tr>
                          {% set totalToPay =0 %}
                         {% if(installments) %}
