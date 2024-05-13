@@ -205,7 +205,6 @@ class EvaluationController extends AbstractController
             $evaluation->setClassRoom($classRoom);
             $evaluation->setSequence($sequence);
             $evaluation->setCompetence($competence);
-
             foreach ($marks as $record) {
                 $mark = new Mark();
                 $matricule = $record["matricule"];
@@ -262,7 +261,6 @@ class EvaluationController extends AbstractController
 
             $this->em->flush();
 
-            //  return $this->redirect($this->generateUrl('admin_evaluations_pdf', array('id' => $evaluation->getId())));
         }
         return $this->redirect($this->generateUrl('admin_evaluations_new'));
     }
@@ -527,7 +525,10 @@ class EvaluationController extends AbstractController
             if ($idclassroom != null) {
                 $year = $this->schoolYearService->sessionYearById();
                 $classRoom = $this->clRepo->findOneById($idclassroom);
-                $courses = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
+                $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
+                $coursesOfConnectedUser = $this->getUser()->getCourses($year);
+                $courses = array_intersect($coursesOfRoom, $coursesOfConnectedUser);
+                
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
                 $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($classRoom, $year);
                 if ($studentsEnrolledInClass != null) {

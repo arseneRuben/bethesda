@@ -243,13 +243,6 @@ class SchoolYear
             // Gérer l'erreur ici
             $result = null; // Ou toute autre valeur par défaut que vous souhaitez définir
         }
-
         return $sum;
-
     }
-
-   
-    
-
-
 }

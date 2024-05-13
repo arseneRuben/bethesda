@@ -302,7 +302,7 @@ class StudentController extends AbstractController
         }
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
-        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $std), array('updatedAt' => 'ASC'));
+        $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $std), array('updatedAt' => 'DESC'));
         $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
         $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
         $html = $this->renderView('student/tuition_receipt.html.twig', array(

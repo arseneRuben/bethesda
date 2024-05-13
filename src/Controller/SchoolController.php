@@ -119,9 +119,6 @@ class SchoolController extends AbstractController
      */
     public function helpAction()
     {
-
-
-
         return $this->render('school/help.html.twig');
     }
 
@@ -179,8 +176,6 @@ class SchoolController extends AbstractController
      */
     public function callOffialExam(int $roomId, OfficialExamService $officialExamService)
     {
-
-
         $rate = $officialExamService->successRate($roomId);
         $subscriptions = $officialExamService->subscriptions($roomId);
         return $this->render('school/roomList.html.twig', [

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 use App\Entity\Domain;
+use App\Entity\Course;
+use App\Entity\SchoolYear;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimeStampable;
@@ -858,6 +860,20 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function getAttributions(): Collection
     {
         return $this->attributions;
+    }
+
+    /**
+     * list of courses assigned to a teacher during a given year
+     */
+    public function getCourses(SchoolYear $year)
+    {
+        $courses = [];
+        foreach($this->attributions as $attribution){
+            if($attribution->getSchoolYear()==$year){
+                $courses[] = $attribution->getCourse();
+            }
+        }
+        return $courses;
     }
 
     public function addAttribution(Attribution $attribution): self

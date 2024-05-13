@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Evaluation;
 use App\Entity\Attribution;
+use App\Entity\SchoolYear;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\Collection;
@@ -152,8 +153,8 @@ class Course
     }
 
  
-    public function getCurrentTeacher(AttributionRepository $attRepo, SchoolYearService $service) {
-        $attribution = $attRepo->findOneBy(array("course" => $this, "schoolYear"=> $service->sessionYearById()));
+    public function getCurrentTeacher(AttributionRepository $attRepo, SchoolYear $year) {
+        $attribution = $attRepo->findOneBy(array("course" => $this, "schoolYear"=> $year));
         return $attribution==null ? false : $attribution->getTeacher();
     }
 

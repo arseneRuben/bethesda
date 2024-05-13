@@ -21,17 +21,9 @@
                 <b>
                     {% if(room.level.cycle.section.name=="Francophone") %}
                         LISTE DES ELEVES INSOLVABLES PAR CLASSE
-                                                                                                                        
-                                                                                            
-                                                                    
-                                            
                     {% else %}
-                        LIST OF STUDENTS 
-                                                                                                                    
-                                                                                            
-                                                                    
-                                            
-                    {% endif %}
+                        LIST OF INSOLVANT STUDENTS BY CLASS
+                  {% endif %}
                 </b>
             </h1>
             <div id="companyleft">
@@ -55,12 +47,7 @@
 
                         </span>
                         {{ room.name }}
-                    </b>
-                </h5>
-            </div>
-            <div id="companyright">
-                <h5>
-                    <b>
+                 
                         <span>
                            En date du {{ "now"|date("d-m-Y") }}
                         </span>
@@ -148,17 +135,9 @@
                         <th style="width:25%;">
                             <b>
                                 {% if(room.level.cycle.section.name=="Francophone") %}
-                                    LIEU DE NAISSANCE
-                                                                                                                                                                        
-                                                                                                                                            
-                                                                                                        
-                                                                    
+                                    MONTANT DUE               
                                 {% else %}
-                                    PLACE OF BIRTH
-                                                                                                                                                                    
-                                                                                                                                            
-                                                                                                        
-                                                                    
+                                    AMOUNT DUE               
                                 {% endif %}
                             </b>
                         </th>
@@ -203,7 +182,7 @@
                                 {% endif %}
                             </td>
                             <td class="qty">
-                                {{ std.birthplace }}
+                                {{ amounts[std.id] }}
                             </td>
                         </tr>
                     {% endfor %}

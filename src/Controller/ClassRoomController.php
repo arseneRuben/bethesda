@@ -1253,16 +1253,19 @@ class ClassRoomController extends AbstractController
         // List of student subscriptions for the class
         $subscriptions = $this->subRepo->findBy(array("schoolYear" =>  $year, "classRoom" => $room));
         $students = [];
-     
+        $dueAmounts = [];
+
         foreach($subscriptions as $sub){
             if($year->paymentThresholdAmount($room) > $sub->getStudent()->getPaymentsSum($year) ){
                 $students[] = $sub->getStudent() ;
+                $dueAmounts[$sub->getStudent()->getId()] = $year->paymentThresholdAmount($room)-$sub->getStudent()->getPaymentsSum($year);
             }
         }
         $html = $this->render('classroom/templating/insolvent_student_list.html.twig', [
             'room' => $room,
             'students' => $students,
             'year' => $year,
+            'amounts' =>  $dueAmounts 
         ]);
         return new Response(
             $this->pdf->getOutputFromHtml($html),
