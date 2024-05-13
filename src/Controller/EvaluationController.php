@@ -528,7 +528,10 @@ class EvaluationController extends AbstractController
                 $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
                 $coursesOfConnectedUser = $this->getUser()->getCourses($year);
                 $courses = array_intersect($coursesOfRoom, $coursesOfConnectedUser);
-                
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    $courses = $coursesOfRoom;
+                }
+
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
                 $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($classRoom, $year);
                 if ($studentsEnrolledInClass != null) {
