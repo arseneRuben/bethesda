@@ -338,7 +338,7 @@ class EvaluationController extends AbstractController
     /**
      * Update a mark on an evaluation entity if the student is not absent or add a new mark if the student was absent.
      */
-    public function editMark(Request $request, Evaluation $evaluation, String $matricule, SessionInterface $session)
+    public function editMark(Request $request, Evaluation $evaluation, String $matricule)
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
