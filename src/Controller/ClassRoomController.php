@@ -407,7 +407,7 @@ class ClassRoomController extends AbstractController
         $sequences  = $this->seqRepo->findSequenceThisYear($year);
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
         $i = 1;
-        dd($sequences);
+      
         foreach ($sequences as $seq) {
             /*******************************************************************************************************************/
             /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
