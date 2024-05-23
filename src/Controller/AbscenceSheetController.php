@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use App\Service\SchoolYearService;
+
 
 
 /**
@@ -41,8 +43,10 @@ class AbscenceSheetController extends AbstractController
     private $clRepo;
     private $stdRepo;
     private $qtRepo;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, QuaterRepository $qtRepo, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
+
+    public function __construct(SchoolYearService $schoolYearService,EntityManagerInterface $em, QuaterRepository $qtRepo, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -52,6 +56,7 @@ class AbscenceSheetController extends AbstractController
         $this->stdRepo = $stdRepo;
         $this->yearRepo = $yearRepo;
         $this->clRepo = $clRepo;
+        $this->schoolYearService = $schoolYearService;
     }
 
 
@@ -132,11 +137,9 @@ class AbscenceSheetController extends AbstractController
             'method' => 'PUT',
         ));
         $form->handleRequest($request);
-
         $notes  = array();
         $abscences = $this->absRepo->findBy(array("abscenceSheet" => $abscenceSheet));
-        $year = $this->yearRepo->findOneBy(array("activated" => true));
-
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($abscenceSheet->getClassRoom(), $year);
 
         foreach ($studentsEnrolledInClass as $std) {
@@ -166,30 +169,41 @@ class AbscenceSheetController extends AbstractController
     public function updateAction(AbscenceSheet $sheet, Request $request)
     {
 
-        $year = $this->yearRepo->findOneBy(array("activated" => true));
+        $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($sheet->getClassRoom(), $year);
         $abscences = $this->absRepo->findBy(array("abscenceSheet" => $sheet));
-        $newStartDate = new \DateTime($request->request->get("abscence_sheet")["startDate"]);
-        $newEndDate = new \DateTime($request->request->get("abscence_sheet")["endDate"]);
-        $sequence = $this->seqRepo->findOneBy(array("id" => $request->request->get("abscence_sheet")['sequence']));
-        if ($newStartDate >= $sequence->getStartDate() && $newEndDate <= $sequence->getEndDate()) {
-            foreach ($studentsEnrolledInClass as $std) {
-                $raison = $_POST[$std->getMatricule() . "raison"];
-                $weight = $_POST[$std->getMatricule() . "weight"];
-                foreach ($abscences as $abs) {
-                    if ($abs->getStudent()->getMatricule() == $std->getMatricule()) {
-                        $abs->setReason($raison);
-                        $abs->setWeight($weight);
-                        $this->em->persist($abs);
-                        break;
+        if ($content = $request->getContent()) {
+            
+            $newStartDate = new \DateTime($request->request->get("abscence_sheet")["startDate"]);
+            $newEndDate = new \DateTime($request->request->get("abscence_sheet")["endDate"]);
+            $sequence = $this->seqRepo->findOneBy(array("id" => $request->request->get("abscence_sheet")['sequence']));
+            $sheet->setSequence($sequence );
+         
+            if ($newStartDate<= $newEndDate || ($newStartDate >= $sequence->getStartDate() && $newEndDate <= $sequence->getEndDate())) {
+                
+                $sheet->setEndDate($newEndDate);
+                $sheet->setStartDate($newStartDate);
+                foreach ($studentsEnrolledInClass as $std) {
+                    $raison = $_POST[$std->getMatricule() . "raison"];
+                    $weight = $_POST[$std->getMatricule() . "weight"];
+                    foreach ($abscences as $abs) {
+                        if ($abs->getStudent()->getMatricule() == $std->getMatricule()) {
+                            $abs->setReason($raison);
+                            $abs->setWeight($weight);
+                            $this->em->persist($abs);
+                            break;
+                        }
                     }
+                   
+                    $this->addFlash('success', 'Sheet succesfully updated');
                 }
+                $this->em->persist($sheet);
                 $this->em->flush();
-                $this->addFlash('success', 'Sheet succesfully updated');
+            } else {
+                $this->addFlash('danger', 'Les dates ne sont pas incluse dans la session');
             }
-        } else {
-            $this->addFlash('danger', 'Les dates ne sont pas incluse dans la session');
         }
+        
         return $this->redirect($this->generateUrl('admin_abscences_sheet_index'));
     }
 
@@ -206,7 +220,7 @@ class AbscenceSheetController extends AbstractController
         if ($_POST["idClassRoom"]) {
             $idClassRoom = $_POST["idClassRoom"];
             if ($idClassRoom != null) {
-                $year = $this->yearRepo->findOneBy(array("activated" => true));
+                $year = $this->schoolYearService->sessionYearById();
                 $classRoom = $this->clRepo->findOneById($idClassRoom);
                 // Liste des élèves inscrit dans la salle de classe sélectionnée
                 $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($classRoom, $year);
