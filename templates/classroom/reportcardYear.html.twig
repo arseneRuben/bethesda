@@ -7,7 +7,7 @@
 
         <title>
             {% if room.level.cycle.section.name == "Francophone" %}
-                Bulletins trimestriel
+                Bulletins annuel
                                                                                 
                                                                                 
                                                                                         
@@ -16,7 +16,7 @@
                                             
                             
             {% else %}
-                Quaterly reportcard
+               Annual report card
                                                                                 
                                                                                 
                                                                                         
@@ -290,6 +290,30 @@
                     
                     
                      <table cellspacing="0" cellpadding="5" style="line-height:14px;">
+                     
+                      <caption  style=" margin:auto; text-align:center;text-transform: uppercase;">
+                            <h3>
+                              {% if room.level.cycle.section.name == "Francophone" %}
+                                BULLETIN ANNUEL
+                                                                                                
+                                                                                                
+                                                                                                        
+                                                                                            
+                                                                            
+                                                            
+                                            
+                            {% else %}
+                            ANNUAL REPPORT CARD
+                                                                                                
+                                                                                                
+                                                                                                        
+                                                                                            
+                                                                            
+                                                            
+                                            
+                            {% endif %}
+                             </h3>
+                    </caption>
                         <tr>
                             <td>
                                 <h3>
