@@ -31,7 +31,7 @@
     <body>
 
         {% for std in students %}
-            <div style=" min-height:1400px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  auto;   ">
+            <div style=" min-height:1380px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  auto;   ">
 
                 <section style=" margin:auto; padding: 1px 0px;;">
 
@@ -634,7 +634,7 @@
                                                         {% endif %}
                                                     </td>
                                                     <td cellspacing="1" border="0.5" style="text-align:center;">
-                                                        {% if mark.weight3!=0 %}
+                                                        {% if mark.weight3 != 0 %}
                                                             {{ mark.value3|round(2,'floor') }}
                                                         {% else %}
                                                             /
@@ -643,7 +643,7 @@
                                                     {% set markAnn = false %}
                                                     <td cellspacing="1" border="0.5" style="text-align:center;" class="noteYear">
                                                         {% if (mark.weight1 + mark.weight2 + mark.weight3 != 0) %}
-                                                            {{ ((mark.value1*mark.weight1+ mark.value2*mark.weight2+ mark.value3*mark.weight3)/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
+                                                            {{ (( mark.value1 * mark.weight1 + mark.value2 * mark.weight2 + mark.value3 * mark.weight3 )/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
                                                         {% else %}
                                                             /
                                                         {% endif %}
@@ -656,8 +656,8 @@
                                                     </td>
 
                                                     <td cellspacing="1" border="0.5" style="text-align:center;">
-                                                        {% if (mark.weight1 + mark.weight2 + mark.weight3!=0) %}
-                                                            {{ ((mark.value1 * mark.weight1  + mark.value2*mark.weight2+ mark.value3*mark.weight3) * course.coefficient/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
+                                                        {% if (mark.weight1 + mark.weight2 + mark.weight3 ! =0) %}
+                                                            {{ ((mark.value1 * mark.weight1  + mark.value2 * mark.weight2 + mark.value3 * mark.weight3) * course.coefficient /(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
                                                         {% else %}
                                                             0
                                                         {% endif %}
@@ -699,8 +699,8 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim1 != 0 %}
-                                            {{ (NCoefModTrim1/totalCoefModTrim1)|round(2,'floor') }}
-                                            /20 
+                                            {{ ( NCoefModTrim1 / totalCoefModTrim1)|round(2,'floor') }}
+                                            
                                                  {% else %}
                                             /
                                          {% endif %}
@@ -709,7 +709,7 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim2 != 0 %}
-                                            {{ (NCoefModTrim2/totalCoefModTrim2)|round(2,'floor') }}
+                                            {{ (NCoefModTrim2 / totalCoefModTrim2)|round(2,'floor') }}
                                             /20 
                                                 {% else %}
                                             /
@@ -720,7 +720,7 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim3 != 0 %}
-                                            {{ (NCoefModTrim3/totalCoefModTrim3)|round(2,'floor') }}
+                                            {{ (NCoefModTrim3 / totalCoefModTrim3)|round(2,'floor') }}
                                             /20 
                                              {% else %}
                                             /
@@ -728,25 +728,25 @@
                                     </b>
                                 </td>
                                     {% if ( totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0) %}
-                                        {% set moyModAnn = ((NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/3) %}
+                                        {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1 + NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim3 / totalCoefModTrim3)/3) %}
                                     {% else %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim3 / totalCoefModTrim3)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim3/totalCoefModTrim3)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1 + NCoefModTrim3 / totalCoefModTrim3)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim1/totalCoefModTrim1)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim1 / totalCoefModTrim1)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim3/totalCoefModTrim3)) %}
+                                            {% set moyModAnn = (( NCoefModTrim3 / totalCoefModTrim3)) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1)) %}
+                                            {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1)) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2)) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2)) %}
                                         {% endif %}
                                     {% endif %}
                                 <td cellspacing="1" border="0.5" class="noteYear" style="text-align:center;">
@@ -756,7 +756,7 @@
                                                                                       
                                         {% else %}
                                             {{ ( moyModAnn)|round(2,'floor') }}
-                                            / 20  
+                                             
                                                                                                                                                                                                                             
                                                                                          
                                         {% endif %}
@@ -770,8 +770,8 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if ( totalCoefTrim1 != 0 and totalCoefTrim2 != 0 and totalCoefTrim3 != 0) %}
-                                            {# On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre  #}
-                                                {{ (((NCoefModTrim1/totalCoefTrim1 + NCoefModTrim2/totalCoefTrim2 + NCoefModTrim3/totalCoefTrim3)/3)*totalCoefModTrim2)|round(2,'floor')}}
+                                            {# On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre 
+                                                {{ (((NCoefModTrim1/totalCoefTrim1 + NCoefModTrim2/totalCoefTrim2 + NCoefModTrim3/totalCoefTrim3)/3)*totalCoefModTrim2)|round(2,'floor')}}  #}
                                         {% else %}
                                               /
                                         {% endif %}
@@ -783,7 +783,7 @@
                                 <td border="0.5" style="text-align:center;" cellspacing="1"></td>
                                 <td border="0.5" style="text-align:center;" ></td>
                                    {#On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre #}
-                                {% set totalNCoefAnn  = moyModAnn*totalCoefModTrim2 %}
+                                {% set totalNCoefAnn  = moyModAnn * totalCoefModTrim2 %}
                             </tr>
                         {% endfor %}   
                             <tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
