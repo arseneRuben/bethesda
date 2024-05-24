@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Course
 {
-    private $container;
+    
 
     /**
      * @ORM\Id
@@ -69,11 +69,11 @@ class Course
 
   
 
-    public function __construct(ContainerInterface $container)
+    public function __construct()
     {
         $this->evaluations = new ArrayCollection();
         $this->attributions = new ArrayCollection();
-        $this->container = $container;
+    
 
     }
 
