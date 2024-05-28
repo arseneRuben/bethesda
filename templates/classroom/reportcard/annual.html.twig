@@ -139,19 +139,17 @@
                                     <br/>
                                 </h3>
                             </td>
-                            <td style="padding-left:9em;padding-right:10em;">
-                            {#{% if std.imagename %}
-                                    <img
-                                style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/' ~ std.imagename)) }}" />
-                                    {% else %} #}
-                                    {% if std.gender %}
-                                        <img
-                                    style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
-
-                                        {% else %}
-                                        <img style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
-                                    {% endif %}
-                                {# {% endif %} #}
+                             <td style=" width: 30%;">
+                                  {% if(fileExists[ std.id ])%}
+                                              {% set imagePath = absolute_url(asset('assets/images/student/'~ std.imageName )) %}
+                                            {% else %}
+                                                {% if std.gender %}
+                                                            {% set imagePath = absolute_url(asset('assets/images/student/female-default-avatar.jpg')) %}
+                                                    {% else %}
+                                                           {% set imagePath = absolute_url(asset('assets/images/student/male-default-avatar.jpg')) %}
+                                                {% endif %}
+                                {% endif %}
+                                <img  style="height:150px;width:150px;"  src={{ imagePath }} />
                             </td>
 
                             <td>
@@ -761,13 +759,14 @@
                             <tr border="0.5" style="text-align:center;background-color:#EBECEC;">
                                 <td border="0.5" style="text-align:center;" colspan="2">
                                     ABSENCES
-                                                                                                                                                                                        
-                                                                                                                                                                                
-                                                                                                                                            
-                                                                                                        
+                                                                                                                                                                                                                         
                                                                     
                                 </td>
-                                <td border="0.5" style="text-align:center;" width="45"></td>
+                                <td border="0.5" style="text-align:center;" width="45">
+                                    {% if std.id in abscences|keys %}
+                                        {{ abscences[std.id] }} 
+                                      {% endif %}
+                                </td>
                                 <td border="0.5" style="text-align:center;">
                                     FAIBLE
                                                                                                                                                                                         
