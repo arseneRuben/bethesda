@@ -40,7 +40,6 @@
                     
                     
                      <table cellspacing="0" cellpadding="5" style="line-height:14px;">
-                     
                       <caption  style=" margin:auto; text-align:center;text-transform: uppercase;">
                             <h3>
                               {% if room.level.cycle.section.name == "Francophone" %}
@@ -63,9 +62,9 @@
                                             
                             {% endif %}
                              </h3>
-                    </caption>
+                      </caption>
                         <tr>
-                            <td>
+                            <td style=" width: 35%;">
                                 <h3>
                                     <br/>
                                         Nom/Name : 
@@ -151,8 +150,7 @@
                                 {% endif %}
                                 <img  style="height:150px;width:150px;"  src={{ imagePath }} />
                             </td>
-
-                            <td>
+                            <td style=" width: 35%;">
                                 <h3>
                                     <span>
                                         Matricule/Reg.number:
@@ -192,17 +190,11 @@
                                     </b>
                                 </h3>
                                 <br/>
-                            {#<span >Redoublant(e)/repeat: OUI/NON</span><br/>
                                                                                                                                             
                                                                                                                                                                     <span >Serie:</span><br/>#}
                             </td>
                         </tr>
                     </table>
-
-
-
-
-
                     <br/>
                     <table cellspacing="0" align="center" cellpadding="5" border="1" WIDTH="98%" style="line-height:13px;">
                         <tr height="13px" WIDTH="15px" style="background-color:#EBECEC;" border="0.5">
