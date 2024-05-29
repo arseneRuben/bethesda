@@ -1257,10 +1257,7 @@ class ClassRoomController extends AbstractController
         return new Response(
             $this->snappy->getOutputFromHtml($html,  [
                 'page-size' => 'A4',
-                'margin-top' => 0,
-                'margin-right' => 0,
-                'margin-bottom' => 0,
-                'margin-left' => 0,
+               
             ]),
             200,
             array(
