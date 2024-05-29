@@ -1255,7 +1255,10 @@ class ClassRoomController extends AbstractController
         ));
 
         return new Response(
-            $this->snappy->getOutputFromHtml($html),
+            $this->snappy->getOutputFromHtml($html,  [
+                'page-size' => 'A4',
+               
+            ]),
             200,
             array(
                 'Content-Type' => 'application/pdf',
