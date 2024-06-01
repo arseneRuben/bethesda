@@ -1100,8 +1100,11 @@ class ClassRoomController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reportCards3YearAction(ClassRoom $classroom)
+    public function reportCards3YearAction(ClassRoom $classroom, Request $request)
     {
+        $headerFontSize = $request->request->get('header_font_size');
+        $lineHeight = $request->request->get('line_height');
+        
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
@@ -1243,6 +1246,8 @@ class ClassRoomController extends AbstractController
          }
 
         $html = $this->renderView('classroom/reportcard/annual.html.twig', array(
+            "headerFontSize" => $headerFontSize,
+            "lineHeight" => $lineHeight,
             'year' => $year,
             'data' => $dataYear,
             'room' => $classroom,
