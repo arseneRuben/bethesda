@@ -1104,6 +1104,7 @@ class ClassRoomController extends AbstractController
     {
         $headerFontSize = $request->request->get('header_font_size');
         $lineHeight = $request->request->get('line_height');
+        $copyright =  $request->request->get('copyright')=="on";
         
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1248,6 +1249,7 @@ class ClassRoomController extends AbstractController
         $html = $this->renderView('classroom/reportcard/annual.html.twig', array(
             "headerFontSize" => $headerFontSize,
             "lineHeight" => $lineHeight,
+            "copyright" => $copyright,
             'year' => $year,
             'data' => $dataYear,
             'room' => $classroom,
