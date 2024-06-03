@@ -423,7 +423,7 @@ class ClassRoomController extends AbstractController
         }
         // CAS DES NOTES TRIMESTRIELLES
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER1 AS
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_1 AS
             SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ1 seq1
             JOIN  V_STUDENT_MARK_SEQ2 seq2  
@@ -432,7 +432,7 @@ class ClassRoomController extends AbstractController
         );
         $statement->execute();
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER2 AS
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_2 AS
             SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ3 seq1
             JOIN  V_STUDENT_MARK_SEQ4 seq2  
@@ -445,7 +445,7 @@ class ClassRoomController extends AbstractController
 
 
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER3 AS
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_3 AS
             SELECT DISTINCT   seq1.std as std , seq1.crs as crs,  (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ5 seq1
             JOIN  V_STUDENT_MARK_SEQ6 seq2  
@@ -474,14 +474,14 @@ class ClassRoomController extends AbstractController
             greatest(quat1.weight , quat2.weight, quat3.weight ) as weight,
             ( quat1.value*quat1.weight+ quat2.value*quat2.weight + quat3.value*quat3.weight) /(quat1.weight+quat2.weight+quat3.weight) as value
             FROM student  
-            JOIN V_STUDENT_MARK_QUATER1  quat1 ON  student.id = quat1.std
+            JOIN V_STUDENT_MARK_QUATER_1  quat1 ON  student.id = quat1.std
             JOIN  class_room ON class_room.id = quat1.room
             JOIN  course    ON course.id = quat1.crs
             JOIN  module    ON course.module_id = quat1.modu
             JOIN user ON user.full_name = quat1.teacher
-            JOIN   V_STUDENT_MARK_QUATER2   quat2  ON  quat1.std = quat2.std AND quat1.crs = quat2.crs
+            JOIN   V_STUDENT_MARK_QUATER_2   quat2  ON  quat1.std = quat2.std AND quat1.crs = quat2.crs
             JOIN 
-            V_STUDENT_MARK_QUATER3   quat3  ON  quat1.std = quat3.std AND quat1.crs = quat3.crs
+            V_STUDENT_MARK_QUATER_3   quat3  ON  quat1.std = quat3.std AND quat1.crs = quat3.crs
             ORDER BY  quat1.std, quat1.modu
         
             "
@@ -1105,6 +1105,7 @@ class ClassRoomController extends AbstractController
         $headerFontSize = $request->request->get('header_font_size');
         $lineHeight = $request->request->get('line_height');
         $copyright =  $request->request->get('copyright')=="on";
+        $reverse =  $request->request->get('reverse')=="on";
         
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1129,12 +1130,13 @@ class ClassRoomController extends AbstractController
         // CAS DES NOTES TRIMESTRIELLES1
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_1 AS
-            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   module, seq1.room as room
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ1 seq1
             JOIN  V_STUDENT_MARK_SEQ2 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
-            ORDER BY std , module"
+            ORDER BY std , modu"
         );
         $statement->execute();
+       // dd($connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER_1 ")->fetchAll());
         // CAS DES ABSCENCES TRIMESTRIELLES1
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_QUATER_1 AS
@@ -1147,10 +1149,10 @@ class ClassRoomController extends AbstractController
          // CAS DES NOTES TRIMESTRIELLES2
          $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_2 AS
-            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   module, seq1.room as room
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ3 seq1
             JOIN  V_STUDENT_MARK_SEQ4 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
-            ORDER BY std , module"
+            ORDER BY std , modu"
         );
         $statement->execute();
         // CAS DES ABSCENCES TRIMESTRIELLES2
@@ -1165,10 +1167,10 @@ class ClassRoomController extends AbstractController
          // CAS DES NOTES TRIMESTRIELLES3
          $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_3 AS
-            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   module, seq1.room as room
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
             FROM V_STUDENT_MARK_SEQ5 seq1
             JOIN  V_STUDENT_MARK_SEQ6 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
-            ORDER BY std , module"
+            ORDER BY std , modu"
         );
         $statement->execute();
         // CAS DES ABSCENCES TRIMESTRIELLES3
@@ -1197,9 +1199,9 @@ class ClassRoomController extends AbstractController
             greatest(quat1.weight , quat2.weight, quat3.weight ) as weight,
             ( quat1.value*quat1.weight+ quat2.value*quat2.weight + quat3.value*quat3.weight) /(quat1.weight+quat2.weight+quat3.weight) as value
             FROM student  
-            JOIN   V_STUDENT_MARK_QUATER1      quat1   ON  student.id = quat1.std 
-            JOIN   V_STUDENT_MARK_QUATER2      quat2  ON  student.id = quat2.std AND quat1.crs = quat2.crs
-            JOIN   V_STUDENT_MARK_QUATER3      quat3   ON  student.id = quat3.std AND quat2.crs = quat3.crs
+            JOIN   V_STUDENT_MARK_QUATER_1      quat1   ON  student.id = quat1.std 
+            JOIN   V_STUDENT_MARK_QUATER_2      quat2  ON  student.id = quat2.std AND quat1.crs = quat2.crs
+            JOIN   V_STUDENT_MARK_QUATER_3      quat3   ON  student.id = quat3.std AND quat2.crs = quat3.crs
             JOIN  class_room ON class_room.id = quat1.room
             JOIN  course     ON course.id = quat1.crs
             JOIN  module     ON course.module_id = quat1.modu
@@ -1250,6 +1252,7 @@ class ClassRoomController extends AbstractController
             "headerFontSize" => $headerFontSize,
             "lineHeight" => $lineHeight,
             "copyright" => $copyright,
+            "reverse" => $reverse,
             'year' => $year,
             'data' => $dataYear,
             'room' => $classroom,

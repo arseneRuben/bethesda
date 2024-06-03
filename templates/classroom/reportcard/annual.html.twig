@@ -41,7 +41,7 @@
     </head>
     <body>
 
-        {% for std in students %}
+        {% for std in reverse ? students|reverse : students  %}
             <page size="A4" style=" margin:auto; border: 1px solid black; border-collapse: collapse;" class="bulletin" >
 
                     {{ include('classroom/partials/reportcard_header.html.twig') }}
@@ -634,7 +634,7 @@
                                     </i>
                                 </td>
                                 <td border="0.5" style="text-align:center;">
-                                    {{ ( ( totalCoefTrim1 + totalCoefTrim2 + totalCoefTrim3)/3)|round(2,'floor') }}
+                                  
                                 </td>
                                 <td border="0.5" style="text-align:center;"></td>
                                 <td border="0.5" style="text-align:center;">
@@ -956,13 +956,13 @@
                         <div>
                             <h10>
                                 <i>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +1(450)6267192,  Arsene.Fokam.Poka@ccnb.ca
-
-                                                                                                                                                                    
-                                                                                                                                                        
-                                                                                                                            
-                                                                                                
-                                                                
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                            Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +1(450)6267192,  Arsene.Fokam.Poka@ccnb.ca
+                                    {% else %}
+                                            Design and implementation of FOKAM POKA ARSENE, Ing, Tel: +1(450)6267192, Arsene.Fokam.Poka@ccnb.ca
+                                    {% endif %}                                                                                                                                                    
                                 </i>
                             </h10>
                         </div>
