@@ -40,7 +40,6 @@
         </title>
     </head>
     <body>
-
         {% for std in reverse ? students|reverse : students  %}
             <page size="A4" style=" margin:auto; border: 1px solid black; border-collapse: collapse;" class="bulletin" >
 
@@ -624,17 +623,20 @@
                                             <b>
                                                 {{ ((totalNCoefTrim1 / totalCoefTrim1 + totalNCoefTrim2 / totalCoefTrim2 + totalNCoefTrim3 / totalCoefTrim3)/3)|round(2,'floor') }}
                                             </b>
-                                            
-                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                        
+                                        {% else %}    
+                                             {% if ( totalCoefTrim1 == 0 and totalCoefTrim2 != 0 and totalCoefTrim3 != 0) %}                                                                                                                                                                                                  
+                                            <b>
+                                                {{ (( totalNCoefTrim2 / totalCoefTrim2 + totalNCoefTrim3 / totalCoefTrim3)/2)|round(2,'floor') }}
+                                            </b>                                                                                                                                                                      
                                                                                                                                                                             
                                                                                                                                 
-                                                                                    
+                                            {% endif %}                                  
                                         {% endif %}
                                     </i>
                                 </td>
                                 <td border="0.5" style="text-align:center;">
-                                  
+                               {#     {{ ( ( totalCoefTrim1 + totalCoefTrim2 + totalCoefTrim3)/3)|round(2,'floor') }} #}
+                              
                                 </td>
                                 <td border="0.5" style="text-align:center;"></td>
                                 <td border="0.5" style="text-align:center;">
@@ -969,6 +971,33 @@
                      {% endif %}
             </page>
         {% endfor %}
+        <page size="A4" style=" margin:auto; border: 1px solid black; border-collapse: collapse;" class="bulletin" >
+            <table style=" background-repeat:no-repeat;margin:0;" cellpadding="0" cellspacing="0" border="0">
+                <thead class="thead-light">
+                    <tr style=" width:90%; margin:0; height:60px;">
+
+                         <th style="width:20%; margin:auto;">Matricule</th>
+                        <th style="width:20%;  margin:auto;">Nom</th>
+                        <th style="width:20%;  margin:auto;">Prenom</th>
+                        <th style="width:20%;  margin:auto;">Moyenne</th>
+                        <th style="width:20%;  margin:auto;">Decision</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for std in reverse ? students|reverse : students  %}
+                        <tr style=" width:90%; margin:0; height:60px;">
+
+                            <th scope="width:90%; margin:0;"> {{  std.matricule }}</th>
+                             <td style="width:20%;  margin:auto">   {{ std.lastname }}</td>
+                             <td style="width:20%;  margin:auto">  {{ std.firstname }}</td>
+                             <td style="width:20%;  margin:auto"> {{ means[std.id] }}</td>
+                             <td style="width:20%;  margin:auto">  </td>
+                        </tr>
+                    {% endfor %}
+                <tbody>
+            </table>
+        </page>
         <script type="text/javascript" src="{{ absolute_url(asset('assets/js/jquery-3.1.1.js')) }}"></script>
         <script type="text/javascript" src="{{ absolute_url(asset('assets/js/repportCard.js')) }}"></script>
             

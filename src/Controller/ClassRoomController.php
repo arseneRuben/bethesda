@@ -1093,7 +1093,126 @@ class ClassRoomController extends AbstractController
         // return new Response($html);
     }
 
-       /**
+    /**
+     * Finds and displays a ClassRoom entity.
+     *
+     * @Route("/{id}/annualavglist", name="admin_avg_list", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function annualAvgList(ClassRoom $classroom, Request $request)
+    {
+        $connection = $this->em->getConnection();
+        $year = $this->schoolYearService->sessionYearById();
+        $quater = $this->qtRepo->findOneBy(array("activated" => true));
+        $sequences  = $this->seqRepo->findSequenceThisYear($year);
+        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($classroom, $year);
+         /*******************************************************************************************************************/
+        /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES  DE LA CLASSE, AINSI QUE DE LA VIEW DES ABSCENCES**************/
+        /*******************************************************************************************************************/
+        $i = 1;
+        foreach ($sequences as $seq) {
+            // CAS DES NOTES et ABSCENCES SEQUENTIELLES
+            $this->getViewSeqData($classroom, $seq, $i);
+            $i++;
+        }
+         // CAS DES NOTES TRIMESTRIELLES1
+         $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_1 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
+            ORDER BY std , modu"
+        );
+        $statement->execute();
+       
+         // CAS DES NOTES TRIMESTRIELLES2
+         $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_2 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ3 seq1
+            JOIN  V_STUDENT_MARK_SEQ4 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
+            ORDER BY std , modu"
+        );
+        $statement->execute();
+          // CAS DES NOTES TRIMESTRIELLES3
+          $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_3 AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight ,  seq1.teacher as teacher, seq1.module as   modu, seq1.room as room
+            FROM V_STUDENT_MARK_SEQ5 seq1
+            JOIN  V_STUDENT_MARK_SEQ6 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
+            ORDER BY std , modu"
+        );
+        $statement->execute();
+        $statement = $connection->prepare(
+            "CREATE OR REPLACE VIEW ANNUAL_DATA AS
+            SELECT DISTINCT   student.id as idStd ,  student.matricule as matricule 
+            student.lastname as lastname, student.firstname as firstname
+            course.wording as course, course.coefficient as coef, 
+            module.name as module,
+            user.full_name as teacher,
+            quat1.std, quat1.modu,
+            quat1.value as value1,  quat1.weight as weight1,
+            quat2.value as value2,  quat2.weight as weight2,
+            quat3.value as value3,  quat3.weight as weight3,
+            greatest(quat1.weight , quat2.weight, quat3.weight ) as weight,
+            ( quat1.value*quat1.weight+ quat2.value*quat2.weight + quat3.value*quat3.weight) /(quat1.weight+quat2.weight+quat3.weight) as value
+            FROM student  
+            JOIN   V_STUDENT_MARK_QUATER_1      quat1   ON  student.id = quat1.std 
+            JOIN   V_STUDENT_MARK_QUATER_2      quat2  ON  student.id = quat2.std AND quat1.crs = quat2.crs
+            JOIN   V_STUDENT_MARK_QUATER_3      quat3   ON  student.id = quat3.std AND quat2.crs = quat3.crs
+            JOIN  class_room ON class_room.id = quat1.room
+            JOIN  course     ON course.id = quat1.crs
+            JOIN  module     ON course.module_id = quat1.modu
+            JOIN  user       ON user.full_name = quat1.teacher
+            ORDER BY  quat1.std, quat1.modu
+            "
+        );
+        $statement->execute();
+        $dataYear = $connection->executeQuery("SELECT *  FROM ANNUAL_DATA ")->fetchAll();
+        // For calculating ranks
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+            SELECT DISTINCT idStd , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
+            FROM ANNUAL_DATA 
+            GROUP BY idStd
+            ORDER BY SUM(value*weight*coef) DESC"
+        );
+        $statement->execute();
+        $annualAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+        $annualAvgArray = [];
+        $sumAvg = 0;
+        $rank = 0;
+        $rankArray = [];
+        foreach ($annualAvg as $avg) {
+            $annualAvgArray[$avg['idStd']] = $avg['moyenne'];
+            $rankArray[$avg['idStd']] = ++$rank;
+            $sumAvg += $avg['moyenne'];
+        }
+
+        $html = $this->renderView('classroom/avglist.html.twig', array(
+           
+            'year' => $year,
+            'room' => $classroom,
+            'students' => $studentEnrolled,
+            'ranks' => $rankArray,
+            'means' => $annualAvgArray,
+            'genMean' => $sumAvg / sizeof($annualAvgArray),
+        ));
+
+        return new Response(
+            $this->snappy->getOutputFromHtml($html,  [
+                'page-size' => 'A4',
+               
+            ]),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="BUL_ANN_' . $classroom->getName() . '.pdf"',
+            )
+        );
+    }
+    /**
      * Finds and displays a ClassRoom entity.
      *
      * @Route("/{id}/reportCards3ApcYearApc", name="admin_class_reportcards_3_apc_year", requirements={"id"="\d+"})
@@ -1136,7 +1255,6 @@ class ClassRoomController extends AbstractController
             ORDER BY std , modu"
         );
         $statement->execute();
-       // dd($connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER_1 ")->fetchAll());
         // CAS DES ABSCENCES TRIMESTRIELLES1
         $statement = $connection->prepare(
             "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_QUATER_1 AS
