@@ -7,7 +7,7 @@
 
         <title>
             {% if room.level.cycle.section.name == "Francophone" %}
-                Bulletins trimestriel
+                Bulletins annuel
                                                                                 
                                                                                 
                                                                                         
@@ -16,7 +16,7 @@
                                             
                             
             {% else %}
-                Quaterly reportcard
+               Annual report card
                                                                                 
                                                                                 
                                                                                         
@@ -31,11 +31,11 @@
     <body>
 
         {% for std in students %}
-            <div style=" min-height:1400px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  auto;   ">
+            <div style=" min-height:1380px; border-style: double; justify-content: space-between; vertical-align: middle;  text-align: center; margin:  auto;   ">
 
                 <section style=" margin:auto; padding: 1px 0px;;">
 
-                    <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 1.2em; ">
+                    <table cellspacing="0" align="center" style=" width: 100%; text-align:center; font-size: 1.1em; ">
                         <tr>
                             <td style=" width: 35%;">
                                 <span>
@@ -290,6 +290,30 @@
                     
                     
                      <table cellspacing="0" cellpadding="5" style="line-height:14px;">
+                     
+                      <caption  style=" margin:auto; text-align:center;text-transform: uppercase;">
+                            <h3>
+                              {% if room.level.cycle.section.name == "Francophone" %}
+                                BULLETIN ANNUEL
+                                                                                                
+                                                                                                
+                                                                                                        
+                                                                                            
+                                                                            
+                                                            
+                                            
+                            {% else %}
+                            ANNUAL REPPORT CARD
+                                                                                                
+                                                                                                
+                                                                                                        
+                                                                                            
+                                                                            
+                                                            
+                                            
+                            {% endif %}
+                             </h3>
+                    </caption>
                         <tr>
                             <td>
                                 <h3>
@@ -368,14 +392,14 @@
                             <td style="padding-left:9em;padding-right:10em;">
                             {#{% if std.imagename %}
                                     <img
-                                style="height:140px;width:140px;" src="{{ absolute_url(asset('assets/images/student/' ~ std.imagename)) }}" />
+                                style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/' ~ std.imagename)) }}" />
                                     {% else %} #}
                                     {% if std.gender %}
                                         <img
-                                    style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
+                                    style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/female-default-avatar.jpg')) }}" />
 
                                         {% else %}
-                                        <img style="height:150px;width:150px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
+                                        <img style="height:120px;width:120px;" src="{{ absolute_url(asset('assets/images/student/male-default-avatar.jpg')) }}" />
                                     {% endif %}
                                 {# {% endif %} #}
                             </td>
@@ -432,8 +456,8 @@
 
 
                     <br/>
-                    <table cellspacing="0" align="center" cellpadding="5" border="1" WIDTH="98%" style="line-height:14px;">
-                        <tr height="14px" WIDTH="15px" style="background-color:#EBECEC;" border="0.5">
+                    <table cellspacing="0" align="center" cellpadding="5" border="1" WIDTH="98%" style="line-height:13px;">
+                        <tr height="13px" WIDTH="15px" style="background-color:#EBECEC;" border="0.5">
                             <td border="0.5" style="text-align:center;">
                                 <b>
                                     DISCIPLINE
@@ -591,7 +615,7 @@
                                     {% if std.matricule == mark.matricule %}
                                         {% if module.name == mark.module %}
                                             {% if mark.course == course.wording  and not break %}
-                                                <tr height="14" border="0.5" style="text-align:center;">
+                                                <tr height="13" border="0.5" style="text-align:center;">
                                                     <td border="0.5" style="text-align:center;">
                                                         {{ course.wording }}
                                                     </td>
@@ -610,7 +634,7 @@
                                                         {% endif %}
                                                     </td>
                                                     <td cellspacing="1" border="0.5" style="text-align:center;">
-                                                        {% if mark.weight3!=0 %}
+                                                        {% if mark.weight3 != 0 %}
                                                             {{ mark.value3|round(2,'floor') }}
                                                         {% else %}
                                                             /
@@ -619,7 +643,7 @@
                                                     {% set markAnn = false %}
                                                     <td cellspacing="1" border="0.5" style="text-align:center;" class="noteYear">
                                                         {% if (mark.weight1 + mark.weight2 + mark.weight3 != 0) %}
-                                                            {{ ((mark.value1*mark.weight1+ mark.value2*mark.weight2+ mark.value3*mark.weight3)/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
+                                                            {{ (( mark.value1 * mark.weight1 + mark.value2 * mark.weight2 + mark.value3 * mark.weight3 )/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
                                                         {% else %}
                                                             /
                                                         {% endif %}
@@ -632,8 +656,8 @@
                                                     </td>
 
                                                     <td cellspacing="1" border="0.5" style="text-align:center;">
-                                                        {% if (mark.weight1 + mark.weight2 + mark.weight3!=0) %}
-                                                            {{ ((mark.value1 * mark.weight1  + mark.value2*mark.weight2+ mark.value3*mark.weight3) * course.coefficient/(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
+                                                        {% if (mark.weight1 + mark.weight2 + mark.weight3 !=0) %}
+                                                            {{ ((mark.value1 * mark.weight1  + mark.value2 * mark.weight2 + mark.value3 * mark.weight3) * course.coefficient /(mark.weight1 + mark.weight2 + mark.weight3))|round(2,'floor') }}
                                                         {% else %}
                                                             0
                                                         {% endif %}
@@ -675,8 +699,8 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim1 != 0 %}
-                                            {{ (NCoefModTrim1/totalCoefModTrim1)|round(2,'floor') }}
-                                            /20 
+                                            {{ ( NCoefModTrim1 / totalCoefModTrim1)|round(2,'floor') }}
+                                            
                                                  {% else %}
                                             /
                                          {% endif %}
@@ -685,7 +709,7 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim2 != 0 %}
-                                            {{ (NCoefModTrim2/totalCoefModTrim2)|round(2,'floor') }}
+                                            {{ (NCoefModTrim2 / totalCoefModTrim2)|round(2,'floor') }}
                                             /20 
                                                 {% else %}
                                             /
@@ -696,7 +720,7 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if totalCoefModTrim3 != 0 %}
-                                            {{ (NCoefModTrim3/totalCoefModTrim3)|round(2,'floor') }}
+                                            {{ (NCoefModTrim3 / totalCoefModTrim3)|round(2,'floor') }}
                                             /20 
                                              {% else %}
                                             /
@@ -704,25 +728,25 @@
                                     </b>
                                 </td>
                                     {% if ( totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0) %}
-                                        {% set moyModAnn = ((NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/3) %}
+                                        {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1 + NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim3 / totalCoefModTrim3)/3) %}
                                     {% else %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim3/totalCoefModTrim3)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim3 / totalCoefModTrim3)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1 + NCoefModTrim3/totalCoefModTrim3)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1 + NCoefModTrim3 / totalCoefModTrim3)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2 + NCoefModTrim1/totalCoefModTrim1)/2) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2 + NCoefModTrim1 / totalCoefModTrim1)/2) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 != 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim3/totalCoefModTrim3)) %}
+                                            {% set moyModAnn = (( NCoefModTrim3 / totalCoefModTrim3)) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 != 0 and totalCoefModTrim2 == 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim1/totalCoefModTrim1)) %}
+                                            {% set moyModAnn = (( NCoefModTrim1 / totalCoefModTrim1)) %}
                                         {% endif %}
                                         {% if totalCoefModTrim1 == 0 and totalCoefModTrim2 != 0 and totalCoefModTrim3 == 0 %}
-                                            {% set moyModAnn = (( NCoefModTrim2/totalCoefModTrim2)) %}
+                                            {% set moyModAnn = (( NCoefModTrim2 / totalCoefModTrim2)) %}
                                         {% endif %}
                                     {% endif %}
                                 <td cellspacing="1" border="0.5" class="noteYear" style="text-align:center;">
@@ -732,7 +756,7 @@
                                                                                       
                                         {% else %}
                                             {{ ( moyModAnn)|round(2,'floor') }}
-                                            / 20  
+                                             
                                                                                                                                                                                                                             
                                                                                          
                                         {% endif %}
@@ -746,8 +770,8 @@
                                 <td cellspacing="1" border="0.5" style="text-align:center;">
                                     <b>
                                         {% if ( totalCoefTrim1 != 0 and totalCoefTrim2 != 0 and totalCoefTrim3 != 0) %}
-                                            {# On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre  #}
-                                                {{ (((NCoefModTrim1/totalCoefTrim1 + NCoefModTrim2/totalCoefTrim2 + NCoefModTrim3/totalCoefTrim3)/3)*totalCoefModTrim2)|round(2,'floor')}}
+                                            {# On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre 
+                                                {{ (((NCoefModTrim1/totalCoefTrim1 + NCoefModTrim2/totalCoefTrim2 + NCoefModTrim3/totalCoefTrim3)/3)*totalCoefModTrim2)|round(2,'floor')}}  #}
                                         {% else %}
                                               /
                                         {% endif %}
@@ -759,7 +783,7 @@
                                 <td border="0.5" style="text-align:center;" cellspacing="1"></td>
                                 <td border="0.5" style="text-align:center;" ></td>
                                    {#On suppose que même les eleve venus au cours de l'année on au moins asistés au évaluation de troisieme trimestre #}
-                                {% set totalNCoefAnn  = moyModAnn*totalCoefModTrim2 %}
+                                {% set totalNCoefAnn  = moyModAnn * totalCoefModTrim2 %}
                             </tr>
                         {% endfor %}   
                             <tr height="14" border="0.5" style="text-align:center;background-color:#EBECEC;">
@@ -1181,16 +1205,21 @@
 
                
                     <div>
-                        <h6>
+                        <h7>
                             <i>
+<<<<<<< HEAD
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:  fopoar@gmail.com
+=======
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +1(450)6267192,  Arsene.Fokam.Poka@ccnb.ca
+
+>>>>>>> 2b98c9d9f55b421b6a84772292f665c89a6b210c
                                                                                                                                                                 
                                                                                                                                                     
                                                                                                                         
                                                                                             
                                                             
                             </i>
-                        </h6>
+                        </h7>
                     </div>
                 </section>
             </div>

@@ -121,7 +121,7 @@
                             {{ 'Edit'|trans({}, 'admin') }}
                         </a>
                     {% endif %}
-                    <a target="_blank" class="btn btn-file"  data-toggle="modal" data-target="#form" href="{{ path('admin_classrooms_recapitulatif_seq', {id: classroom.id}) }}">
+                    <a target="_blank" class="btn btn-file"  data-toggle="modal" data-target="#form_modal_courses" >
                         <i class="fa fa-file-excel-o"></i>
                         Recap. Seq
                                                                                                                                                                                                                     
@@ -170,9 +170,9 @@
                                                                     
                                             
                     </a>
-                    <a  target="_blank" class="btn btn-file" href="{{ path('admin_classrooms_reportcards_year', {id: classroom.id}) }}">
+                    <a  target="_blank" class="btn btn-file" href="{{ path('admin_class_reportcards_apc_year', {id: classroom.id}) }}">
                         <i class="fa fa-file"></i>
-                        Bull Ann
+                        Bull Ann V1
                                                                                                                                                                                                                     
                                                                                                                                                                                             
                                                                                                                                                                     
@@ -182,9 +182,9 @@
                                                                     
                                             
                     </a>
-                    <a target="_blank" class="btn btn-file" href="{{ path('admin_class_reportcards_apc_year', {id: classroom.id}) }}">
+                    <a target="_blank" class="btn btn-file" data-toggle="modal" data-target="#form_modal_reportcard_params" >
                         <i class="fa fa-file"></i>
-                        Bull Ann Apc
+                        Bull Ann V2
                                                                                                                                                                                                                     
                                                                                                                                                                                             
                                                                                                                                                                     
@@ -455,7 +455,8 @@
             </section>
         </div>
     </div>
-<div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal pour le choix de cours qui vont figurer dans le recaputulatif sequentiel -->
+<div class="modal fade" id="form_modal_courses" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header border-bottom-0">
@@ -485,7 +486,47 @@
     </div>
   </div>
 </div>
-
+<!-- Modal pour le parametrage de la presentation des bulletins. -->
+<div class="modal fade" id="form_modal_reportcard_params" tabindex="-1" role="dialog" aria-labelledby="exampleModalRange" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="exampleModalLabel">Reajuster les parametres de production des bulletins</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ path('admin_class_reportcards_3_apc_year', {'id':classroom.id}) }}" method="post">
+        <div class="modal-body">
+           <div class="form-group">
+            <label for="header_font_size">Taille de des caracteres dans l entete</label>
+            <input type="range" class="form-control" name="header_font_size" id="header_font_size" min="1" max="1.6" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="line_height">Hauteur des lignes dans le tableau</label>
+            <input type="range" class="form-control" name="line_height" id="line_height" min="0.5" max="1.5" step="0.01">
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox"  id="copyright"  name="copyright">
+            <label class="form-check-label" for="copyright">
+                Ajout du copyright en pied du bulletin?
+            </label>
+         </div>
+         <div class="form-check">
+            <input class="form-check-input" type="checkbox"  id="reverse"  name="reverse">
+            <label class="form-check-label" for="reverse">
+                Sens inverse
+            </label>
+         </div>
+        </div>
+      
+        <div class="modal-footer border-top-0 d-flex justify-content-center">
+          <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

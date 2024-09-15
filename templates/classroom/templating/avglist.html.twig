@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Fiche de repport de notes
+                                
+                    
+        </title>
+      
+
+    </head>
+    <body>
+          <page size="A4" style=" margin:auto; border: 1px solid black; border-collapse: collapse;" class="bulletin" >
+          
+            {{ include('classroom/partials/reportcard_header.html.twig') }}
+            <hr style="margin-left:0px" width="1135" />
+            <table style=" background-repeat:no-repeat;margin:0;" cellpadding="0" cellspacing="0" border="0">
+                <thead class="thead-light">
+                    <tr style=" width:90%; margin:0; height:60px;">
+
+                         <th style="width:20%; margin:auto;">Matricule</th>
+                        <th style="width:20%;  margin:auto;">Nom</th>
+                        <th style="width:20%;  margin:auto;">Prenom</th>
+                        <th style="width:20%;  margin:auto;">Moyenne</th>
+                        <th style="width:20%;  margin:auto;">Decision</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for std in reverse ? students|reverse : students  %}
+                        <tr style=" width:90%; margin:0; height:60px;">
+
+                            <th scope="width:90%; margin:0;"> {{  std.matricule }}</th>
+                             <td style="width:20%;  margin:auto">   {{ std.lastname }}</td>
+                             <td style="width:20%;  margin:auto">  {{ std.firstname }}</td>
+                             <td style="width:20%;  margin:auto"> {{ means[std.id] }}</td>
+                             <td style="width:20%;  margin:auto">  </td>
+                        </tr>
+                    {% endfor %}
+                <tbody>
+            </table>
+        </page>
+     </body>
+</html>
