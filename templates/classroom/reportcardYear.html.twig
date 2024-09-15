@@ -91,7 +91,7 @@
                                 </span>
                                 <br/>
                                 <span>
-                                    {{get_env("DELEGATION_REGIONALE")}}                                                                                                                                                
+                                    {{getEnvironmentVariable("DELEGATION_REGIONALE")}}                                                                                                                                                
                                                                                                                                                                                                             
                                                                                                                                                                                 
                                                                                                                                             
@@ -867,16 +867,16 @@
                                 <td border="0.5" style="text-align:center;"></td>
                                 <td border="0.5" style="text-align:center;">
                                 <b>
-                                  {% if ( std.id in means|keys ) %}
                                     {{ (  means[std.id] )|round(2,'floor') }} /20
-                                  {% endif %}                                                                                                                                                                          
-                                                                                                                                                                                                                       
+                                                                                                                                                                                                            
+                                                                                                                                                                                           
+                                                                                                                                                        
+                                                                                                                
+                                                                        
                                 </b>
                             </td>
                             <td border="0.5" style="text-align:center;">
-                             {% if ( std.id in ranks|keys ) %}
-                                {{ ranks[std.id] }}  /   {{ ranks|length }} 
-                             {% endif %}   
+                            {{ ranks[std.id] }}  /   {{ ranks|length }} 
                             </td>
                             <td border="0.5" style="text-align:center;">
                             Moy. gen. {{ (  genMean )|round(2,'floor') }}
@@ -1183,8 +1183,7 @@
                     <div>
                         <h6>
                             <i>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +1(450)6267192 , email:  Arsene.Fokam.Poka@ccnb.ca
-
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Conception et implementation de  FOKAM POKA ARSENE, Ing, Tel : +237 678342591 , email:  fopoar@gmail.com
                                                                                                                                                                 
                                                                                                                                                     
                                                                                                                         

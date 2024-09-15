@@ -366,7 +366,7 @@ class StudentController extends AbstractController
      * @Method("GET")
      * @Template()
      */
-    public function reporCardTrimAction(Student $std)
+    public function reporCardTrimAction(Pdf $pdf, Student $std)
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
@@ -432,13 +432,12 @@ class StudentController extends AbstractController
             'room' => $sub->getClassRoom(),
             'fileExist' => $fileExist
         ));
-
         return new Response(
-            $this->snappy->getOutputFromHtml($html),
+            $pdf->getOutputFromHtml($html),
             200,
             array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="BUL_TRIM_' . $quater->getId().'_'.$std->getMatricule() . '.pdf"',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="bull_' .  $quater->getId().'_'.$std->getMatricule()  . '.pdf"'
             )
         );
     }
@@ -472,7 +471,7 @@ class StudentController extends AbstractController
             /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE L'ELEVE**************/
             /*******************************************************************************************************************/
             // CAS DES NOTES SEQUENTIELLES
-            $statement= $connection->prepare(
+            $statement = $connection->prepare(
                 "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
                     SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year,  teach.id as teacher    , modu.id as module,m.value as value, m.weight as weight
                     FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
