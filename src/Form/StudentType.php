@@ -27,6 +27,11 @@ class StudentType extends AbstractType {
                         'download_uri' => false,
                         
                     ])
+                ->add('matricule', TextType::class, [
+                        'label' => 'Matricule',
+                        'required' => true,
+                        'constraints' => new Assert\NotBlank(),
+                        'trim' => true])
                 ->add('lastName', TextType::class, [
                     'label' => 'Nom',
                     'required' => true,

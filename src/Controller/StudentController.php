@@ -16,7 +16,6 @@ use App\Repository\PaymentRepository;
 use App\Repository\QuaterRepository;
 use App\Repository\InstallmentRepository;
 use App\Repository\PaymentPlanRepository;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,10 +60,9 @@ class StudentController extends AbstractController
         $this->qtRepo   = $qtRepo;
         $this->snappy   = $snappy;
         $this->ppRepo   = $ppRepo;
-        $this->pRepo   = $pRepo;
+        $this->pRepo    = $pRepo;
         $this->instRepo = $instRepo;
         $this->schoolYearService = $schoolYearService;
-
     }
 
     /**
@@ -181,8 +179,8 @@ class StudentController extends AbstractController
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student);
 
-        $numero = $this->repo->getNumeroDispo();
-        $student->setMatricule($numero);
+        //$numero = $this->repo->getNumeroDispo();
+        //$student->setMatricule($numero);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -412,34 +412,10 @@ class ClassRoomController extends AbstractController
             /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES ET ANNUELLES DE LA CLASSE**************/
             /*******************************************************************************************************************/
             // CAS DES NOTES SEQUENTIELLES
-<<<<<<< HEAD
-            $this->viewSeq($i);
-            $statement = $connection->prepare(
-                "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
-                SELECT DISTINCT  eval.id as eval,crs.id as crs, room.id as room,year.id as year, std.id as std,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
-                FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
-                JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
-                JOIN  class_room room    ON   eval.class_room_id     =   room.id
-                JOIN  course     crs     ON  eval.course_id      =   crs.id
-                JOIN  attribution att    ON  att.course_id      =   crs.id  
-                JOIN  user  teach        ON  att.teacher_id  =   teach.id
-                JOIN  module     modu    ON  modu.id       =   crs.module_id
-                JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
-                JOIN  quater   quat      ON  seq.quater_id     =   quat.id
-                JOIN  school_year   year ON  quat.school_year_id     =   year.id
-                WHERE att.year_id =? AND  room.id = ? AND eval.sequence_id =?  
-                ORDER BY room.id,modu.id ,  std; "
-            );
-            $statement->bindValue(1, $year->getId());
-            $statement->bindValue(2, $classroom->getId());
-            $statement->bindValue(3, $seq->getId());
-            $statement->execute();
-=======
               // $this->viewSeq($i, $classroom, $seq);
             $this->getViewSeqData( $classroom, $seq, $i);
             
            
->>>>>>> 2b98c9d9f55b421b6a84772292f665c89a6b210c
             $i++;
         }
         // CAS DES NOTES TRIMESTRIELLES
