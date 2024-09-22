@@ -31,7 +31,7 @@ use App\Service\SchoolYearService;
 /**
  * Evaluationme controller.
  *
- * @Route("/admin/evaluations")
+ * @Route("/evaluations")
  */
 class EvaluationController extends AbstractController
 {

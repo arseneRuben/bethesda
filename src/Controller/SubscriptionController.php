@@ -82,12 +82,8 @@ class SubscriptionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $student = $subscription->getStudent();
-
-
             $student->addSubscription($subscription);
-
             $student->setEnrolled(true);
-
             // $subscription->setInstant(new \DateTime());
             $this->em->persist($subscription);
 

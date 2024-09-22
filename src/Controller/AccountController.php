@@ -34,11 +34,12 @@ class AccountController extends AbstractController
      */
     public function index(): Response
     {
-
+        
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
         } else {
+           
             // $this->getUser()->getRoles();
             // $this->em->persist($this->getUser());
             // $this->em->flush();
@@ -48,7 +49,7 @@ class AccountController extends AbstractController
             } else {
                 $mainTeacher = $this->mainTeacherRepo->findOneBy(array("teacher"=> $this->getUser(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
                 $attributions = $this->attRepo->findBy(array("teacher"=> $this->getUser(), "schoolYear"=> $this->schoolYearService->sessionYearById()));
-                $hasAccess = $this->isGranted('ROLE_ADMIN');
+                $hasAccess = $this->isGranted('ROLE_USER');
                 if (!$hasAccess) {
                     return $this->redirectToRoute('app_home');
                 } else {

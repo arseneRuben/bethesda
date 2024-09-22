@@ -45,4 +45,3 @@ security:
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/fin, roles: ROLE_FINANCIAL }
-    - { path: ^/fin, roles: ROLE_FINANCIAL }
