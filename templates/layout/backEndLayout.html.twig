@@ -167,30 +167,7 @@
                                         </a>
                                     </li>
 
-                                     <li class="{% if app.request.attributes.get('_route') == "app_payment_index" %}active{% endif %}">
-                                        <a href="{{ path('app_payment_index') }}">
-                                            <i class="fa fa-money" aria-hidden="true"></i>
-
-                                            Payment
-                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                    
-                                        </a>
-                                    </li>
-
-                                    <li class="{% if app.request.attributes.get('_route') == "admin_paymentPlans" %}active{% endif %}">
-                                        <a href="{{ path('admin_paymentPlans') }}">
-                                            <i class="fa fa-clock-o" aria-hidden="true"></i>
-
-
-                                            Scolarite
-                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                    
-                                                                                                                                            
-                                                                                    
-                                        </a>
-                                    </li>
+                                     
                                     <li class="{% if app.request.attributes.get('_route') == "admin_students" %}active{% endif %}">
                                         <a href="{{ path('admin_students') }}">
                                             <i class="fa fa-users"></i>
@@ -228,6 +205,14 @@
                                                                                     
                                         </a>
                                     </li>
+                                    <li class="{% if app.request.attributes.get('_route') == "admin_statistics" %}active{% endif %}">
+                                        <a href="{{ path('admin_statistics') }}">
+                                            <i class="fa fa-area-chart" aria-hidden="true"></i>
+
+                                            Statistiques
+                                                                                                                                                                                                                                                                                                                                                                            
+                                       </a>
+                                    </li>
                                 {% endif %}
 
                                       <li class="{% if app.request.attributes.get('_route') == "admin_classrooms" %}active{% endif %}">
@@ -250,22 +235,31 @@
                                                                                     
                                         </a>
                                     </li>
-
+                                     {% if is_granted('ROLE_DISCIPLINE') %}
                                      <li class="{% if app.request.attributes.get('_route') == "admin_abscences_sheet_index" %}active{% endif %}">
                                         <a href="{{ path('admin_abscences_sheet_index') }}">
                                             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                            Discipline
-                                                                                                                                                                                                                                                                                                                                                                            
+                                            Discipline                                                                                                                                                                                                                                                                                                                           
                                        </a>
                                     </li>
-                                    <li class="{% if app.request.attributes.get('_route') == "admin_statistics" %}active{% endif %}">
-                                        <a href="{{ path('admin_statistics') }}">
-                                            <i class="fa fa-area-chart" aria-hidden="true"></i>
+                                     {% endif %}
+                                    {% if is_granted('ROLE_FINANCIAL') %}
+                                        <li class="{% if app.request.attributes.get('_route') == "app_payment_index" %}active{% endif %}">
+                                            <a href="{{ path('app_payment_index') }}">
+                                                <i class="fa fa-money" aria-hidden="true"></i>
+                                                Payment
+                                                                                                                                                                                                                                                                                                                                                                                                                
+                                            </a>
+                                        </li>
+                                        <li class="{% if app.request.attributes.get('_route') == "admin_paymentPlans" %}active{% endif %}">
+                                            <a href="{{ path('admin_paymentPlans') }}">
+                                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                                Scolarite
+                                            </a>
+                                        </li>
+                                    {% endif %}
 
-                                            Statistiques
-                                                                                                                                                                                                                                                                                                                                                                            
-                                       </a>
-                                    </li>
+                                    
                                     {#<li class="{% if app.request.attributes.get('_route') == "admin_emails" %}active{% endif %}">
                                                                                                                                                                                                                                                                                                                         										<a href="{{ path('admin_emails')}}"><i class="fa fa-credit-card" aria-hidden="true"></i>Messages</a>
                                                                                                                                                                                                                                                                                                                         									</li>
