@@ -1,7 +1,0 @@
-lexik_form_filter:
-    listeners:
-        doctrine_orm: true
-        doctrine_dbal: false
-        doctrine_mongodb: false
-    where_method: ~  # null | and | or 
-    condition_pattern: text.starts

@@ -76,7 +76,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     private $yahoo_access_token;
 
 
-   
+
     private $roles = [];
 
     /**
@@ -280,8 +280,28 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-        $roles[] = 'ROLE_ADMIN';
+        // $roles[] = 'ROLE_USER';
+        //$roles[] = 'ROLE_ADMIN';
+        switch ($this->getStatus()) {
+            case "PROF":
+                $roles[] = 'ROLE_USER';
+            break;
+            case "ADMIN":
+                $roles[] = 'ROLE_USER';
+                $roles[] = 'ROLE_ADMIN';
+            break;
+            case "DISCIPLINE":
+                $roles[] = 'ROLE_USER';
+                $roles[] = 'ROLE_DISCIPLINE';
+            break;
+            case "FINANCIAL":
+                $roles[] = 'ROLE_USER';
+                $roles[] = 'ROLE_FINANCIAL';
+            break;
+            default:
+                $roles[] = 'ROLE_USER';
+            break;
+          }
 
         return array_unique($roles);
     }
@@ -316,6 +336,13 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function getSalt(): ?string
     {
         return null;
+    }
+
+    public function addRole($role): self
+    {
+        array_push($this->roles, $role);
+        $this->setRoles(array_unique($this->roles));
+        return $this;
     }
 
     /**
