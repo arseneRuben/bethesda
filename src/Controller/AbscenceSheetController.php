@@ -29,7 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 /**
  * AbscenceSheet controller.
  *
- * @Route("/admin/abscence_sheet")
+ * @Route("/abscence_sheet")
  */
 class AbscenceSheetController extends AbstractController
 {
