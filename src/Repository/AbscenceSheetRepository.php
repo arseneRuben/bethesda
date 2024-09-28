@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\AbscenceSheet;
+use App\Entity\SchoolYear;
 use App\Entity\Quater;
 use App\Entity\Sequence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -21,6 +22,18 @@ class AbscenceSheetRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AbscenceSheet::class);
+    }
+    public function findAbsByYear(SchoolYear $year )
+    {
+       $qb = $this->createQueryBuilder('a')
+       ->leftJoin('a.sequence', 's')
+       ->leftJoin('s.quater', 'q')
+       ->leftJoin('q.schoolYear', 'sc')
+       ->andWhere('sc.id=:sc')
+       ->setParameter('sc', $year->getId());
+      
+       
+       return $qb ->orderBy('a.id', 'DESC')->getQuery()->getResult();
     }
 
 //    /**

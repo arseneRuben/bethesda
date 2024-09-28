@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Repository;
-
 use App\Entity\Abscence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +19,9 @@ class AbscenceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Abscence::class);
     }
+
+   
+
 
 //    /**
 //     * @return Abscence[] Returns an array of Abscence objects
