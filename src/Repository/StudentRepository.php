@@ -96,9 +96,9 @@ class StudentRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()
             ->createQuery(
                 "SELECT std.matricule,std.id, std.lastname, std.firstname, std.gender, std.birthplace, std.birthday , std.primaryContact, std.secondaryContact
-                             FROM  Student  std
-                             JOIN  Subscription sub WITH  sub.student  =  std.id
-                             JOIN  SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
+                             FROM   App\Entity\Student  std
+                             JOIN   App\Entity\Subscription sub WITH  sub.student  =  std.id
+                             JOIN   App\Entity\SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
                              WHERE sub.schoolYear = :year
                              AND  sub.classRoom = :room 
                              ORDER BY std.lastname

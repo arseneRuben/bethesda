@@ -6,6 +6,7 @@ use App\Entity\Sequence;
 
 use App\Entity\Abscence;
 use App\Entity\AbscenceSheet;
+use App\Service\SchoolYearService;
 use App\Filter\AbscenceSearch;
 use App\Form\Filter\AbscenceSheetSearchType;
 use App\Form\AbscenceSheetType;
@@ -41,8 +42,10 @@ class AbscenceSheetController extends AbstractController
     private $clRepo;
     private $stdRepo;
     private $qtRepo;
+    private SchoolYearService $schoolYearService;
 
-    public function __construct(EntityManagerInterface $em, QuaterRepository $qtRepo, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo)
+
+    public function __construct(EntityManagerInterface $em, QuaterRepository $qtRepo, StudentRepository $stdRepo, AbscenceSheetRepository $repo, AbscenceRepository $absRepo, SchoolYearRepository $yearRepo, SequenceRepository $seqRepo, ClassRoomRepository $clRepo,         SchoolYearService $schoolYearService,    )
     {
         $this->em = $em;
         $this->repo = $repo;
@@ -52,6 +55,8 @@ class AbscenceSheetController extends AbstractController
         $this->stdRepo = $stdRepo;
         $this->yearRepo = $yearRepo;
         $this->clRepo = $clRepo;
+        $this->schoolYearService = $schoolYearService;
+
     }
 
 
@@ -66,18 +71,20 @@ class AbscenceSheetController extends AbstractController
         $search = new AbscenceSearch();
         $searchForm =  $this->createForm(AbscenceSheetSearchType::class, $search);
         $searchForm->handleRequest($request);
-        
+        $year = $this->schoolYearService->sessionYearById();
+
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
           
             $room = $this->clRepo->findOneBy(array("id" => $_GET['room']));
             $quater = $this->qtRepo->findOneBy(array("id" => $_GET['quater']));
             $sequence = $this->seqRepo->findOneBy(array("id" => $_GET['sequence']));
-            if($room != null  && $sequence != null){
+
+            if($room != null  && $sequence != null ){
                  $entities = $this->repo->findBy(array("sequence" => $sequence, "classRoom" => $room),   array('id' => 'DESC'));
             } else {
                 if($room != null)
                 {
-                    $entities = $this->repo->findBy(array( "classRoom" => $room),   array('id' => 'DESC'));
+                    $entities = $this->repo->findBy(array("classRoom" => $room),   array('id' => 'DESC'));
                 }
                 if($sequence != null)
                 {
@@ -90,7 +97,7 @@ class AbscenceSheetController extends AbstractController
             }
           
         } else {
-            $entities = $this->repo->findAll(array(),   array('id' => 'DESC'));
+            $entities = $this->repo->findAbsByYear($year);
         }
 
         uasort($entities, function($a, $b){
