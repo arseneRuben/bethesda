@@ -179,8 +179,8 @@ class StudentController extends AbstractController
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student);
 
-        //$numero = $this->repo->getNumeroDispo();
-        //$student->setMatricule($numero);
+        $numero = $this->repo->getNumeroDispo();
+        $student->setMatricule($numero);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
