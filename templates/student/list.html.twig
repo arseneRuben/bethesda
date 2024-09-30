@@ -11,10 +11,42 @@
         </div>
         <div class="col-11 jumbotron">
             <div class="m-1 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
-                        Liste des eleves non inscrits 
-                    </h4>
+                <div class="card-header row">
+                    <div class="form-check d-inline-block col-3">
+                        <input class="form-check-input" type="radio" value="new_students_not_yet_registered_checkbox" name="list_type" id="new_students_not_yet_registered_checkbox">
+                        <label class="form-check-label" for="check1">
+                            <h4 class="my-0 font-weight-normal text-left text-justify text-uppercase">
+                                 Liste des nouveaux eleves non encore inscrits
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="form-check d-inline-block  col-3">
+                        <input class="form-check-input" type="radio" value="new_registered_students_checkbox" name="list_type" id="new_registered_students_checkbox">
+                        <label class="form-check-label" for="check2">
+                            <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                                Liste des nouveaux eleves  inscrits
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="form-check d-inline-block  col-3">
+                        <input class="form-check-input" type="radio" value="registered_former_students_checkbox" name="list_type" id="registered_former_students_checkbox">
+                        <label class="form-check-label" for="check3">
+                            <h4 class="my-0 font-weight-normal text-center tex t-justify text-uppercase">
+                                Liste des anciens eleves  inscrits
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="form-check d-inline-block  col-3">
+                        <input class="form-check-input" type="radio" value="complete_registered_students_checkbox" name="list_type" id="complete_registered_students_checkbox">
+                        <label class="form-check-label" for="check4">
+                             <h4 class="my-0 font-weight-normal text-right text-justify text-uppercase">
+                                 Liste complete des  eleves  inscrits
+                             </h4>
+                        </label
+                    </div>
+                   
+                       
+                   
                 </div>
                 <table width="100%" class="table table-striped">
                     <thead>
@@ -110,3 +142,41 @@
         </div>
     {% endblock %}
     
+    
+{% block javascripts %}
+	{{parent()}}
+
+	<script type="text/javascript">
+		/*var newStudentsNotYetRegisteredCb = document.getElementById("new_students_not_yet_registered_checkbox");
+        var newRegisteredStudentsCb = document.getElementById("new_registered_students_checkbox");
+        var registeredFormerStudentsCb = document.getElementById("registered_former_students_checkbox");
+        var completeRegisteredStudentsCb = document.getElementById("complete_registered_students_checkbox");*/
+
+        $(document).ready(function() {
+            
+            $('input[type="radio"]').on('change', function() {
+                const selectedValue = $('input[name="list_type"]:checked').val();
+                const url = '{{ path('admin_students', { 'type': 'PLACEHOLDER' }) }}'.replace('PLACEHOLDER', selectedValue);
+
+                
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    datatype: "json",
+                    success: function (data) {
+                        
+                        window.location.href = url;
+                        console.log(selectedValue);
+                    },
+                    error: function (e) {
+                        console.log(e.message);
+                    }
+                    });
+               
+                });
+          
+        });
+
+    </script>
+
+{% endblock javascripts %}

@@ -40,6 +40,55 @@ class StudentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findNewStudents($year)
+    {
+        $query = $this->getEntityManager()
+        ->createQuery(
+            "SELECT std
+                         FROM  App\Entity\Student  std
+                         WHERE std.createdAt BETWEEN :start AND :end
+                         ORDER BY  std.lastname
+                        "
+        )->setParameter('start', $year->getStartDate())
+        ->setParameter('end', $year->getEndDate());
+        return $query->getResult();
+    }
+
+    public function findNewRegisteredStudents($year)
+    {
+        $query = $this->getEntityManager()
+        ->createQuery(
+            "SELECT std
+                         FROM  App\Entity\Student  std
+                         JOIN   App\Entity\Subscription sub WITH  sub.student  =  std.id
+                         JOIN   App\Entity\SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
+                             
+                         WHERE  sub.schoolYear = :year AND std.createdAt BETWEEN :start AND :end 
+                         ORDER BY  std.lastname
+                        "
+        )->setParameter('year', $year->getId())
+        ->setParameter('start', $year->getStartDate())
+        ->setParameter('end', $year->getEndDate());
+        return $query->getResult();
+    }
+
+    public function findFormerRegisteredStudents($year)
+    {
+        $query = $this->getEntityManager()
+        ->createQuery(
+            "SELECT std
+                         FROM  App\Entity\Student  std
+                         JOIN   App\Entity\Subscription sub WITH  sub.student  =  std.id
+                         JOIN   App\Entity\SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id 
+                         WHERE  NOT(std.createdAt BETWEEN :start AND :end ) AND sub.schoolYear = :year  
+                         ORDER BY  std.lastname
+                        "
+        )->setParameter('year', $year->getId())
+        ->setParameter('start', $year->getStartDate())
+        ->setParameter('end', $year->getEndDate());
+        return $query->getResult();
+    }
+
 
 
     // /**
@@ -171,7 +220,7 @@ class StudentRepository extends ServiceEntityRepository
         $year = $this->schoolYearService->sessionYearById();
         $query = $this->getEntityManager()
             ->createQuery(
-                " SELECT st 
+                " SELECT st
                                FROM   App\Entity\Student  st
                                WHERE st.matricule  in 
                                (SELECT std.matricule
@@ -210,8 +259,9 @@ class StudentRepository extends ServiceEntityRepository
                              JOIN App\Entity\Subscription sub WITH  sub.student  =  std.id
                              JOIN App\Entity\SchoolYear schoolYear  WITH  sub.schoolYear     =  schoolYear.id
                              WHERE sub.schoolYear = :year
-                             ORDER BY std.lastname
                              AND std.enrolled =:enrolled 
+                             ORDER BY std.lastname
+                           
                             "
             )->setParameter('year', $year)
             ->setParameter('enrolled', false);
