@@ -68,11 +68,11 @@ class StudentController extends AbstractController
     /**
      * Lists all Studentme entities.
      *
-     * @Route("/", name="admin_students")
+     * @Route("/{type}", name="admin_students")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($type)
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
@@ -82,7 +82,27 @@ class StudentController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        $students = $this->repo->findEnrolledStudentsThisYear2();
+        $year = $this->schoolYearService->sessionYearById();
+       
+       
+        switch ($type) {
+            case "new_students_not_yet_registered_checkbox":
+                $students = $this->repo->findNewStudents($year);
+                break;
+            case "new_registered_students_checkbox":
+                $students =  $this->repo->findNewRegisteredStudents($year);
+                break;
+            case "registered_former_students_checkbox":
+                $students =  $this->repo->findFormerRegisteredStudents($year);
+                break;
+            case "complete_registered_students_checkbox":
+                    $students =  $this->repo->findEnrolledStudentsThisYear2($year);
+                break;
+            default:
+                $students = $this->repo->findEnrolledStudentsThisYear2();
+                break;
+        }
+        
 
         return $this->render('student/list.html.twig', compact("students"));
     }
