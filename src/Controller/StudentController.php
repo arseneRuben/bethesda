@@ -91,7 +91,6 @@ class StudentController extends AbstractController
             $this->addFlash('success', 'Student succesfully created');
             return $this->redirectToRoute('admin_students', [
                 'type' =>"new_students_not_yet_registered_checkbox",
-               
             ]);
         }
         return $this->render(
@@ -176,7 +175,11 @@ class StudentController extends AbstractController
         $evalSeqs = [];
         $payments = $this->pRepo->findBy(array( "schoolYear"=> $year, "student"=> $student), array('updatedAt' => 'ASC'));
         $paymentPlan = $this->ppRepo->findOneBy(array( "schoolYear"=> $year));
-        $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
+        if($sub!=null){
+            $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan, "classRoom"=> $sub->getClassRoom()));
+        } else {
+            $installments = $this->instRepo->findBy(array( "paymentPlan"=> $paymentPlan));
+        }
         $seqs = $this->seqRepo->findSequenceThisYear($year);
         if ($sub != null) {
             foreach ($seqs as $seq) {
@@ -244,7 +247,10 @@ class StudentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Student succesfully updated');
-            return $this->redirectToRoute('admin_students_show', ['id' => $student->getId()]);
+            //return $this->redirectToRoute('admin_students_show', ['id' => $student->getId()]);
+            return $this->redirectToRoute('admin_students', [
+                'type' =>"new_students_not_yet_registered_checkbox",
+            ]);
         }
         return $this->render('student/edit.html.twig', [
             'student' => $student,
@@ -274,7 +280,9 @@ class StudentController extends AbstractController
             $this->em->flush();
             $this->addFlash('info', 'Student succesfully deleted');
         }
-        return $this->redirectToRoute('admin_students');
+        return $this->redirectToRoute('admin_students', [
+            'type' =>"new_students_not_yet_registered_checkbox",
+        ]);
     }
     /**
      * Build student's school certificate

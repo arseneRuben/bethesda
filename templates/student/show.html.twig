@@ -9,7 +9,7 @@
     {{ parent() }}
 {% endblock %}
 {% set totalP =0 %}
-{% if(payments) %}
+{% if(payments is defined) %}
     {% for p in payments %}
         {% set totalP = totalP + p.amount %}
     {% endfor %}                    
@@ -18,12 +18,20 @@
     <div class="row mt-3">
         <div class="col-2">
             <div class="btn-group record_actions  m-2">
-                <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
-                    <i class="fa fa-list"></i>
-                </a>
+                {% if(sub is defined) %}
+
+                    <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
+                        <i class="fa fa-list"></i>
+                    </a>
+                {% endif %}
+
             </div>
             <div class="card" > 
-                <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
+                {% if(file_exists is defined) %}
+
+                     <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
+                {% endif %}
+
             </div>
             <div class="col-10 card">
                 <article class="p-3">
@@ -344,7 +352,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if(payments) %}
+                                {% if(payments is defined) %}
                                     {% set total =0 %}
                                     {% for p in payments %}
                                         <tr>
@@ -427,7 +435,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if(installments) %}
+                                {% if(installments is defined) %}
                                     {% set total =0 %}
                                     {% for p in installments %}
                                         {% set total = total + p.amount %}
