@@ -65,6 +65,41 @@ class StudentController extends AbstractController
         $this->schoolYearService = $schoolYearService;
     }
 
+      /**
+     * @Route("/create",name= "admin_students_new", methods={"GET","POST"})
+     */
+    public function create(Request $request): Response
+    {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+
+        $numero = $this->repo->getNumeroDispo();
+        $student->setMatricule($numero);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($student);
+            $this->em->flush();
+            $this->addFlash('success', 'Student succesfully created');
+            return $this->redirectToRoute('admin_students', [
+                'type' =>"new_students_not_yet_registered_checkbox",
+               
+            ]);
+        }
+        return $this->render(
+            'student/new.html.twig',
+            ['form' => $form->createView()]
+        );
+    }
+
     /**
      * Lists all Studentme entities.
      *
@@ -183,37 +218,7 @@ class StudentController extends AbstractController
         return $this->render('student/show.html.twig', $results);
     }
 
-    /**
-     * @Route("/create",name= "admin_students_new", methods={"GET","POST"})
-     */
-    public function create(Request $request): Response
-    {
-        if (!$this->getUser()) {
-            $this->addFlash('warning', 'You need login first!');
-            return $this->redirectToRoute('app_login');
-        }
-        if (!$this->getUser()->isVerified()) {
-            $this->addFlash('warning', 'You need to have a verified account!');
-            return $this->redirectToRoute('app_login');
-        }
-        $student = new Student();
-        $form = $this->createForm(StudentType::class, $student);
-
-        $numero = $this->repo->getNumeroDispo();
-        $student->setMatricule($numero);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($student);
-            $this->em->flush();
-            $this->addFlash('success', 'Student succesfully created');
-            return $this->redirectToRoute('admin_students');
-        }
-        return $this->render(
-            'student/new.html.twig',
-            ['form' => $form->createView()]
-        );
-    }
+  
 
     /**
      * Displays a form to edit an existing Studentme entity.

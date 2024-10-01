@@ -74,6 +74,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     private $yahoo_id;
     /** @ORM\Column(name="yahoo_access_token", type="string", length=255, nullable=true) */
     private $yahoo_access_token;
+    
 
 
 
