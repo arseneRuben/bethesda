@@ -8,7 +8,7 @@
 <div class="row mt-4">
          <div class="col-2 " >
                         <div class="btn-group record_actions  m-2">
-                            <a class="btn btn-info" href="{{ path('admin_students') }}">
+                            <a class="btn btn-info" href="{{ path('admin_students', { 'type': "new_students_not_yet_registered_checkbox" }) }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
                         </div>
