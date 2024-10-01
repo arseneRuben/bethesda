@@ -280,7 +280,9 @@ class StudentController extends AbstractController
             $this->em->flush();
             $this->addFlash('info', 'Student succesfully deleted');
         }
-        return $this->redirectToRoute('admin_students');
+        return $this->redirectToRoute('admin_students', [
+            'type' =>"new_students_not_yet_registered_checkbox",
+        ]);
     }
     /**
      * Build student's school certificate
