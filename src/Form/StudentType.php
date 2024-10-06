@@ -3,12 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Student;
+use App\Entity\ClassRoom;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -91,6 +94,8 @@ class StudentType extends AbstractType {
                     'label' => 'Maladie(s) particulière(s)',
                     'required' => false,
                     'trim' => true])
+                ->add('entryClass', EntityType::class, array('class' => ClassRoom::class,  'placeholder' => 'Classe de depart', 'required' => false))
+
                 ->add('otherInformations',TextType::class, [
                     'label' => 'Autres informations',
                     'required' => false,

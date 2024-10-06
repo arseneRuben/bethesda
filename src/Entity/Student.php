@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\ClassRoom;
 use App\Entity\Mark;
 use App\Entity\Payment;
 use Doctrine\DBAL\Types\Types;
@@ -152,6 +153,12 @@ class Student
      *
      * */
     private $payments;
+  
+    /**
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $entryClass;
 
     /**
      * Get updated
@@ -723,4 +730,18 @@ class Student
     {
         return $this->enrolled;
     }
+
+    public function getEntryClass(): ?ClassRoom
+    {
+        return $this->entryClass;
+    }
+
+    public function setEntryClass(?ClassRoom $entryClass): static
+    {
+        $this->entryClass = $entryClass;
+
+        return $this;
+    }
+
+ 
 }
