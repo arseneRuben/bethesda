@@ -94,7 +94,7 @@ class StudentType extends AbstractType {
                     'label' => 'Maladie(s) particulière(s)',
                     'required' => false,
                     'trim' => true])
-                ->add('entryClass', EntityType::class, array('class' => ClassRoom::class,  'placeholder' => 'Classe de depart', 'required' => false))
+                ->add('entryClass', EntityType::class, array('class' => ClassRoom::class, 'label' => 'Classe de depart', 'placeholder' => 'Choisir la classe', 'required' => false))
 
                 ->add('otherInformations',TextType::class, [
                     'label' => 'Autres informations',
