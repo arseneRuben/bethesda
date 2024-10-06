@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Student;
+use App\Entity\Subscription;
+
 use App\Form\StudentType;
 use App\Repository\StudentRepository;
 use App\Repository\EvaluationRepository;
@@ -79,13 +81,23 @@ class StudentController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         $student = new Student();
+
         $form = $this->createForm(StudentType::class, $student);
 
         $numero = $this->repo->getNumeroDispo();
         $student->setMatricule($numero);
 
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if($student->getEntryClass()!=NULL){
+                $sub = new Subscription();
+                $sub->setStudent($student);
+                $sub->setClassRoom($student->getEntryClass());
+                $sub->setSchoolYear($this->schoolYearService->sessionYearById());
+                $this->em->persist($sub);
+            }
+
             $this->em->persist($student);
             $this->em->flush();
             $this->addFlash('success', 'Student succesfully created');

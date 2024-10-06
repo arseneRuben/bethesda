@@ -1,11 +1,6 @@
 {% extends 'layout/backEndLayout.html.twig' %}
 {% block title %}
     Présentation de l̀annee scolaire -
-                    	
-                    
-                
-            
-        
     {{ parent() }}
 {% endblock %}
 {% set totalP =0 %}
@@ -19,21 +14,18 @@
         <div class="col-2">
             <div class="btn-group record_actions  m-2">
                 {% if(sub is defined) %}
-
                     <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
                         <i class="fa fa-list"></i>
                     </a>
                 {% endif %}
-
             </div>
             <div class="card" > 
                 {% if(file_exists is defined) %}
-
                      <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
                 {% endif %}
-
             </div>
-            <div class="col-10 card">
+        </div>
+        <div class="col-10 card">
                 <article class="p-3">
                     <div class="card-header">
                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
@@ -309,14 +301,15 @@
                                 </a>
                                 <form id="js-student-delete-form" action="{{ path('admin_students_delete', {id: student.id}) }}" method="post" style="display: none;">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
-                                        <input type="hidden" name="_method" value="DELETE"></form>
-                                    </div>
-                                </div>
+                                        <input type="hidden" name="_method" value="DELETE">
+                                </form>
                             </div>
-                        </article>
-                    </div>
-                </div>
-                <div class="row jumbotron">
+                                
+                         </div>
+                     </div>
+                </article>
+        </div> 
+        <div class="row jumbotron">
                     <div class="col-6">
                         <br/>
                         <br/>
@@ -385,7 +378,7 @@
                             </tbody>
                         </table>
                     </div>
-                      <div class="col-6">
+                    <div class="col-6">
                         <br/>
                         <br/>
                         <div class="text-center">
@@ -467,7 +460,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+        </div>
                 <div class="row jumbotron">
                     
                     <div class="col">
