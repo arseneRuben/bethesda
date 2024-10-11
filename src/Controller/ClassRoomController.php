@@ -35,7 +35,7 @@ use App\Service\SchoolYearService;
 /**
  * ClassRoom controller.
  *
- * @Route("/rooms")
+ * @Route("admin/rooms")
  */
 class ClassRoomController extends AbstractController
 {
