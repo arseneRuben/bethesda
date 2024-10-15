@@ -29,6 +29,8 @@
                     </thead>
                     <tbody>
                         {% for sub in subscriptions|reverse %}
+                            {% if sub.student is defined and sub.student is not empty %}
+
                             <tr>
                                  <td class="qty">{{loop.index  }}</td>
                                  <td><a href="{{ path('admin_students_show', {id: sub.student.id}) }}">{{ sub.student }}</a></td>
@@ -48,6 +50,8 @@
                                     </div>
                                 </td>
                             </tr>
+                            {% endif %}
+
                         {% endfor %}
                     </tbody>
                 </table>
