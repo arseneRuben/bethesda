@@ -40,7 +40,7 @@ class SubscriptionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('sub')
             ->leftJoin('sub.schoolYear', 'sc')
             ->where('sc.id=:year')
-            ->rightJoin("sc.student", "std")
+            ->innerJoin("sub.student", "std")
             ->andWhere('std.id IS NOT NULL')
             ->addOrderBy('sub.classRoom', 'ASC')
             ->setParameter('year', $year->getId());
