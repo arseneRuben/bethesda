@@ -51,7 +51,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             // generate a signed url and email it to the user
-           $this->emailVerifier->sendEmailConfirmation(
+         /*  $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,
                 (new TemplatedEmail())
@@ -67,7 +67,7 @@ class RegistrationController extends AbstractController
                 $request,
                 $authenticator,
                 'main' // firewall name in security.yaml
-            );
+            );*/
         } else {
             $errors = $validator->validate($user);
             if (count($errors) == 0) {
