@@ -37,10 +37,12 @@ class SubscriptionRepository extends ServiceEntityRepository
     public function findEnrollementThisYear(SchoolYear $year)
     {
 
-        $qb = $this->createQueryBuilder('s')
-            ->leftJoin('s.schoolYear', 'sc')
+        $qb = $this->createQueryBuilder('sub')
+            ->leftJoin('sub.schoolYear', 'sc')
             ->where('sc.id=:year')
-            ->addOrderBy('s.classRoom', 'ASC')
+            ->rightJoin("sc.student", "std")
+            ->andWhere('std.id IS NOT NULL')
+            ->addOrderBy('sub.classRoom', 'ASC')
             ->setParameter('year', $year->getId());
         return $qb->getQuery()->getResult();
     }

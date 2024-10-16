@@ -20,7 +20,7 @@ class Installment
   
 
     /**
-     * @ORM\ManyToOne(targetEntity=PaymentPlan::class)
+     * @ORM\ManyToOne(targetEntity=PaymentPlan::class,inversedBy="installments")
      * @ORM\JoinColumn(name="payment_plan_id", referencedColumnName="id", nullable=true)
      */
     private $paymentPlan;

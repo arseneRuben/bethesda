@@ -29,7 +29,7 @@ class PaymentPlan
 
 
     /**
-     * @ORM\OneToOne(targetEntity=SchoolYear::class)
+     * @ORM\OneToOne(targetEntity=SchoolYear::class,inversedBy="paymentPlan")
      * @ORM\JoinColumn(name="school_year_id", referencedColumnName="id", nullable=true)
      */
     private $schoolYear;
@@ -37,10 +37,7 @@ class PaymentPlan
 
    
 
-    /**
-     * @ORM\OneToMany(targetEntity=Payment::class, mappedBy="paymentPlan")
-     */
-    private $payments;
+    
      /**
      * @ORM\OneToMany(targetEntity=Installment::class, mappedBy="paymentPlan")
      */
@@ -78,36 +75,7 @@ class PaymentPlan
     }
 
  
-    /**
-     * @return Collection<int, Payment>
-     */
-    public function getPayments(): Collection
-    {
-        return $this->payments;
-    }
-
-    public function addPayment(Payment $payment): static
-    {
-        if (!$this->payments->contains($payment)) {
-            $this->payments->add($payment);
-            $payment->setPaymentPlan($this);
-        }
-
-        return $this;
-    }
-
-    public function removePayment(Payment $payment): static
-    {
-        if ($this->payments->removeElement($payment)) {
-            // set the owning side to null (unless already changed)
-            if ($payment->getPaymentPlan() === $this) {
-                $payment->setPaymentPlan(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, Installment>
      */

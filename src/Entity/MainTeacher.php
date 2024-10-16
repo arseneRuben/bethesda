@@ -29,7 +29,7 @@ class MainTeacher
      */
     private $teacher;
     /**
-     * @ORM\ManyToOne(targetEntity=ClassRoom::class, inversedBy="subscriptions")
+     * @ORM\ManyToOne(targetEntity=ClassRoom::class, inversedBy="mainTeachers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $classRoom;

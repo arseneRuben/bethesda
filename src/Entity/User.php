@@ -196,15 +196,20 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     private $domain;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ClassRoom::class, mappedBy="fullTeacher")
+    
+      /**
+     * @ORM\OneToMany(targetEntity=Domain::class, mappedBy="headOfDepartment")
      */
-    private $fullTeacherOf;
+    private $headOfDepartementOf;
     
     /**
      * @ORM\OneToMany(targetEntity=Attribution::class, mappedBy="teacher")
      */
     private $attributions;
+    /**
+     * @ORM\OneToMany(targetEntity=MainTeacher::class, mappedBy="teacher")
+     */
+    private $mainTeachers;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

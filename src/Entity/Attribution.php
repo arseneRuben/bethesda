@@ -26,13 +26,13 @@ class Attribution {
     //put your code here
    
     /**
-     * @ORM\ManyToOne(targetEntity=Course::class)
+     * @ORM\ManyToOne(targetEntity=Course::class,inversedBy="attributions")
      * @ORM\JoinColumn(name="course_id", referencedColumnName="id", nullable=false)
      */
     private $course;
     
      /**
-     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\ManyToOne(targetEntity=User::class,inversedBy="attributions")
      * @ORM\JoinColumn(name="teacher_id", referencedColumnName="id", nullable=false)
      */
     private $teacher;

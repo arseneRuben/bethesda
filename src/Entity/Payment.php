@@ -44,7 +44,7 @@ class Payment
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=Student::class)
+     * @ORM\ManyToOne(targetEntity=Student::class,inversedBy="payments")
      * @ORM\JoinColumn(name="student_id", referencedColumnName="id", nullable=true)
      */
     private $student;
