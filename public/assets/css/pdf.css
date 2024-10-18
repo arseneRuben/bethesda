@@ -5,6 +5,7 @@ td,th {
 th.rotate {
   transform: rotate(-45deg);
   font-size: 8px;
+  padding: 0 10px; 
 }
 .container {
   display: flex; 
