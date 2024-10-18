@@ -5,6 +5,8 @@ td,th {
 th.rotate {
   transform: rotate(-90deg);
   text-align: center;
+  height: 100px;      /* Hauteur totale de la cellule */
+  line-height: 100px; /* Centre le texte verticalement */
 }
 .container {
   display: flex; 
