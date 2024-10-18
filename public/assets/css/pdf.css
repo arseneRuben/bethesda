@@ -3,9 +3,9 @@ td,th {
   text-align: top;
 }
 th.rotate {
+  padding: 10px 0; 
   transform: rotate(-45deg);
   font-size: 8px;
-  padding: 0 10px; 
 }
 .container {
   display: flex; 
