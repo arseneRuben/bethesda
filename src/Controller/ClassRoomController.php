@@ -547,9 +547,13 @@ class ClassRoomController extends AbstractController
             'students' => $studentEnrolled,
             'year' => $year,
         ));
+        $options = [
+            'orientation' => 'Landscape', // Changer ici entre 'Portrait' ou 'Landscape'
+            'page-size' => 'A4',          // Format de page
+        ];
 
         return new Response(
-            $this->pdf->getOutputFromHtml($html),
+            $this->pdf->getOutputFromHtml($html,  $options),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
