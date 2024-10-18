@@ -3,10 +3,9 @@ td,th {
   text-align: center;
 }
 th.rotate {
-  transform: rotate(-90deg);
+  transform: rotate(-45deg);
   text-align: center;
-  height: 100px;      /* Hauteur totale de la cellule */
-  font-size: 10px;
+  font-size: 8px;
 }
 .container {
   display: flex; 
