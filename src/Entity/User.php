@@ -216,6 +216,40 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     private $fullName;
 
+     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $securityQuestion;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $securityAnswer;
+
+    public function getSecurityQuestion(): ?string
+    {
+        return $this->securityQuestion;
+    }
+
+    public function setSecurityQuestion(string $securityQuestion): self
+    {
+        $this->securityQuestion = $securityQuestion;
+
+        return $this;
+    }
+
+    public function getSecurityAnswer(): ?string
+    {
+        return $this->securityAnswer;
+    }
+
+    public function setSecurityAnswer(string $securityAnswer): self
+    {
+        $this->securityAnswer = $securityAnswer;
+
+        return $this;
+    }
+
   
    
     public function getAvatar(int $size = 50): ?string
