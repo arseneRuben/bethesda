@@ -70,6 +70,7 @@ class EvaluationController extends AbstractController
         $this->seqRepo = $seqRepo;
         $this->schoolYearService = $schoolYearService;
         $this->markRepo = $markRepo;
+        $this->attrRepo = $attrRepo;
     }
 
 
@@ -143,6 +144,7 @@ class EvaluationController extends AbstractController
      */
     public function new(Request $request, SessionInterface $session): Response
     {
+        
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
@@ -151,8 +153,10 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        $evaluation = new Evaluation();
         $year = $this->schoolYearService->sessionYearById();
+
+        
+        $evaluation = new Evaluation();
         $form = $this->createForm(EvaluationType::class, $evaluation);
 
         return $this->render('evaluation/new.html.twig', array(
@@ -240,6 +244,8 @@ class EvaluationController extends AbstractController
                 $this->em->persist($mark);
                 $evaluation->addMark($mark);
             }
+            // analysons si l'utilisateur est autorise a enregistrer les notes sur la matiere
+            
             // disposition des rang dans les notes
             usort($notes, function ($a, $b) {
                 if ($a->getValue() == $b->getValue()) {
@@ -528,6 +534,9 @@ class EvaluationController extends AbstractController
                 $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
                 $coursesOfConnectedUser = $this->getUser()->getCourses($year);
                 $courses = array_intersect($coursesOfRoom, $coursesOfConnectedUser);
+                if ($this->isGranted('ROLE_PROF')) {
+                    $courses = $coursesOfConnectedUser;
+                }
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $courses = $coursesOfRoom;
                 }

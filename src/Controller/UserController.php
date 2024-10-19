@@ -217,9 +217,11 @@ class UserController extends AbstractController
        
 
        $user->toggleIsVerified();
+
        $entityManager = $this->getDoctrine()->getManager();
        $entityManager->persist($user);
        $entityManager->flush();
+      // dd($user);
        return $this->redirectToRoute('admin_users');
         
     }

@@ -10,12 +10,6 @@
     {% block title %}
         {{ parent() }}
         /Administration 
-                                                    
-                                            
-                                    
-                            
-                    
-            
     {% endblock %}
     {% block main %}
 
@@ -213,9 +207,7 @@
                                                                                                                                                                                                                                                                                                                                                                             
                                        </a>
                                     </li>
-                                {% endif %}
-
-                                      <li class="{% if app.request.attributes.get('_route') == "admin_classrooms" %}active{% endif %}">
+                                    <li class="{% if app.request.attributes.get('_route') == "admin_classrooms" %}active{% endif %}">
                                         <a href="{{ path('admin_classrooms') }}">
                                             <i class="fa fa-indent" aria-hidden="true"></i>
                                             Classes
@@ -227,6 +219,9 @@
                                                                                     
                                         </a>
                                     </li>
+                                {% endif %}
+
+                                      
                                     <li class="{% if app.request.attributes.get('_route') == "admin_evaluations" %}active{% endif %}">
                                         <a href="{{ path('admin_evaluations') }}">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -352,6 +347,8 @@
                         </nav>
 
                         <section class="container-fluid">
+                         {% if is_granted('ROLE_ADMIN') %}
+
                             <div class="row m-2">
                                 <div class="col-xl-2 col-md-4 col-6">
                                     <div class="wrapper count-title d-flex">
@@ -451,7 +448,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            </div>
+                          {% endif %}
                     </section>
 
                 </header>
