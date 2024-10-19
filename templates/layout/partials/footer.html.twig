@@ -28,7 +28,16 @@
                             <li><a href="{{ path('app_home')}}">Home</a></li>
                             <li><a href="{{ path('app_staff')}}">Staff</a></li>
                             <li><a href="{{ path('app_login')}}">Login</a></li>
-                            <li><a href="{{ path('app_logout')}}">Logout</a></li>
+                            <li>
+                                {% if  app.user %} 
+										<a   onclick= "event.preventDefault(); document.getElementById('js-logout-form').submit();"  >Logout</a>
+										<form id="js-logout-form" action="{{ path('app_logout') }}" style="dislay:none;" method="POST" >
+											<input type="hidden" name="_csrf_token" value="{{ csrf_token('logout')}}"/>
+											
+										</form>
+									
+							{% endif  %} 
+                            </li>
 							<li><a href="{{ path('app_contact')}}">Contact</a></li>
 
                            
