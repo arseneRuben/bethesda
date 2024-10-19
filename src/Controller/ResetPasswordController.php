@@ -232,8 +232,29 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        switch ( $user->getSecurityQuestion()) {
+            case "cin_number":
+                $securityQuestion=  'Numero de CNI?';
+                break;
+        
+            case "mother_birthplace":
+                $securityQuestion ='Quelle est la ville de naissance de maman?';
+                break;
+        
+            case "favorite_job":
+                $securityQuestion ='Le metier dont tu reves d\'exercer depuis ton enfance?';
+                break;
+            case "residence":
+                $securityQuestion =  'Quel est ton quartier de residence?';
+                break;
+        
+            default:
+                 $securityQuestion =" Quel est le nom de l'etablisement ?";
+                break;
+        }
+
         return $this->render('reset_password/verify_security_answer.html.twig', [
-            'securityQuestion' => $user->getSecurityQuestion(),
+            'securityQuestion' => $securityQuestion,
             'verifyForm' => $form->createView(),
         ]);
     }

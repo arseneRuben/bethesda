@@ -103,6 +103,19 @@ class UserFormType extends AbstractType
                     'PRINCIPAL' => 'PRINCIPAL',
                 ), 'label' => 'Fonction'))
             ->add('domain')
+            ->add('securityQuestion', ChoiceType::class, array(
+                'constraints' => new Assert\NotBlank(),
+                'choices' => array(
+                    'Numero de CNI?' => 'cin_number',
+                     'Quelle est la ville de naissance de maman?'=> 'mother_birthplace',
+                   'Le metier dont tu reves d\'exercer depuis ton enfance?'=> 'favorite_job' ,
+                    'Quel est ton quartier de residence?' =>'residence' ,
+                ), 'label' => 'Question de securite'))
+                ->add('securityAnswer', TextType::class, [
+                    'label' => 'Réponse à la question de sécurité',
+                    'required' => true,
+                ]);
+                   
     
           
         ;
