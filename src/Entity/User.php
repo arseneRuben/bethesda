@@ -222,7 +222,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     private $securityQuestion;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255,options={"default": "bethesda"})
      */
     private $securityAnswer;
 

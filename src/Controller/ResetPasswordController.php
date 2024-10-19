@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
+use App\Form\RequestResetPasswordType;
+use App\Form\ResetPasswordWithSecurityQuestionType;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,6 +19,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 /**
  * @Route("/reset-password")
@@ -32,12 +36,36 @@ class ResetPasswordController extends AbstractController
         $this->resetPasswordHelper = $resetPasswordHelper;
     }
 
+
+
     /**
      * Display & process form to request a password reset.
      *
      * @Route("", name="app_forgot_password_request")
      */
-    public function request(Request $request, MailerInterface $mailer): Response
+    public function requestResetPassword(Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(RequestResetPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('email')->getData();
+            $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+            if (!$user) {
+                $this->addFlash('error', 'No user found with this email.');
+                return $this->redirectToRoute('app_reset_password');
+            }
+
+            // Rediriger vers l'étape de réponse à la question de sécurité
+            return $this->redirectToRoute('app_verify_security_answer', ['id' => $user->getId()]);
+        }
+
+        return $this->render('reset_password/request.html.twig', [
+            'requestForm' => $form->createView(),
+        ]);
+    }
+    /*public function request(Request $request, MailerInterface $mailer): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -52,7 +80,7 @@ class ResetPasswordController extends AbstractController
         return $this->render('reset_password/request.html.twig', [
             'requestForm' => $form->createView(),
         ]);
-    }
+    }*/
 
     /**
      * Confirmation page after a user has requested a password reset.
@@ -83,7 +111,6 @@ class ResetPasswordController extends AbstractController
             // We store the token in session and remove it from the URL, to avoid the URL being
             // loaded in a browser and potentially leaking the token to 3rd party JavaScript.
             $this->storeTokenInSession($token);
-
             return $this->redirectToRoute('app_reset_password');
         }
 
@@ -174,5 +201,40 @@ class ResetPasswordController extends AbstractController
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
         return $this->redirectToRoute('app_check_email');
+    }
+
+     
+
+    /**
+     * @Route("/verify-security-answer/{id}", name="app_verify_security_answer")
+     */
+    public function verifySecurityAnswer(User $user, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        $form = $this->createForm(ResetPasswordWithSecurityQuestionType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $securityAnswer = $form->get('securityAnswer')->getData();
+            // Vérification de la réponse à la question de sécurité
+            if ($user->getSecurityAnswer() !== $securityAnswer) {
+                $this->addFlash('error', 'Incorrect answer to the security question.');
+                return $this->redirectToRoute('app_verify_security_answer', ['id' => $user->getId()]);
+            }
+           
+            // Si la réponse est correcte, réinitialiser le mot de passe
+            $newPassword = $form->get('newPassword')->getData();
+            $encodedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setPassword($encodedPassword);
+
+            $em->flush();
+
+            $this->addFlash('success', 'Password successfully reset!');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('reset_password/verify_security_answer.html.twig', [
+            'securityQuestion' => $user->getSecurityQuestion(),
+            'verifyForm' => $form->createView(),
+        ]);
     }
 }
