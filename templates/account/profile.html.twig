@@ -24,8 +24,6 @@
                        
 						<p  class="pd-2 pb-2 text-muted lead" >   {{app.user.email}}</p>
 						  <p  class="pd-2 pb-2 text-muted" > <small><i> &#8986;</i> Account created on  {{app.user.createdAt|date('d/m/y') }}</small></p>
-                        <span><strong> Full Teacher of:</strong> {{app.user.email}}</span>
-                        <span><strong>In charge of Domain:</strong> Web Designer</span>
 						<span><strong>Full teacher off:{{ mainTeacher is null ?  "" :  mainTeacher.classRoom.name   }}
 						<div class="btn-group">
 							  
@@ -43,7 +41,7 @@
     <div class="row">
  	<div class="col-md-6 mx-auto text-center">
  		<p>
-			<h2 class="my-5">  Attributions de cours</h2>
+			<h2 class="my-5">  Attributions de cours de l'annee scolaire en cours</h2>
 		</p>
 
 	</div>
