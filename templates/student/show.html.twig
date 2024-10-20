@@ -216,6 +216,7 @@
                                 </tbody>
                             </table>
                             <div class=" ">
+                            {% if is_granted('ROLE_ADMIN') %}
                                 <a target="_blank" class="btn btn-outline-primary" href="{{ path('admin_student_receipt', {id: student.id}) }}">
                                     <i class="fa fa-money"></i>
                                     Recu de scolarite
@@ -274,7 +275,7 @@
                                                                                                                                                                 
                                                                                                                                 
                                                                                                 
-                                                                
+                                                        
                                 <a class="btn btn-outline-warning" href="{{ path('admin_students_edit', {id: student.id}) }}">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     Edit
@@ -303,6 +304,7 @@
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
                                         <input type="hidden" name="_method" value="DELETE">
                                 </form>
+                                 {% endif %}
                             </div>
                                 
                          </div>
@@ -529,6 +531,8 @@
                                                 </a>
                                             </td>
                                             <td>
+                                                {% if is_granted('ROLE_ADMIN') %}
+
                                                 <a href="{{ path('admin_subscriptions_show', {id: s.id}) }}">
                                                     {{ s.verbalOfficialExamResult }}
                                                     {% if(s.classRoom.apc) %}
@@ -537,6 +541,14 @@
                                                                                                             
                                                     {% endif %}
                                                 </a>
+                                                {% else  %}
+                                                {{ s.verbalOfficialExamResult }}
+                                                    {% if(s.classRoom.apc) %}
+                                                        (Examen officiel)  
+                                                                                                                                                                    
+                                                                                                            
+                                                    {% endif %}
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}

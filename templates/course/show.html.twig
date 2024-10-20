@@ -7,9 +7,12 @@
 
                     <div class="col-lg-2" >
                         <div class="btn-group record_actions  m-2">
+                            {% if is_granted('ROLE_ADMIN') %}
+
                             <a class="btn btn-info" href="{{ path('admin_courses') }}">
                                 <i class="fa fa-list"></i> {{ 'Back to the list'|trans({}, 'admin') }}
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-lg-10 jumbotron">
@@ -31,6 +34,7 @@
                                     
                                         </ul>
                                         <div class=" ">			
+                                        {% if is_granted('ROLE_ADMIN') %}
                                             <a class="btn btn-outline-warning" href="{{path('admin_courses_edit', {id: course.id})}}"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit </a> |
                                             <a class="btn btn-outline-danger" href="#"  onclick= "event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-course-delete-form').submit();"> <i class="fa fa-trash"></i> Delete</a>
                                             <form id="js-course-delete-form" action="{{path('admin_courses_delete', {id: course.id})}}" method="post" style="display: none;">
@@ -38,6 +42,7 @@
                                                 <input type="hidden" name="_method" value="DELETE">
 
                                             </form>
+                                        {% endif %}
                                         </div>
                                      </div>
                                      <div>

@@ -4,6 +4,7 @@
 
     <div class="row mt-4">
         <div class="col-1 mar-bot30">
+          {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
                 <i class="fa fa-plus"></i>
                 
@@ -13,6 +14,7 @@
                                                                                             
      
             </a>
+            {% endif %}
         </div>
           
           
@@ -120,7 +122,7 @@
                             <i class="fa fa-edit"></i>
                             {{ 'Edit'|trans({}, 'admin') }}
                         </a>
-                    {% endif %}
+                
                     <a target="_blank" class="btn btn-file"  data-toggle="modal" data-target="#form_modal_courses" >
                         <i class="fa fa-file-excel-o"></i>
                         Recap. Seq
@@ -206,7 +208,7 @@
                                                                     
                                             
                     </a>
-                    {% if is_granted('ROLE_ADMIN') %}
+                    
                         <button class="btn btn-danger" type="submit">
                             <i class="fa fa-trash-o"></i>
                             {{ 'Delete'|trans({}, 'admin') }}
@@ -407,14 +409,19 @@
                                         <td>
 
                                             {% if attributions[course.id] is defined %}
-                                            <a href="{{ path('admin_attributions_edit', {id: attributions[course.id].id}) }}">
-                                                {{attributions[course.id].teacher.fullName}}
-                                            </a>
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                    <a href="{{ path('admin_attributions_edit', {id: attributions[course.id].id}) }}">
+                                                        {{attributions[course.id].teacher.fullName}}
+                                                    </a>
+                                                {% else %}
+                                                    {{attributions[course.id].teacher.fullName}}
+                                                {% endif %}
                                             {% else %}
-                                            <a href="{{ path('admin_attributions_new') }}">
-
-                                                Pas encore attribue
-                                            </a>
+                                            {% if is_granted('ROLE_ADMIN') %}
+                                                <a href="{{ path('admin_attributions_new') }}">
+                                                    Pas encore attribue
+                                                </a>
+                                             {% endif %}
                                             {% endif %}
 
                                         </td>

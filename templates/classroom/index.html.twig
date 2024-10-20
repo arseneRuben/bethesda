@@ -49,13 +49,13 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-
+                                    {% if is_granted('ROLE_ADMIN') %}
                                         <a class="btn btn-outline-warning " href="{{ path('admin_classrooms_edit', {id: room.id}) }}">
                                             <i class="fa fa-edit">
                                                
                                             </i>
                                         </a>
-
+                                     {% endif %}
                                         <a class="btn btn-file" target="_blank" href="{{ path('admin_classrooms_fichesimple', {id: room.id}) }}">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true">
                                                 &nbsp;Repport Notes

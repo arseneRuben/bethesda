@@ -31,7 +31,7 @@ use App\Service\SchoolYearService;
 /**
  * Studentme controller.
  *
- * @Route("/admin/students")
+ * @Route("/prof/students")
  */
 class StudentController extends AbstractController
 {
