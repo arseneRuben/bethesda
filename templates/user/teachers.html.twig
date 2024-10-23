@@ -20,8 +20,9 @@
                          <thead>
                             <tr>
                         
-                                <th style="width:25%;" scope="col">Nom complet </th>
+                                <th style="width:15%;" scope="col">Nom complet </th>
                                 <th style="width:5%;" scope="col">Sexe</th>
+                                <th style="width:10%;" scope="col">Email</th>
                                 <th style="width:10%;" scope="col">Date de naissance</th>
                                 <th style="width:10%;" scope="col">Lieu de naissance</th>
                                 <th style="width:10%;" scope="col">Residence</th>
@@ -38,6 +39,7 @@
                                     <td>{{ user.fullName }}</td>
                                     <td>{% if user.gender == 0  %} M {% else %} F {% endif %} </td>
                                     <td>{% if user.birthday %}{{ user.birthday|date('Y-m-d') }}{% endif %}</td>
+                                    <td>{{ user.email }}</td>
                                     <td>{{ user.birthplace }}</td>
                                     <td>{{ user.location }}</td>
                                     <td>{{ user.region }}</td>
