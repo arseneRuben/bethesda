@@ -20,7 +20,8 @@ class UserFormType extends AbstractType
     {
         $builder
             ->add('phoneNumber')
-        
+            ->add('email')
+
             ->add('status')
             ->add('fullName', TextType::class, [
                 'label' => 'Nom complet',
