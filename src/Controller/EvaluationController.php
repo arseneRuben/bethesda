@@ -7,6 +7,7 @@ use App\Entity\Evaluation;
 use App\Filter\EvaluationSearch;
 use App\Form\EvaluationType;
 use App\Form\Filter\EvaluationSearchType;
+use App\Repository\UserRepository;
 use App\Repository\CourseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\AttributionRepository;
@@ -37,6 +38,7 @@ class EvaluationController extends AbstractController
 {
     private $em;
     private EvaluationRepository $repo;
+    private UserRepository $userRepo;
     private $scRepo;
     private StudentRepository $stdRepo;
     private $clRepo;
@@ -49,6 +51,7 @@ class EvaluationController extends AbstractController
 
 
     public function __construct(
+        UserRepository $userRepo,
         SchoolYearService $schoolYearService,
         EntityManagerInterface $em,
         EvaluationRepository $repo,
@@ -71,6 +74,8 @@ class EvaluationController extends AbstractController
         $this->schoolYearService = $schoolYearService;
         $this->markRepo = $markRepo;
         $this->attrRepo = $attrRepo;
+        $this->userRepo = $userRepo;
+
     }
 
 
@@ -206,6 +211,7 @@ class EvaluationController extends AbstractController
                 $sequence = $this->seqRepo->findOneBy(array("activated" => true));
             }
             $evaluation->setCourse($course);
+            $evaluation->setAuthor($this->getUser());
             $evaluation->setClassRoom($classRoom);
             $evaluation->setSequence($sequence);
             $evaluation->setCompetence($competence);
@@ -333,6 +339,7 @@ class EvaluationController extends AbstractController
             $this->addFlash('success', 'Evaluation succesfully updated');
             return $this->redirectToRoute('admin_evaluations');
         }*/
+        $evaluation->setAuthor($this->getUser());
         return $this->render('evaluation/edit.html.twig', [
             'marks' => $notes,
             'students' => $studentsEnrolledInClass,
@@ -569,10 +576,11 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
+        $author = $this->userRepo->findOneBy(["id"=>$evaluation->getId()]);
         $html = $this->renderView('evaluation/pdf.html.twig', array(
             'evaluation' => $evaluation,
+            'author' => $author
         ));
-
         return new Response(
             $snappy->getOutputFromHtml($html, array(
                 'default-header' => false

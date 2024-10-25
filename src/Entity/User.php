@@ -263,6 +263,8 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         $this->emails = new ArrayCollection();
         $this->fullTeacherOf = new ArrayCollection();
         $this->attributions = new ArrayCollection();
+        $this->headOfDepartementOf = new ArrayCollection();
+        $this->mainTeachers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -426,7 +428,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     }
 
      /**
-     * Get firstName
+     * 
      *
      * @return string
      */
@@ -996,6 +998,66 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     public function setRegion(?string $region): static
     {
         $this->region = $region;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Domain>
+     */
+    public function getHeadOfDepartementOf(): Collection
+    {
+        return $this->headOfDepartementOf;
+    }
+
+    public function addHeadOfDepartementOf(Domain $headOfDepartementOf): static
+    {
+        if (!$this->headOfDepartementOf->contains($headOfDepartementOf)) {
+            $this->headOfDepartementOf->add($headOfDepartementOf);
+            $headOfDepartementOf->setHeadOfDepartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHeadOfDepartementOf(Domain $headOfDepartementOf): static
+    {
+        if ($this->headOfDepartementOf->removeElement($headOfDepartementOf)) {
+            // set the owning side to null (unless already changed)
+            if ($headOfDepartementOf->getHeadOfDepartment() === $this) {
+                $headOfDepartementOf->setHeadOfDepartment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MainTeacher>
+     */
+    public function getMainTeachers(): Collection
+    {
+        return $this->mainTeachers;
+    }
+
+    public function addMainTeacher(MainTeacher $mainTeacher): static
+    {
+        if (!$this->mainTeachers->contains($mainTeacher)) {
+            $this->mainTeachers->add($mainTeacher);
+            $mainTeacher->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMainTeacher(MainTeacher $mainTeacher): static
+    {
+        if ($this->mainTeachers->removeElement($mainTeacher)) {
+            // set the owning side to null (unless already changed)
+            if ($mainTeacher->getTeacher() === $this) {
+                $mainTeacher->setTeacher(null);
+            }
+        }
 
         return $this;
     }

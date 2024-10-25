@@ -84,6 +84,12 @@ class Evaluation
      * @ORM\JoinColumn(nullable=false)
      */
     private $classRoom;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $author;
 
     /**
      * @ORM\OneToMany(targetEntity=Mark::class, mappedBy="evaluation", orphanRemoval=true)
@@ -340,6 +346,18 @@ class Evaluation
                 $mark->setEvaluation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }

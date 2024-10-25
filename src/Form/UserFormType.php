@@ -13,14 +13,23 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Security\Core\Security;
+
 
 class UserFormType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $this->security->getUser();
         $builder
             ->add('phoneNumber')
-            ->add('email')
+           
 
             ->add('status')
             ->add('fullName', TextType::class, [
@@ -93,16 +102,7 @@ class UserFormType extends AbstractType
                     'required' => true,
                     'constraints' => new Assert\NotBlank(),
                     'trim' => true])
-            ->add('status', ChoiceType::class, array(
-                'constraints' => new Assert\NotBlank(),
-                'choices' => array(
-                    'ADMINISTRATEUR' => 'ADMIN',
-                    'ELEVE' => 'ELEVE',
-                    'ENSEIGNANT' => 'PROF',
-                    'FINANCE' => 'FINANCE',
-                    'PREFET d\'ETUDES' => 'PREFET',
-                    'PRINCIPAL' => 'PRINCIPAL',
-                ), 'label' => 'Fonction'))
+            
             ->add('domain')
             ->add('securityQuestion', ChoiceType::class, array(
                 'constraints' => new Assert\NotBlank(),
@@ -116,6 +116,21 @@ class UserFormType extends AbstractType
                     'label' => 'Réponse à la question de sécurité',
                     'required' => true,
                 ]);
+
+                if ($user->hasRole('ROLE_ADMIN')) {
+                    $builder
+                    ->add('email')
+                    ->add('status', ChoiceType::class, array(
+                        'constraints' => new Assert\NotBlank(),
+                        'choices' => array(
+                            'ADMINISTRATEUR' => 'ADMIN',
+                            'ELEVE' => 'ELEVE',
+                            'ENSEIGNANT' => 'PROF',
+                            'FINANCE' => 'FINANCE',
+                            'PREFET d\'ETUDES' => 'PREFET',
+                            'PRINCIPAL' => 'PRINCIPAL',
+                        ), 'label' => 'Fonction'));
+                }
                    
     
           
@@ -124,6 +139,7 @@ class UserFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);

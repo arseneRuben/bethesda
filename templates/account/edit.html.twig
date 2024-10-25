@@ -52,6 +52,12 @@
             </div>
           </div>
            {% if is_granted('ROLE_ADMIN') %}
+            <div class="form-group">
+            
+            <div class="col-lg-8">
+              {{form_row(form.email)}}
+            </div>
+          </div>
            <div class="form-group">
             
             <div class="col-lg-8">
