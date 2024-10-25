@@ -117,7 +117,7 @@ class UserFormType extends AbstractType
                     'required' => true,
                 ]);
 
-                if ($user->hasRole('ROLE_ADMIN')) {
+                if ($this->security->isGranted('ROLE_ADMIN')) {
                     $builder
                     ->add('email')
                     ->add('status', ChoiceType::class, array(
