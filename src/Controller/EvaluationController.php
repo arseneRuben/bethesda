@@ -576,7 +576,7 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        $author = $this->userRepo->findOneBy(["id"=>$evaluation->getId()]);
+        $author = $this->userRepo->findOneBy(["id"=>$evaluation->getAuthor()->getId()]);
         $html = $this->renderView('evaluation/pdf.html.twig', array(
             'evaluation' => $evaluation,
             'author' => $author
