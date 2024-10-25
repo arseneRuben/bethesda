@@ -51,12 +51,14 @@
               {{form_row(form.birthday)}}
             </div>
           </div>
+           {% if is_granted('ROLE_ADMIN') %}
            <div class="form-group">
             
             <div class="col-lg-8">
               {{form_row(form.status)}}
             </div>
           </div>
+            {% endif %}
            <div class="form-group">
             
             <div class="col-lg-8">
