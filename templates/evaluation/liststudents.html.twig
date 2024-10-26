@@ -20,16 +20,15 @@
         
         
                         
-        <table class="table table-bordered table-hover table-sortable" id="tab_logic">
+        <table class="table table-bordered table-hover table-sortable table-responsive" id="tab_logic">
 
             <thead>
                 <tr>
-                    <th style="width:10%;" class="text-center">Matricule</th>
-                    <th style="width:30%;" class="text-center" >Nom et prénom</th>
-                    <th style="width:20%;" class="text-center" >Note de session</th>
+                    <th  class="text-center col-12 col-sm-6 col-md-4 col-lg-3" >Nom et prénom</th>
+                    <th  class="text-center col-12 col-sm-6 col-md-4 col-lg-3" >Note de session</th>
 
-                    <th style="width:20%;" class="text-center" >Appr.</th>
-                    <th style="width:15%;" class="text-center" >Poids</th>
+                    <th class="text-center col-12 col-sm-6 col-md-4 col-lg-3" >Appr.</th>
+                    <th  class="text-center col-12 col-sm-6 col-md-4 col-lg-3" >Poids</th>
                 </tr>
             </thead>
             
@@ -37,9 +36,7 @@
 
                 {%for student in students%}
                     <tr id='addr0' data-id="0" class="hidden">
-                        <td data-name="name">
-                            {{student.matricule}}
-                        </td>
+                       
                         <td data-name="name">
                             {{student.lastname}} {{student.firstname}}
                         </td>
