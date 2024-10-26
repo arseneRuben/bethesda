@@ -31,7 +31,6 @@ class UserFormType extends AbstractType
             ->add('phoneNumber')
            
 
-            ->add('status')
             ->add('fullName', TextType::class, [
                 'label' => 'Nom complet',
                 'required' => true,
