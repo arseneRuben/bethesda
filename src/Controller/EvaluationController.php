@@ -533,16 +533,18 @@ class EvaluationController extends AbstractController
      */
     public function listStudentsFicheAction(Request $request, SessionInterface $session)
     {
-        if ($_POST["idclassroom"]) {
+        if ($_POST["idclassroom"] && $_POST["idsequence"]) {
             $idclassroom = $_POST["idclassroom"];
-            if ($idclassroom != null) {
+            $idsequence = $_POST["idsequence"];
+           
+            if ($idclassroom != null && $idsequence != null) {
                 $year = $this->schoolYearService->sessionYearById();
                 $classRoom = $this->clRepo->findOneById($idclassroom);
-                $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClass($classRoom);
+                $sequence = $this->seqRepo->findOneById($idsequence);
+                $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClassAndNoYetEvaluated($classRoom, $sequence);
                 $coursesOfConnectedUser = $this->getUser()->getCourses($year);
-                $courses = array_intersect($coursesOfRoom, $coursesOfConnectedUser);
                 if ($this->isGranted('ROLE_PROF')) {
-                    $courses = $coursesOfConnectedUser;
+                    $courses = array_intersect($coursesOfRoom, $coursesOfConnectedUser);
                 }
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $courses = $coursesOfRoom;

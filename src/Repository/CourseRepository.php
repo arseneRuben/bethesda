@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Course;
 use App\Entity\ClassRoom;
+use App\Entity\Sequence;
+
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -83,6 +85,22 @@ class CourseRepository extends ServiceEntityRepository
             ->andWhere('rm.id=:room')
             ->setParameter('room', $room->getId());
         return $qb->getQuery()->getResult();
+    }
+    public function findProgrammedCoursesInClassAndNoYetEvaluated(ClassRoom $room, Sequence $seq)
+    {
+        $dql = 'SELECT crs
+        FROM App\Entity\Course crs
+        LEFT JOIN App\Entity\Module module WITH crs.module = module.id 
+        WHERE module.room = :room_id
+        AND crs.id NOT IN (
+            SELECT IDENTITY(eval.course)
+            FROM App\Entity\Evaluation eval
+            WHERE eval.sequence = :seq_id
+        )';
+        return $this->getEntityManager()->createQuery($dql)
+        ->setParameter('room_id', $room->getId())
+        ->setParameter('seq_id', $seq->getId())
+        ->getResult();
     }
 
     public function findNotAttributedCoursesAtActivatedYear()
