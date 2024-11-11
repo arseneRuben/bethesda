@@ -61,7 +61,7 @@
                     <table style=" width: 100%; text-align:center; font-size: 1em; ">
                         <tr>
                             <td style=" width: 35%;">
-                                  {% if(fileExists[ std.id ])%}
+                                {% if(fileExists[ std.id ])%}
                                               {% set imagePath = absolute_url(asset('assets/images/student/'~ std.imageName )) %}
                                             {% else %}
                                                 {% if std.gender %}

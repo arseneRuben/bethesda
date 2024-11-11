@@ -82,9 +82,10 @@
 				instant = $("select.ChoiceInstant option:selected").val();
 			});
 
-			$(".ChoiceSequence").change(function () {
-				idsequence = $("select.ChoiceSequence option:selected").val();
-			});
+			
+			idsequence = $("select.ChoiceSequence option:selected").val();
+			console.log(idsequence);
+			
 			$(".ChoiceClassRoom").change(function () {
 				idclassroom = $("select.ChoiceClassRoom option:selected").val();
 				
@@ -92,7 +93,8 @@
 					type: "POST",
 					url: "{{ path('admin_classroom_students') }}",
 					data: {
-					idclassroom: idclassroom
+					idclassroom: idclassroom,
+					idsequence: idsequence
 					},
 					datatype: "json",
 					success: function (data) {

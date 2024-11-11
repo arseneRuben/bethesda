@@ -46,3 +46,5 @@ SELECT * FROM evaluation
 ORDER BY id DESC
 LIMIT 10;
 
+ALTER TABLE user MODIFY COLUMN security_question VARCHAR(200);
+ALTER TABLE user MODIFY COLUMN security_answer VARCHAR(200);

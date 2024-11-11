@@ -217,12 +217,12 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     private $fullName;
 
      /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $securityQuestion;
 
     /**
-     * @ORM\Column(type="string", length=255,options={"default": "bethesda"})
+     * @ORM\Column(type="string", length=255,options={"default": "bethesda"}, nullable=true)
      */
     private $securityAnswer;
 
