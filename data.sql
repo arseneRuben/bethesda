@@ -48,3 +48,8 @@ LIMIT 10;
 
 ALTER TABLE user MODIFY COLUMN security_question VARCHAR(200);
 ALTER TABLE user MODIFY COLUMN security_answer VARCHAR(200);
+
+/* supprimer les enregistrement superflues de la table user. */
+DELETE FROM user WHERE  id NOT IN (SELECT teacher_id FROM attribution UNION SELECT author_id FROM evaluation );
+
+SELECT full_name from user WHERE id IN (SELECT teacher_id FROM attribution  );
