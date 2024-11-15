@@ -579,6 +579,7 @@ class ClassRoomController extends AbstractController
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
         $datas = $this->markRepo->findMarksBySequenceAndClassOrderByStd($seq, $room);
+        dd($datas);
         $html = $this->renderView('classroom/recapitulatifseq.html.twig', array(
             'room' => $room,
             'datas' => $datas,

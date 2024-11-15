@@ -53,3 +53,21 @@ ALTER TABLE user MODIFY COLUMN security_answer VARCHAR(200);
 DELETE FROM user WHERE  id NOT IN (SELECT teacher_id FROM attribution UNION SELECT author_id FROM evaluation );
 
 SELECT full_name from user WHERE id IN (SELECT teacher_id FROM attribution  );
+
+ALTER TABLE mark
+ADD CONSTRAINT unics_evaluation_student UNIQUE (student_id, evaluation_id);
+
+DELETE FROM mark
+WHERE id NOT IN (
+    SELECT id FROM (
+        SELECT MAX(id) AS id
+        FROM mark
+        GROUP BY evaluation_id, student_id
+    ) AS subquery
+);
+
+
+CREATE TABLE mark_temp AS
+SELECT MIN(id) AS id, appreciation, evaluation_id, rank2, student_id, value, weight
+FROM mark
+GROUP BY evaluation_id, student_id;

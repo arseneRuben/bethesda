@@ -26,3 +26,6 @@
 
 ### Image of students ###
 /public/assets/images/student/
+
+### knp_snnapy_configurations
+/config/packages/knp_snappy.yaml

@@ -193,12 +193,12 @@ class EvaluationController extends AbstractController
 
         if ($content = $request->getContent()) {
             $marks = json_decode($_POST['marks'], true);
+            
             $notes = array();
             $effectif = 0;
             $total = 0;
             $pos = 0;
             $room = $request->request->get('idroom');
-            $instant = $request->request->get('instant');
             $idcourse = $request->request->get('idcourse');
             $idsequence = $request->request->get('idsequence');
             $competence = $request->request->get('competence');

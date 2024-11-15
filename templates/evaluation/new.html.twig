@@ -72,19 +72,15 @@
 		var classRoom = document.getElementById("evaluation_classRoom"),
 			competence = document.getElementById("evaluation_competence"),
 			idclassroom,
-			instant,
 			idcourse,
 			idsequence,
 			formEval = document.getElementById("formEvaluation");
 			classRoom.setAttribute('name', 'ChoiceClassRoom');
 
-			$(".ChoiceInstant").change(function () {
-				instant = $("select.ChoiceInstant option:selected").val();
-			});
+			
 
 			
 			idsequence = $("select.ChoiceSequence option:selected").val();
-			console.log(idsequence);
 			
 			$(".ChoiceClassRoom").change(function () {
 				idclassroom = $("select.ChoiceClassRoom option:selected").val();
@@ -121,10 +117,9 @@
 				"idroom": idclassroom,
 				"idcourse": idcourse,
 				"idsequence": idsequence,
-				"instant": instant,
 				"competence": competence.value
 			};
-
+			
 		$.ajax({
 			type: "POST",
 			url: "{{ path('admin_evaluations_create') }}",
