@@ -71,3 +71,7 @@ CREATE TABLE mark_temp AS
 SELECT MIN(id) AS id, appreciation, evaluation_id, rank2, student_id, value, weight
 FROM mark
 GROUP BY evaluation_id, student_id;
+
+
+ALTER TABLE mark
+MODIFY COLUMN id INT AUTO_INCREMENT PRIMARY KEY;

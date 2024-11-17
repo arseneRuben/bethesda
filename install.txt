@@ -1,0 +1,11 @@
+1- installer plugins wkhtmltopdf
+2- SI c'est sur un OS Windows modifier les ligne 4 et 9 du fichier config/packages/knp_snappy.yaml
+   	en specifiant les variables d'environement WINDOWS_WKHTMLTOPDF_PATH et WINDOWS_WKHTMLTOIMAGE_PATH
+   SI c'est sur un OS Linux
+   	en specifiant les variables d'environement LINUX_WKHTMLTOPDF_PATH et LINUX_WKHTMLTOPDF_PATH
+3- Editer le fichier .env en specifiant les variables selectionnes qui doivent correspondre au chemin du binaire de wkhtmltopdf
+4- Definir la variable DATABASE_URL en remplacant les entree USER_NAME, PASSWORD et   DB_NAME "mysql://USER_NAME:PASSWORD@localhost:3306/DB_NAME?serverVersion=mariadb-10.4.11"
+5- Preciser les informations specifiques a l'etablissement dans la section  "school parameters" du fichier .env
+6- Copier le projet et coller dans le repertoire d'hebergement du serveur web (htdocs pour xamp).
+7- Taper la commande php composer install a partir du terminal positionne a la racine du projet afin d'installer les dependances. 
+8- Le projet sera accessible a partir du navigateur.

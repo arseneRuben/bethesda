@@ -6,7 +6,7 @@ knp_snappy:
         options:    []
     image:
         enabled:    true
-        binary:     '%env(LINUX_WKHTMLTOPDF_PATH)%'
+        binary:     '%env(LINUX_WKHTMLTOIMAGE_PATH)%'
         #binary:     C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe
         options:    []
     process_timeout: 20 # In seconds
