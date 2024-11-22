@@ -16,7 +16,9 @@ class GraphQLController extends AbstractController
         $this->graphqlClient = $graphqlClient;
     }
 
-    #[Route('/etudiants', name: 'etudiants')]
+    /**
+     * @Route("/etudiants", name= "etudiants")
+     * **/
     public function fetchEtudiants(): JsonResponse
     {
         $query = <<<GRAPHQL
