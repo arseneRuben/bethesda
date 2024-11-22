@@ -75,3 +75,12 @@ GROUP BY evaluation_id, student_id;
 
 ALTER TABLE mark
 MODIFY COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
+
+delete from mark where student_id = 1774;
+
+
+
+
+
+
+
