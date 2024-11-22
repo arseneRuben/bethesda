@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Etudiants{% endblock %}
+
+{% block body %}
+<h1>Liste des Etudiants</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Classe</th>
+            <th>Date de Naissance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for etudiant in etudiants %}
+            <tr>
+                <td>{{ etudiant.id }}</td>
+                <td>{{ etudiant.nom }}</td>
+                <td>{{ etudiant.prenom }}</td>
+                <td>{{ etudiant.classe }}</td>
+                <td>{{ etudiant.dateNaissance }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun etudiant trouve.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
