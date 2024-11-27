@@ -427,7 +427,7 @@ class StudentController extends AbstractController
         $fileExist = file_exists($filename);
         
         $statement = $connection->prepare(
-            "  SELECT DISTINCT sequence.id as sequence, course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+            "  SELECT DISTINCT sequence.id as sequence, course.id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
                 FROM sequence 
                 JOIN evaluation ON evaluation.sequence_id = sequence.id
                 JOIN course ON evaluation.course_id = course.id
