@@ -17,7 +17,6 @@
         "knplabs/knp-snappy-bundle": "^1.9",
         "lexik/form-filter-bundle": "^7.0",
         "liip/imagine-bundle": "^2.7",
-        "mll-lab/graphql-php-scalars": "6.3",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.4.*",
@@ -41,8 +40,7 @@
         "symfonycasts/verify-email-bundle": "^1.7",
         "twig/extra-bundle": "^3.3",
         "twig/twig": "^3.3",
-        "vich/uploader-bundle": "^1.19",
-        "webonyx/graphql-php": "15.0"
+        "vich/uploader-bundle": "^1.19"
     },
     "config": {
         "allow-plugins": {
