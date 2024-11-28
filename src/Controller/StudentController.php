@@ -425,26 +425,24 @@ class StudentController extends AbstractController
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
         $fileExist = file_exists($filename);
-        
-        $statement = $connection->prepare(
-            "  SELECT DISTINCT sequence.id as sequence, course.id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
-                FROM sequence 
-                JOIN evaluation ON evaluation.sequence_id = sequence.id
-                JOIN course ON evaluation.course_id = course.id
-                JOIN attribution on attribution.course_id = course.id
-                JOIN user ON user.id = attribution.teacher_id
-                JOIN mark ON evaluation.id = mark.evaluation_id
-                JOIN quater ON sequence.quater_id = quater.id
-                JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
-                WHERE quater.id = ? AND   mark.student_id=?
-                ORDER BY course.id,sequence.id; "
-        );
+        $query =  "  SELECT DISTINCT sequence.id as sequence, course.id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+        FROM sequence 
+        JOIN evaluation ON evaluation.sequence_id = sequence.id
+        JOIN course ON evaluation.course_id = course.id
+        JOIN attribution on attribution.course_id = course.id
+        JOIN user ON user.id = attribution.teacher_id
+        JOIN mark ON evaluation.id = mark.evaluation_id
+        JOIN quater ON sequence.quater_id = quater.id
+        JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
+        WHERE quater.id = :quater_id AND   mark.student_id=:student_id
+        ORDER BY course.id,sequence.id; "
+        $params = [
+            'quater_id' => $quater->getId(),       
+            'student_id' => $std->getId(), // Remplace :city
+        ];
 
-        $statement->bindValue(1, $quater->getId());
-        $statement->bindValue(2, $std->getId());
-
-         $statement->execute();
-         $data = $statement->fetchAllAssociative();
+        $data = $connection->executeQuery($query, $params);
+       
         $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
