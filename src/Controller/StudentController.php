@@ -435,7 +435,7 @@ class StudentController extends AbstractController
         JOIN quater ON sequence.quater_id = quater.id
         JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
         WHERE quater.id = :quater_id AND   mark.student_id=:student_id
-        ORDER BY course.id,sequence.id; "
+        ORDER BY course.id,sequence.id; ";
         $params = [
             'quater_id' => $quater->getId(),       
             'student_id' => $std->getId(), // Remplace :city
