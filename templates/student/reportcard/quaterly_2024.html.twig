@@ -204,9 +204,9 @@
                         <!-- Matière 1 -->
                        
                                 {% for mark in data %}
-                                    {% if loop.index < items|length %}
+                                    {% if loop.index < data|length %}
                                         {# Récupérer l'élément suivant #}
-                                        {% set next_mark = items[loop.index] %}
+                                        {% set next_mark = data[loop.index] %}
                                         <tr>
                                         {% if next_mark.course_id == mark.course_id %}
                                                 <td rowspan="2"> {{ mark.wording }}<br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
