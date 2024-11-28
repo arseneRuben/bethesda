@@ -447,7 +447,6 @@ class StudentController extends AbstractController
             'year' => $year,
             'quater' => $quater,
             'data' => $data,
-            'sequences' => $sequences,
             'std'  => $std,
             'room' => $sub->getClassRoom(),
             'fileExist' => $fileExist
