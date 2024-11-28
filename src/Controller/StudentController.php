@@ -444,7 +444,7 @@ class StudentController extends AbstractController
         ];
 
         $data = $connection->executeQuery($query, $params);
-       
+        dd($data);
         $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
