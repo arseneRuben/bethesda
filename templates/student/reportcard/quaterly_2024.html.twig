@@ -204,10 +204,23 @@
                         <!-- Matière 1 -->
                        
                                 {% for mark in data %}
-                                            <tr> 
-                                                <td > {{ mark.wording }}<br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
+                                    {% if loop.index < items|length %}
+                                        {# Récupérer l'élément suivant #}
+                                        {% set next_mark = data[loop.index] %}
+                                        <tr>
+                                        {% if next_mark.course_id == mark.course_id %}
+                                                <td rowspan="2"> {{ mark.wording }}<br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
                                                 <td> {{ mark.competence }}</td>
                                                 <td>{{ mark.value }}</td>
+                                                <td>{{ (mark.value + next_mark.value)/2 }}</td>
+                                                <td> {{ mark.coefficient  }}</td>
+                                                <td>{{ mark.coefficient * mark.value  }}</td>
+                                                <td></td>
+                                                
+                                                <td></td>
+                                                <td></td>
+                                        {% else %}
+                                                <td> {{ mark.competence }}</td>
                                                 <td>{{ mark.value }}</td>
                                                 <td> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
@@ -215,7 +228,9 @@
                                                 
                                                 <td></td>
                                                 <td></td>
-                                            </tr>
+                                        {% endif %}
+                                        </tr>
+                                    {% endif %}
                                 {% endfor %}
                            
 
