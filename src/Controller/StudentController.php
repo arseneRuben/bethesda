@@ -444,8 +444,8 @@ class StudentController extends AbstractController
         $statement->bindValue(2, $std->getId());
 
          $statement->execute();
-         $data = $statement->fetchAll();
-        $html = $this->renderView('student/reportcardTrim2024_2025.html.twig', array(
+         $data = $statement->fetchAllAssociative();
+        $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
             'data' => $data,
