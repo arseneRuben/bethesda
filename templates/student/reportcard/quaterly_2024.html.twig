@@ -180,7 +180,7 @@
                             <label class="checkbox-label"><input type="checkbox"> Oui</label>
                             <label class="checkbox-label"><input type="checkbox"> Non</label>
                         </td>
-                        <td rowspan="2">Professeur principal :</td>
+                        <td rowspan="2">Professeur principal : {{ mainTeacher.fullName }} </td>
                     </tr>
                     <tr>
                         <td colspan="2">Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})</td>
@@ -209,7 +209,7 @@
                                         {% set next_mark = data[loop.index] %}
                                         <tr>
                                         {% if next_mark.course_id == mark.course_id %}
-                                                <td rowspan="2"> {{ mark.wording }}<br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
+                                                <td rowspan="2"> <b>{{ mark.wording }}</b><br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
                                                 <td> {{ mark.competence }}</td>
                                                 <td>{{ mark.value }}</td>
                                                 <td  rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>

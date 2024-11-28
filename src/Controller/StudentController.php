@@ -18,6 +18,7 @@ use App\Repository\PaymentRepository;
 use App\Repository\QuaterRepository;
 use App\Repository\InstallmentRepository;
 use App\Repository\PaymentPlanRepository;
+use App\Repository\MainTeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,9 +49,10 @@ class StudentController extends AbstractController
     private PaymentPlanRepository $ppRepo;
     private InstallmentRepository $instRepo;
     private PaymentRepository $pRepo;
+    private MainTeacherRepository $mainTeacherRepo;
 
 
-    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
+    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo,MainTeacherRepository $mainTeacherRepo, Pdf $snappy)
     {
         $this->em       = $em;
         $this->repo     = $repo;
@@ -64,6 +66,7 @@ class StudentController extends AbstractController
         $this->ppRepo   = $ppRepo;
         $this->pRepo    = $pRepo;
         $this->instRepo = $instRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
         $this->schoolYearService = $schoolYearService;
     }
 
@@ -424,6 +427,8 @@ class StudentController extends AbstractController
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
         $students = $this->repo->findEnrolledStudentsThisYearInClass($sub->getClassRoom(), $year);
+        $mainTeacher = $this->mainTeacherRepo->findOneBy(array("classRoom" => $sub->getClassRoom(), "schoolYear" => $year))-> getTeacher();
+
 
         $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
         $fileExist = file_exists($filename);
@@ -449,6 +454,7 @@ class StudentController extends AbstractController
         $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
+            'mainTeacher'=>$mainTeacher,
             'data' => $data,
             'std'  => $std,
             'students' => $students,
