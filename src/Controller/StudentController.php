@@ -423,6 +423,8 @@ class StudentController extends AbstractController
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
+        $students = $this->repo->findEnrolledStudentsThisYearInClass($sub->getClassRoom(), $year);
+
         $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
         $fileExist = file_exists($filename);
         $query =  "  SELECT DISTINCT sequence.id as sequence, course.id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
@@ -448,6 +450,7 @@ class StudentController extends AbstractController
             'quater' => $quater,
             'data' => $data,
             'std'  => $std,
+            'students' => $students,
             'room' => $sub->getClassRoom(),
             'fileExist' => $fileExist
         ));
