@@ -95,11 +95,7 @@ class Evaluation
      */
     private $classRoom;
     
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $author;
+   
 
     /**
      * @ORM\OneToMany(targetEntity=Mark::class, mappedBy="evaluation", orphanRemoval=true)
