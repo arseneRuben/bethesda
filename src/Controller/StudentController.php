@@ -427,7 +427,7 @@ class StudentController extends AbstractController
 
         $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
         $fileExist = file_exists($filename);
-        $query =  "  SELECT DISTINCT sequence.id as sequence, course.id as  ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+        $query =  "  SELECT DISTINCT sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
         FROM sequence 
         JOIN evaluation ON evaluation.sequence_id = sequence.id
         JOIN course ON evaluation.course_id = course.id
