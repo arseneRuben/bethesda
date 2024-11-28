@@ -72,6 +72,15 @@ class Evaluation
      * @ORM\Column(type="integer", options={"default":0})
      */
     private $failluresF;
+    /**
+     * @ORM\Column(type="float", options={"default":0})
+     */
+    private $min;
+
+    /**
+     * @ORM\Column(type="float", options={"default":20})
+     */
+    private $max;
 
     /**
      * @ORM\ManyToOne(targetEntity=Course::class, inversedBy="evaluations")

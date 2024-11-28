@@ -259,7 +259,8 @@ class EvaluationController extends AbstractController
                 }
                 return ($a->getValue() < $b->getValue()) ? -1 : 1;
             });
-
+            $evaluation->setMin($notes[0]->getValue());
+            $evaluation->setMax($notes[$effectif-1]->getValue());
             foreach ($notes as $mark) {
                 $mark->setRank2($pos);
                 $pos--;
