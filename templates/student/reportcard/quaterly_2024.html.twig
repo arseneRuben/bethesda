@@ -213,7 +213,7 @@
                                                 <td> {{ mark.competence }}</td>
                                                 <td>{{ mark.value }}</td>
                                                 <td  rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>
-                                                <td> {{ mark.coefficient  }}</td>
+                                                <td  rowspan="2"> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td></td>
                                                 
@@ -222,7 +222,6 @@
                                         {% else %}
                                                 <td> {{ mark.competence }}</td>
                                                 <td>{{ mark.value }}</td>
-                                                <td> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td></td>
                                                 
