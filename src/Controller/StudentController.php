@@ -443,8 +443,9 @@ class StudentController extends AbstractController
             'student_id' => $std->getId(), // Remplace :city
         ];
 
-        $data = $connection->executeQuery($query, $params);
-        dd($data);
+        $result = $connection->executeQuery($query, $params);
+        $data = $result->fetchAllAssociative();
+
         $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
