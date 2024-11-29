@@ -23,7 +23,7 @@ class StudentType extends AbstractType {
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder->add('imageFile', VichImageType::class, [
-                            'label' => 'Photo d identite(JPG or PNG)', 
+                            'label' => 'Photo d identite(.jpg)', 
                         'required' => false,
                         'allow_delete' => true,
                         'imagine_pattern' => 'student_filter_square_medium',
