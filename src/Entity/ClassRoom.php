@@ -60,6 +60,12 @@ class ClassRoom
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="classRoom")
      */
     private $subscriptions;
+     /**
+     * @ORM\OneToMany(targetEntity=Student::class, mappedBy="entryClass",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     *
+     * */
+    private $entryStudents;
     /**
      * @ORM\OneToMany(targetEntity=AbscenceSheet::class, mappedBy="classRoom", orphanRemoval=true)
      */
