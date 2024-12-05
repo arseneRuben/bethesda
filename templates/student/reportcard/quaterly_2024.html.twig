@@ -217,7 +217,7 @@
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td></td>
                                                 
-                                                <td></td>
+                                                <td>{{ mark.mini ~ '-' ~ mark.maxi  }}</td>
                                                 <td></td>
                                         {% else %}
                                                 <td> {{ mark.competence }}</td>
@@ -225,7 +225,7 @@
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td>{{ mark.rank2 }}</td>
                                                 
-                                                <td></td>
+                                                <td>{{ mark.mini ~ '-' ~ mark.maxi  }}</td>
                                                 <td></td>
                                         {% endif %}
                                         </tr>
