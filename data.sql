@@ -75,3 +75,47 @@ GROUP BY evaluation_id, student_id;
 
 ALTER TABLE mark
 MODIFY COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
+
+delete from mark where student_id = 1774;
+
+
+
+SELECT DISTINCT seq.id, eval.id as eval,crs.id as crs, crs.wording, room.id as room,  teach.full_name as teacher    , modu.id as module,m.value as value, m.weight as weight
+                    FROM  mark  m   JOIN  student    std     ON  (m.student_id        =   std.id AND  std.id = 1664)
+                    JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+                    JOIN  class_room room    ON   eval.class_room_id     =   room.id
+                    JOIN  course     crs     ON  eval.course_id      =   crs.id
+                    JOIN  attribution att    ON  att.course_id      =   crs.id
+                    JOIN  user  teach ON  att.teacher_id  =   teach.id
+                    JOIN  module     modu    ON  modu.id       =   crs.module_id
+                    JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+                    JOIN  quater   qt     ON  seq.quater_id    =   qt.id
+                    WHERE     qt.id = 20
+                    ORDER BY crs.id;
+
+
+select attribution.teacher_id from attribution where attribution.year_id = 7 and attribution.course_id=181;
+
+SELECT DISTINCT sequence.id as sequence, course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+FROM sequence 
+JOIN evaluation ON evaluation.sequence_id = sequence.id
+JOIN course ON evaluation.course_id = course.id
+JOIN attribution on attribution.course_id = course.id
+JOIN user ON user.id = attribution.teacher_id
+JOIN mark ON evaluation.id = mark.evaluation_id
+JOIN quater ON sequence.quater_id = quater.id
+JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
+WHERE quater.id = 19 AND   mark.student_id=39
+ORDER BY course.id,sequence.id;
+
+
+
+
+ALTER TABLE evaluation ADD min FLOAT default 0;
+ALTER TABLE evaluation ADD max FLOAT default 20;
+
+ALTER TABLE evaluation
+RENAME COLUMN min TO mini;
+ALTER TABLE evaluation
+RENAME COLUMN max TO maxi;
+

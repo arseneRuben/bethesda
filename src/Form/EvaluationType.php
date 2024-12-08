@@ -29,10 +29,7 @@ class EvaluationType extends AbstractType
                 return $repository->createQueryBuilder('s')->leftJoin('s.quater', 'q')->leftJoin('q.schoolYear', 'sc') ->where('sc.activated = :rep')->setParameter('rep', true)->add('orderBy', 's.id');
              } ))
          ->add('classRoom', EntityType::class, array('placeholder' => 'Choisir une classe','class' => ClassRoom::class, 'required' => true ))
-         ->add('competence',TextType::class, [
-            'label' => 'Competence',
-            'required' => false,
-            'trim' => true])
+         ->add('competence',TextType::class, ['label' => 'Competence','required' => true])
         ;
     }
 

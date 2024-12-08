@@ -56,7 +56,7 @@
                   {% set psuccess = (success / total)*100 %}
                
                 <div>BILAN:</div>
-                <div class="notice"> SUCCESS: {{ psuccess }}%, ABSENCE : {{evaluation.abscent }}</div>
+                <div class="notice"> SUCCESS: {{ psuccess }}%, ABSENCE : {{evaluation.abscent }}, MIN : {{evaluation.mini }}, MAX : {{evaluation.maxi }}</div>
             </div>
             <div id="notices">
                 <div>EMIS  PAR : {{ author.fullName }}</div>

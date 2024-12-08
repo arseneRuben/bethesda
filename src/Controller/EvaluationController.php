@@ -27,6 +27,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Service\SchoolYearService;
+use Symfony\Component\Form\Forms;
+
 
 
 /**
@@ -259,7 +261,8 @@ class EvaluationController extends AbstractController
                 }
                 return ($a->getValue() < $b->getValue()) ? -1 : 1;
             });
-
+            $evaluation->setMini($notes[0]->getValue());
+            $evaluation->setMaxi($notes[$effectif-1]->getValue());
             foreach ($notes as $mark) {
                 $mark->setRank2($pos);
                 $pos--;
@@ -295,11 +298,11 @@ class EvaluationController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
-        /* if(($evaluation->getTeacher()!=$this->getUser()) && !($this->get('security.context')->isGranted('ROLE_ADMIN')))
+         if(($evaluation->getAuthor()!=$this->getUser()) && !($this->isGranted('ROLE_ADMIN')))
         {
             $this->addFlash('warning', 'Access forbidden!');
-            return $this->redirectToRoute('app_home');
-		}*/
+            return $this->redirectToRoute('admin_evaluations');
+		}
 
         $form  = $this->createForm(EvaluationType::class, $evaluation, array(
             'action' => $this->generateUrl('prof_evaluations_update', array('id' => $evaluation->getId())),
@@ -307,20 +310,12 @@ class EvaluationController extends AbstractController
         ));
 
         $form->handleRequest($request);
-        $idcourse = $request->request->get('idcourse');
-        $idsequence = $request->request->get('idsequence');
-        $competence = $request->request->get('competence');
-        $course = $this->crsRepo->findOneBy(array("id" => $idcourse));
-        $sequence = $this->seqRepo->findOneBy(array("id" => $idsequence));
-        if($sequence == null)
-        {
-                $sequence = $this->seqRepo->findOneBy(array("activated" => true));
-        }
+        $sequence = $evaluation->getSequence();
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $notes  = array();
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
-
+       
         foreach ($studentsEnrolledInClass as $std) {
             foreach ($marks as $mark) {
                 if ($mark->getStudent()->getId() == $std->getId()) {
@@ -330,16 +325,7 @@ class EvaluationController extends AbstractController
             }
         }
 
-        // dd($marks);
-        /*  if($form->isSubmitted() && $form->isValid())
-        {
-		    $year = $this->scRepo->findOneBy(array("activated" => true));
-			
-            $this->em->flush();
-            $this->addFlash('success', 'Evaluation succesfully updated');
-            return $this->redirectToRoute('admin_evaluations');
-        }*/
-        $evaluation->setAuthor($this->getUser());
+       
         return $this->render('evaluation/edit.html.twig', [
             'marks' => $notes,
             'students' => $studentsEnrolledInClass,
@@ -363,6 +349,7 @@ class EvaluationController extends AbstractController
         }
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
+      
         $marks = $this->markRepo->findBy(array("evaluation" => $evaluation));
         $note = $_POST[$matricule."note"];
         $appr = $_POST[$matricule."appr"];
@@ -399,6 +386,9 @@ class EvaluationController extends AbstractController
             $this->em->persist($newMark);
             $this->notes[$pos++] = $newMark; // Construction d'un arrayList pour trie
         }
+        $evaluation->setMini($this->notes[0]->getValue());
+        $evaluation->setMaxi($this->notes[$pos-1]->getValue());
+        $evaluation->setAuthor($this->getUser());
 
         $this->em->persist($evaluation);
         $this->em->flush();
@@ -425,8 +415,10 @@ class EvaluationController extends AbstractController
         }
         $year = $this->schoolYearService->sessionYearById();
         $studentsEnrolledInClass = $this->stdRepo->findEnrolledStudentsThisYearInClass($evaluation->getClassRoom(), $year);
-      
+
         if ($content = $request->getContent()) {
+            $competence = ($request->request->get("evaluation")["competence"]);
+            $evaluation->setCompetence($competence);
             $evaluation->setFailluresF(0);
             $evaluation->setFailluresH(0);
             $evaluation->setSuccessF(0);

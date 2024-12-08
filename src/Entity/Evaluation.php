@@ -72,6 +72,16 @@ class Evaluation
      * @ORM\Column(type="integer", options={"default":0})
      */
     private $failluresF;
+    
+    /**
+     * @ORM\Column(type="float", options={"default":0})
+     */
+    private $mini;
+
+    /**
+     * @ORM\Column(type="float", options={"default":20})
+     */
+    private $maxi;
 
     /**
      * @ORM\ManyToOne(targetEntity=Course::class, inversedBy="evaluations")
@@ -84,12 +94,13 @@ class Evaluation
      * @ORM\JoinColumn(nullable=false)
      */
     private $classRoom;
-    
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=true)
      */
     private $author;
+    
+   
 
     /**
      * @ORM\OneToMany(targetEntity=Mark::class, mappedBy="evaluation", orphanRemoval=true)
@@ -117,12 +128,7 @@ class Evaluation
     }
     
 
-    public function getTeacher() {
-       
-        $year  = $this->em->getRepository(SchoolYear::class)->findOneBy(array("activated" => true));
-        $attribution  = $this->em->getRepository(Attribution::class)->findOneBy(array("schoolYear" => $year, "course" => $this->getCourse()));
-        return $attribution->getTeacher();
-    }
+    
  
     public function getId(): ?int
     {
@@ -358,6 +364,30 @@ class Evaluation
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getMini(): ?float
+    {
+        return $this->mini;
+    }
+
+    public function setMini(float $mini): static
+    {
+        $this->mini = $mini;
+
+        return $this;
+    }
+
+    public function getMaxi(): ?float
+    {
+        return $this->maxi;
+    }
+
+    public function setMaxi(float $maxi): static
+    {
+        $this->maxi = $maxi;
 
         return $this;
     }

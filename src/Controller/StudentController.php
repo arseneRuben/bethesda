@@ -18,6 +18,7 @@ use App\Repository\PaymentRepository;
 use App\Repository\QuaterRepository;
 use App\Repository\InstallmentRepository;
 use App\Repository\PaymentPlanRepository;
+use App\Repository\MainTeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,9 +49,10 @@ class StudentController extends AbstractController
     private PaymentPlanRepository $ppRepo;
     private InstallmentRepository $instRepo;
     private PaymentRepository $pRepo;
+    private MainTeacherRepository $mainTeacherRepo;
 
 
-    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo, Pdf $snappy)
+    public function __construct(PaymentRepository $pRepo, InstallmentRepository $instRepo, PaymentPlanRepository $ppRepo,SchoolYearService $schoolYearService,EntityManagerInterface $em, SubscriptionRepository $subRepo, MarkRepository $markRepo, EvaluationRepository $evalRepo, StudentRepository $repo, SequenceRepository $seqRepo, SchoolYearRepository $scRepo, QuaterRepository $qtRepo,MainTeacherRepository $mainTeacherRepo, Pdf $snappy)
     {
         $this->em       = $em;
         $this->repo     = $repo;
@@ -64,6 +66,7 @@ class StudentController extends AbstractController
         $this->ppRepo   = $ppRepo;
         $this->pRepo    = $pRepo;
         $this->instRepo = $instRepo;
+        $this->mainTeacherRepo = $mainTeacherRepo;
         $this->schoolYearService = $schoolYearService;
     }
 
@@ -173,6 +176,7 @@ class StudentController extends AbstractController
         }
         $year = $this->schoolYearService->sessionYearById();
         $seq = $this->seqRepo->findOneBy(array("activated" => true));
+        
         $sub = $this->subRepo->findOneBy(array("student" => $student, "schoolYear" => $year));
         $results['student'] = $student;
         $results['cours'] = null;
@@ -401,6 +405,71 @@ class StudentController extends AbstractController
     }
 
 
+
+     /**
+     * Finds and displays a ClassRoom entity.
+     *
+     * @Route("/{id}/reportCardTrim2024", name="admin_students_reportcards_quat_2024", requirements={"id"="\d+"})
+     * @Method("GET")
+     * @Template()
+     */
+    public function reporCardTrimAction2024(Pdf $pdf, Student $std){
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
+        $connection = $this->em->getConnection();
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student" => $std, "schoolYear" => $year));
+        $quater = $this->qtRepo->findOneBy(array("activated" => true));
+        $students = $this->repo->findEnrolledStudentsThisYearInClass($sub->getClassRoom(), $year);
+        $mainTeacher = $this->mainTeacherRepo->findOneBy(array("classRoom" => $sub->getClassRoom(), "schoolYear" => $year))-> getTeacher();
+
+
+        $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+        $fileExist = file_exists($filename);
+        $query =  "  SELECT DISTINCT sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+        FROM sequence 
+        JOIN evaluation ON evaluation.sequence_id = sequence.id
+        JOIN course ON evaluation.course_id = course.id
+        JOIN attribution on attribution.course_id = course.id
+        JOIN user ON user.id = attribution.teacher_id
+        JOIN mark ON evaluation.id = mark.evaluation_id
+        JOIN quater ON sequence.quater_id = quater.id
+        JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
+        WHERE quater.id = :quater_id AND   mark.student_id=:student_id
+        ORDER BY course.id,sequence.id; ";
+        $params = [
+            'quater_id' => $quater->getId(),       
+            'student_id' => $std->getId(), // Remplace :city
+        ];
+
+        $result = $connection->executeQuery($query, $params);
+        $data = $result->fetchAllAssociative();
+
+        $html = $this->renderView('student/reportcard/quaterly_2024.html.twig', array(
+            'year' => $year,
+            'quater' => $quater,
+            'mainTeacher'=>$mainTeacher,
+            'data' => $data,
+            'std'  => $std,
+            'students' => $students,
+            'room' => $sub->getClassRoom(),
+            'fileExist' => $fileExist
+        ));
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="bull_' .  $quater->getId().'_'.$std->getMatricule()  . '.pdf"'
+            )
+        );
+    }
 
     /**
      * Finds and displays a ClassRoom entity.

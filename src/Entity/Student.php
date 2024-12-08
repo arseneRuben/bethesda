@@ -40,7 +40,7 @@ class Student
      * @Vich\UploadableField(mapping="student_image", fileNameProperty="imageName")
      * @Assert\File(
      *     maxSize = "6024k",
-     *     mimeTypes = {"image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml"},
+     *     mimeTypes = {"image/bmp", "image/gif", "image/x-icon", "image/jpeg", "image/png", "image/svg+xml", "image/PNG", "image/JPG"},
      *     mimeTypesMessage = "Please upload a valid image(bmp,gif,jpg,jpeg,png,svg)"
      * )
      * 

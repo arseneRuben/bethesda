@@ -60,6 +60,7 @@ class ClassRoom
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="classRoom")
      */
     private $subscriptions;
+   
     /**
      * @ORM\OneToMany(targetEntity=AbscenceSheet::class, mappedBy="classRoom", orphanRemoval=true)
      */

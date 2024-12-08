@@ -27,7 +27,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 {
     use TimeStampable;
     use HasUploadableField;
-    /**
+     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -40,41 +40,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      * @Assert\NotBlank(message="Please enter a valid  email address")
      */
     private $email;
-      /** @ORM\Column(name="github_id", type="string", length=255, nullable=true) */
-     private $github_id;
-    
-
-     /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
-     private $github_access_token;
- 
-     /** @ORM\Column(name="facebook_id", type="string", length=255, nullable=true) */
-     private $facebook_id;
- 
-     /** @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true) */
-     private $facebook_access_token;
- 
-     /** @ORM\Column(name="google_id", type="string", length=255, nullable=true) */
-     private $google_id;
- 
-     /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
-     private $google_access_token;
- 
-     /** @ORM\Column(name="linkedin_id", type="string", length=255, nullable=true) */
-     private $linkedin_id;
- 
-     /** @ORM\Column(name="linkedin_access_token", type="string", length=255, nullable=true) */
-     private $linkedin_access_token;
-
-    /** @ORM\Column(name="twitter_id", type="string", length=255, nullable=true) */
-    private $twitter_id;
-     /** @ORM\Column(name="twitter_access_token", type="string", length=255, nullable=true) */
-     private $twitter_access_token;
-
-     /** @ORM\Column(name="yahoo_id", type="string", length=255, nullable=true) */
-    private $yahoo_id;
-    /** @ORM\Column(name="yahoo_access_token", type="string", length=255, nullable=true) */
-    private $yahoo_access_token;
-    
+     
 
 
 
@@ -121,10 +87,10 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
      */
     protected $phoneNumber;
 
-    /** @ORM\Column(name="gender", nullable=true, unique=false, length=10) 
-     * @Assert\Choice(
-     * choices = { 0, 1 },
-     * message = "précisez le sexe")
+    /** 
+     *  @var string
+     * @ORM\Column(name="gender", nullable=true, unique=false, length=10) 
+     * @Assert\Choice(choices = { 0, 1 },  message = "précisez le sexe")
      */
     protected $gender;
 
@@ -328,7 +294,6 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
             case "PROF":
                 $roles[] = 'ROLE_USER';
 		$roles[] = 'ROLE_PROF';
-            break;
             case "ADMIN":
                 $roles[] = 'ROLE_USER';
                 $roles[] = 'ROLE_ADMIN';
@@ -745,149 +710,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGithubId(): ?string
-    {
-        return $this->github_id;
-    }
-
-    public function setGithubId(?string $github_id): self
-    {
-        $this->github_id = $github_id;
-
-        return $this;
-    }
-
-    public function getGithubAccessToken(): ?string
-    {
-        return $this->github_access_token;
-    }
-
-    public function setGithubAccessToken(?string $github_access_token): self
-    {
-        $this->github_access_token = $github_access_token;
-
-        return $this;
-    }
-
-    public function getFacebookId(): ?string
-    {
-        return $this->facebook_id;
-    }
-
-    public function setFacebookId(?string $facebook_id): self
-    {
-        $this->facebook_id = $facebook_id;
-
-        return $this;
-    }
-
-    public function getFacebookAccessToken(): ?string
-    {
-        return $this->facebook_access_token;
-    }
-
-    public function setFacebookAccessToken(?string $facebook_access_token): self
-    {
-        $this->facebook_access_token = $facebook_access_token;
-
-        return $this;
-    }
-
-    public function getGoogleId(): ?string
-    {
-        return $this->google_id;
-    }
-
-    public function setGoogleId(?string $google_id): self
-    {
-        $this->google_id = $google_id;
-
-        return $this;
-    }
-
-    public function getGoogleAccessToken(): ?string
-    {
-        return $this->google_access_token;
-    }
-
-    public function setGoogleAccessToken(?string $google_access_token): self
-    {
-        $this->google_access_token = $google_access_token;
-
-        return $this;
-    }
-
-    public function getLinkedinId(): ?string
-    {
-        return $this->linkedin_id;
-    }
-
-    public function setLinkedinId(?string $linkedin_id): self
-    {
-        $this->linkedin_id = $linkedin_id;
-
-        return $this;
-    }
-
-    public function getLinkedinAccessToken(): ?string
-    {
-        return $this->linkedin_access_token;
-    }
-
-    public function setLinkedinAccessToken(?string $linkedin_access_token): self
-    {
-        $this->linkedin_access_token = $linkedin_access_token;
-
-        return $this;
-    }
-
-    public function getTwitterId(): ?string
-    {
-        return $this->twitter_id;
-    }
-
-    public function setTwitterId(?string $twitter_id): self
-    {
-        $this->twitter_id = $twitter_id;
-
-        return $this;
-    }
-
-    public function getTwitterAccessToken(): ?string
-    {
-        return $this->twitter_access_token;
-    }
-
-    public function setTwitterAccessToken(?string $twitter_access_token): self
-    {
-        $this->twitter_access_token = $twitter_access_token;
-
-        return $this;
-    }
-
-    public function getYahooId(): ?string
-    {
-        return $this->yahoo_id;
-    }
-
-    public function setYahooId(?string $yahoo_id): self
-    {
-        $this->yahoo_id = $yahoo_id;
-
-        return $this;
-    }
-
-    public function getYahooAccessToken(): ?string
-    {
-        return $this->yahoo_access_token;
-    }
-
-    public function setYahooAccessToken(?string $yahoo_access_token): self
-    {
-        $this->yahoo_access_token = $yahoo_access_token;
-
-        return $this;
-    }
+    
 
     public function getIsVerified(): ?bool
     {
