@@ -293,8 +293,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         switch ($this->getStatus()) {
             case "PROF":
                 $roles[] = 'ROLE_USER';
-                $roles[] = 'ROLE_PROF';
-            break;
+		$roles[] = 'ROLE_PROF';
             case "ADMIN":
                 $roles[] = 'ROLE_USER';
                 $roles[] = 'ROLE_ADMIN';
