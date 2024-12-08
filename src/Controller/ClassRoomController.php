@@ -1147,90 +1147,68 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrim2024Action(ClassRoom $room, Request $request)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
-        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
-        $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
-         // Existance des photos d'eleves
-         $fileExists = [];
-         foreach ($studentEnrolled as $std) {
-             $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
-             $fileExists[$std->getId()] = file_exists($filename);
-         }
+        $students = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
+        $mainTeacher = $this->mainTeacherRepo->findOneBy(array("classRoom" => $room, "schoolYear" => $year))-> getTeacher();
+        // Existance des photos d'eleves
+        $fileExists = [];
+        foreach ($students as $std) {
+            $filename = "assets/images/student/" . $std->getMatricule() . ".jpg";
+            $fileExists[$std->getId()] = file_exists($filename);
+        }
+
         
-        /*******************************************************************************************************************/
-        /***************CREATION DE la VIEW DES NOTES  SEQUENTIELLES, TRIMESTRIELLES  DE LA CLASSE, AINSI QUE DE LA VIEW DES ABSCENCES**************/
-        /*******************************************************************************************************************/
-        $i = 1;
-        foreach ($sequences as $seq) {
-            // CAS DES NOTES et ABSCENCES SEQUENTIELLES
-            $this->getViewQuaterData($room,  $i);
-            $i++;
-        }
-       
-        // CAS DES ABSCENCES TRIMESTRIELLES
-        $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER_ROOM AS
-            SELECT DISTINCT   seq1.std as std , seq1.total_hours + seq2.total_hours as abscences
-            FROM V_STUDENT_ABSCENCE_SEQ1 seq1
-             JOIN  V_STUDENT_ABSCENCE_SEQ2 seq2  ON  (seq1.std    =   seq2.std  )
-            ORDER BY std "
-        );
-        $statement->execute();
-        $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks  ")->fetchAll();
-        // For calculating ranks
-        $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
-        SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
-        FROM V_STUDENT_MARK_QUATER 
-        GROUP BY std
-        ORDER BY SUM(value*weight*coef) DESC"
-        );
-        $statement->execute();
-        $quaterAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
-        $quaterAvgArray = [];
-        $sumAvg = 0;
-        $rank = 0;
-        $rankArray = [];
-       
-        foreach ($quaterAvg as $avg) {
-            $quaterAvgArray[$avg['std']] = $avg['moyenne'];
-            $rankArray[$avg['std']] = ++$rank;
-            $sumAvg += $avg['moyenne'];
-        }
+        $query =  "  SELECT DISTINCT student.id as student_id, student.firstname as student_firstname, student.lastname as student_last_name, student.birthday as student_birthday, student.matricule as matricule,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+        FROM sequence 
+        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = :room_id
+        JOIN course ON evaluation.course_id = course.id
+        JOIN attribution on attribution.course_id = course.id
+        JOIN user ON user.id = attribution.teacher_id
+        JOIN mark ON evaluation.id = mark.evaluation_id
+        JOIN student ON mark.student_id = student.id
+        JOIN quater ON sequence.quater_id = quater.id
+        JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
+        WHERE quater.id = :quater_id 
+        ORDER BY student_id, course.id,sequence.id; ";
+        $params = [
+            'quater_id' => $quater->getId(),       
+            'room_id' => $room->getId(), // Remplace :room_id
+        ];
+
+        $result = $connection->executeQuery($query, $params);
+        $data = $result->fetchAllAssociative();
         
-        // Traitement des abscences
-        $absences = $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_QUATER ")->fetchAll();
-        $absencesArray = [];
-        foreach ($absences as $abs) {
-            $absencesArray[$abs['std']] = $abs['abscences'];
-        }
-        $this->pdf->setTimeout(600);
         $html = $this->renderView('classroom/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
-            'data' => $dataQuater,
-            'ranks' => $rankArray,
-            'means' => $quaterAvgArray,
-            'abscences' => $absencesArray,
-            'genMean' => $sumAvg / sizeof($quaterAvgArray),
-            'room' => $room,
             'quater' => $quater,
-            'sequences' => $sequences,
-            'students' => $studentEnrolled,
-            'fileExists'=> $fileExists
-
+            'mainTeacher'=>$mainTeacher,
+            'data' => $data,
+            'std'  => $std,
+            'students' => $students,
+            'room' => $room,
+            'fileExists' => $fileExists
         ));
         return new Response(
             $this->pdf->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="' . $room->getName() . '.pdf"'
+                'Content-Disposition'   => 'inline; filename="bull_' .  $quater->getId().'_'.$std->getMatricule()  . '.pdf"'
             )
         );
-        // return new Response($html);
     }
+      
+   
     /**
      * Finds and displays a ClassRoom entity.
      *

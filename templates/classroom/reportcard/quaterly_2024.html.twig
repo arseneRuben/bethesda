@@ -56,8 +56,8 @@
 
             /* Conteneur principal pour le bulletin */
             .main-container {
-                width: 90%; /* Utilise 90% de la largeur de l'écran */
-                max-width: 1200px; /* Largeur maximale pour les grands écrans */
+                width: 95%; /* Utilise 90% de la largeur de l'écran */
+                max-width: 1250px; /* Largeur maximale pour les grands écrans */
                 border: 1px solid black;
                 padding: 20px;
                 margin: 0 auto; /* Centre le conteneur */
@@ -67,14 +67,14 @@
             .bulletin-title {
                 text-align: center;
                 font-weight: bold;
-                font-size: 25px;
+                font-size: 20px;
             }
 
             /* Style pour les tables */
             table {
                 width: 100%; /* La table prend toute la largeur du conteneur */
                 border-collapse: collapse; /* Supprime les espaces entre les cellules */
-                margin-top: 20px; /* Espace au-dessus de la table */
+                margin-top: 10px; /* Espace au-dessus de la table */
             }
 
             /* Style pour les cellules de la table */
@@ -103,7 +103,7 @@
 </head>
 <body>
      {% for std in students %}
-        <page size="A4" style="  margin-top:4.5em">
+        <page size="A4" style="  margin-top:0.5em">
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
                 <div class="bulletin-title">
@@ -114,7 +114,7 @@
                 <table border="1">
                     <tr>
                         <td rowspan="4" class="student-photo">
-                                {% if(fileExists[ std.id ])%}
+                                {% if(fileExists[std.id])%}
                                         {% set imagePath = absolute_url(asset('assets/images/student/'~ std.imageName )) %}
                                 {% else %}
                                         {% if std.gender %}
@@ -181,7 +181,7 @@
                             <label class="checkbox-label"><input type="checkbox"> Oui</label>
                             <label class="checkbox-label"><input type="checkbox"> Non</label>
                         </td>
-                        <td rowspan="2">Professeur principal :</td>
+                        <td rowspan="2">Professeur principal : {{ mainTeacher.fullName }} </td>
                     </tr>
                     <tr>
                         <td colspan="2">Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})</td>
@@ -203,31 +203,106 @@
                     </thead>
                     <tbody>
                         <!-- Matière 1 -->
-                        {% for module in room.modules %}
-                             {% for course in module.courses %}
+                       
                                 {% for mark in data %}
-                                    {% if std.id == mark.std %}
-                                        {% if module.id == mark.module %}
-                                            {% if mark.crs == course.id  %}
-                                            <tr> 
-                                                <td > {{ course.wording }}<br>M/Mme  &nbsp;&nbsp;{{ mark.teacher }}</td>
-                                                <td>Use appropriate language skills and resources to talk about oneself, the family, and school community.</td>
+                                 {% if std.matricule == mark.matricule %}
+                                    {% if loop.index < data|length %}
+                                        {# Récupérer l'élément suivant #}
+                                        {% set next_mark = data[loop.index] %}
+                                        <tr>
+                                        {% if next_mark.course_id == mark.course_id %}
+                                                <td rowspan="2"> <b>{{ mark.wording }}</b><br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
+                                                <td> {{ mark.competence }}</td>
+                                                <td>{{ mark.value }}</td>
+                                                <td  rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>
+                                                <td  rowspan="2"> {{ mark.coefficient  }}</td>
+                                                <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td></td>
+                                                
+                                                <td>{{ mark.mini ~ '-' ~ mark.maxi  }}</td>
                                                 <td></td>
-                                                <td>{{ course.coefficient }}</td>
+                                        {% else %}
+                                                <td> {{ mark.competence }}</td>
+                                                <td>{{ mark.value }}</td>
+                                                <td>{{ mark.coefficient * mark.value  }}</td>
+                                                <td>{{ mark.rank2 }}</td>
+                                                
+                                                <td>{{ mark.mini ~ '-' ~ mark.maxi  }}</td>
                                                 <td></td>
-                                                <td ></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            {% endif %}
                                         {% endif %}
+                                        </tr>
                                     {% endif %}
+                                 {% endif %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endfor %}
+                           
 
                         
+                    </tbody>
+                   
+                </table>
+                <table>
+                 <tbody>
+                        <tr>
+                            <td colspan="4">Discipline</td>
+                            <td colspan="4">Travail de l’élève</td>
+                            <td colspan="2">Profil de la classe</td>
+                        </tr>
+                        <tr>
+                            <td>Abs. non. J. (h)</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Avertissement de conduite</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>TOTAL GENERAL</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td colspan="2"><b>DÉCISION DU CONSEIL DE CLASSE</b></td>
+                            <td>Moy. Gen.</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                         <tr>
+                            <td>Abs just. (h) </td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Blâme de conduite</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>COEF.</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td >Promu (e) </td>
+                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>[Min – Max]</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                         <tr>
+                            <td>Retards (nbre de fois)</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Exclusions (jours)</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>MOYENNE ANNUELLE</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td >Redouble</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Nombre de moyennes</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                         <tr>
+                             <td>Consignes (h)</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Exclusion définitive</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>COTE</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td >Exclu(e) pour :</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Taux de réussite</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                         <tr>
+                            <td colspan="4" >Appréciation du travail de l’élève <br><br> <br><br></td>
+                           
+                            <td colspan="2"  >Visa du parent / Tuteur<br><br> <br><br></td>
+                            
+                            <td colspan="2"  >Visa de l'enseignant pricipal<br><br> <br><br> <i>{{ mainTeacher.fullName }}</i></td>
+                           
+                            <td colspan="2" >Le Chef d’établissement<br><br> <br><br></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
