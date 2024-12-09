@@ -111,8 +111,8 @@ ORDER BY course.id,sequence.id;
 
 
 
-ALTER TABLE evaluation ADD min FLOAT default 0;
-ALTER TABLE evaluation ADD max FLOAT default 20;
+ALTER TABLE evaluation ADD mini FLOAT default 0;
+ALTER TABLE evaluation ADD maxi FLOAT default 20;
 
 ALTER TABLE evaluation
 RENAME COLUMN min TO mini;
