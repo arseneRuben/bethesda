@@ -1147,6 +1147,8 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrim2024Action(ClassRoom $room, Request $request)
     {
+        
+
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
@@ -1155,6 +1157,11 @@ class ClassRoomController extends AbstractController
             $this->addFlash('warning', 'You need to have a verified account!');
             return $this->redirectToRoute('app_login');
         }
+        $headerFontSize = $request->request->get('header_font_size');
+        $lineHeight = $request->request->get('line_height');
+        $copyright =  $request->request->get('copyright')=="on";
+        $reverse =  $request->request->get('reverse')=="on";
+
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
         $quater = $this->qtRepo->findOneBy(array("activated" => true));
@@ -1196,7 +1203,11 @@ class ClassRoomController extends AbstractController
             'std'  => $std,
             'students' => $students,
             'room' => $room,
-            'fileExists' => $fileExists
+            'fileExists' => $fileExists,
+            "headerFontSize" => $headerFontSize,
+            "lineHeight" => $lineHeight,
+            "copyright" => $copyright,
+            "reverse" => $reverse
         ));
         return new Response(
             $this->pdf->getOutputFromHtml($html),

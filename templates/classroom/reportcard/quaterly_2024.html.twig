@@ -75,6 +75,11 @@
                 width: 100%; /* La table prend toute la largeur du conteneur */
                 border-collapse: collapse; /* Supprime les espaces entre les cellules */
                 margin-top: 10px; /* Espace au-dessus de la table */
+                page-break-inside: auto;
+
+            }
+            thead {
+                display: table-row-group;
             }
 
             /* Style pour les cellules de la table */
@@ -102,7 +107,7 @@
     </style>
 </head>
 <body>
-     {% for std in students %}
+     {% for std in reverse ? students|reverse : students  %}
         <page size="A4" style="  margin-top:0.5em">
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
@@ -111,7 +116,7 @@
                        {{ quater.wording |raw }}<br>
                     Année scolaire : {{ year.wording }}
                 </div>
-                <table border="1">
+                <table border="1" style="line-height: {{ lineHeight }}em;">
                     <tr>
                         <td rowspan="4" class="student-photo">
                                 {% if(fileExists[std.id])%}
@@ -187,7 +192,7 @@
                         <td colspan="2">Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})</td>
                     </tr>
                 </table>
-                <table>
+                <table style="line-height: {{ lineHeight }}em;">
                     <thead>
                         <tr>
                             <th rowspan="2">MATIÈRES ET NOM DE L'ENSEIGNANT</th>
@@ -306,7 +311,24 @@
                     </tbody>
                 </table>
             </div>
+             {% if copyright %}
+                        <div>
+                            <h10>
+                                <i>
+                                    
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                                    {% if room.level.cycle.section.name == "Francophone" %}
+                                            Conception et implementation du groupe Polyinformatique, Tel : +1(450)6267192, polyinformatique7@gmail.com
+
+                                    {% else %}
+                                            Design and implementation of Polyinformatique group, Tel: +1(450)6267192, polyinformatique7@gmail.com
+
+                                    {% endif %}                                                                                                                                                    
+                                </i>
+                            </h10>
+                        </div>
+                     {% endif %}
         </page>
      {% endfor %}
-</body>
+</body
 </html>

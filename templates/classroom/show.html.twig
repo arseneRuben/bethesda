@@ -148,7 +148,7 @@
                                             
                     </a>
 
-                    <a  target="_blank" class="btn btn-file" href="{{ path('admin_classrooms_reportcards_trim_2024', {id: classroom.id}) }}">
+                    <a  target="_blank" class="btn btn-file"data-toggle="modal" data-target="#form_modal_reportcard_params">
                         <i class="fa fa-file"></i>
                         Bull Trim
                                                                                                                                                                                                                     
@@ -184,7 +184,7 @@
                                                                     
                                             
                     </a>
-                    <a target="_blank" class="btn btn-file" data-toggle="modal" data-target="#form_modal_reportcard_params" >
+                    <a target="_blank" class="btn btn-file"  >
                         <i class="fa fa-file"></i>
                         Bull Ann V2
                                                                                                                                                                                                                     
@@ -503,7 +503,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ path('admin_class_reportcards_3_apc_year', {'id':classroom.id}) }}" method="post">
+      <form action="{{ path('admin_classrooms_reportcards_trim_2024', {'id':classroom.id}) }}" method="post">
         <div class="modal-body">
            <div class="form-group">
             <label for="header_font_size">Taille de des caracteres dans l entete</label>
