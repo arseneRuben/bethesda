@@ -165,6 +165,14 @@ class StudentController extends AbstractController
      */
     public function unregisterAction(Student $std, ClassRoom $room)
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You need login first!');
+            return $this->redirectToRoute('app_login');
+        }
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', 'You need to have a verified account!');
+            return $this->redirectToRoute('app_login');
+        }
         $year = $this->schoolYearService->sessionYearById();
         $sub = $this->subRepo->findOneBy(array("student"=>$std, "classRoom"=>$room, "schoolYear"=>$year));
         $this->em->remove($sub);
