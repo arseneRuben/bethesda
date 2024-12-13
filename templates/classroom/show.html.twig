@@ -271,6 +271,16 @@
                                                                                             
                                                             
                             </th>
+                             <th scope="col">
+                                Action
+                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                            
+                                                                                            
+                                                            
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -290,6 +300,12 @@
                                 </td>
                                 <td>
                                     {{ fileExists[std.id] }}
+                                </td>
+                                <td>
+                                     <a class="btn btn-outline-danger" href="{{ path('admin_students_unregister', {id: std.id, room_id:classroom.id}) }}">
+                                            <i class="fa fa-trash"></i>
+                                           
+                                        </a>
                                 </td>
                                 {% set effectif = effectif + 1 %}
 

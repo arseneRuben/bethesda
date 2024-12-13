@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Student;
 use App\Entity\Subscription;
+use App\Entity\ClassRoom;
 
 use App\Form\StudentType;
 use App\Repository\StudentRepository;
@@ -26,6 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Service\SchoolYearService;
 
 
@@ -154,6 +156,19 @@ class StudentController extends AbstractController
         
 
         return $this->render('student/list.html.twig', compact("students"));
+    }
+
+   /**
+     * @Route("/{id}/unregister/{room_id}", name="admin_students_unregister", requirements={"id"="\d+", "room_id"="\d+"})
+     * @ParamConverter("std", options={"mapping": {"id": "id"}})
+     * @ParamConverter("room", options={"mapping": {"room_id": "id"}})
+     */
+    public function unregisterAction(Student $std, ClassRoom $room)
+    {
+        $sub = $this->subRepo->findOneBy(array("student"=>$std, "classRoom"=>$room));
+        $this->em->remove($sub);
+        $this->em->flush();
+        return $this->redirectToRoute('admin_classrooms_show', ["id"=>$room->getId()]);
     }
 
     /**
