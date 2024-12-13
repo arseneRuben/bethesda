@@ -78,13 +78,14 @@
 			classRoom.setAttribute('name', 'ChoiceClassRoom');
 
 			
-
 			
-			idsequence = $("select.ChoiceSequence option:selected").val();
+			$(".ChoiceSequence").change(function () {
+				idsequence = $("select.ChoiceSequence option:selected").val();
+			});
 			
 			$(".ChoiceClassRoom").change(function () {
 				idclassroom = $("select.ChoiceClassRoom option:selected").val();
-				
+
 				$.ajax({
 					type: "POST",
 					url: "{{ path('admin_classroom_students') }}",
