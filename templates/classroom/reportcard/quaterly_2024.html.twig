@@ -217,9 +217,13 @@
                                         <tr>
                                         {% if next_mark.course_id == mark.course_id %}
                                                 <td rowspan="2"> <b>{{ mark.wording }}</b><br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
-                                                <td> {{ mark.competence }}</td>
+                                                <td>
+                                               {% if "RAS" != mark.competence|trim %}
+                                                     {{ mark.competence }}
+                                                {% endif %}
+                                                </td>
                                                 <td>{{ mark.value }}</td>
-                                                <td  rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>
+                                                <td class="notetrim" rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>
                                                 <td  rowspan="2"> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value  }}</td>
                                                 <td></td>
@@ -330,5 +334,7 @@
                      {% endif %}
         </page>
      {% endfor %}
+     <script type="text/javascript" src="{{ absolute_url(asset('assets/js/jquery-3.1.1.js')) }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('assets/js/repportCard2024.js')) }}"></script>
 </body
 </html>
