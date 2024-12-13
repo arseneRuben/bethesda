@@ -165,7 +165,8 @@ class StudentController extends AbstractController
      */
     public function unregisterAction(Student $std, ClassRoom $room)
     {
-        $sub = $this->subRepo->findOneBy(array("student"=>$std, "classRoom"=>$room));
+        $year = $this->schoolYearService->sessionYearById();
+        $sub = $this->subRepo->findOneBy(array("student"=>$std, "classRoom"=>$room, "schoolYear"=>$year));
         $this->em->remove($sub);
         $this->em->flush();
         return $this->redirectToRoute('admin_classrooms_show', ["id"=>$room->getId()]);
