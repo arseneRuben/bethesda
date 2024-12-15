@@ -294,6 +294,7 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
             case "PROF":
                 $roles[] = 'ROLE_USER';
 		        $roles[] = 'ROLE_PROF';
+             break;
             case "ADMIN":
                 $roles[] = 'ROLE_USER';
                 $roles[] = 'ROLE_ADMIN';
