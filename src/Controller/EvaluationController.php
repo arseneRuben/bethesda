@@ -525,14 +525,13 @@ class EvaluationController extends AbstractController
      */
     public function listStudentsFicheAction(Request $request, SessionInterface $session)
     {
-        if ($_POST["idclassroom"] && $_POST["idsequence"]) {
+        if ($_POST["idclassroom"] ) {
             $idclassroom = $_POST["idclassroom"];
-            $idsequence = $_POST["idsequence"];
-           
-            if ($idclassroom != null && $idsequence != null) {
+            if ($idclassroom != null) {
+                $idsequence = isset($_POST['idsequence']) ? $_POST["idsequence"] : null;
                 $year = $this->schoolYearService->sessionYearById();
                 $classRoom = $this->clRepo->findOneById($idclassroom);
-                $sequence = $this->seqRepo->findOneById($idsequence);
+                $sequence = ($idsequence != null)? $this->seqRepo->findOneById($idsequence) : $this->seqRepo->findOneBy(array("activated" => true));
                 $coursesOfRoom = $this->crsRepo->findProgrammedCoursesInClassAndNoYetEvaluated($classRoom, $sequence);
                 $coursesOfConnectedUser = $this->getUser()->getCourses($year);
                 if ($this->isGranted('ROLE_PROF')) {
