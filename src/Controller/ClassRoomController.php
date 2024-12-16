@@ -955,6 +955,25 @@ class ClassRoomController extends AbstractController
         
     }
 
+    public function buildAbsViewSeq(ClassRoom $room,Sequence $seq){
+        $connection = $this->em->getConnection();
+        $year = $this->schoolYearService->sessionYearById();
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $room->getId() ."_".$seq->getId()." AS
+            SELECT DISTINCT  abs.student_id as std, sum( abs.weight) as total_hours
+            FROM   class_room room  
+            LEFT JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
+            LEFT JOIN  abscence   abs     ON  sheet.id     =   abs.abscence_sheet_id
+            WHERE  room.id = ? 
+            GROUP BY  std
+            ORDER BY  std; "
+        );
+        $statement->bindValue(1, $seq->getId());
+        $statement->bindValue(2, $room->getId());
+        $statement->execute();
+       
+    }
+
     public function getViewSeqData(ClassRoom $room,Sequence $seq, int $i){
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1173,7 +1192,7 @@ class ClassRoomController extends AbstractController
             $fileExists[$std->getId()] = file_exists($filename);
         }
 
-        
+        // Retrieve of marks
         $query =  "  SELECT DISTINCT student.id as student_id, student.firstname as student_firstname, student.lastname as student_last_name, student.birthday as student_birthday, student.matricule as matricule,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
         FROM sequence 
         JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = :room_id
@@ -1190,9 +1209,14 @@ class ClassRoomController extends AbstractController
             'quater_id' => $quater->getId(),       
             'room_id' => $room->getId(), // Remplace :room_id
         ];
-
         $result = $connection->executeQuery($query, $params);
         $data = $result->fetchAllAssociative();
+
+        // Retrieve of discipline
+        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+        foreach ($sequences as $seq) {
+            $this->buildAbsViewSeq($room, $seq);
+        }
         
         $html = $this->renderView('classroom/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
