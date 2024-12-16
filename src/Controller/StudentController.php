@@ -288,9 +288,12 @@ class StudentController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Student succesfully updated');
             //return $this->redirectToRoute('admin_students_show', ['id' => $student->getId()]);
-            return $this->redirectToRoute('admin_students', [
+            /*return $this->redirectToRoute('admin_students', [
                 'type' =>"new_students_not_yet_registered_checkbox",
-            ]);
+            ]);*/
+            $year = $this->schoolYearService->sessionYearById();
+            $sub = $this->subRepo->findOneBy(array("student"=>$student,"schoolYear"=>$year));
+            return $this->redirectToRoute('admin_classrooms_show', ["id"=>$sub->getClassRoom()->getId()]);
         }
         return $this->render('student/edit.html.twig', [
             'student' => $student,
