@@ -957,9 +957,8 @@ class ClassRoomController extends AbstractController
 
     public function buildAbsViewSeq(ClassRoom $room,Sequence $seq){
         $connection = $this->em->getConnection();
-        $year = $this->schoolYearService->sessionYearById();
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $room->getId() ."_".$seq->getId()." AS
+            "  CREATE OR REPLACE VIEW V_STUDENT_ABSCENCE_SEQ" . $seq->getId() ."_".$room->getId()." AS
             SELECT DISTINCT  abs.student_id as std, sum( abs.weight) as total_hours
             FROM   class_room room  
             LEFT JOIN  abscence_sheet   sheet     ON  sheet.class_room_id = room.id AND sheet.sequence_id = ?
@@ -973,6 +972,41 @@ class ClassRoomController extends AbstractController
         $statement->execute();
        
     }
+
+    public function getAbsSeqFromView(ClassRoom $room,Sequence $seq){
+        $connection = $this->em->getConnection();
+
+       
+        return $connection->executeQuery("SELECT *  FROM V_STUDENT_ABSCENCE_SEQ".$seq->getId()."_".$room->getId()."  ")->fetchAllAssociative();
+    }
+
+    public function getAbsQuater(ClassRoom $room,Quater $quater){
+         
+         $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+         foreach ($sequences as $seq) {
+             $this->buildAbsViewSeq($room, $seq);
+         }
+         $absSeq1 = $this->getAbsSeqFromView($room, $sequences[0]);
+         $absSeq2 = $this->getAbsSeqFromView($room, $sequences[1]);
+         $absQuater =[];
+         $year = $this->schoolYearService->sessionYearById();
+         $studentEnrolled = $this->stdRepo->findEnrolledStudentsThisYearInClass($room, $year);
+         foreach($studentEnrolled as $std){
+            foreach($absSeq1 as $abs){
+                if($abs["std"]==$std->getId()){
+                    $absQuater[$std->getId()] = $abs["total_hours"];
+                }
+            }
+            foreach($absSeq2 as $abs){
+                if($abs["std"]==$std->getId()){
+                    $absQuater[$std->getId()] += $abs["total_hours"];
+                }
+            }
+         }
+         return $absQuater;
+
+    }
+
 
     public function getViewSeqData(ClassRoom $room,Sequence $seq, int $i){
         $connection = $this->em->getConnection();
@@ -1210,19 +1244,15 @@ class ClassRoomController extends AbstractController
             'room_id' => $room->getId(), // Remplace :room_id
         ];
         $result = $connection->executeQuery($query, $params);
-        $data = $result->fetchAllAssociative();
-
-        // Retrieve of discipline
-        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
-        foreach ($sequences as $seq) {
-            $this->buildAbsViewSeq($room, $seq);
-        }
-        
+        $dataMarks = $result->fetchAllAssociative();
+        $dataAbs = $this->getAbsQuater($room, $quater);
+       
         $html = $this->renderView('classroom/reportcard/quaterly_2024.html.twig', array(
             'year' => $year,
             'quater' => $quater,
             'mainTeacher'=>$mainTeacher,
-            'data' => $data,
+            'dataMarks' => $dataMarks,
+            'dataAbs' => $dataAbs,
             'std'  => $std,
             'students' => $students,
             'room' => $room,

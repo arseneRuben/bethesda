@@ -211,12 +211,12 @@
                                 {% set totalNCoef = 0 %}
                                 {% set totalCoef  = 0 %}
                                
-                                {% for mark in data %}
+                                {% for mark in dataMarks %}
                                  {% if std.matricule == mark.matricule %}
-                                    {% if loop.index < data|length %}
+                                    {% if loop.index < dataMarks|length %}
                                        
                                         {# Récupérer l'élément suivant #}
-                                        {% set next_mark = data[loop.index] %}
+                                        {% set next_mark = dataMarks[loop.index] %}
                                         <tr>
                                             {% if next_mark.course_id == mark.course_id %}
                                                 {% set totalNCoef =  totalNCoef + mark.coefficient * mark.value * mark.weight %}
@@ -262,7 +262,7 @@
                         </tr>
                         <tr>
                             <td>Abs. non. J. (h)</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>{{dataAbs[std.id]}}</td>
                             <td>Avertissement de conduite</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>TOTAL GENERAL</td>
