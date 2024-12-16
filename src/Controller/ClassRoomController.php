@@ -696,7 +696,7 @@ class ClassRoomController extends AbstractController
      */
     public function delete(ClassRoom $q, Request $request): Response
     {
-        //  dd($q);
+       
         // if($this->isCsrfTokenValid('classrooms_deletion'.$schoolyear->getId(), $request->request->get('crsf_token') )){
         $this->em->remove($q);
 
@@ -1127,7 +1127,6 @@ class ClassRoomController extends AbstractController
             'sequences' => $sequences,
             'students' => $studentEnrolled,
             'fileExists'=> $fileExists
-
         ));
         return new Response(
             $this->pdf->getOutputFromHtml($html),
@@ -1149,8 +1148,6 @@ class ClassRoomController extends AbstractController
      */
     public function reportCardsTrim2024Action(ClassRoom $room, Request $request)
     {
-        
-
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You need login first!');
             return $this->redirectToRoute('app_login');
