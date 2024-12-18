@@ -34,13 +34,13 @@
 
             .header-section h3 {
                 margin: 0;
-                font-size: {{headerFontSize}} rem;
+                font-size: 1rem;
                 font-weight: bold;
             }
 
             .header-section p {
                 margin: 0;
-                font-size: {{headerFontSize}}rem;
+                font-size: 0.8rem;
             }
 
             .school-logo {
@@ -108,7 +108,7 @@
 </head>
 <body>
      {% for std in reverse ? students|reverse : students  %}
-        <page size="A4" style="  margin-top:0.5em">
+        <page size="A4" style="  margin-top:{{headerFontSize}}em">
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
                 <div class="bulletin-title">
