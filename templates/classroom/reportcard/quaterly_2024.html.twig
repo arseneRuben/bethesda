@@ -112,9 +112,21 @@
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
                 <div class="bulletin-title">
-                    BULLETIN SCOLAIRE 
-                       {{ quater.wording |raw }}<br>
-                    ANNÉE SCOLAIRE : {{ year.wording }}
+                   
+                    
+                                {% if room.level.cycle.section.name == "Francophone" %}
+                                   BULLETIN SCOLAIRE 
+                                    {{ quater.wording |raw }}<br>
+                                    ANNÉE SCOLAIRE : {{ year.wording }}
+                                                                        									
+                                                                    
+                                {% else %}
+                                     REPORT CARD
+                                    {{ quater.wording |raw }}<br>
+                                    SCHOOL YEAR  : {{ year.wording }}
+                                                                        									
+                                                                
+                                {% endif %}
                 </div>
                 <table border="1" style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                     <tr>
