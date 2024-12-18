@@ -198,24 +198,64 @@
                             <label class="checkbox-label"><input type="checkbox"> Oui</label>
                             <label class="checkbox-label"><input type="checkbox"> Non</label>
                         </td>
-                        <td rowspan="2">Professeur principal : {{ mainTeacher.fullName }} </td>
+                        <td rowspan="2">
+                           
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                   Professeur principal : {{ mainTeacher.fullName }}
+                                                                        									
+                                                                    
+                            {% else %}
+                                     Head teacher : {{ mainTeacher.fullName }}
+                                                                        									
+                                                                
+                            {% endif %}
+                            
+                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2">Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})</td>
+                        <td colspan="2">
+                            
+                             {% if room.level.cycle.section.name == "Francophone" %}
+                                   Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})
+                                                                        									
+                                                                    
+                            {% else %}
+                                    Parents / Guardians : {{ mainTeacher.fullName }}
+                                                                        									
+                                                                
+                            {% endif %}
+                        </td>
                     </tr>
                 </table>
                 <table style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                     <thead>
                         <tr>
-                            <th rowspan="2">MATIÈRES ET NOM DE L'ENSEIGNANT</th>
-                            <th>COMPÉTENCES ÉVALUÉES</th>
-                            <th>N/20</th>
-                            <th>M/20</th>
-                            <th>Coef</th>
-                            <th>M x coef</th>
-                            <th>COTE</th>
-                            <th>[Min – Max]</th>
-                            <th>Appréciations de l'enseignant</th>
+                            
+                             {% if room.level.cycle.section.name == "Francophone" %}
+                                   <th rowspan="2">MATIÈRES ET NOM DE L'ENSEIGNANT</th>
+                                    <th>COMPÉTENCES ÉVALUÉES</th>
+                                    <th>N/20</th>
+                                    <th>M/20</th>
+                                    <th>Coef</th>
+                                    <th>M x coef</th>
+                                    <th>COTE</th>
+                                    <th>[Min – Max]</th>
+                                    <th>Appréciations de l'enseignant</th>
+                                                                        									
+                                                                    
+                            {% else %}
+                                    <th rowspan="2">SUBJECTS AND TEACHER NAME</th>
+                                    <th>SKILLS ASSESSED</th>
+                                    <th>N/20</th>
+                                    <th>M/20</th>
+                                    <th>Coef</th>
+                                    <th>M x coef</th>
+                                    <th>RANK</th>
+                                    <th>[Min – Max]</th>
+                                    <th>Teacher's Appreciations</th>
+                                                                        									
+                                                                
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -268,65 +308,139 @@
                 <table style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                  <tbody>
                         <tr>
-                            <td colspan="4">Discipline</td>
-                            <td colspan="4">Travail de l’élève</td>
-                            <td colspan="2">Profil de la classe</td>
+                            
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                  <td colspan="4">Discipline</td>
+                                <td colspan="4">Travail de l’élève</td>
+                                <td colspan="2">Profil de la classe</td>                              
+                            {% else %}
+                                      <td colspan="4">Discipline</td>
+                                <td colspan="4">Student work</td>
+                                <td colspan="2">Class profile</td>                                   									
+                                                                
+                            {% endif %}
                         </tr>
                         <tr>
-                            <td>Abs. non. J. (h)</td>
-                            <td>{#{{dataAbs[std.id]}}#}</td>
-                            <td>Avertissement de conduite</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>TOTAL GENERAL</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td colspan="2"><b>DÉCISION DU CONSEIL DE CLASSE</b></td>
-                            <td>Moy. Gen.</td>
+                             {% if room.level.cycle.section.name == "Francophone" %}
+                                <td>Abs. non. J. (h)</td>
+                                <td>{#{{dataAbs[std.id]}}#}</td>
+                                <td>Avertissement de conduite</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>TOTAL GENERAL</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="2"><b>DÉCISION DU CONSEIL DE CLASSE</b></td>
+                                <td>Moy. Gen.</td>                              
+                            {% else %}
+                                  <td>Unj. Absences (h)</td>
+                                <td>{#{{dataAbs[std.id]}}#}</td>
+                                <td>Warning</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>GRAND TOTAL</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td colspan="2"><b>CLASS COUNCIL DECISION</b></td>
+                                <td>Avg. Gen.</td>                                  									
+                                                                
+                            {% endif %}
+                           
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         </tr>
                          <tr>
-                            <td>Abs just. (h) </td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Blâme de conduite</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>COEF.</td>
-                            <td>{{ totalCoef }}</td>
-                            <td >Promu (e) </td>
+                            
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                               <td>Abs just. (h) </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Blâme de conduite</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>COEF.</td>
+                                <td>{{ totalCoef }}</td>
+                                <td >Promu (e) </td>                      
+                            {% else %}
+                                <td>Just. Abs  (h) </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Blame</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>COEF.</td>
+                                <td>{{ totalCoef }}</td>
+                                <td >Promoted </td>                                									
+                                                                
+                            {% endif %}
                              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>[Min – Max]</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
                         </tr>
                          <tr>
-                            <td>Retards (nbre de fois)</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Exclusions (jours)</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>MOYENNE TRIMESTRIELLE</td>
-                            <td>{{(totalNCoef/totalCoef)|round(2,'floor') }}</td>
-                            <td >Redouble</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Nombre de moyennes</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        </tr>
-                         <tr>
-                             <td>Consignes (h)</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Exclusion définitive</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>COTE</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td >Exclu(e) pour :</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Taux de réussite</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        </tr>
-                         <tr>
-                            <td colspan="4" >Appréciation du travail de l’élève <br><br> <br><br></td>
+                             {% if room.level.cycle.section.name == "Francophone" %}
+                                <td>Retards (nbre de fois)</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Exclusions (jours)</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>MOYENNE TRIMESTRIELLE</td>
+                                <td>{{(totalNCoef/totalCoef)|round(2,'floor') }}</td>
+                                <td >Redouble</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Nombre de moyennes</td>             
+                            {% else %}
+                                 <td>Late arrivals </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Exclusions (days)</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>QUARTERLY AVERAGE</td>
+                                <td>{{(totalNCoef/totalCoef)|round(2,'floor') }}</td>
+                                <td >Redouble</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Number of averages</td>                          									
+                                                                
+                            {% endif %}
                            
-                            <td colspan="2"  >Visa du parent / Tuteur<br><br> <br><br></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                         <tr>
                             
-                            <td colspan="2"  >Visa de l'enseignant pricipal<br><br> <br><br> <i>{{ mainTeacher.fullName }}</i></td>
+                            {% if room.level.cycle.section.name == "Francophone" %}
+                                 <td>Consignes (h)</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Exclusion définitive</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>COTE</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td >Exclu(e) pour :</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Taux de réussite</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>             
+                            {% else %}
+                                  <td>Instructions (h)</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Permanent exclusion</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>RANK</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td >Excluded for:</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>Success rate</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>                        									
+                                                                
+                            {% endif %}
+                        </tr>
+                         <tr>
+                            
+                             {% if room.level.cycle.section.name == "Francophone" %}
+                                <td colspan="4" >Appréciation du travail de l’élève <br><br> <br><br></td>
                            
-                            <td colspan="2" >Le Chef d’établissement<br><br> <br><br></td>
+                                <td colspan="2"  >Visa du parent / Tuteur<br><br> <br><br></td>
+                                
+                                <td colspan="2"  >Visa de l'enseignant pricipal<br><br> <br><br> <i>{{ mainTeacher.fullName }}</i></td>
+                            
+                                <td colspan="2" >Le Chef d’établissement<br><br> <br><br></td>             
+                            {% else %}
+                                 <td colspan="4" >Appreciation of student work <br><br> <br><br></td>
+                           
+                                <td colspan="2"  >Parent/Guardian Visa<br><br> <br><br></td>
+                                
+                                <td colspan="2"  >Head teacher visa<br><br> <br><br> <i>{{ mainTeacher.fullName }}</i></td>
+                            
+                                <td colspan="2" >The Head of Establishment<br><br> <br><br></td>
+                            {% endif %}
                         </tr>
                     </tbody>
                 </table>
