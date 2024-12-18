@@ -1237,11 +1237,12 @@ class ClassRoomController extends AbstractController
         JOIN student ON mark.student_id = student.id
         JOIN quater ON sequence.quater_id = quater.id
         JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
-        WHERE quater.id = :quater_id 
+        WHERE quater.id = :quater_id AND course.wording!=:wording
         ORDER BY student_id, course.id,sequence.id; ";
         $params = [
             'quater_id' => $quater->getId(),       
             'room_id' => $room->getId(), // Remplace :room_id
+            'wording' => "LCN" // Remplace :room_id
         ];
         $result = $connection->executeQuery($query, $params);
         $dataMarks = $result->fetchAllAssociative();
