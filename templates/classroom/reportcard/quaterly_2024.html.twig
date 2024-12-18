@@ -108,7 +108,7 @@
 </head>
 <body>
      {% for std in reverse ? students|reverse : students  %}
-        <page size="A4" style="  margin-top:0.5em">
+        <page size="A4">
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
                 <div class="bulletin-title">
@@ -116,7 +116,7 @@
                        {{ quater.wording |raw }}<br>
                     ANNÉE SCOLAIRE : {{ year.wording }}
                 </div>
-                <table border="1" style="line-height: {{ lineHeight }}em;">
+                <table border="1" style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                     <tr>
                         <td rowspan="4" class="student-photo">
                                 {% if(fileExists[std.id])%}
@@ -192,7 +192,7 @@
                         <td colspan="2">Parents / Tuteurs : {{ std.fatherName }} ({{ std.primaryContact }})</td>
                     </tr>
                 </table>
-                <table style="line-height: {{ lineHeight }}em;">
+                <table style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                     <thead>
                         <tr>
                             <th rowspan="2">MATIÈRES ET NOM DE L'ENSEIGNANT</th>
@@ -253,7 +253,7 @@
                     </tbody>
                    
                 </table>
-                <table style="line-height: {{ lineHeight }}em;">
+                <table style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                  <tbody>
                         <tr>
                             <td colspan="4">Discipline</td>
@@ -321,7 +321,7 @@
             </div>
              {% if copyright %}
                         <div>
-                            <h10>
+                            <h9>
                                 <i>
                                     
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
@@ -333,7 +333,7 @@
 
                                     {% endif %}                                                                                                                                                    
                                 </i>
-                            </h10>
+                            </h9>
                         </div>
                      {% endif %}
         </page>
