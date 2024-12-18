@@ -108,7 +108,7 @@
 </head>
 <body>
      {% for std in reverse ? students|reverse : students  %}
-        <page size="A4" style="  margin-top:{{headerFontSize}}em">
+        <page size="A4" style="  margin-top:0.5em">
          {{ include('classroom/partials/reportcard_header.html.twig') }}
             <div class="main-container">
                 <div class="bulletin-title">
@@ -253,7 +253,7 @@
                     </tbody>
                    
                 </table>
-                <table>
+                <table style="line-height: {{ lineHeight }}em;">
                  <tbody>
                         <tr>
                             <td colspan="4">Discipline</td>
