@@ -422,7 +422,9 @@
                                 <td>Permanent exclusion</td>
                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>RANK</td>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td> {% if ( std.id in ranks|keys ) %}
+                                        {{ ranks[std.id] }}  /   {{ ranks|length }} 
+                                    {% endif %}  </td>
                                 <td >Excluded for:</td>
                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>Success rate</td>
