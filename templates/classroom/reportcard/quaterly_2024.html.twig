@@ -346,7 +346,7 @@
                                                                 
                             {% endif %}
                            
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>{{ (  genMean )|round(2,'floor') }}</td>
                         </tr>
                          <tr>
                             
@@ -407,7 +407,11 @@
                                 <td>Exclusion définitive</td>
                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>COTE</td>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    {% if ( std.id in ranks|keys ) %}
+                                        {{ ranks[std.id] }}  /   {{ ranks|length }} 
+                                    {% endif %}  
+                                </td>
                                 <td >Exclu(e) pour :</td>
                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>Taux de réussite</td>

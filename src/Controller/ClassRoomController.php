@@ -935,10 +935,11 @@ class ClassRoomController extends AbstractController
             'quater' => $sequence->getQuater(),
             'room' => $classroom,
             'students' => $studentEnrolled,
-            'ranks' => $rankArray,
+            
             'means' => $seqAvgArray,
             'abscences' => $absencesArray,
             'genMean' => $sumAvg / sizeof($seqAvgArray),
+            'ranks' => $rankArray,
             'fileExists'=> $fileExists
 
         ));
@@ -1049,6 +1050,29 @@ class ClassRoomController extends AbstractController
        
     }
 
+    public function getViewSeqData2024(ClassRoom $room,Sequence $seq, int $i){
+        $connection = $this->em->getConnection();
+        $year = $this->schoolYearService->sessionYearById();
+         // CAS DES NOTES SEQUENTIELLES
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_SEQ" . $i . " AS
+            SELECT DISTINCT  crs.id as crs, crs.coefficient as coef, std.id as std,m.value as value, m.weight as weight
+            FROM  mark  m   JOIN  student    std     ON  m.student_id        =   std.id
+            JOIN  evaluation eval    ON  m.evaluation_id     =   eval.id
+            JOIN  class_room room    ON   eval.class_room_id     =   room.id
+            JOIN  course     crs     ON  eval.course_id      =   crs.id
+            JOIN  sequence   seq     ON  seq.id     =   eval.sequence_id
+            WHERE    room.id = ? AND eval.sequence_id =? 
+            ORDER BY  std, crs; "
+        );
+        $statement->bindValue(1, $room->getId());
+        $statement->bindValue(2, $seq->getId());
+        $statement->execute();
+        
+       
+       
+    }
+
     public function getViewQuaterData(ClassRoom $room, int $i){
         $connection = $this->em->getConnection();
         $year = $this->schoolYearService->sessionYearById();
@@ -1142,7 +1166,7 @@ class ClassRoomController extends AbstractController
         $dataQuater = $connection->executeQuery("SELECT *  FROM V_STUDENT_MARK_QUATER marks  ")->fetchAll();
         // For calculating ranks
         $statement = $connection->prepare(
-            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+        "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
         SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
         FROM V_STUDENT_MARK_QUATER 
         GROUP BY std
@@ -1247,8 +1271,45 @@ class ClassRoomController extends AbstractController
         $result = $connection->executeQuery($query, $params);
         $dataMarks = $result->fetchAllAssociative();
         $dataAbs = $this->getAbsQuater($room, $quater);
+        $sequences = $this->seqRepo->findBy(array("quater" => $quater));
+
+        // Calculation of rank and general average
+        $i = 1;
+        foreach ($sequences as $seq) {
+            $this->getViewSeqData2024($room,$seq, $i );
+            $i++;
+        }
+        // CAS DES NOTES TRIMESTRIELLES
+        $query =
+            "  CREATE OR REPLACE VIEW V_STUDENT_MARK_QUATER AS
+            SELECT DISTINCT   seq1.std as std , seq1.crs as crs , seq1.coef as coef,  seq1.value as value1, seq1.weight as weight1,seq2.value as value2, seq2.weight as weight2,    (seq1.value*seq1.weight + seq2.value*seq2.weight)/(seq1.weight+seq2.weight)  as value, greatest(seq1.weight , seq2.weight ) as weight 
+            FROM V_STUDENT_MARK_SEQ1 seq1
+            JOIN  V_STUDENT_MARK_SEQ2 seq2  ON  (seq1.std    =   seq2.std  AND seq1.crs = seq2.crs )
+            ORDER BY std ";
+        $connection->executeQuery($query);
+        $statement = $connection->prepare(
+            "  CREATE OR REPLACE VIEW V_STUDENT_RANKS AS
+            SELECT DISTINCT std , CAST( SUM(value*weight*coef) / sum(weight*coef) AS decimal(4,2)) as moyenne, sum(weight*coef) as totalCoef
+            FROM V_STUDENT_MARK_QUATER 
+            GROUP BY std
+            ORDER BY SUM(value*weight*coef) DESC"
+            );
+            $statement->execute();
+            $quaterAvg = $connection->executeQuery("SELECT *  FROM V_STUDENT_RANKS ")->fetchAll();
+            $quaterAvgArray = [];
+            $sumAvg = 0;
+            $rank = 0;
+            $rankArray = [];
+           
+            foreach ($quaterAvg as $avg) {
+                $quaterAvgArray[$avg['std']] = $avg['moyenne'];
+                $rankArray[$avg['std']] = ++$rank;
+                $sumAvg += $avg['moyenne'];
+            }
        
         $html = $this->renderView('classroom/reportcard/quaterly_2024.html.twig', array(
+            'genMean' => $sumAvg / sizeof($quaterAvgArray),
+            'ranks' => $rankArray,
             'year' => $year,
             'quater' => $quater,
             'mainTeacher'=>$mainTeacher,
