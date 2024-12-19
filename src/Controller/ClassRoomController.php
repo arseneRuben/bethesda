@@ -1299,18 +1299,28 @@ class ClassRoomController extends AbstractController
             $quaterAvgArray = [];
             $sumAvg = 0;
             $rank = 0;
+            $minAgv = 20;
+            $maxAvg = 0;
             $rankArray = [];
            
             foreach ($quaterAvg as $avg) {
                 $quaterAvgArray[$avg['std']] = $avg['moyenne'];
                 $rankArray[$avg['std']] = ++$rank;
                 $sumAvg += $avg['moyenne'];
+                if($minAgv > $avg['moyenne']){
+                    $minAgv = $avg['moyenne'];
+                }
+                if($maxAvg < $avg['moyenne']){
+                    $maxAvg = $avg['moyenne'];
+                }
             }
        
         $html = $this->renderView('classroom/reportcard/quaterly_2024.html.twig', array(
             'genMean' => $sumAvg / sizeof($quaterAvgArray),
             'ranks' => $rankArray,
             'year' => $year,
+            'minAgv' => $minAgv,
+            'maxAvg' => $maxAvg,
             'quater' => $quater,
             'mainTeacher'=>$mainTeacher,
             'dataMarks' => $dataMarks,
