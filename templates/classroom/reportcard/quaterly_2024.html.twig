@@ -98,6 +98,10 @@
                 margin: 0 10px; /* Espace entre les cases */
             }
 
+            #section1, #section2 {
+                 font-weight: bold;
+            }
+
             /* Responsive */
             @media (max-width: 768px) {
                 .header-section {
@@ -128,7 +132,7 @@
                                                                 
                                 {% endif %}
                 </div>
-                <table border="1" style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
+                <table id="section1" border="1" style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                     <tr>
                         <td rowspan="4" class="student-photo">
                                 {% if(fileExists[std.id])%}
@@ -305,7 +309,7 @@
                     </tbody>
                    
                 </table>
-                <table style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
+                <table id="section2" style="line-height: {{ lineHeight }}em; margin-top:{{ headerFontSize }}em;">
                  <tbody>
                         <tr>
                             
