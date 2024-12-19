@@ -271,7 +271,7 @@
                                         {% set next_mark = dataMarks[loop.index] %}
                                         <tr>
                                             {% if next_mark.course_id == mark.course_id %}
-                                                {% set totalNCoef =  totalNCoef + mark.coefficient * mark.value * mark.weight %}
+                                                {% set totalNCoef =  totalNCoef + mark.coefficient * (next_mark.value * next_mark.weight + mark.value * mark.weight)/2  %}
                                                 {% set totalCoef  =  totalCoef + mark.coefficient * mark.weight %}
                                                 <td rowspan="2"> <b>{{ mark.wording }}</b><br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
                                                 <td>
