@@ -1319,7 +1319,7 @@ class ClassRoomController extends AbstractController
             'genMean' => $sumAvg / sizeof($quaterAvgArray),
             'ranks' => $rankArray,
             'year' => $year,
-            'minAgv' => $minAgv,
+            'minAvg' => $minAgv,
             'maxAvg' => $maxAvg,
             'quater' => $quater,
             'mainTeacher'=>$mainTeacher,
