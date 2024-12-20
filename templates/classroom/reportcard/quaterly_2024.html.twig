@@ -285,7 +285,7 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ mark.value }}</td>
-                                                <td class="notetrim" rowspan="2">{{ (mark.value + next_mark.value)/2 }}</td>
+                                                <td class="notetrim" rowspan="2">{{ (mark.value + next_mark.value)/(mark.weight + next_mark.weight) }}</td>
                                                 <td  rowspan="2"> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value * max(mark.weight ,next_mark.weight) }}</td>
                                                 <td>{{ mark.rank2 }}</td>
