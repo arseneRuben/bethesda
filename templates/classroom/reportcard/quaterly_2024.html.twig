@@ -276,7 +276,7 @@
                                         <tr>
                                             {% if next_mark.course_id == mark.course_id %}
                                                 {% set totalNCoef =  totalNCoef + mark.coefficient * (next_mark.value * next_mark.weight + mark.value * mark.weight)/2  %}
-                                                {% set totalCoef  =  totalCoef + mark.coefficient * mark.weight %}
+                                                {% set totalCoef  =  totalCoef + mark.coefficient *  max(mark.weight ,next_mark.weight) %}
                                                 <td rowspan="2"> <b>{{ mark.wording }}</b><br>M/Mme  &nbsp;&nbsp;{{ mark.full_name }}</td>
                                                 <td>
                                                     {% if "RAS" != mark.competence|trim %}
@@ -285,7 +285,11 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ mark.value }}</td>
-                                                <td class="notetrim" rowspan="2">{{ (mark.value + next_mark.value)/(mark.weight + next_mark.weight) }}</td>
+                                                <td class="notetrim" rowspan="2">
+                                                     {% if (mark.weight + next_mark.weight) != 0 %}
+                                                         {{ (mark.value + next_mark.value)/(mark.weight + next_mark.weight) }}</td>
+                                                     {% else %}
+                                                    {% endif %}
                                                 <td  rowspan="2"> {{ mark.coefficient  }}</td>
                                                 <td>{{ mark.coefficient * mark.value * max(mark.weight ,next_mark.weight) }}</td>
                                                 <td>{{ mark.rank2 }}</td>
