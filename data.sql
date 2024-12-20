@@ -99,7 +99,7 @@ select attribution.teacher_id from attribution where attribution.year_id = 7 and
 
 SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
         FROM sequence 
-        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 20
+        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 25
         JOIN course ON evaluation.course_id = course.id
         JOIN attribution on attribution.course_id = course.id
         JOIN user ON user.id = attribution.teacher_id
@@ -110,7 +110,7 @@ SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  se
         WHERE quater.id = 20 AND course.wording != "LCN"
         ORDER BY student_id, course.id,sequence.id;
 
-SELECT DISTINCT student_id,  sequence.id as sequence, course.id as course_id, course.wording ,  mark.value
+SELECT DISTINCT student_id,course.id as course_id,  sequence.id as sequence,  course.wording ,  mark.id,  mark.value
 FROM sequence 
 JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 25
 JOIN course ON evaluation.course_id = course.id
@@ -132,9 +132,9 @@ ALTER TABLE evaluation
 RENAME COLUMN max TO maxi;
 
 
-SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value
         FROM sequence 
-        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 20
+        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 25
         JOIN course ON evaluation.course_id = course.id
         JOIN attribution on attribution.course_id = course.id
         JOIN user ON user.id = attribution.teacher_id
