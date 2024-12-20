@@ -96,17 +96,29 @@ SELECT DISTINCT seq.id, eval.id as eval,crs.id as crs, crs.wording, room.id as r
 
 select attribution.teacher_id from attribution where attribution.year_id = 7 and attribution.course_id=181;
 
-SELECT DISTINCT sequence.id as sequence, course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+
+SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
+        FROM sequence 
+        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 20
+        JOIN course ON evaluation.course_id = course.id
+        JOIN attribution on attribution.course_id = course.id
+        JOIN user ON user.id = attribution.teacher_id
+        JOIN mark ON evaluation.id = mark.evaluation_id
+        JOIN student ON mark.student_id = student.id
+        JOIN quater ON sequence.quater_id = quater.id
+        JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
+        WHERE quater.id = 20 AND course.wording != "LCN"
+        ORDER BY student_id, course.id,sequence.id;
+
+SELECT DISTINCT student_id,  sequence.id as sequence, course.id as course_id, course.wording ,  mark.value
 FROM sequence 
-JOIN evaluation ON evaluation.sequence_id = sequence.id
+JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 25
 JOIN course ON evaluation.course_id = course.id
-JOIN attribution on attribution.course_id = course.id
-JOIN user ON user.id = attribution.teacher_id
 JOIN mark ON evaluation.id = mark.evaluation_id
 JOIN quater ON sequence.quater_id = quater.id
-JOIN school_year on quater.school_year_id= school_year.id and school_year.id = attribution.year_id
-WHERE quater.id = 19 AND   mark.student_id=39
-ORDER BY course.id,sequence.id;
+JOIN school_year on quater.school_year_id= school_year.id 
+WHERE quater.id = 19 
+ORDER BY student_id, course.id,sequence.id;
 
 
 
@@ -122,7 +134,7 @@ RENAME COLUMN max TO maxi;
 
 SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  sequence.id as sequence, course.id as course_id ,course.wording , course.coefficient, mark.value, mark.weight, mark.rank2, evaluation.mini as mini, evaluation.maxi as maxi, evaluation.competence, attribution.teacher_id, school_year.id, user.full_name
         FROM sequence 
-        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 16
+        JOIN evaluation ON evaluation.sequence_id = sequence.id AND evaluation.class_room_id = 20
         JOIN course ON evaluation.course_id = course.id
         JOIN attribution on attribution.course_id = course.id
         JOIN user ON user.id = attribution.teacher_id
@@ -134,3 +146,8 @@ SELECT DISTINCT evaluation.id ,student.id as student_id, mark.id as mark_id,  se
         ORDER BY student_id, course.id,sequence.id; 
 
 update evaluation set course_id = 7 where id = 12532;
+
+
+SELECT GROUP_CONCAT(CONCAT('DROP VIEW IF EXISTS `', TABLE_NAME, '`') SEPARATOR '; ')
+FROM information_schema.VIEWS
+WHERE TABLE_SCHEMA = 'bethesda';
