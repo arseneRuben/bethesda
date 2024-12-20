@@ -1330,7 +1330,7 @@ class ClassRoomController extends AbstractController
             'room' => $room,
             'fileExists' => $fileExists,
             "headerFontSize" => $headerFontSize,
-            "lineHeight" => 2.5*$lineHeight,
+            "lineHeight" => 2*$lineHeight,
             "copyright" => $copyright,
             "reverse" => $reverse
         ));
