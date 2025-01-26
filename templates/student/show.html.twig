@@ -11,23 +11,19 @@
 {% endif %}
 {% block content %}
     <div class="row mt-3">
-        <div class="col-2">
-            <div class="btn-group record_actions  m-2">
-                {% if(sub is defined) %}
-                    <a class="btn btn-info" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
-                        <i class="fa fa-list"></i>
-                    </a>
-                {% endif %}
-            </div>
-            <div class="card" > 
-                {% if(file_exists is defined) %}
-                     <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.lastname }}" class="w-100 card-img-top"></div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-10 card">
+      
+        <div class="col-12 ">
+                
                 <article class="p-3">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-evenly">
+                        {% if(sub is defined) %}
+                            <a class="btn btn-info mb-10" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
+                                <i class="fa fa-list"></i>
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-info mb-10" href="{{ path('admin_students_new') }}">
+                                <i class="fa fa-plus"></i>
+                            </a>
                         <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
                             Identite  de l eleve
                                                                                                                                             					
@@ -36,12 +32,36 @@
                                                                                 
                                                     
                         </h4>
+                                                  
+                        <a class="btn btn-outline-warning" href="{{ path('admin_students_edit', {id: student.id}) }}">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                             
+                        </a>
+                        <a class="btn btn-outline-danger" href="#" onclick="event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();">
+                                    <i class="fa fa-trash"></i>
+                                               
+                        </a>
                     </div>
                     <div class="container">
                         <div class="card-deck mb-3 text-center">
                             <table class="table table-hover record_properties center">
                                 <tbody>
                                     <tr>
+                                        <th scope="row">
+                                            Photo d identite
+                                                                                                                                                                                                                        
+                                                                                                                                                                            
+                                                                                                                                
+                                                                                    
+                                        </th>
+                                        <td>
+                                              {% if(file_exists is defined) %}
+                                                <img src="{{ (file_exists ? asset('assets/images/student/'~ student.imageName ) : (student.gender ? asset('assets/images/student/female-default-avatar.jpg') : asset('assets/images/student/male-default-avatar.jpg'))) }}" alt="{{ student.imageName }}" class="w-25 card-img-top"></div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+
                                         <th scope="row">
                                             Matricule
                                                                                                                                                                                                                         
@@ -201,21 +221,10 @@
                                             {{ student.otherInformations }}
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            Photo d identite
-                                                                                                                                                                                                                        
-                                                                                                                                                                            
-                                                                                                                                
-                                                                                    
-                                        </th>
-                                        <td>
-                                            {{ student.imageName }}
-                                        </td>
-                                    </tr>
+                                   
                                 </tbody>
                             </table>
-                            <div class=" ">
+                            <div class=" d-flex justify-content-evenly ">
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a target="_blank" class="btn btn-outline-primary" href="{{ path('admin_student_receipt', {id: student.id}) }}">
                                     <i class="fa fa-money"></i>
@@ -244,7 +253,7 @@
                                                                                                         
                                                                     
                                 </a>
-                                |
+                                
                                 <a target="_blank" class="btn btn-outline-file" href="{{ path('admin_students_reportcards_quat_2024', {id: student.id}) }}">
                                     <i class="fa fa-file"></i>
                                     Bull Trim
@@ -254,7 +263,7 @@
                                                                                                         
                                                                     
                                 </a>
-                                |
+                                
                                                                                                                                                                 							
                                                                                                                                                                 
                                                                                                                                 
@@ -270,36 +279,18 @@
                                                                                                         
                                                                     
                                 </a>
-                                |
+                                
                                                                                                                                                                 							
                                                                                                                                                                 
                                                                                                                                 
                                                                                                 
-                                                        
-                                <a class="btn btn-outline-warning" href="{{ path('admin_students_edit', {id: student.id}) }}">
-                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                    Edit
-                                                                                                                                                                                    							
-                                                                                                                                                                                
-                                                                                                                                            
-                                                                                                        
-                                                                    
-                                </a>
-                                |
+                              
                                                                                                                                                                 							
                                                                                                                                                                 
                                                                                                                                 
                                                                                                 
                                                                 
-                                <a class="btn btn-outline-danger" href="#" onclick="event.preventDefault() ; confirm('Are you sure ?') && document.getElementById('js-student-delete-form').submit();">
-                                    <i class="fa fa-trash"></i>
-                                    Delete
-                                                                                                                                                                                    							
-                                                                                                                                                                                
-                                                                                                                                            
-                                                                                                        
-                                                                    
-                                </a>
+                                
                                 <form id="js-student-delete-form" action="{{ path('admin_students_delete', {id: student.id}) }}" method="post" style="display: none;">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token('students_deletion' ~ student.id ) }}" id="">
                                         <input type="hidden" name="_method" value="DELETE">
@@ -311,6 +302,7 @@
                      </div>
                 </article>
         </div> 
+    </div>
         <div class="row jumbotron">
                     <div class="col-6">
                         <br/>
@@ -463,7 +455,7 @@
                         </table>
                     </div>
         </div>
-                <div class="row jumbotron">
+        <div class="row jumbotron">
                     
                     <div class="col">
                         <div class="text-center">
@@ -559,10 +551,10 @@
                             <canvas id="studentPerformanceGraph" width="600" height="300"></canvas>
                         </article>
                     </div>
-                </div>
+        </div>
             
-            {% endblock %}
-            {% block javascripts %}
+{% endblock %}
+{% block javascripts %}
                 {{ parent() }}
                 <script type="text/javascript">
 		            const studentPerformanceGraph =$("#studentPerformanceGraph");
