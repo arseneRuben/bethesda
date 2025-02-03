@@ -3,9 +3,11 @@
 {% block content %}
         <div class="row  mt-4">
             <div class="col-1">
+                {% if is_granted('ROLE_ADMIN') %}
                     <a class="btn btn-info" href="{{ path('admin_classrooms_new') }}">
                         <i class="fa fa-plus"></i>                                                 
                     </a>
+                {% endif %}
              </div>
             <div class="col-11 jumbotron">
 
