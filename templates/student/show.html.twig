@@ -16,22 +16,21 @@
                 
                 <article class="p-3">
                     <div class="card-header d-flex justify-content-evenly">
-                        {% if(sub is defined) %}
-                            <a class="btn btn-info mb-10" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
-                                <i class="fa fa-list"></i>
-                            </a>
-                        {% endif %}
+                    {% if(sub is defined) %}
+                        <a class="btn btn-info mb-10" href="{{ path('admin_classrooms_show', {id: sub.classroom.id}) }}">
+                            <i class="fa fa-list"></i>
+                        </a>
+                    {% endif %}
+                    <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
+                        Identite  de l eleve
+                             
+                    </h4>
+                    {% if is_granted('ROLE_ADMIN') %}
+                       
                         <a class="btn btn-info mb-10" href="{{ path('admin_students_new') }}">
                                 <i class="fa fa-plus"></i>
                             </a>
-                        <h4 class="my-0 font-weight-normal text-center text-justify text-uppercase">
-                            Identite  de l eleve
-                                                                                                                                            					
-                                                                                                                                        
-                                                                                                            
-                                                                                
-                                                    
-                        </h4>
+                       
                                                   
                         <a class="btn btn-outline-warning" href="{{ path('admin_students_edit', {id: student.id}) }}">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -41,6 +40,7 @@
                                     <i class="fa fa-trash"></i>
                                                
                         </a>
+                    {% endif %}
                     </div>
                     <div class="container">
                         <div class="card-deck mb-3 text-center">
